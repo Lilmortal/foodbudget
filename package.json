@@ -16,6 +16,9 @@
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
+  "scripts": {
+    "release": "standard-version -m 'chore(release): [ci skip] publish'"
+  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
