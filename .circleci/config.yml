@@ -1,0 +1,44 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/node:12.14.1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run: yarn
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+  release:
+    docker:
+      - image: circleci/node:12.14.1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      # - add_ssh_keys:
+      #     fingerprints:
+      #       - "ee:e8:84:4e:a5:55:ed:88:e4:d6:23:54:66:25:dc:f7"
+      - run: git config --global user.email "jacktan165@gmail.com"
+      - run: git config --global user.name "Jack Tan"
+      - run: yarn release
+      - run: git push --follow-tags origin master
+workflows:
+  version: 2
+  verify:
+    jobs:
+      - build
+      - release:
+          filters:
+            branches:
+              only: master
+          requires:
+            - build
