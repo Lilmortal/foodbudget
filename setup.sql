@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS Recipe_Ingredients (
     id VARCHAR(255) PRIMARY KEY NOT NULL,
     recipe_id FOREIGN KEY REFERENCES Recipes(id),
     ingredient_id FOREIGN KEY REFERENCES Ingredients(id)
+    quantity NUMERIC NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Cuisines (
@@ -84,7 +85,7 @@ CREATE TABLE IF NOT EXISTS User_Saved_Recipes (
 );
 
 CREATE TABLE IF NOT EXISTS Users (
-    username VARCHAR(255),
-    password VARCHAR(255),
-    nickname VARCHAR(255)
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    nickname VARCHAR(255) NOT NULL
 );

@@ -26,7 +26,7 @@ jobs:
             - v1-dependencies-
       - add_ssh_keys:
           fingerprints:
-            - "4a:c4:a5:1d:69:03:23:e1:60:79:b0:6c:23:bd:96:88"
+            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: git config --global user.email "jacktan165@gmail.com"
       - run: git config --global user.name "Jack Tan"
       - run: yarn release
