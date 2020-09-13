@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/Lilmortal/foodbudget/compare/v1.2.1...v1.3.0) (2020-09-13)
+
+
+### Features
+
+* added lerna packages ([0ed244e](https://github.com/Lilmortal/foodbudget/commit/0ed244e3e7f0687755d9c2964f16a5ce12672871))
+
 ### [1.2.1](https://github.com/Lilmortal/foodbudget/compare/v1.2.0...v1.2.1) (2020-09-13)
 
 ## [1.2.0](https://github.com/Lilmortal/foodbudget/compare/v1.1.1...v1.2.0) (2020-09-13)
