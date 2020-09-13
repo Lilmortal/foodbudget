@@ -5,13 +5,14 @@
   "repository": "https://github.com/Lilmortal/foodbudget.git",
   "author": "Jack Tan <jacktan165@gmail.com>",
   "license": "MIT",
-  "type": "module",
+  "private": true,
   "devDependencies": {
     "@commitlint/config-conventional": "^9.1.2",
     "@types/puppeteer": "^3.0.2",
     "commitlint": "^9.1.2",
     "husky": "^4.3.0",
     "standard-version": "^9.0.0",
+    "ts-node-dev": "^1.0.0-pre.62",
     "typescript": "^4.0.2"
   },
   "husky": {
@@ -20,6 +21,7 @@
     }
   },
   "scripts": {
+    "start": "ts-node-dev --respawn src/index.ts",
     "release": "standard-version -m 'chore(release): [ci skip] publish'"
   },
   "commitlint": {
