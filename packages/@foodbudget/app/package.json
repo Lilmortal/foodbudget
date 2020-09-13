@@ -1,0 +1,17 @@
+{
+  "name": "@foodbudget/app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jack Tan",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node-dev --respawn src/index.ts"
+  },
+  "dependencies": {
+    "puppeteer": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/puppeteer": "^3.0.2",
+    "ts-node-dev": "^1.0.0-pre.62"
+  }
+}
