@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/Lilmortal/foodbudget/compare/v1.4.0...v1.5.0) (2020-09-16)
+
+
+### Features
+
+* added POC for agenda.js ([d01ad71](https://github.com/Lilmortal/foodbudget/commit/d01ad710dcd56c5c9f193a5717b5db7c72ad6922))
+
 ## [1.4.0](https://github.com/Lilmortal/foodbudget/compare/v1.3.0...v1.4.0) (2020-09-16)
 
 
