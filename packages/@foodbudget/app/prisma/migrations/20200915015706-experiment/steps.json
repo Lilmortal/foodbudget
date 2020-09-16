@@ -1,0 +1,1522 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateSource",
+      "source": "db"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Source",
+        "source": "db"
+      },
+      "argument": "provider",
+      "value": "\"postgresql\""
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Source",
+        "source": "db"
+      },
+      "argument": "url",
+      "value": "\"***\""
+    },
+    {
+      "tag": "CreateModel",
+      "model": "adjectives"
+    },
+    {
+      "tag": "CreateField",
+      "model": "adjectives",
+      "field": "adjectives_type",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "adjectives",
+          "field": "adjectives_type"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "adjectives",
+      "field": "recipe_adjectives",
+      "type": "recipe_adjectives",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "allergies"
+    },
+    {
+      "tag": "CreateField",
+      "model": "allergies",
+      "field": "allergy_type",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "allergies",
+          "field": "allergy_type"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "allergies",
+      "field": "recipe_allergies",
+      "type": "recipe_allergies",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "allergies",
+      "field": "user_allergies",
+      "type": "user_allergies",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "cuisines"
+    },
+    {
+      "tag": "CreateField",
+      "model": "cuisines",
+      "field": "cuisine_type",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "cuisines",
+          "field": "cuisine_type"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "cuisines",
+      "field": "recipe_cuisines",
+      "type": "recipe_cuisines",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "diets"
+    },
+    {
+      "tag": "CreateField",
+      "model": "diets",
+      "field": "diet_type",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "diets",
+          "field": "diet_type"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "diets",
+      "field": "recipe_diets",
+      "type": "recipe_diets",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "diets",
+      "field": "user_diets",
+      "type": "user_diets",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "ingredients"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ingredients",
+      "field": "ingredient_name",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ingredients",
+          "field": "ingredient_name"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "ingredients",
+      "field": "price",
+      "type": "Float",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ingredients",
+      "field": "recipe_ingredients",
+      "type": "recipe_ingredients",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "ingredients",
+      "field": "user_pantries",
+      "type": "user_pantries",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "recipe_adjectives"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_adjectives",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_adjectives",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_adjectives",
+      "field": "recipe_id",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_adjectives",
+      "field": "adjectives_type",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_adjectives",
+      "field": "adjectives",
+      "type": "adjectives",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_adjectives",
+          "field": "adjectives"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_adjectives",
+          "field": "adjectives"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[adjectives_type]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_adjectives",
+          "field": "adjectives"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[adjectives_type]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_adjectives",
+      "field": "recipes",
+      "type": "recipes",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_adjectives",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_adjectives",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[recipe_id]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_adjectives",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "recipe_allergies"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_allergies",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_allergies",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_allergies",
+      "field": "recipe_id",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_allergies",
+      "field": "allergy_type",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_allergies",
+      "field": "allergies",
+      "type": "allergies",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_allergies",
+          "field": "allergies"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_allergies",
+          "field": "allergies"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[allergy_type]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_allergies",
+          "field": "allergies"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[allergy_type]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_allergies",
+      "field": "recipes",
+      "type": "recipes",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_allergies",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_allergies",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[recipe_id]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_allergies",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "recipe_cuisines"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_cuisines",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_cuisines",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_cuisines",
+      "field": "recipe_id",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_cuisines",
+      "field": "cuisine_type",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_cuisines",
+      "field": "cuisines",
+      "type": "cuisines",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_cuisines",
+          "field": "cuisines"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_cuisines",
+          "field": "cuisines"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[cuisine_type]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_cuisines",
+          "field": "cuisines"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[cuisine_type]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_cuisines",
+      "field": "recipes",
+      "type": "recipes",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_cuisines",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_cuisines",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[recipe_id]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_cuisines",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "recipe_diets"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_diets",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_diets",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_diets",
+      "field": "recipe_id",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_diets",
+      "field": "diet_type",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_diets",
+      "field": "diets",
+      "type": "diets",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_diets",
+          "field": "diets"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_diets",
+          "field": "diets"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[diet_type]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_diets",
+          "field": "diets"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[diet_type]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_diets",
+      "field": "recipes",
+      "type": "recipes",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_diets",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_diets",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[recipe_id]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_diets",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "recipe_ingredients"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_ingredients",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_ingredients",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_ingredients",
+      "field": "recipe_id",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_ingredients",
+      "field": "ingredient_name",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_ingredients",
+      "field": "quantity",
+      "type": "Float",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_ingredients",
+      "field": "ingredients",
+      "type": "ingredients",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_ingredients",
+          "field": "ingredients"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_ingredients",
+          "field": "ingredients"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[ingredient_name]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_ingredients",
+          "field": "ingredients"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[ingredient_name]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_ingredients",
+      "field": "recipes",
+      "type": "recipes",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_ingredients",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_ingredients",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[recipe_id]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_ingredients",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "recipes"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipes",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipes",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipes",
+      "field": "recipe_name",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipes",
+      "field": "link",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipes",
+      "field": "prep_time",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipes",
+      "field": "servings",
+      "type": "Float",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipes",
+      "field": "num_saved",
+      "type": "Float",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipes",
+      "field": "recipe_adjectives",
+      "type": "recipe_adjectives",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipes",
+      "field": "recipe_allergies",
+      "type": "recipe_allergies",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipes",
+      "field": "recipe_cuisines",
+      "type": "recipe_cuisines",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipes",
+      "field": "recipe_diets",
+      "type": "recipe_diets",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipes",
+      "field": "recipe_ingredients",
+      "type": "recipe_ingredients",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipes",
+      "field": "user_saved_recipes",
+      "type": "user_saved_recipes",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "user_allergies"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_allergies",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "user_allergies",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_allergies",
+      "field": "user_id",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_allergies",
+      "field": "allergy_type",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_allergies",
+      "field": "allergies",
+      "type": "allergies",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "user_allergies",
+          "field": "allergies"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_allergies",
+          "field": "allergies"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[allergy_type]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_allergies",
+          "field": "allergies"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[allergy_type]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_allergies",
+      "field": "users",
+      "type": "users",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "user_allergies",
+          "field": "users"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_allergies",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[user_id]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_allergies",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[username]"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "user_diets"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_diets",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "user_diets",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_diets",
+      "field": "user_id",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_diets",
+      "field": "diet_type",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_diets",
+      "field": "diets",
+      "type": "diets",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "user_diets",
+          "field": "diets"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_diets",
+          "field": "diets"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[diet_type]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_diets",
+          "field": "diets"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[diet_type]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_diets",
+      "field": "users",
+      "type": "users",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "user_diets",
+          "field": "users"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_diets",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[user_id]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_diets",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[username]"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "user_pantries"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_pantries",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "user_pantries",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_pantries",
+      "field": "user_id",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_pantries",
+      "field": "ingredient_name",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_pantries",
+      "field": "ingredients",
+      "type": "ingredients",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "user_pantries",
+          "field": "ingredients"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_pantries",
+          "field": "ingredients"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[ingredient_name]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_pantries",
+          "field": "ingredients"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[ingredient_name]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_pantries",
+      "field": "users",
+      "type": "users",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "user_pantries",
+          "field": "users"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_pantries",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[user_id]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_pantries",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[username]"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "user_saved_recipes"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_saved_recipes",
+      "field": "id",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "user_saved_recipes",
+          "field": "id"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_saved_recipes",
+      "field": "user_id",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_saved_recipes",
+      "field": "recipe_id",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_saved_recipes",
+      "field": "recipes",
+      "type": "recipes",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "user_saved_recipes",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_saved_recipes",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[recipe_id]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_saved_recipes",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_saved_recipes",
+      "field": "users",
+      "type": "users",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "user_saved_recipes",
+          "field": "users"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_saved_recipes",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[user_id]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_saved_recipes",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[username]"
+    },
+    {
+      "tag": "CreateModel",
+      "model": "users"
+    },
+    {
+      "tag": "CreateField",
+      "model": "users",
+      "field": "username",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "users",
+          "field": "username"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateField",
+      "model": "users",
+      "field": "password",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "users",
+      "field": "nickname",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "users",
+      "field": "user_allergies",
+      "type": "user_allergies",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "users",
+      "field": "user_diets",
+      "type": "user_diets",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "users",
+      "field": "user_pantries",
+      "type": "user_pantries",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "users",
+      "field": "user_saved_recipes",
+      "type": "user_saved_recipes",
+      "arity": "List"
+    }
+  ]
+}
