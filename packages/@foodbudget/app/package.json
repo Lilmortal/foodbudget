@@ -7,14 +7,17 @@
   "scripts": {
     "start": "ts-node-dev --respawn src/index.ts",
     "generate": "prisma generate --experimental",
-    "save": "prisma save --experimental"
+    "save": "prisma save --experimental",
+    "docker:restart": "docker-compose down && docker-compose up -d"
   },
   "dependencies": {
     "@prisma/client": "^2.6.2",
+    "agenda": "^3.1.0",
     "puppeteer": "^5.3.0"
   },
   "devDependencies": {
     "@prisma/cli": "^2.6.2",
+    "@types/agenda": "^2.0.9",
     "@types/puppeteer": "^3.0.2",
     "ts-node-dev": "^1.0.0-pre.62"
   }
