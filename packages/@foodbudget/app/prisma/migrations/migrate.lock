@@ -1,0 +1,5 @@
+# Prisma Migrate lockfile v1
+
+20200915015706-experiment
+20200915150642-update-id-to-serial
+20200915151204-update-user-id-from-int-to-string
