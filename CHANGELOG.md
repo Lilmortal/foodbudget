@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/Lilmortal/foodbudget/compare/v1.5.0...v1.6.0) (2020-09-19)
+
+
+### Features
+
+* added recipe scraper jobs ([28899ee](https://github.com/Lilmortal/foodbudget/commit/28899eed83ac739fcf111b38aaab8065c565da0d))
+* save newly scraped recipe to database ([a0c4878](https://github.com/Lilmortal/foodbudget/commit/a0c4878e960c07e88078ae0721d4dd6a12298217))
+* scrapeRecipes init commit ([b3d5fe8](https://github.com/Lilmortal/foodbudget/commit/b3d5fe8537d1f6d4f6f60a79b03bac7d560f1080))
+
 ## [1.5.0](https://github.com/Lilmortal/foodbudget/compare/v1.4.0...v1.5.0) (2020-09-16)
 
 
