@@ -22,107 +22,138 @@ interface Scraper {
   recipeRepository: RecipeRepository;
 }
 
-const recipeScraper = ({ recipeRepository }: Scraper) => {
-  const validate = (
-    pageInfo: Record<
-      keyof Pick<Recipe, "prepTime" | "servings" | "name" | "ingredients">,
-      string | string[] | number
-    >
-  ) => {
-    const emptyResults = [];
+const recipeScraper = ({ recipeRepository }: Scraper) => ({
+  scrape: async (pageInfos: PageInfo[]) => {
+    try {
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
 
-    if (!pageInfo.prepTime && !Array.isArray(pageInfo.prepTime)) {
-      emptyResults.push("prepTime must be a non-empty string.");
-    }
+      pageInfos.forEach(async (pageInfo) => {
+        await page.goto(pageInfo.url);
 
-    if (
-      !pageInfo.servings ||
-      (!Array.isArray(pageInfo.servings) &&
-        isNaN(parseInt(pageInfo.servings.toString())))
-    ) {
-      emptyResults.push("servings must be a non-empty number.");
-    }
+        page.on("console", (msg) => console.log(msg.text()));
 
-    if (!pageInfo.name && !Array.isArray(pageInfo.name)) {
-      emptyResults.push("name must be a non-empty string.");
-    }
+        const recipe = await page.evaluate(async (pageInfo: string) => {
+          const parsedPageInfo: PageInfo = JSON.parse(pageInfo);
 
-    if (!pageInfo.ingredients && Array.isArray(pageInfo.ingredients)) {
-      emptyResults.push("ingredients must be a non-empty string.");
-    }
+          const getDocumentNodeTexts = (nodeSelector: DocumentNode) => {
+            const nodeList: NodeListOf<HTMLElement> = document.querySelectorAll(
+              nodeSelector.class
+            );
 
-    if (emptyResults) {
-      // send an email notification to warn about missing properties.
-    }
-  };
+            let nodeText: string | string[];
+            if (nodeSelector.index !== undefined) {
+              // It's not an array, hence treat it like a single node.
+              nodeText = nodeList[nodeSelector.index].innerText.substring(
+                nodeSelector.substring?.start || 0,
+                nodeSelector.substring?.end
+              );
+            } else {
+              nodeText = Array.from(nodeList).map((node) => node.innerText);
+            }
 
-  const getNodeText = (nodeSelector: DocumentNode) => {
-    const nodeList: NodeListOf<HTMLElement> = document.querySelectorAll(
-      nodeSelector.class
-    );
+            return nodeText;
+          };
 
-    if (nodeSelector.index !== undefined) {
-      // It's not an array, hence treat it like a single node.
-      return nodeList[nodeSelector.index].innerText.substring(
-        nodeSelector.substring?.start || 0,
-        nodeSelector.substring?.end
-      );
-    } else {
-      return Array.from(nodeList).map((node) => node.innerText);
-    }
-  };
+          const validate = (
+            pageInfo: Record<
+              keyof Pick<
+                Recipe,
+                "prepTime" | "servings" | "name" | "ingredients"
+              >,
+              string | string[]
+            >
+          ): Pick<Recipe, "prepTime" | "servings" | "name" | "ingredients"> => {
+            const emptyResults = [];
 
-  return {
-    scrape: async (pageInfos: PageInfo[]) => {
-      try {
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
+            const validatedPageInfo: Pick<
+              Recipe,
+              "prepTime" | "servings" | "name" | "ingredients"
+            > = {
+              prepTime: "",
+              servings: 0,
+              name: "",
+              ingredients: [],
+            };
 
-        pageInfos.forEach(async (pageInfo) => {
-          await page.goto(pageInfo.url);
+            if (pageInfo.prepTime && !Array.isArray(pageInfo.prepTime)) {
+              validatedPageInfo.prepTime = pageInfo.prepTime;
+            } else {
+              emptyResults.push("prepTime must be a non-empty string.");
+            }
 
-          page.on("console", (msg) => console.log(msg.text()));
+            if (
+              pageInfo.servings &&
+              !Array.isArray(pageInfo.servings) &&
+              !isNaN(parseInt(pageInfo.servings))
+            ) {
+              validatedPageInfo.servings = parseInt(pageInfo.servings);
+            } else {
+              emptyResults.push("servings must be a non-empty number.");
+            }
 
-          const recipeBuilder = await page.evaluate(
-            async (pageInfo: string) => {
-              const pageInfoNode: PageInfo = JSON.parse(pageInfo);
+            if (pageInfo.name && !Array.isArray(pageInfo.name)) {
+              validatedPageInfo.name = pageInfo.name;
+            } else {
+              emptyResults.push("name must be a non-empty string.");
+            }
 
-              const prepTime = getNodeText(pageInfoNode.prepTimeSelector);
-              const servings = getNodeText(pageInfoNode.servingsSelector);
-              const name = getNodeText(pageInfoNode.recipeNameSelector);
-              const ingredients = getNodeText(pageInfoNode.ingredientsSelector);
+            if (pageInfo.ingredients && Array.isArray(pageInfo.ingredients)) {
+              validatedPageInfo.ingredients = pageInfo.ingredients;
+            } else {
+              emptyResults.push("ingredients must be a non-empty string.");
+            }
 
-              const nodeTexts = { prepTime, servings, name, ingredients };
-              if (validate(nodeTexts)) {
-                return {
-                  prepTime: nodeTexts.prepTime,
-                  servings: parseInt(nodeTexts.servings),
-                  name,
-                  ingredients,
-                  cuisines: [],
-                  diets: [],
-                  allergies: [],
-                  link: pageInfoNode.url,
-                };
-              }
-            },
-            JSON.stringify(pageInfo)
+            if (emptyResults) {
+              // send an email notification to warn about missing properties.
+            }
+
+            return validatedPageInfo;
+          };
+
+          const prepTime = getDocumentNodeTexts(
+            parsedPageInfo.prepTimeSelector
+          );
+          const servings = getDocumentNodeTexts(
+            parsedPageInfo.servingsSelector
+          );
+          const name = getDocumentNodeTexts(parsedPageInfo.recipeNameSelector);
+          const ingredients = getDocumentNodeTexts(
+            parsedPageInfo.ingredientsSelector
           );
 
-          // recipeRepository.create(recipeBuilder);
+          const validatedRecipe = validate({
+            prepTime,
+            servings,
+            name,
+            ingredients,
+          });
 
-          // send an email notification that a new website page has been scraped, and require
-          // additional manual insertion of the remaining properties.
+          return {
+            ...validatedRecipe,
+            cuisines: [],
+            diets: [],
+            allergies: [],
+            link: parsedPageInfo.url,
+          };
+        }, JSON.stringify(pageInfo));
 
-          // add recipeBuilder to incomplete recipe list.
-        });
-        // await browser.close();
-      } catch (err) {
-        throw new Error(err);
-      }
-    },
-  };
-};
+        console.log("saving new recipe...");
+        console.log(recipe);
+
+        recipeRepository.create(recipe);
+
+        // send an email notification that a new website page has been scraped, and require
+        // additional manual insertion of the remaining properties.
+
+        // add recipe to incomplete recipe list.
+      });
+      // await browser.close();
+    } catch (err) {
+      throw new Error(err);
+    }
+  },
+});
 
 const SCRAPE_RECIPE_DEFINITION = "recipe-scrape";
 
