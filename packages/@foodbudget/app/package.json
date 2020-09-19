@@ -5,14 +5,16 @@
   "author": "Jack Tan",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node-dev --respawn src/index.ts",
-    "generate": "prisma generate --experimental",
-    "save": "prisma save --experimental",
+    "start": "ts-node-dev --respawn src/app.ts",
+    "generate": "prisma generate",
+    "save": "prisma migrate save --experimental",
+    "migrate:up": "prisma migrate up --experimental",
     "docker:restart": "docker-compose down && docker-compose up -d"
   },
   "dependencies": {
     "@prisma/client": "^2.6.2",
     "agenda": "^3.1.0",
+    "dotenv": "^8.2.0",
     "puppeteer": "^5.3.0"
   },
   "devDependencies": {
