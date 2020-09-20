@@ -1,6 +1,8 @@
 import puppeteer, { Page } from "puppeteer";
 import Agenda from "agenda";
 import { Recipe, RecipeRepository } from "../../repository/recipe";
+import { Emailer, EmailerApi } from "../../services/email";
+import config from "../../config";
 
 export interface DocumentNode {
   class: string;
@@ -20,9 +22,65 @@ export interface PageInfo {
 
 interface Scraper {
   recipeRepository: RecipeRepository;
+  emailer: EmailerApi;
 }
 
-const recipeScraper = ({ recipeRepository }: Scraper) => ({
+const validate = (
+  pageInfo: Record<
+    keyof Pick<Recipe, "prepTime" | "servings" | "name" | "ingredients">,
+    string | string[]
+  >
+): Pick<Recipe, "prepTime" | "servings" | "name" | "ingredients"> => {
+  const emptyResults = [];
+
+  const validatedPageInfo: Pick<
+    Recipe,
+    "prepTime" | "servings" | "name" | "ingredients"
+  > = {
+    prepTime: "",
+    servings: 0,
+    name: "",
+    ingredients: [],
+  };
+
+  if (pageInfo.prepTime && !Array.isArray(pageInfo.prepTime)) {
+    validatedPageInfo.prepTime = pageInfo.prepTime;
+  } else {
+    emptyResults.push("prepTime must be a non-empty string.");
+  }
+
+  if (
+    pageInfo.servings &&
+    !Array.isArray(pageInfo.servings) &&
+    !isNaN(parseInt(pageInfo.servings))
+  ) {
+    validatedPageInfo.servings = parseInt(pageInfo.servings);
+  } else {
+    emptyResults.push("servings must be a non-empty number.");
+  }
+
+  if (pageInfo.name && !Array.isArray(pageInfo.name)) {
+    validatedPageInfo.name = pageInfo.name;
+  } else {
+    emptyResults.push("name must be a non-empty string.");
+  }
+
+  if (pageInfo.ingredients && Array.isArray(pageInfo.ingredients)) {
+    validatedPageInfo.ingredients = pageInfo.ingredients;
+  } else {
+    emptyResults.push("ingredients must be a non-empty string.");
+  }
+
+  if (emptyResults.length > 0) {
+    // @TODO send an email notification to warn about missing properties.
+    // throw new Error(emptyResults.join("\n"));
+    console.log(emptyResults);
+  }
+
+  return validatedPageInfo;
+};
+
+const recipeScraper = ({ recipeRepository, emailer }: Scraper) => ({
   scrape: async (pageInfos: PageInfo[]) => {
     try {
       const browser = await puppeteer.launch();
@@ -33,9 +91,11 @@ const recipeScraper = ({ recipeRepository }: Scraper) => ({
 
         page.on("console", (msg) => console.log(msg.text()));
 
-        const recipe = await page.evaluate(async (pageInfo: string) => {
-          const parsedPageInfo: PageInfo = JSON.parse(pageInfo);
-
+        const scrapedRecipe = await page.evaluate(async (pageInfo: string) => {
+          // Unfortunately we have to move these functions inside this scope. Even though, this looks like
+          // a regular closure, everything in here is actually serialized and passed on to puppeteer browser.
+          // If you move these functions out to the parent scope, you will see that puppeteer complains these functions
+          // are not defined.
           const getDocumentNodeTexts = (nodeSelector: DocumentNode) => {
             const nodeList: NodeListOf<HTMLElement> = document.querySelectorAll(
               nodeSelector.class
@@ -55,61 +115,7 @@ const recipeScraper = ({ recipeRepository }: Scraper) => ({
             return nodeText;
           };
 
-          const validate = (
-            pageInfo: Record<
-              keyof Pick<
-                Recipe,
-                "prepTime" | "servings" | "name" | "ingredients"
-              >,
-              string | string[]
-            >
-          ): Pick<Recipe, "prepTime" | "servings" | "name" | "ingredients"> => {
-            const emptyResults = [];
-
-            const validatedPageInfo: Pick<
-              Recipe,
-              "prepTime" | "servings" | "name" | "ingredients"
-            > = {
-              prepTime: "",
-              servings: 0,
-              name: "",
-              ingredients: [],
-            };
-
-            if (pageInfo.prepTime && !Array.isArray(pageInfo.prepTime)) {
-              validatedPageInfo.prepTime = pageInfo.prepTime;
-            } else {
-              emptyResults.push("prepTime must be a non-empty string.");
-            }
-
-            if (
-              pageInfo.servings &&
-              !Array.isArray(pageInfo.servings) &&
-              !isNaN(parseInt(pageInfo.servings))
-            ) {
-              validatedPageInfo.servings = parseInt(pageInfo.servings);
-            } else {
-              emptyResults.push("servings must be a non-empty number.");
-            }
-
-            if (pageInfo.name && !Array.isArray(pageInfo.name)) {
-              validatedPageInfo.name = pageInfo.name;
-            } else {
-              emptyResults.push("name must be a non-empty string.");
-            }
-
-            if (pageInfo.ingredients && Array.isArray(pageInfo.ingredients)) {
-              validatedPageInfo.ingredients = pageInfo.ingredients;
-            } else {
-              emptyResults.push("ingredients must be a non-empty string.");
-            }
-
-            if (emptyResults) {
-              // send an email notification to warn about missing properties.
-            }
-
-            return validatedPageInfo;
-          };
+          const parsedPageInfo: PageInfo = JSON.parse(pageInfo);
 
           const prepTime = getDocumentNodeTexts(
             parsedPageInfo.prepTimeSelector
@@ -122,35 +128,44 @@ const recipeScraper = ({ recipeRepository }: Scraper) => ({
             parsedPageInfo.ingredientsSelector
           );
 
-          const validatedRecipe = validate({
+          return {
             prepTime,
             servings,
             name,
             ingredients,
-          });
-
-          return {
-            ...validatedRecipe,
-            cuisines: [],
-            diets: [],
-            allergies: [],
-            link: parsedPageInfo.url,
           };
         }, JSON.stringify(pageInfo));
+
+        const validatedRecipe = validate({
+          ...scrapedRecipe,
+        });
+
+        const recipe = {
+          ...validatedRecipe,
+          cuisines: [],
+          diets: [],
+          allergies: [],
+          link: pageInfo.url,
+        };
 
         console.log("saving new recipe...");
         console.log(recipe);
 
-        recipeRepository.create(recipe);
+        // recipeRepository.create(recipe);
 
         // send an email notification that a new website page has been scraped, and require
         // additional manual insertion of the remaining properties.
-
-        // add recipe to incomplete recipe list.
+        emailer.send({
+          from: config.email.user,
+          to: config.email.user,
+          subject: `recipe ${recipe.name} has been scraped.`,
+          text: "Now we just have to manuallly input the remaining criterias.",
+        });
       });
       // await browser.close();
     } catch (err) {
-      throw new Error(err);
+      // throw new Error(err);
+      console.log(err);
     }
   },
 });
@@ -162,7 +177,7 @@ interface JobScrape extends Scraper {
 }
 
 export const agendaJob = (agenda: Agenda) => ({
-  scrape: async ({ recipeRepository, pageInfo }: JobScrape) => {
+  scrape: async ({ recipeRepository, emailer, pageInfo }: JobScrape) => {
     try {
       // agenda.define(SCRAPE_RECIPE_DEFINITION, async () => {
       //   const scraper = recipeScraper({
@@ -177,6 +192,7 @@ export const agendaJob = (agenda: Agenda) => ({
 
       const scraper = recipeScraper({
         recipeRepository,
+        emailer,
       });
 
       await scraper.scrape(pageInfo);

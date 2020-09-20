@@ -9,7 +9,12 @@ if (!envFound) {
 
 export default {
   agenda: {
-    url: process.env.agendaUrl || "mongodb://admin:pass@127.0.0.1:27017/admin",
+    url: process.env.AGENDA_URL || "mongodb://admin:pass@127.0.0.1:27017/admin",
+  },
+  email: {
+    service: process.env.EMAILER_SERVICE || "gmail",
+    user: process.env.EMAILER_USER || "",
+    password: process.env.EMAILER_PASSWORD || "",
   },
   scrapedWebsiteInfo: [...scrapedWebsiteInfo],
 };
