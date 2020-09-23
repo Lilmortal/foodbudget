@@ -4,54 +4,59 @@ interface Job {
   agendaDatabaseUrl: string;
   createJob(
     interval: number | string,
-    job: (job: Agenda.Job, done: (err?: Error) => void) => void
+    job: (job: Agenda.Job, done: (err?: Error) => void) => void,
+    definition: string
   ): void;
   start(): void;
+  stop(): void;
 }
 
 export class AgendaJob implements Job {
   agendaDatabaseUrl: string;
-  #agenda?: Agenda;
-  #jobDefinition = 0;
+  #instance: Agenda;
+  #definitions: string[] = [];
   #jobs: (() => Promise<Agenda.Job>)[] = [];
-
-  // As of the time writing this code, native private methods are not supported.
-  // See https://github.com/tc39/proposal-private-methods for more details.
-  private get _instance() {
-    if (!this.#agenda) {
-      this.#agenda = new Agenda({
-        db: {
-          address: this.agendaDatabaseUrl,
-          options: { useUnifiedTopology: true },
-        },
-      });
-    }
-
-    return this.#agenda;
-  }
 
   constructor(agendaDatabaseUrl: string) {
     this.agendaDatabaseUrl = agendaDatabaseUrl;
+    this.#instance = new Agenda({
+      db: {
+        address: this.agendaDatabaseUrl,
+        options: { useUnifiedTopology: true },
+      },
+    });
   }
 
   createJob(
     interval: number | string,
-    job: (job: Agenda.Job, done: (err?: Error) => void) => void
+    job: (job: Agenda.Job, done: (err?: Error) => void) => void,
+    definition: string
   ) {
-    // Use a library to generate unique strings, but an incremented number is good enough.
-    const definition = this.#jobDefinition++;
+    this.#instance.define(definition, job);
 
-    this._instance.define(definition.toString(), job);
-
+    this.#definitions.push(definition);
     this.#jobs.push(
-      async () => await this._instance.every(interval, definition.toString())
+      async () => await this.#instance.every(interval, definition)
     );
   }
 
+  get jobNames() {
+    return this.#definitions;
+  }
+
   async start() {
-    await this._instance.start();
+    await this.#instance.start();
+
+    if (this.#jobs.length === 0) {
+      console.warn("There are no jobs currently running, have you added any?");
+    }
+
     this.#jobs.map(async (job) => {
       await job();
     });
+  }
+
+  async stop() {
+    await this.#instance.stop();
   }
 }

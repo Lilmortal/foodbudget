@@ -1,1 +1,3 @@
-export type { WebPageScrapedInfo as PageInfo } from "./RecipeScraper";
+export { RecipeScraperJob } from "./RecipeScraperJob";
+export type { WebPageScrapedRecipeInfo, DocumentNode } from "./Scrape";
+export { ScraperError } from "./ScraperError";

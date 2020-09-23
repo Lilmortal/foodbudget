@@ -1,9 +1,10 @@
+import Agenda from "agenda";
 import config from "../config";
 
 import { RecipeRepository } from "../repository/recipe";
 import { Emailer } from "../services/email";
-import { AgendaJob } from "./agendaJob";
-import { RecipeScraper } from "./scraper/RecipeScraper";
+import { AgendaJob, AgendaJobError } from "./agendaJob";
+import { RecipeScraperJob } from "./scraper";
 
 interface Jobs {
   recipeRepository: RecipeRepository;
@@ -11,14 +12,19 @@ interface Jobs {
 }
 
 const jobs = async ({ recipeRepository, emailer }: Jobs) => {
-  const agenda = new AgendaJob(config.agenda.url);
+  const recipeScraper = new RecipeScraperJob({ recipeRepository, emailer });
 
-  const recipeScraper = new RecipeScraper({ recipeRepository, emailer });
   const recipeScrapeJob = async () =>
-    await recipeScraper.scrape(config.scrapedWebsiteInfo);
+    recipeScraper.scrape(config.scrapedWebsiteInfo);
 
-  await agenda.createJob("10 seconds", recipeScrapeJob);
-  await agenda.start();
+  try {
+    const agenda = new AgendaJob(config.agenda.url);
+
+    await agenda.createJob("10 seconds", recipeScrapeJob, "scrape recipe");
+    await agenda.start();
+  } catch (err) {
+    throw new AgendaJobError(err);
+  }
 };
 
 export default jobs;

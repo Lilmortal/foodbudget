@@ -1,8 +1,7 @@
 import nodeMailer from "nodemailer";
 import { default as MailTransporter } from "nodemailer/lib/mailer";
-import { EmailError } from "./EmailError";
 
-export interface MailAuth {
+interface MailAuth {
   user: string;
   pass: string;
 }
@@ -62,16 +61,12 @@ export class Emailer implements Mailer {
   }
 
   async send({ from, to, subject, text, html }: Mail) {
-    try {
-      await this.#transporter.sendMail({
-        from,
-        to,
-        subject,
-        text,
-        html,
-      });
-    } catch (err) {
-      throw new EmailError(err);
-    }
+    await this.#transporter.sendMail({
+      from,
+      to,
+      subject,
+      text,
+      html,
+    });
   }
 }
