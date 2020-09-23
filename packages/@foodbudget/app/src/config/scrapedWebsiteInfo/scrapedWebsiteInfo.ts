@@ -1,4 +1,4 @@
-import { PageInfo } from "../../jobs/recipeScraper";
+import { PageInfo } from "../../jobs/scraper";
 
 const pageInfo: PageInfo[] = [
   {

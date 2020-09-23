@@ -1,4 +1,7 @@
-export type ErrorType = "RECIPE_CREATE_FAILED" | "EMAIL_ERROR";
+export type ErrorType =
+  | "RECIPE_CREATE_FAILED"
+  | "EMAIL_ERROR"
+  | "SCRAPER_ERROR";
 
 export class StatusError extends Error {
   status: number;

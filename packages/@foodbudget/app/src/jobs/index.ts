@@ -1,24 +1,24 @@
 import config from "../config";
 
-import { agendaJob, recipeScraperAgenda } from "./recipeScraper";
-import { PrismaClient } from "@prisma/client";
 import { RecipeRepository } from "../repository/recipe";
-import { EmailerApi } from "../services/email";
+import { Emailer } from "../services/email";
+import { AgendaJob } from "./agendaJob";
+import { RecipeScraper } from "./scraper/RecipeScraper";
 
-export interface JobsConnections {
+interface Jobs {
   recipeRepository: RecipeRepository;
-  emailer: EmailerApi;
+  emailer: Emailer;
 }
 
-const jobs = ({ recipeRepository, emailer }: JobsConnections) => {
-  const agenda = recipeScraperAgenda(config.agenda.url);
-  const recipeScraper = agendaJob(agenda);
+const jobs = async ({ recipeRepository, emailer }: Jobs) => {
+  const agenda = new AgendaJob(config.agenda.url);
 
-  recipeScraper.scrape({
-    recipeRepository,
-    emailer,
-    pageInfo: config.scrapedWebsiteInfo,
-  });
+  const recipeScraper = new RecipeScraper({ recipeRepository, emailer });
+  const recipeScrapeJob = async () =>
+    await recipeScraper.scrape(config.scrapedWebsiteInfo);
+
+  await agenda.createJob("10 seconds", recipeScrapeJob);
+  await agenda.start();
 };
 
 export default jobs;

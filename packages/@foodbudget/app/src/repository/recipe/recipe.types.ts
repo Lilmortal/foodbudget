@@ -1,5 +1,3 @@
-import { Repository } from "../types";
-
 export type Cuisine =
   | "American"
   | "Italian"
@@ -59,5 +57,3 @@ export interface Recipe {
   diets: Diet[];
   allergies: Allergy[];
 }
-
-export interface RecipeRepository extends Repository<Recipe> {}
