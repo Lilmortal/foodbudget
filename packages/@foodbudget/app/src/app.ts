@@ -1,23 +1,55 @@
 import { PrismaClient } from "@prisma/client";
 import config from "./config";
 import jobs from "./jobs";
+import { StatusError } from "./libs/errors";
+import { RecipeCreateFailedError } from "./repository/libs/errors";
 import { createRecipeRepository } from "./repository/recipe";
-import { Emailer, Service } from "./services/email";
+import { Emailer, Mail, Service } from "./services/email";
 
-(async () => {
+const main = async (emailer: Emailer) => {
   const prisma = new PrismaClient({ log: ["query"] });
 
-  try {
-    const recipeRepository = createRecipeRepository(prisma);
+  const recipeRepository = createRecipeRepository(prisma);
 
-    const emailer = Emailer({
+  try {
+    jobs({ recipeRepository, emailer });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
+const isStatusError = (err: any): err is StatusError =>
+  err.status !== undefined;
+
+const handleError = (emailer: Emailer, err: any) => {
+  if (isStatusError(err)) {
+    const mail: Pick<Mail, "from" | "to"> = {
+      from: config.email.user,
+      to: config.email.user,
+    };
+
+    if (err instanceof RecipeCreateFailedError) {
+      console.log("Failed to save the recipe: ", err.message);
+      emailer.send({ ...mail, subject: "Error", text: "" });
+    }
+  } else {
+    console.error("Error", err);
+  }
+};
+
+(async () => {
+  try {
+    const emailer = new Emailer({
       service: config.email.service as Service,
       auth: { user: config.email.user, pass: config.email.password },
     });
-    jobs({ recipeRepository, emailer });
+
+    try {
+      await main(emailer);
+    } catch (err) {
+      handleError(emailer, err);
+    }
   } catch (err) {
-    console.log(err);
-  } finally {
-    await prisma.$disconnect();
+    console.log("Failed to create email service", err);
   }
 })();

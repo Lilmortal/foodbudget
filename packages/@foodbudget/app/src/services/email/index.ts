@@ -1,2 +1,2 @@
-export { Emailer } from "./emailer";
-export type { EmailerApi, Service } from "./emailer";
+export { Emailer } from "./Emailer";
+export type { Service, Mail } from "./Emailer";

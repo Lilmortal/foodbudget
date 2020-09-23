@@ -1,6 +1,7 @@
 import { Repository } from "../types";
 import { Recipe, RecipeRepository } from "./recipe.types";
 import { PrismaClient } from "@prisma/client";
+import { RecipeCreateFailedError } from "../libs/errors";
 
 export const createRecipeRepository = (
   prisma: PrismaClient
@@ -18,7 +19,7 @@ export const createRecipeRepository = (
           },
         });
       } catch (err) {
-        throw new Error(err);
+        throw new RecipeCreateFailedError(err);
       }
       return true;
     },

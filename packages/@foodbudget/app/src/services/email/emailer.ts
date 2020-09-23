@@ -1,21 +1,28 @@
 import nodeMailer from "nodemailer";
+import { default as MailTransporter } from "nodemailer/lib/mailer";
 
-export interface EmailerAuth {
+export interface MailAuth {
   user: string;
   pass: string;
 }
 
 export type Service = "gmail";
 
-export interface EmailerConnections {
+interface MailerConnections {
   service: Service;
   host?: string;
   port?: number;
   secure?: boolean;
-  auth: EmailerAuth;
+  auth: MailAuth;
 }
 
-export interface EmailerSendInfo {
+interface MailerService {
+  send(mail: Mail): Promise<void>;
+}
+
+interface Mailer extends MailerConnections, MailerService {}
+
+export interface Mail {
   from: string;
   to: string | string[];
   subject: string;
@@ -23,35 +30,44 @@ export interface EmailerSendInfo {
   html?: string;
 }
 
-export interface EmailerApi {
-  send(sendInfo: EmailerSendInfo): Promise<void>;
-}
+export class Emailer implements Mailer {
+  service: Service;
+  host?: string;
+  port: number;
+  secure: boolean;
+  auth: MailAuth;
+  #transporter: MailTransporter;
 
-export const Emailer = ({
-  service,
-  host,
-  port = 587,
-  secure = false,
-  auth,
-}: EmailerConnections): EmailerApi => {
-  const transporter = nodeMailer.createTransport({
+  constructor({
     service,
     host,
-    port,
-    secure,
+    port = 587,
+    secure = false,
     auth,
-  });
+  }: MailerConnections) {
+    this.service = service;
+    this.host = host;
+    this.port = port;
+    this.secure = secure;
+    this.auth = auth;
 
-  return {
-    send: async ({ from, to, subject, text, html }: EmailerSendInfo) => {
-      await transporter.sendMail({
-        from,
-        to,
-        subject,
-        text,
-        html,
-      });
-      console.log("Message sent");
-    },
-  };
-};
+    this.#transporter = nodeMailer.createTransport({
+      service,
+      host,
+      port,
+      secure,
+      auth,
+    });
+  }
+
+  async send({ from, to, subject, text, html }: Mail) {
+    await this.#transporter.sendMail({
+      from,
+      to,
+      subject,
+      text,
+      html,
+    });
+    console.log("Message sent");
+  }
+}
