@@ -6,6 +6,7 @@ import { StatusError } from "./libs/errors";
 import { RecipeCreateFailedError } from "./repository/libs/errors";
 import { RecipeRepository } from "./repository/recipe";
 import { Emailer, Mail, Service } from "./services/email";
+import { EmailError } from "./services/email/EmailError";
 
 const main = async (emailer: Emailer) => {
   const prisma = new PrismaClient({ log: ["query"] });
@@ -22,6 +23,7 @@ const main = async (emailer: Emailer) => {
 const isStatusError = (err: any): err is StatusError =>
   err.status !== undefined;
 
+// @TODO: Work on this...
 const handleError = (emailer: Emailer, err: any) => {
   if (isStatusError(err)) {
     const mail: Pick<Mail, "from" | "to"> = {
@@ -39,7 +41,7 @@ const handleError = (emailer: Emailer, err: any) => {
       emailer.send({ ...mail, subject: "Error", text: "" });
     }
   } else {
-    console.error("Error", err);
+    throw new StatusError(500, err);
   }
 };
 
@@ -56,6 +58,10 @@ const handleError = (emailer: Emailer, err: any) => {
       handleError(emailer, err);
     }
   } catch (err) {
-    console.log("Failed to create email service", err);
+    if (err instanceof EmailError) {
+      console.log("Failed to create email service", err);
+    } else {
+      console.log("Generic error", err);
+    }
   }
 })();

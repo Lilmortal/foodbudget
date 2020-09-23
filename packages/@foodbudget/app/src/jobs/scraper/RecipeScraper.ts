@@ -24,6 +24,7 @@ interface ScraperService {
   scrape(webPageScrapedInfo: WebPageScrapedInfo[]): Promise<void>;
 }
 
+// @TODO: Think of a better name...
 interface ScraperConnections {
   recipeRepository: RecipeRepository;
   emailer: Emailer;
