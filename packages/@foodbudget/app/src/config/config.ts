@@ -28,6 +28,9 @@ const config: Config = {
     password: process.env.EMAILER_PASSWORD || "",
   },
   scrapedWebsiteInfo: [...scrapedWebsiteInfo],
+  headlessBrowser: {
+    retries: Number(process.env.HEADLESS_BROWSER_RETRIES) || 3,
+  },
 };
 
 export default config;

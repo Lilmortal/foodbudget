@@ -11,8 +11,13 @@ export interface EmailConfig {
   password: string;
 }
 
+export interface HeadlessBrowserConfig {
+  retries: number;
+}
+
 export interface Config {
   agenda: AgendaConfig;
   email: EmailConfig;
   scrapedWebsiteInfo: WebPageScrapedRecipeInfo[];
+  headlessBrowser: HeadlessBrowserConfig;
 }

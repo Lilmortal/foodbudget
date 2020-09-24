@@ -45,23 +45,18 @@ export class RecipesJob implements ScraperJob {
 
   async scrape(
     scrapedWebsiteInfo: WebPageScrapedRecipeInfo[],
-    retries?: number
+    retries: number
   ) {
     let recipes: Recipe[];
     try {
       recipes = await Scrape.recipe(scrapedWebsiteInfo);
     } catch (err) {
       if (err instanceof puppeteerErrors.TimeoutError) {
-        // @TODO put retries in config
-        await this.scrape(
-          scrapedWebsiteInfo,
-          retries === undefined ? 3 : retries--
-        );
-
-        if (retries === 0) {
+        if (retries <= 0) {
           throw new ScraperError(err.message);
         }
 
+        await this.scrape(scrapedWebsiteInfo, retries--);
         return;
       }
       throw new ScraperError(err);
@@ -97,6 +92,9 @@ export class RecipesJob implements ScraperJob {
   }
 
   async start(config: Config) {
-    await this.scrape(config.scrapedWebsiteInfo);
+    await this.scrape(
+      config.scrapedWebsiteInfo,
+      config.headlessBrowser.retries
+    );
   }
 }

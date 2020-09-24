@@ -58,12 +58,12 @@ export class Scrape {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
+    // This enables us to read any console log being displayed in the puppeteer browser in our terminal.
+    page.on("console", (msg) => console.log(msg.text()));
+
     const recipes: Recipe[] = await Promise.all(
       webPageScrapedInfos.map(async (pageInfo) => {
         await page.goto(pageInfo.url);
-
-        // This enables us to read any console log being displayed in the puppeteer browser in our terminal.
-        page.on("console", (msg) => console.log(msg.text()));
 
         // We pass the page info as a serialized JSON object into the puppeteer browser.
         const scrapedRecipe = await page.evaluate(async (pageInfo: string) => {
