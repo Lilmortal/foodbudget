@@ -1,67 +1,19 @@
 import puppeteer from "puppeteer";
 import { Recipe } from "../../repository/recipe";
-import { validate } from "./RecipeScraper.utils";
-import { ScraperError } from "./ScraperError";
-
-export interface DocumentNode {
-  /**
-   * The class name of the document node. e.g. ".class1 .class2"
-   */
-  class: string;
-  /**
-   * If specified, returns the indexed document node. If omitted, return an array of all filtered document nodes.
-   */
-  index?: number;
-  /**
-   * If specified, substring the scraped string.
-   */
-  substring?: {
-    /**
-     * Starting position.
-     */
-    start: number;
-    /**
-     * Ending position.
-     */
-    end?: number;
-  };
-}
-
-// @TODO: Think of a better name...
-export interface WebPageScrapedRecipeInfo {
-  /**
-   * The URL of the scraped web page.
-   */
-  url: string;
-  /**
-   * The selector for prep time.
-   */
-  prepTimeSelector: DocumentNode;
-  /**
-   * The selector for servings.
-   */
-  servingsSelector: DocumentNode;
-  /**
-   * The selector for the recipe name.
-   */
-  recipeNameSelector: DocumentNode;
-  /**
-   * The selector for a list of ingredients.
-   */
-  ingredientsSelector: DocumentNode;
-}
+import { ScrapedRecipe } from "../recipes/RecipesJob.types";
+import { DocumentNode, WebPageScrapedRecipeInfo } from "./Scrape.types";
 
 export class Scrape {
   static async recipe(
     webPageScrapedInfos: WebPageScrapedRecipeInfo[]
-  ): Promise<Recipe[]> {
+  ): Promise<ScrapedRecipe[]> {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
     // This enables us to read any console log being displayed in the puppeteer browser in our terminal.
     page.on("console", (msg) => console.log(msg.text()));
 
-    const recipes: Recipe[] = await Promise.all(
+    const scrapedRecipes: ScrapedRecipe[] = await Promise.all(
       webPageScrapedInfos.map(async (pageInfo) => {
         await page.goto(pageInfo.url);
 
@@ -108,26 +60,15 @@ export class Scrape {
             servings,
             name,
             ingredients,
+            link: parsedPageInfo.url,
           };
         }, JSON.stringify(pageInfo));
 
-        const validatedRecipe = validate({
-          ...scrapedRecipe,
-        });
-
-        const recipe: Recipe = {
-          ...validatedRecipe,
-          cuisines: [],
-          diets: [],
-          allergies: [],
-          link: pageInfo.url,
-        };
-
-        return recipe;
+        return scrapedRecipe;
       })
     );
     await browser.close();
 
-    return recipes;
+    return scrapedRecipes;
   }
 }

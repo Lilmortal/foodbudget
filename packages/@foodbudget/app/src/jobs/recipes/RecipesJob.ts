@@ -3,36 +3,11 @@ import config, { Config } from "../../config";
 import { Recipe, RecipeRepository } from "../../repository/recipe";
 import { RepositoryError } from "../../repository/RepositoryError";
 import { Emailer, EmailError } from "../../services/email";
-import { Scrape, WebPageScrapedRecipeInfo } from "../scraper/Scrape";
+import { WebPageScrapedRecipeInfo } from "../scraper";
+import { Scrape } from "../scraper/Scrape";
 import { ScraperError } from "../scraper/ScraperError";
-import { Job } from "../shared/Job.type";
-
-// @TODO: Think of a better name...
-export interface ScraperConnections {
-  /**
-   * Repository used to save the Recipe that is been scraped.
-   */
-  recipeRepository: RecipeRepository;
-  /**
-   * Emailer used to send a confirmation email that recipes has been scraped.
-   */
-  emailer: Emailer;
-}
-
-interface ScraperService {
-  /**
-   * Given information like the document elements etc, use it to scrape the recipe website.
-   *
-   * @param scrapedWebsiteInfo Recipe website document elements used to scrape relevant information.
-   * @param retries An optional number used to signify how many attempts can be made to connect to puppeteer.
-   */
-  scrape(
-    scrapedWebsiteInfo: WebPageScrapedRecipeInfo[],
-    retries?: number
-  ): Promise<void>;
-}
-
-interface ScraperJob extends ScraperConnections, ScraperService, Job {}
+import { ScraperConnections, ScraperJob } from "./RecipesJob.types";
+import { validate } from "./RecipesJob.utils";
 
 export class RecipesJob implements ScraperJob {
   recipeRepository: RecipeRepository;
@@ -47,9 +22,22 @@ export class RecipesJob implements ScraperJob {
     scrapedWebsiteInfo: WebPageScrapedRecipeInfo[],
     retries: number
   ) {
-    let recipes: Recipe[];
+    let recipes: Recipe[] = [];
     try {
-      recipes = await Scrape.recipe(scrapedWebsiteInfo);
+      const scrapedRecipes = await Scrape.recipe(scrapedWebsiteInfo);
+
+      const validatedRecipe = validate(scrapedRecipes);
+
+      if (Array.isArray(validatedRecipe)) {
+        recipes = recipes.concat(
+          validatedRecipe.map((recipe) => ({
+            ...recipe,
+            cuisines: [],
+            diets: [],
+            allergies: [],
+          }))
+        );
+      }
     } catch (err) {
       if (err instanceof puppeteerErrors.TimeoutError) {
         if (retries <= 0) {
@@ -66,7 +54,7 @@ export class RecipesJob implements ScraperJob {
     console.log(recipes);
 
     try {
-      await this.recipeRepository.create(recipes[0]);
+      await this.recipeRepository.create(recipes);
     } catch (err) {
       throw new RepositoryError(err);
     }

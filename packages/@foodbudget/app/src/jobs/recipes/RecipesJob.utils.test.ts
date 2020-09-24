@@ -1,22 +1,16 @@
 import { Recipe } from "../../repository/recipe";
-import { validate } from "./RecipeScraper.utils";
-import { ScraperError } from "./ScraperError";
+import { ScraperError } from "../scraper";
+import { ScrapedRecipe } from "./RecipesJob.types";
+import { validate } from "./RecipesJob.utils";
 
 const getValidRecipePageInfo = (
-  recipePageInfo?: Partial<
-    Record<
-      keyof Pick<Recipe, "prepTime" | "servings" | "name" | "ingredients">,
-      string | string[]
-    >
-  >
-): Record<
-  keyof Pick<Recipe, "prepTime" | "servings" | "name" | "ingredients">,
-  string | string[]
-> => ({
+  recipePageInfo?: Partial<ScrapedRecipe>
+): ScrapedRecipe => ({
   prepTime: "5 min",
   servings: "4",
   name: "Recipe name",
   ingredients: ["4 cups of water"],
+  link: "link",
   ...recipePageInfo,
 });
 
