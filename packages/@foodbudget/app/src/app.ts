@@ -47,15 +47,17 @@ const sendErrorEmail = (emailer: Emailer, subject: string, text: string) => {
 const handleError = (emailer: Emailer, err: any) => {
   if (isStatusError(err)) {
     if (err instanceof ScraperError) {
-      console.log("Failed to scrape the website: ", err.message);
-      sendErrorEmail(emailer, "Error", "");
+      console.log("Failed to scrape the website: \n", err.message);
+      // sendErrorEmail(emailer, "Error", "");
     }
 
     if (err instanceof AgendaJobError) {
+      console.log("Job ", err.message);
       // @TODO
     }
 
     if (err instanceof RepositoryError) {
+      console.log("Repository: ", err.message);
       // @TODO
     }
   } else {
@@ -80,6 +82,7 @@ const handleError = (emailer: Emailer, err: any) => {
       console.log("Failed to create email service", err);
     } else {
       console.log("Generic error", err);
+      throw new StatusError(500, err);
     }
   }
 })();

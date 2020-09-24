@@ -1,3 +1,3 @@
 export interface Repository<T> {
-  create: (obj: T) => void;
+  create(obj: T | T[]): Promise<void>;
 }

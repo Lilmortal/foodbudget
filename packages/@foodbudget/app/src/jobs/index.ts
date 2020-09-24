@@ -13,9 +13,8 @@ interface Jobs {
 
 const jobs = async ({ recipeRepository, emailer }: Jobs) => {
   const recipeScraper = new RecipeScraperJob({ recipeRepository, emailer });
-
   const recipeScrapeJob = async () =>
-    recipeScraper.scrape(config.scrapedWebsiteInfo);
+    await recipeScraper.scrape(config.scrapedWebsiteInfo);
 
   try {
     const agenda = new AgendaJob(config.agenda.url);

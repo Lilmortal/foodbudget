@@ -1,3 +1,4 @@
+import { errors as puppeteerErrors } from "puppeteer";
 import config from "../../config";
 import { Recipe, RecipeRepository } from "../../repository/recipe";
 import { RepositoryError } from "../../repository/RepositoryError";
@@ -12,7 +13,10 @@ export interface ScraperConnections {
 }
 
 interface ScraperService {
-  scrape(scrapedWebsiteInfo: WebPageScrapedRecipeInfo[]): Promise<void>;
+  scrape(
+    scrapedWebsiteInfo: WebPageScrapedRecipeInfo[],
+    retries?: number
+  ): Promise<void>;
 }
 
 interface ScraperJob extends ScraperConnections, ScraperService {}
@@ -26,23 +30,36 @@ export class RecipeScraperJob implements ScraperJob {
     this.emailer = emailer;
   }
 
-  async scrape(scrapedWebsiteInfo: WebPageScrapedRecipeInfo[]) {
-    let recipe: Recipe | undefined;
+  async scrape(
+    scrapedWebsiteInfo: WebPageScrapedRecipeInfo[],
+    retries?: number
+  ) {
+    let recipes: Recipe[];
     try {
-      recipe = await Scrape.recipe(scrapedWebsiteInfo);
-
-      if (recipe === undefined) {
-        throw new Error("Failed to scrape recipe.");
-      }
+      recipes = await Scrape.recipe(scrapedWebsiteInfo);
     } catch (err) {
+      if (err instanceof puppeteerErrors.TimeoutError) {
+        // @TODO put retries in config
+        await this.scrape(
+          scrapedWebsiteInfo,
+          retries === undefined ? 3 : retries--
+        );
+
+        if (retries === 0) {
+          throw new ScraperError(err.message);
+        }
+
+        return;
+      }
       throw new ScraperError(err);
     }
 
-    console.log("saving new recipe...");
-    console.log(recipe);
+    console.log("saving new recipes...");
+    console.log(recipes);
 
     try {
-      this.recipeRepository.create(recipe);
+      this.recipeRepository.create(recipes[0]);
+      console.log("recipe saved.");
     } catch (err) {
       throw new RepositoryError(err);
     }
@@ -50,12 +67,18 @@ export class RecipeScraperJob implements ScraperJob {
     // send an email notification that a new website page has been scraped, and require
     // additional manual insertion of the remaining properties.
     try {
-      this.emailer.send({
-        from: config.email.user,
-        to: config.email.user,
-        subject: `recipe ${recipe.name} has been scraped.`,
-        text: "Now we just have to manuallly input the remaining criterias.",
-      });
+      await Promise.all(
+        recipes.map((recipe) => {
+          this.emailer.send({
+            from: config.email.user,
+            to: config.email.user,
+            subject: `recipe ${recipe.name} has been scraped.`,
+            text:
+              "Now we just have to manuallly input the remaining criterias.",
+          });
+        })
+      );
+      console.log("email sent.");
     } catch (err) {
       throw new EmailError(err);
     }

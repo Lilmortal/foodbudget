@@ -1,4 +1,5 @@
 import { Recipe } from "../../repository/recipe";
+import { ScraperError } from "./ScraperError";
 
 export const validate = (
   pageInfo: Record<
@@ -47,10 +48,7 @@ export const validate = (
   }
 
   if (emptyResults.length > 0) {
-    // @TODO send an email notification to warn about missing properties.
-    // The problem is there is no reference to emailer inside puppeteer
-    // browser, need to think about this...
-    console.log(emptyResults);
+    throw new ScraperError(emptyResults.join("\n"));
   }
 
   return validatedPageInfo;
