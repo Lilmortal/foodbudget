@@ -25,7 +25,6 @@
   "scripts": {
     "start": "lerna run start --stream --parallel",
     "test": "lerna run test --stream --parallel",
-    "test:watch": "lerna run test --stream --parallel --watch",
     "release": "standard-version -m 'chore(release): [ci skip] publish'"
   },
   "commitlint": {

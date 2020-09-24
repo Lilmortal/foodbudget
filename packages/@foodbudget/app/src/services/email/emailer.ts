@@ -1,34 +1,12 @@
 import nodeMailer from "nodemailer";
 import { default as MailTransporter } from "nodemailer/lib/mailer";
-
-interface MailAuth {
-  user: string;
-  pass: string;
-}
-
-export type Service = "gmail";
-
-interface MailerConnections {
-  service: Service;
-  host?: string;
-  port?: number;
-  secure?: boolean;
-  auth: MailAuth;
-}
-
-interface MailerService {
-  send(mail: Mail): Promise<void>;
-}
-
-interface Mailer extends MailerConnections, MailerService {}
-
-export interface Mail {
-  from: string;
-  to: string | string[];
-  subject: string;
-  text: string;
-  html?: string;
-}
+import {
+  Service,
+  Mailer,
+  MailAuth,
+  MailerConnections,
+  Mail,
+} from "./Emailer.types";
 
 export class Emailer implements Mailer {
   service: Service;

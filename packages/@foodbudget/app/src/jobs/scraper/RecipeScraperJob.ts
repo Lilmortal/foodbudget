@@ -8,11 +8,23 @@ import { ScraperError } from "./ScraperError";
 
 // @TODO: Think of a better name...
 export interface ScraperConnections {
+  /**
+   * Repository used to save the Recipe that is been scraped.
+   */
   recipeRepository: RecipeRepository;
+  /**
+   * Emailer used to send a confirmation email that recipes has been scraped.
+   */
   emailer: Emailer;
 }
 
 interface ScraperService {
+  /**
+   * Given information like the document elements etc, use it to scrape the recipe website.
+   *
+   * @param scrapedWebsiteInfo Recipe website document elements used to scrape relevant information.
+   * @param retries An optional number used to signify how many attempts can be made to connect to puppeteer.
+   */
   scrape(
     scrapedWebsiteInfo: WebPageScrapedRecipeInfo[],
     retries?: number

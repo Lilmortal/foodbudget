@@ -2,7 +2,7 @@ import { Recipe } from "../../repository/recipe";
 import { ScraperError } from "./ScraperError";
 
 export const validate = (
-  pageInfo: Record<
+  recipePageInfo: Record<
     keyof Pick<Recipe, "prepTime" | "servings" | "name" | "ingredients">,
     string | string[]
   >
@@ -19,32 +19,36 @@ export const validate = (
     ingredients: [],
   };
 
-  if (pageInfo.prepTime && !Array.isArray(pageInfo.prepTime)) {
-    validatedPageInfo.prepTime = pageInfo.prepTime;
+  if (recipePageInfo.prepTime && !Array.isArray(recipePageInfo.prepTime)) {
+    validatedPageInfo.prepTime = recipePageInfo.prepTime;
   } else {
     emptyResults.push("prepTime must be a non-empty string.");
   }
 
   if (
-    pageInfo.servings &&
-    !Array.isArray(pageInfo.servings) &&
-    !isNaN(parseInt(pageInfo.servings))
+    recipePageInfo.servings &&
+    !Array.isArray(recipePageInfo.servings) &&
+    !isNaN(Number(recipePageInfo.servings))
   ) {
-    validatedPageInfo.servings = parseInt(pageInfo.servings);
+    validatedPageInfo.servings = Number(recipePageInfo.servings);
   } else {
     emptyResults.push("servings must be a non-empty number.");
   }
 
-  if (pageInfo.name && !Array.isArray(pageInfo.name)) {
-    validatedPageInfo.name = pageInfo.name;
+  if (recipePageInfo.name && !Array.isArray(recipePageInfo.name)) {
+    validatedPageInfo.name = recipePageInfo.name;
   } else {
     emptyResults.push("name must be a non-empty string.");
   }
 
-  if (pageInfo.ingredients && Array.isArray(pageInfo.ingredients)) {
-    validatedPageInfo.ingredients = pageInfo.ingredients;
+  if (
+    recipePageInfo.ingredients &&
+    Array.isArray(recipePageInfo.ingredients) &&
+    recipePageInfo.ingredients.length > 0
+  ) {
+    validatedPageInfo.ingredients = recipePageInfo.ingredients;
   } else {
-    emptyResults.push("ingredients must be a non-empty string.");
+    emptyResults.push("ingredients must be a non-empty array.");
   }
 
   if (emptyResults.length > 0) {

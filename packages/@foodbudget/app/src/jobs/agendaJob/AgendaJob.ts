@@ -1,13 +1,30 @@
 import Agenda from "agenda";
 
 interface Job {
+  /**
+   * Database URL used by Agenda, currently only supporting MongoDB.
+   */
   agendaDatabaseUrl: string;
+  /**
+   * Create a job that will be triggered per interval which is uniquely
+   * defined by the definition.
+   *
+   * @param interval the time period between each job runs.
+   * @param job a function that will be executed per interval.
+   * @param definition an unique string identifier to define this job.
+   */
   createJob(
     interval: number | string,
     job: (job: Agenda.Job, done: (err?: Error) => void) => void,
     definition: string
   ): void;
+  /**
+   * Start the Agenda. Ideally run this after creating one or more jobs.
+   */
   start(): void;
+  /**
+   * Stop the Agenda.
+   */
   stop(): void;
 }
 
@@ -41,7 +58,6 @@ export class AgendaJob implements Job {
 
     //catches uncaught exceptions
     process.on("uncaughtException", this.stop);
-    process.exit(0);
   }
 
   createJob(
@@ -57,8 +73,12 @@ export class AgendaJob implements Job {
     );
   }
 
+  get instance() {
+    return this.#instance;
+  }
+
   get jobNames() {
-    return this.#definitions;
+    return this.#jobs;
   }
 
   async start() {
@@ -68,9 +88,11 @@ export class AgendaJob implements Job {
       console.warn("There are no jobs currently running, have you added any?");
     }
 
-    this.#jobs.map(async (job) => {
-      await job();
-    });
+    await Promise.all(
+      this.#jobs.map(async (job) => {
+        await job();
+      })
+    );
 
     await this.handleGracefulShutDown();
   }
