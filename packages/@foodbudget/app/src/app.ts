@@ -57,7 +57,8 @@ const handleError = (emailer: Emailer, err: any) => {
     }
 
     if (err instanceof RepositoryError) {
-      console.log("Repository: ", err.message);
+      console.log("Repository: ");
+      console.log(err.message);
       // @TODO
     }
   } else {

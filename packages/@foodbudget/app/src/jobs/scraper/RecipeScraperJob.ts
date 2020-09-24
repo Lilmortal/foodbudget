@@ -58,8 +58,7 @@ export class RecipeScraperJob implements ScraperJob {
     console.log(recipes);
 
     try {
-      this.recipeRepository.create(recipes[0]);
-      console.log("recipe saved.");
+      await this.recipeRepository.create(recipes[0]);
     } catch (err) {
       throw new RepositoryError(err);
     }

@@ -27,6 +27,23 @@ export class AgendaJob implements Job {
     });
   }
 
+  async handleGracefulShutDown() {
+    process.on("exit", this.stop);
+
+    //catches ctrl+c event
+    process.on("SIGINT", this.stop);
+
+    process.on("SIGTERM", this.stop);
+
+    // catches "kill pid" (for example: nodemon restart)
+    process.on("SIGUSR1", this.stop);
+    process.on("SIGUSR2", this.stop);
+
+    //catches uncaught exceptions
+    process.on("uncaughtException", this.stop);
+    process.exit(0);
+  }
+
   createJob(
     interval: number | string,
     job: (job: Agenda.Job, done: (err?: Error) => void) => void,
@@ -54,6 +71,8 @@ export class AgendaJob implements Job {
     this.#jobs.map(async (job) => {
       await job();
     });
+
+    await this.handleGracefulShutDown();
   }
 
   async stop() {
