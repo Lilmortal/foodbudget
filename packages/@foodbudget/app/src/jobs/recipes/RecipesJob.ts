@@ -1,10 +1,11 @@
 import { errors as puppeteerErrors } from "puppeteer";
-import config from "../../config";
+import config, { Config } from "../../config";
 import { Recipe, RecipeRepository } from "../../repository/recipe";
 import { RepositoryError } from "../../repository/RepositoryError";
 import { Emailer, EmailError } from "../../services/email";
-import { Scrape, WebPageScrapedRecipeInfo } from "./Scrape";
-import { ScraperError } from "./ScraperError";
+import { Scrape, WebPageScrapedRecipeInfo } from "../scraper/Scrape";
+import { ScraperError } from "../scraper/ScraperError";
+import { Job } from "../shared/Job.type";
 
 // @TODO: Think of a better name...
 export interface ScraperConnections {
@@ -31,9 +32,9 @@ interface ScraperService {
   ): Promise<void>;
 }
 
-interface ScraperJob extends ScraperConnections, ScraperService {}
+interface ScraperJob extends ScraperConnections, ScraperService, Job {}
 
-export class RecipeScraperJob implements ScraperJob {
+export class RecipesJob implements ScraperJob {
   recipeRepository: RecipeRepository;
   emailer: Emailer;
 
@@ -93,5 +94,9 @@ export class RecipeScraperJob implements ScraperJob {
     } catch (err) {
       throw new EmailError(err);
     }
+  }
+
+  async start(config: Config) {
+    await this.scrape(config.scrapedWebsiteInfo);
   }
 }

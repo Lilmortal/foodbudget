@@ -4,7 +4,7 @@ import config from "../config";
 import { RecipeRepository } from "../repository/recipe";
 import { Emailer } from "../services/email";
 import { AgendaJob, AgendaJobError } from "./agendaJob";
-import { RecipeScraperJob } from "./scraper";
+import { RecipesJob } from "./recipes";
 
 interface Jobs {
   recipeRepository: RecipeRepository;
@@ -12,14 +12,12 @@ interface Jobs {
 }
 
 const jobs = async ({ recipeRepository, emailer }: Jobs) => {
-  const recipeScraper = new RecipeScraperJob({ recipeRepository, emailer });
-  const recipeScrapeJob = async () =>
-    await recipeScraper.scrape(config.scrapedWebsiteInfo);
+  const recipesJob = new RecipesJob({ recipeRepository, emailer });
 
   try {
     const agenda = new AgendaJob(config.agenda.url);
 
-    await agenda.createJob("10 seconds", recipeScrapeJob, "scrape recipe");
+    await agenda.createJob("10 seconds", recipesJob, "scrape recipe");
     await agenda.start();
   } catch (err) {
     throw new AgendaJobError(err);

@@ -1,6 +1,9 @@
 import Agenda from "agenda";
+import config from "../../config";
+import { Job } from "../shared/Job.type";
 
-interface Job {
+// @TODO: Think of a better name...
+interface AgendaService {
   /**
    * Database URL used by Agenda, currently only supporting MongoDB.
    */
@@ -15,7 +18,7 @@ interface Job {
    */
   createJob(
     interval: number | string,
-    job: (job: Agenda.Job, done: (err?: Error) => void) => void,
+    job: Job,
     definition: string
   ): void;
   /**
@@ -28,7 +31,7 @@ interface Job {
   stop(): void;
 }
 
-export class AgendaJob implements Job {
+export class AgendaJob implements AgendaService {
   agendaDatabaseUrl: string;
   #instance: Agenda;
   #definitions: string[] = [];
@@ -44,6 +47,8 @@ export class AgendaJob implements Job {
     });
   }
 
+  // @TODO Terminating the application ungracefully does not inform Agenda to restart
+  // its jobs queue, this is not working, look into this...
   async handleGracefulShutDown() {
     process.on("exit", this.stop);
 
@@ -62,10 +67,10 @@ export class AgendaJob implements Job {
 
   createJob(
     interval: number | string,
-    job: (job: Agenda.Job, done: (err?: Error) => void) => void,
+    job: Job,
     definition: string
   ) {
-    this.#instance.define(definition, job);
+    this.#instance.define(definition, async () => job.start(config));
 
     this.#definitions.push(definition);
     this.#jobs.push(

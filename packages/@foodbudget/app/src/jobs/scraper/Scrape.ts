@@ -27,6 +27,7 @@ export interface DocumentNode {
   };
 }
 
+// @TODO: Think of a better name...
 export interface WebPageScrapedRecipeInfo {
   /**
    * The URL of the scraped web page.
