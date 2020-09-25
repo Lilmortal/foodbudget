@@ -9,7 +9,7 @@ export interface MailAuth {
   pass: string;
 }
 
-export type Service = "gmail";
+export type Service = "gmail" | "smtp.ethereal.email";
 
 export interface MailerConnections {
   /**
@@ -39,7 +39,7 @@ export interface MailerService {
    * Send an email.
    * @param mail mail information that will be sent.
    */
-  send(mail: Mail): Promise<void>;
+  send(mail: Mail): Promise<string | boolean>;
 }
 
 export interface Mailer extends MailerConnections, MailerService {}

@@ -68,8 +68,8 @@ const handleError = (emailer: Emailer, err: any) => {
 
 (async () => {
   try {
-    const emailer = new Emailer({
-      service: config.email.service as Service,
+    const emailer = await Emailer.create({
+      service: config.email.service,
       auth: { user: config.email.user, pass: config.email.password },
     });
 

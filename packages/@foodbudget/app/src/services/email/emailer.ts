@@ -1,5 +1,8 @@
 import nodeMailer from "nodemailer";
+import util from "util";
 import { default as MailTransporter } from "nodemailer/lib/mailer";
+import SESTransport from "nodemailer/lib/ses-transport";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 import {
   Service,
   Mailer,
@@ -7,6 +10,7 @@ import {
   MailerConnections,
   Mail,
 } from "./Emailer.types";
+import { EmailError } from "./EmailError";
 
 export class Emailer implements Mailer {
   service: Service;
@@ -16,7 +20,7 @@ export class Emailer implements Mailer {
   auth: MailAuth;
   #transporter: MailTransporter;
 
-  constructor({
+  private constructor({
     service,
     host,
     port = 587,
@@ -38,13 +42,68 @@ export class Emailer implements Mailer {
     });
   }
 
-  async send({ from, to, subject, text, html }: Mail) {
-    await this.#transporter.sendMail({
+  static async create({
+    service,
+    host,
+    port,
+    secure,
+    auth,
+  }: MailerConnections) {
+    const emailer = new Emailer({ service, host, port, secure, auth });
+
+    await emailer.verify();
+
+    return emailer;
+  }
+
+  static async createTestAccount() {
+    const testAccount = await nodeMailer.createTestAccount();
+    const emailer = new Emailer({
+      service: "smtp.ethereal.email",
+      host: testAccount.smtp.host,
+      port: testAccount.smtp.port,
+      secure: testAccount.smtp.secure,
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass,
+      },
+    });
+
+    await emailer.verify();
+
+    return emailer;
+  }
+
+  async verify() {
+    let isVerified = false;
+    try {
+      const promisifiedVerify = util.promisify<boolean>(
+        this.#transporter.verify
+      );
+      isVerified = await promisifiedVerify();
+    } catch (err) {
+      throw new EmailError(err.message || err);
+    }
+    return isVerified;
+  }
+
+  async send({
+    from,
+    to,
+    subject,
+    text,
+    html,
+  }: Mail): Promise<string | boolean> {
+    const info:
+      | SESTransport.SentMessageInfo
+      | SMTPTransport.SentMessageInfo = await this.#transporter.sendMail({
       from,
       to,
       subject,
       text,
       html,
     });
+
+    return nodeMailer.getTestMessageUrl(info);
   }
 }
