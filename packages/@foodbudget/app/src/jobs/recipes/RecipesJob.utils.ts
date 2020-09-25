@@ -28,10 +28,12 @@ export function validate(
     servings: 0,
     name: "",
     ingredients: [],
-    link: Array.isArray(scrapedRecipe)
-      ? scrapedRecipe[0].link
-      : scrapedRecipe.link,
+    link: "",
   };
+
+  if (scrapedRecipe.link && !Array.isArray(scrapedRecipe.link)) {
+    validatedPageInfo.link = scrapedRecipe.link;
+  }
 
   if (scrapedRecipe.prepTime && !Array.isArray(scrapedRecipe.prepTime)) {
     validatedPageInfo.prepTime = scrapedRecipe.prepTime;

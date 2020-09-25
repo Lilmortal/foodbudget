@@ -35,7 +35,7 @@ function setupHeadlessBrowser<T extends { url: string }, R>(
       let scrapedRecipes: R | R[];
       if (Array.isArray(scrapedInfo)) {
         scrapedRecipes = await Promise.all(
-          scrapedInfo.map(async (pageInfo) => scrape(pageInfo))
+          scrapedInfo.map(async (pageInfo) => await scrape(pageInfo))
         );
       } else {
         scrapedRecipes = await scrape(scrapedInfo);
