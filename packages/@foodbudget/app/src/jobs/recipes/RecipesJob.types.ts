@@ -16,6 +16,14 @@ export interface ScraperConnections {
 }
 
 export interface ScraperService {
+  scrape(
+    scrapedWebsiteInfo: WebPageScrapedRecipeInfo,
+    retries: number
+  ): Promise<Recipe>;
+  scrape(
+    scrapedWebsiteInfo: WebPageScrapedRecipeInfo[],
+    retries: number
+  ): Promise<Recipe[]>;
   /**
    * Given information like the document elements etc, use it to scrape the recipe website.
    *
@@ -23,9 +31,21 @@ export interface ScraperService {
    * @param retries An optional number used to signify how many attempts can be made to connect to puppeteer.
    */
   scrape(
-    scrapedWebsiteInfo: WebPageScrapedRecipeInfo[],
-    retries?: number
-  ): Promise<void>;
+    scrapedWebsiteInfo: WebPageScrapedRecipeInfo | WebPageScrapedRecipeInfo[],
+    retries: number
+  ): Promise<Recipe | Recipe[]>;
+
+  /**
+   * Save the recipes to the database.
+   * @param recipes recipes that have been scraped.
+   */
+  save(recipes: Recipe[]): Promise<void>;
+
+  /**
+   * Notify the receiver that recipes have been scraped.
+   * @param recipes recipes that will be sent to the user via email.
+   */
+  notify(recipes: Recipe[]): Promise<void>;
 }
 
 export interface ScraperJob extends ScraperConnections, ScraperService, Job {}

@@ -14,6 +14,9 @@ export function validate(
 ): ValidatedScrapedRecipe[];
 export function validate(
   scrapedRecipe: ScrapedRecipe | ScrapedRecipe[]
+): ValidatedScrapedRecipe | ValidatedScrapedRecipe[];
+export function validate(
+  scrapedRecipe: ScrapedRecipe | ScrapedRecipe[]
 ): ValidatedScrapedRecipe | ValidatedScrapedRecipe[] {
   if (Array.isArray(scrapedRecipe)) {
     return scrapedRecipe.map((recipe) => validate(recipe));

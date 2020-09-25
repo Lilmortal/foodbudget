@@ -2,12 +2,12 @@ import { errors as puppeteerErrors } from "puppeteer";
 import config, { Config } from "../../config";
 import { Recipe, RecipeRepository } from "../../repository/recipe";
 import { RepositoryError } from "../../repository/RepositoryError";
-import { Emailer, EmailError } from "../../services/email";
+import { Emailer, EmailError, Mail } from "../../services/email";
 import { WebPageScrapedRecipeInfo } from "../scraper";
-import { Scrape } from "../scraper/Scrape";
 import { ScraperError } from "../scraper/ScraperError";
 import { ScraperConnections, ScraperJob } from "./RecipesJob.types";
 import { validate } from "./RecipesJob.utils";
+import { RecipesJobScraper } from "./RecipesJobScraper";
 
 export class RecipesJob implements ScraperJob {
   recipeRepository: RecipeRepository;
@@ -19,24 +19,41 @@ export class RecipesJob implements ScraperJob {
   }
 
   async scrape(
+    scrapedWebsiteInfo: WebPageScrapedRecipeInfo,
+    retries: number
+  ): Promise<Recipe>;
+  async scrape(
     scrapedWebsiteInfo: WebPageScrapedRecipeInfo[],
     retries: number
-  ) {
-    let recipes: Recipe[] = [];
+  ): Promise<Recipe[]>;
+  async scrape(
+    scrapedWebsiteInfo: WebPageScrapedRecipeInfo | WebPageScrapedRecipeInfo[],
+    retries: number
+  ): Promise<Recipe | Recipe[]>;
+  async scrape(
+    scrapedWebsiteInfo: WebPageScrapedRecipeInfo | WebPageScrapedRecipeInfo[],
+    retries: number = 3
+  ): Promise<Recipe | Recipe[]> {
+    let recipes: Recipe | Recipe[];
     try {
-      const scrapedRecipes = await Scrape.recipe(scrapedWebsiteInfo);
+      const scrapedRecipes = await RecipesJobScraper.scrape(scrapedWebsiteInfo);
 
-      const validatedRecipe = validate(scrapedRecipes);
+      const validatedRecipes = validate(scrapedRecipes);
 
-      if (Array.isArray(validatedRecipe)) {
-        recipes = recipes.concat(
-          validatedRecipe.map((recipe) => ({
-            ...recipe,
-            cuisines: [],
-            diets: [],
-            allergies: [],
-          }))
-        );
+      if (Array.isArray(validatedRecipes)) {
+        recipes = validatedRecipes.map((recipe) => ({
+          ...recipe,
+          cuisines: [],
+          diets: [],
+          allergies: [],
+        }));
+      } else {
+        recipes = {
+          ...validatedRecipes,
+          cuisines: [],
+          diets: [],
+          allergies: [],
+        };
       }
     } catch (err) {
       if (err instanceof puppeteerErrors.TimeoutError) {
@@ -44,35 +61,41 @@ export class RecipesJob implements ScraperJob {
           throw new ScraperError(err.message);
         }
 
-        await this.scrape(scrapedWebsiteInfo, retries--);
-        return;
+        return this.scrape(scrapedWebsiteInfo, retries--);
       }
       throw new ScraperError(err);
     }
 
-    console.log("saving new recipes...");
-    console.log(recipes);
+    return recipes;
+  }
 
+  async save(recipes: Recipe | Recipe[]) {
     try {
       await this.recipeRepository.create(recipes);
     } catch (err) {
       throw new RepositoryError(err);
     }
+  }
 
-    // send an email notification that a new website page has been scraped, and require
-    // additional manual insertion of the remaining properties.
+  async notify(recipes: Recipe | Recipe[]) {
+    const getConfirmationMail = (recipe: Recipe): Mail => ({
+      from: config.email.user,
+      to: config.email.user,
+      subject: `recipe ${recipe.name} has been scraped.`,
+      text: "Now we just have to manuallly input the remaining criterias.",
+    });
+
     try {
-      await Promise.all(
-        recipes.map((recipe) => {
-          this.emailer.send({
-            from: config.email.user,
-            to: config.email.user,
-            subject: `recipe ${recipe.name} has been scraped.`,
-            text:
-              "Now we just have to manuallly input the remaining criterias.",
-          });
-        })
-      );
+      if (Array.isArray(recipes)) {
+        await Promise.all(
+          recipes.map((recipe) => {
+            this.emailer.send(getConfirmationMail(recipe));
+          })
+        );
+      } else {
+        this.emailer.send(getConfirmationMail(recipes));
+      }
+
       console.log("email sent.");
     } catch (err) {
       throw new EmailError(err);
@@ -80,9 +103,20 @@ export class RecipesJob implements ScraperJob {
   }
 
   async start(config: Config) {
-    await this.scrape(
+    const recipes = await this.scrape(
       config.scrapedWebsiteInfo,
       config.headlessBrowser.retries
     );
+
+    console.log("Successfully scraped recipes...");
+    console.log(recipes);
+
+    await this.save(recipes);
+
+    console.log("recipes saved.");
+
+    await this.notify(recipes);
+
+    console.log("recipe emails sent.");
   }
 }
