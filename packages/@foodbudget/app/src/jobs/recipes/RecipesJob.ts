@@ -18,6 +18,14 @@ export class RecipesJob implements ScraperJob {
     this.emailer = emailer;
   }
 
+  get interval() {
+    return "10 seconds";
+  }
+
+  get definition() {
+    return "Recipe scrape";
+  }
+
   async scrape(
     scrapedWebsiteInfo: WebPageScrapedRecipeInfo,
     retries: number
@@ -95,8 +103,6 @@ export class RecipesJob implements ScraperJob {
       } else {
         this.emailer.send(getConfirmationMail(recipes));
       }
-
-      console.log("email sent.");
     } catch (err) {
       throw new EmailError(err);
     }

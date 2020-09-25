@@ -1,6 +1,4 @@
 import Agenda from "agenda";
-import config from "../../config";
-import { Job } from "../shared/Job.type";
 
 // @TODO: Think of a better name...
 interface AgendaService {
@@ -16,7 +14,11 @@ interface AgendaService {
    * @param job a function that will be executed per interval.
    * @param definition an unique string identifier to define this job.
    */
-  createJob(interval: number | string, job: Job, definition: string): void;
+  createJob(
+    interval: number | string,
+    job: () => Promise<void>,
+    definition: string
+  ): void;
   /**
    * Start the Agenda. Ideally run this after creating one or more jobs.
    */
@@ -61,8 +63,12 @@ export class AgendaJob implements AgendaService {
     process.on("uncaughtException", this.stop);
   }
 
-  createJob(interval: number | string, job: Job, definition: string) {
-    this.#instance.define(definition, async () => await job.start(config));
+  createJob(
+    interval: number | string,
+    job: () => Promise<void>,
+    definition: string
+  ) {
+    this.#instance.define(definition, async () => await job());
 
     this.#definitions.push(definition);
     this.#jobs.push(

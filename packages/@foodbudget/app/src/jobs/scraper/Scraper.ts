@@ -13,36 +13,36 @@ function setupHeadlessBrowser<T extends { url: string }, R>(
   scrapeFunc: (info: string) => Promise<R>
 ) {
   return {
-    scrape: async (scrapedInfo: T | T[]): Promise<R | R[]> => {
+    scrape: async (scrapedDocumentNodes: T | T[]): Promise<R | R[]> => {
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
 
-      const scrape = async (pageInfo: T): Promise<R> => {
-        await page.goto(pageInfo.url);
+      const scrape = async (scrapedPageInfo: T): Promise<R> => {
+        await page.goto(scrapedPageInfo.url);
 
         // We pass the page info as a serialized JSON object into the puppeteer browser.
-        const scrapedRecipe = await page.evaluate(
+        const scrapedResults = await page.evaluate(
           scrapeFunc,
-          JSON.stringify(pageInfo)
+          JSON.stringify(scrapedPageInfo)
         );
 
-        return scrapedRecipe;
+        return scrapedResults;
       };
 
       // This enables us to read all console logs being displayed in the puppeteer browser in our terminal.
       page.on("console", (msg) => console.log(msg.text()));
 
-      let scrapedRecipes: R | R[];
-      if (Array.isArray(scrapedInfo)) {
-        scrapedRecipes = await Promise.all(
-          scrapedInfo.map(async (pageInfo) => await scrape(pageInfo))
+      let scrapedResults: R | R[];
+      if (Array.isArray(scrapedDocumentNodes)) {
+        scrapedResults = await Promise.all(
+          scrapedDocumentNodes.map(async (pageInfo) => await scrape(pageInfo))
         );
       } else {
-        scrapedRecipes = await scrape(scrapedInfo);
+        scrapedResults = await scrape(scrapedDocumentNodes);
       }
       await browser.close();
 
-      return scrapedRecipes;
+      return scrapedResults;
     },
   };
 }
