@@ -19,7 +19,12 @@ const scrapeRecipes = async (pageInfo: string) => {
         nodeSelector.substring?.end
       );
     } else {
-      nodeText = Array.from(nodeList).map((node) => node.innerText);
+      nodeText = Array.from(nodeList).map((node) =>
+        node.innerText.substring(
+          nodeSelector.substring?.start || 0,
+          nodeSelector.substring?.end
+        )
+      );
     }
 
     return nodeText;

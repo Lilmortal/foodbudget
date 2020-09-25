@@ -13,7 +13,7 @@ const isService = (service: string | undefined): service is Service => {
   if ((["gmail"] as Service[]).includes(service as Service)) {
     return true;
   }
-  throw new Error("EMAILER_SERVICE is not a valid Service type.");
+  throw new Error("EMAILER_SERVICE environment variable is not a valid Service type.");
 };
 
 const config: Config = {
