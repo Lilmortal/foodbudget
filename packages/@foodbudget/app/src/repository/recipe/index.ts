@@ -1,8 +1,2 @@
-export { createRecipeRepository } from "./recipe";
-export type {
-  RecipeRepository,
-  Cuisine,
-  Diet,
-  Allergy,
-  Recipe,
-} from "./recipe.types";
+export { RecipeRepository } from "./RecipeRepository";
+export type { Cuisine, Diet, Allergy, Recipe } from "./recipe.types";

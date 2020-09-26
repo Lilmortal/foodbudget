@@ -1,6 +1,6 @@
-import { PageInfo } from "../../jobs/recipeScraper";
+import { WebPageScrapedRecipeInfo } from "../../jobs/recipes";
 
-const pageInfo: PageInfo[] = [
+const pageInfo: WebPageScrapedRecipeInfo[] = [
   {
     url:
       "https://www.recipes.co.nz/shop/EVERYDAY/BalsamicTomatoSlowCookerLambShanks.html",
