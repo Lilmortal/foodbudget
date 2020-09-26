@@ -1,5 +1,5 @@
-import { DocumentNode, Scraper, WebPageScrapedRecipeInfo } from "../scraper";
-import { ScrapedRecipe } from "./RecipesJob.types";
+import { DocumentNode, Scraper } from "../scraper";
+import { ScrapedRecipe, WebPageScrapedRecipeInfo } from "./RecipesJob.types";
 
 const scrapeRecipes = async (pageInfo: string) => {
   // Unfortunately we have to move these functions inside this scope.
@@ -50,7 +50,7 @@ const recipeJobScraper = new Scraper<WebPageScrapedRecipeInfo, ScrapedRecipe>(
   scrapeRecipes
 );
 
-interface RecipesJobScraperServices {
+export interface RecipesJobScraperServices {
   scrape(scrapedInfo: WebPageScrapedRecipeInfo): Promise<ScrapedRecipe>;
   scrape(scrapedInfo: WebPageScrapedRecipeInfo[]): Promise<ScrapedRecipe[]>;
   scrape(

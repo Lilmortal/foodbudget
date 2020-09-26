@@ -1,6 +1,6 @@
 import { Recipe, RecipeRepository } from "../../repository/recipe";
 import { Emailer } from "../../services/email";
-import { WebPageScrapedRecipeInfo } from "../scraper";
+import { DocumentNode } from "../scraper";
 import { Job } from "../shared/Job.type";
 
 // @TODO: Think of a better name...
@@ -39,13 +39,13 @@ export interface ScraperService {
    * Save the recipes to the database.
    * @param recipes recipes that have been scraped.
    */
-  save(recipes: Recipe[]): Promise<void>;
+  save(recipes: Recipe[]): Promise<boolean>;
 
   /**
    * Notify the receiver that recipes have been scraped.
    * @param recipes recipes that will be sent to the user via email.
    */
-  notify(recipes: Recipe[]): Promise<void>;
+  notify(recipes: Recipe[]): Promise<boolean>;
 }
 
 export interface ScraperJob extends ScraperConnections, ScraperService, Job {}
@@ -58,3 +58,27 @@ export interface ScrapedRecipe
     >,
     string | string[]
   > {}
+
+// @TODO: Think of a better name...
+export interface WebPageScrapedRecipeInfo {
+  /**
+   * The URL of the scraped web page.
+   */
+  url: string;
+  /**
+   * The selector for prep time.
+   */
+  prepTimeSelector: DocumentNode;
+  /**
+   * The selector for servings.
+   */
+  servingsSelector: DocumentNode;
+  /**
+   * The selector for the recipe name.
+   */
+  recipeNameSelector: DocumentNode;
+  /**
+   * The selector for a list of ingredients.
+   */
+  ingredientsSelector: DocumentNode;
+}

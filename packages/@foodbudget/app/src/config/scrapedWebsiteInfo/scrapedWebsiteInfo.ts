@@ -1,4 +1,4 @@
-import { WebPageScrapedRecipeInfo } from "../../jobs/scraper";
+import { WebPageScrapedRecipeInfo } from "../../jobs/recipes";
 
 const pageInfo: WebPageScrapedRecipeInfo[] = [
   {

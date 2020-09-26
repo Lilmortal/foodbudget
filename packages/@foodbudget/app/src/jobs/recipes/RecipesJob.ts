@@ -3,9 +3,12 @@ import config, { Config } from "../../config";
 import { Recipe, RecipeRepository } from "../../repository/recipe";
 import { RepositoryError } from "../../repository/RepositoryError";
 import { Emailer, EmailError, Mail } from "../../services/email";
-import { WebPageScrapedRecipeInfo } from "../scraper";
 import { ScraperError } from "../scraper/ScraperError";
-import { ScraperConnections, ScraperJob } from "./RecipesJob.types";
+import {
+  ScraperConnections,
+  ScraperJob,
+  WebPageScrapedRecipeInfo,
+} from "./RecipesJob.types";
 import { validate } from "./RecipesJob.utils";
 import { RecipesJobScraper } from "./RecipesJobScraper";
 
@@ -69,7 +72,7 @@ export class RecipesJob implements ScraperJob {
           throw new ScraperError(err.message);
         }
 
-        return this.scrape(scrapedWebsiteInfo, retries--);
+        return this.scrape(scrapedWebsiteInfo, --retries);
       }
       throw new ScraperError(err);
     }
@@ -83,6 +86,8 @@ export class RecipesJob implements ScraperJob {
     } catch (err) {
       throw new RepositoryError(err);
     }
+
+    return true;
   }
 
   async notify(recipes: Recipe | Recipe[]) {
@@ -106,6 +111,8 @@ export class RecipesJob implements ScraperJob {
     } catch (err) {
       throw new EmailError(err);
     }
+
+    return true;
   }
 
   async start(config: Config) {

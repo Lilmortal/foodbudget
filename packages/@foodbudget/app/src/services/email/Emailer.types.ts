@@ -40,6 +40,11 @@ export interface MailerService {
    * @param mail mail information that will be sent.
    */
   send(mail: Mail): Promise<string | boolean>;
+
+  /**
+   * Verify whether the connection is successful or not.
+   */
+  verify(): Promise<boolean>;
 }
 
 export interface Mailer extends MailerConnections, MailerService {}
