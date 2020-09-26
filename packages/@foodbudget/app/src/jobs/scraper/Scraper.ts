@@ -1,4 +1,5 @@
 import puppeteer from "puppeteer";
+import { ScraperError } from "./ScraperError";
 
 function setupHeadlessBrowser<T extends { url: string }, R>(
   scrapeFunc: (info: string) => Promise<R>
@@ -66,6 +67,12 @@ export class Scraper<T extends { url: string }, R>
   async scrape(scrapedInfo: T | T[]): Promise<R | R[]> {
     const headlessBrowser = setupHeadlessBrowser<T, R>(this.scrapedFunction);
 
-    return headlessBrowser.scrape(scrapedInfo);
+    let result: Promise<R | R[]>;
+    try {
+      result = headlessBrowser.scrape(scrapedInfo);
+    } catch (err) {
+      throw new ScraperError(err);
+    }
+    return result;
   }
 }

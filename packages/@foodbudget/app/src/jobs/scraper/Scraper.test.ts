@@ -9,7 +9,7 @@ describe("scraper", () => {
 
     const scraper = new Scraper(scrapeFunc);
 
-    const info = { url: "https://google.com", num: 2 };
+    const info = { url: "https://doesnotexist.com", num: 2 };
     const result = await scraper.scrape(info);
     expect(result).toEqual(4);
   });
