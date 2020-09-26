@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/Lilmortal/foodbudget/compare/v1.6.0...v1.7.0) (2020-09-26)
+
+
+### Features
+
+* added email sender service ([babf982](https://github.com/Lilmortal/foodbudget/commit/babf982de62da343849ef906744d42fb4308c46a))
+* added job interface which will be the reference for all future jobs ([38ea85d](https://github.com/Lilmortal/foodbudget/commit/38ea85d35cd3e0c5f5ee7467580e4c007ded5fc7))
+* added status errors ([0781507](https://github.com/Lilmortal/foodbudget/commit/0781507493002a24a2fadffba0bace4a63fd0cd9))
+* handle puppeteer timeout errors ([12ddd4b](https://github.com/Lilmortal/foodbudget/commit/12ddd4b0c4fc40f126aac9123a2f236d0c2b4e82))
+* throw email error if failed to send emails ([fc1f153](https://github.com/Lilmortal/foodbudget/commit/fc1f153ccfb5d72ff4db2ba989e420fae1afba7a))
+
+
+### Bug Fixes
+
+* handle graceful shutdown of agenda mongo database ([d5a2d28](https://github.com/Lilmortal/foodbudget/commit/d5a2d284e5ad3c83e0344e52a4c2865fe4c1f9fb))
+
 ## [1.6.0](https://github.com/Lilmortal/foodbudget/compare/v1.5.0...v1.6.0) (2020-09-19)
 
 
