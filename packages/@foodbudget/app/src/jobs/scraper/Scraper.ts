@@ -60,9 +60,9 @@ export class Scraper<T extends { url: string }, R>
     this.scrapedFunction = scrapedFunction;
   }
 
-  async scrape(scrapedInfo: T | T[]): Promise<R | R[]>;
   async scrape(scrapedInfo: T): Promise<R>;
   async scrape(scrapedInfo: T[]): Promise<R[]>;
+  async scrape(scrapedInfo: T | T[]): Promise<R | R[]>;
   async scrape(scrapedInfo: T | T[]): Promise<R | R[]> {
     const headlessBrowser = setupHeadlessBrowser<T, R>(this.scrapedFunction);
 
