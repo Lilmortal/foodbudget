@@ -59,7 +59,6 @@ export const handleError = async ({ err, emailer }: HandleErrorParams) => {
 
     if (err instanceof EmailError) {
       console.log("Email service error. \n", err.message);
-      await sendErrorEmail("Error", "");
       return;
     }
 
