@@ -1,6 +1,6 @@
-import { StatusError } from "../../libs/errors";
+import { StatusError } from "../../shared/errors";
 
-export class ScraperError extends StatusError {
+export class ScrapeError extends StatusError {
   constructor(message: string) {
     super(200, message);
     this.type = "SCRAPER_ERROR";

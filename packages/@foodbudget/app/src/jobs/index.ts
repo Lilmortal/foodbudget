@@ -1,14 +1,15 @@
 import config from "../config";
 
-import { RecipeRepository } from "../repository/recipe";
-import { Emailer } from "../services/email";
+import { Recipe } from "../repository/recipe";
+import { Repository } from "../repository/types";
+import { Mailer } from "../services/email/Emailer.types";
 import { AgendaJob, AgendaJobError } from "./agendaJob";
 import { RecipesJob } from "./recipes";
 import { Job } from "./shared/Job.type";
 
 interface Jobs {
-  recipeRepository: RecipeRepository;
-  emailer: Emailer;
+  recipeRepository: Repository<Recipe>;
+  emailer: Mailer;
 }
 
 const run = (agenda: AgendaJob) => async (...jobs: Job[]) => {

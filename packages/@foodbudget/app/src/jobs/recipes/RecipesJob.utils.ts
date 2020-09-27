@@ -1,5 +1,5 @@
 import { Recipe } from "../../repository/recipe";
-import { ScraperError } from "../scraper";
+import { ScrapeError } from "../scraper";
 import { ScrapedRecipe } from "./RecipesJob.types";
 
 export interface ValidatedScrapedRecipe
@@ -68,7 +68,7 @@ export function validate(
   }
 
   if (emptyResults.length > 0) {
-    throw new ScraperError(emptyResults.join("\n"));
+    throw new ScrapeError(emptyResults.join("\n"));
   }
 
   return validatedPageInfo;

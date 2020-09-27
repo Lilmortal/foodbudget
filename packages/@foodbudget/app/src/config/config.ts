@@ -3,9 +3,9 @@ import { Service } from "../services/email";
 import { Config } from "./config.types";
 import scrapedWebsiteInfo from "./scrapedWebsiteInfo";
 
-const envFound = dotenv.config();
+const env = dotenv.config();
 
-if (envFound.error) {
+if (env.error) {
   throw new Error(".env file is missing.");
 }
 

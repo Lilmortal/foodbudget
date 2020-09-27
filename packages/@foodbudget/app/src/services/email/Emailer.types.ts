@@ -12,7 +12,7 @@ export interface MailAuth {
 // When adding a new Service type, remember to update the validation in config.
 export type Service = "gmail" | "smtp.ethereal.email";
 
-export interface MailerConnections {
+export interface MailerParams {
   /**
    * Auth host service provider.
    */
@@ -48,7 +48,7 @@ export interface MailerService {
   verify(): Promise<boolean>;
 }
 
-export interface Mailer extends MailerConnections, MailerService {}
+export interface Mailer extends MailerParams, MailerService {}
 
 export interface Mail {
   /**

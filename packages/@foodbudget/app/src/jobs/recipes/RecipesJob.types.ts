@@ -1,18 +1,18 @@
-import { Recipe, RecipeRepository } from "../../repository/recipe";
-import { Emailer } from "../../services/email";
+import { Recipe } from "../../repository/recipe";
+import { Repository } from "../../repository/types";
+import { Mailer } from "../../services/email/Emailer.types";
 import { DocumentNode } from "../scraper";
 import { Job } from "../shared/Job.type";
 
-// @TODO: Think of a better name...
-export interface ScraperConnections {
+export interface ScraperParams {
   /**
    * Repository used to save the Recipe that is been scraped.
    */
-  recipeRepository: RecipeRepository;
+  recipeRepository: Repository<Recipe>;
   /**
    * Emailer used to send a confirmation email that recipes has been scraped.
    */
-  emailer: Emailer;
+  emailer: Mailer;
 }
 
 export interface ScraperService {
@@ -48,7 +48,7 @@ export interface ScraperService {
   notify(recipes: Recipe[]): Promise<boolean>;
 }
 
-export interface ScraperJob extends ScraperConnections, ScraperService, Job {}
+export interface ScraperJob extends ScraperParams, ScraperService, Job {}
 
 export interface ScrapedRecipe
   extends Record<
