@@ -23,6 +23,7 @@
     }
   },
   "scripts": {
+    "generate": "lerna run generate --scope=@foodbudget/app",
     "start": "lerna run start --stream --parallel",
     "test": "lerna run test --stream --parallel",
     "release": "standard-version -m 'chore(release): [ci skip] publish'"

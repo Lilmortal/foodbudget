@@ -74,6 +74,8 @@ export class AgendaJob implements AgendaService {
     this.#jobs.push(
       async () => await this.#instance.every(interval, definition)
     );
+
+    console.log(`"${definition}" has been added to the job scheduler queue...`);
   }
 
   get instance() {
@@ -86,6 +88,8 @@ export class AgendaJob implements AgendaService {
 
   async start() {
     await this.#instance.start();
+
+    console.log("Agenda job scheduler started.");
 
     if (this.#jobs.length === 0) {
       console.warn("There are no jobs currently running, have you added any?");
@@ -101,6 +105,7 @@ export class AgendaJob implements AgendaService {
   }
 
   async stop() {
+    console.log("Stopping job scheduler...");
     await this.#instance.stop();
   }
 }

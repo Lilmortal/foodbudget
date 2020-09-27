@@ -9,6 +9,7 @@ export interface MailAuth {
   pass: string;
 }
 
+// When adding a new Service type, remember to update the validation in config.
 export type Service = "gmail" | "smtp.ethereal.email";
 
 export interface MailerConnections {

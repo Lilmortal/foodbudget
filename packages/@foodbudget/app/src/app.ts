@@ -6,7 +6,7 @@ import { ScraperError } from "./jobs/scraper";
 import { StatusError } from "./libs/errors";
 import { RecipeRepository } from "./repository/recipe";
 import { RepositoryError } from "./repository/RepositoryError";
-import { Emailer, EmailError, Mail, Service } from "./services/email";
+import { Emailer, EmailError, Mail } from "./services/email";
 
 const main = async (emailer: Emailer) => {
   let prisma: PrismaClient;
