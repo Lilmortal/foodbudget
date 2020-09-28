@@ -1,9 +1,8 @@
 {
   "name": "foodbudget",
   "version": "1.7.3",
-  "main": "index.js",
   "repository": "https://github.com/Lilmortal/foodbudget.git",
-  "author": "Jack Tan <jacktan165@gmail.com>",
+  "author": "The Food Budget <thefoodbudget@gmail.com>",
   "license": "MIT",
   "private": true,
   "workspaces": [
@@ -21,14 +20,13 @@
     "lerna": "^3.22.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
-    "standard-version": "^9.0.0",
     "typescript": "^4.0.2"
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    },
-    "pre-commit": "yarn lint && run-p -c 'test*'"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "yarn lint && run-p -c 'test*'"
+    }
   },
   "scripts": {
     "setup": "docker-compose down -v && docker-compose up -d && lerna run setup --stream",
