@@ -36,7 +36,7 @@
     "test": "lerna run test --stream --parallel",
     "test:integration": "lerna run test:integration --stream --parallel",
     "lint": "lerna run lint --stream --parallel",
-    "release": "standard-version -m 'chore(release): [ci skip] publish'"
+    "release": "lerna publish --no-commit-hooks"
   },
   "commitlint": {
     "extends": [
