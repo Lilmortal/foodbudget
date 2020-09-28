@@ -1,5 +1,5 @@
 import path from "path";
-import { WebPageScrapedRecipeInfo } from "../scraper";
+import { WebPageScrapedRecipeInfo } from "./RecipesJob.types";
 import { RecipesJobScraper } from "./RecipesJobScraper";
 
 describe("recipes job scraper", () => {

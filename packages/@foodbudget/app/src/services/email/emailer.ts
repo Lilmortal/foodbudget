@@ -3,13 +3,7 @@ import util from "util";
 import { default as MailTransporter } from "nodemailer/lib/mailer";
 import SESTransport from "nodemailer/lib/ses-transport";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
-import {
-  Service,
-  Mailer,
-  MailAuth,
-  MailerConnections,
-  Mail,
-} from "./Emailer.types";
+import { Service, Mailer, MailAuth, MailerParams, Mail } from "./Emailer.types";
 import { EmailError } from "./EmailError";
 
 export class Emailer implements Mailer {
@@ -26,7 +20,7 @@ export class Emailer implements Mailer {
     port = 587,
     secure = false,
     auth,
-  }: MailerConnections) {
+  }: MailerParams) {
     this.service = service;
     this.host = host;
     this.port = port;
@@ -42,13 +36,7 @@ export class Emailer implements Mailer {
     });
   }
 
-  static async create({
-    service,
-    host,
-    port,
-    secure,
-    auth,
-  }: MailerConnections) {
+  static async create({ service, host, port, secure, auth }: MailerParams) {
     const emailer = new Emailer({ service, host, port, secure, auth });
 
     await emailer.verify();

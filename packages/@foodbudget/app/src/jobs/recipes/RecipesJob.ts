@@ -1,11 +1,13 @@
 import { errors as puppeteerErrors } from "puppeteer";
 import config, { Config } from "../../config";
-import { Recipe, RecipeRepository } from "../../repository/recipe";
+import { Recipe } from "../../repository/recipe";
 import { RepositoryError } from "../../repository/RepositoryError";
-import { Emailer, EmailError, Mail } from "../../services/email";
-import { ScraperError } from "../scraper/ScraperError";
+import { Repository } from "../../repository/types";
+import { EmailError, Mail } from "../../services/email";
+import { Mailer } from "../../services/email/Emailer.types";
+import { ScrapeError } from "../scraper/ScrapeError";
 import {
-  ScraperConnections,
+  ScraperParams,
   ScraperJob,
   WebPageScrapedRecipeInfo,
 } from "./RecipesJob.types";
@@ -13,10 +15,10 @@ import { validate } from "./RecipesJob.utils";
 import { RecipesJobScraper } from "./RecipesJobScraper";
 
 export class RecipesJob implements ScraperJob {
-  recipeRepository: RecipeRepository;
-  emailer: Emailer;
+  recipeRepository: Repository<Recipe>;
+  emailer: Mailer;
 
-  constructor({ recipeRepository, emailer }: ScraperConnections) {
+  constructor({ recipeRepository, emailer }: ScraperParams) {
     this.recipeRepository = recipeRepository;
     this.emailer = emailer;
   }
@@ -69,12 +71,12 @@ export class RecipesJob implements ScraperJob {
     } catch (err) {
       if (err instanceof puppeteerErrors.TimeoutError) {
         if (retries <= 0) {
-          throw new ScraperError(err.message);
+          throw new ScrapeError(err.message);
         }
 
         return this.scrape(scrapedWebsiteInfo, --retries);
       }
-      throw new ScraperError(err);
+      throw new ScrapeError(err);
     }
 
     return recipes;

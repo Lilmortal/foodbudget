@@ -3,7 +3,7 @@ import { RepositoryError } from "../../repository/RepositoryError";
 import { Repository } from "../../repository/types";
 import { EmailError } from "../../services/email";
 import { Mailer } from "../../services/email/Emailer.types";
-import { ScraperError } from "../scraper";
+import { ScrapeError } from "../scraper";
 import { RecipesJob } from "./RecipesJob";
 import { ScrapedRecipe, WebPageScrapedRecipeInfo } from "./RecipesJob.types";
 import { RecipesJobScraper } from "./RecipesJobScraper";
@@ -84,13 +84,9 @@ describe("recipes job", () => {
 
     const mockEmailer = getMockEmailer();
 
-    // @TODO: Removing any will cause Typescript to complain the mock implementation is missing
-    // private variables, e.g. #prisma.
-    // Adding private keyword will not work.
-    // See https://github.com/typescript-eslint/typescript-eslint/issues/1666 for more details.
     const recipesJob = new RecipesJob({
-      recipeRepository: mockRecipeRepository as any,
-      emailer: mockEmailer as any,
+      recipeRepository: mockRecipeRepository,
+      emailer: mockEmailer,
     });
 
     const result = await recipesJob.scrape(defaultWebPageScrapedRecipeInfo, 3);
@@ -152,7 +148,7 @@ describe("recipes job", () => {
     ]);
   });
 
-  it("should throw a ScraperError when attempts to scrape recipes failed", async () => {
+  it("should throw a ScrapeError when attempts to scrape recipes failed", async () => {
     (RecipesJobScraper.scrape as jest.Mock).mockImplementationOnce(() => {
       throw new Error();
     });
@@ -168,7 +164,7 @@ describe("recipes job", () => {
 
     await expect(() =>
       recipesJob.scrape(defaultWebPageScrapedRecipeInfo, 3)
-    ).rejects.toThrow(ScraperError);
+    ).rejects.toThrow(ScrapeError);
   });
 
   it("should retry to connect to headless browser up to 3 times", async () => {
@@ -198,7 +194,7 @@ describe("recipes job", () => {
     expect(spiedRecipesJob).toHaveBeenCalledTimes(4);
   });
 
-  it("should throw a ScraperError when the retries counter to connect to headless browser ran out", async () => {
+  it("should throw a ScrapeError when the retries counter to connect to headless browser ran out", async () => {
     const sendTimeoutErrorOnCallingScrape = (numberOfTimesCalled: number) => {
       for (let i = 0; i < numberOfTimesCalled; i++) {
         (RecipesJobScraper.scrape as jest.Mock).mockImplementationOnce(() => {
@@ -222,7 +218,7 @@ describe("recipes job", () => {
 
     await expect(() =>
       recipesJob.scrape(defaultWebPageScrapedRecipeInfo, 3)
-    ).rejects.toThrow(ScraperError);
+    ).rejects.toThrow(ScrapeError);
 
     expect(spiedRecipesJob).toHaveBeenCalledTimes(4);
   });

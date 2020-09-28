@@ -1,4 +1,4 @@
-import { StatusError } from "../../libs/errors";
+import { StatusError } from "../../shared/errors";
 
 export class AgendaJobError extends StatusError {
   constructor(message: string) {
