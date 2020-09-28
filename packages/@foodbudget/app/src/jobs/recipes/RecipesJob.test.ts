@@ -1,27 +1,25 @@
-import { Recipe } from "../../repository/recipe";
-import { RepositoryError } from "../../repository/RepositoryError";
-import { Repository } from "../../repository/types";
-import { EmailError } from "../../services/email";
-import { Mailer } from "../../services/email/Emailer.types";
-import { ScrapeError } from "../scraper";
-import { RecipesJob } from "./RecipesJob";
-import { ScrapedRecipe, WebPageScrapedRecipeInfo } from "./RecipesJob.types";
-import { RecipesJobScraper } from "./RecipesJobScraper";
-import { errors as puppeteerErrors } from "puppeteer";
+import { errors as puppeteerErrors } from 'puppeteer';
+import { Recipe } from '../../repository/recipe';
+import { Repository, RepositoryError } from '../../repository';
+import { EmailError, Mail, Mailer } from '../../services/email';
+import { ScrapeError } from '../scraper';
+import RecipesJob from './RecipesJob';
+import { ScrapedRecipe, WebPageScrapedRecipeInfo } from './RecipesJob.types';
+import { RecipesJobScraper } from './RecipesJobScraper';
 
 const defaultWebPageScrapedRecipeInfo: WebPageScrapedRecipeInfo = {
-  url: "url",
+  url: 'url',
   prepTimeSelector: {
-    class: ".prepTime",
+    class: '.prepTime',
   },
   servingsSelector: {
-    class: ".servings",
+    class: '.servings',
   },
   recipeNameSelector: {
-    class: ".recipeName",
+    class: '.recipeName',
   },
   ingredientsSelector: {
-    class: ".ingredients",
+    class: '.ingredients',
   },
 };
 
@@ -30,52 +28,75 @@ const defaultMockRecipeRepository: Repository<Recipe> = {
 };
 
 const defaultMockEmailer: Mailer = {
-  service: "gmail",
+  service: 'gmail',
   auth: {
-    user: "user",
-    pass: "pass",
+    user: 'user',
+    pass: 'pass',
   },
   send: jest.fn(),
   verify: jest.fn(),
 };
 
 const defaultMockRecipe: Recipe = {
-  link: "recipe link",
-  prepTime: "5 mins",
+  link: 'recipe link',
+  prepTime: '5 mins',
   servings: 4,
-  name: "Recipe name",
-  ingredients: ["pork", "fish"],
+  name: 'Recipe name',
+  ingredients: ['pork', 'fish'],
   cuisines: [],
   diets: [],
   allergies: [],
 };
 
-const getMockRecipeRepository = (repository?: Partial<Repository<Recipe>>) =>
-  jest.fn<Repository<Recipe>, []>(() => ({
+const getMockRecipeRepository = (repository?: Partial<Repository<Recipe>>) => {
+  const instance = jest.fn<Repository<Recipe>, []>(() => ({
     ...defaultMockRecipeRepository,
     ...repository,
-  }))();
+  }));
 
-const getMockEmailer = (mailer?: Partial<Mailer>) =>
-  jest.fn<Mailer, []>(() => ({ ...defaultMockEmailer, ...mailer }))();
+  return {
+    mock: instance,
+    instance: instance(),
+  };
+};
 
-const getMockRecipe = (recipe?: Partial<Recipe>) =>
-  jest.fn<Recipe, []>(() => ({ ...defaultMockRecipe, ...recipe }))();
+const getMockEmailer = (mailer?: Partial<Mailer>) => {
+  const instance = jest.fn<Mailer, []>(() => ({ ...defaultMockEmailer, ...mailer }));
 
-jest.mock("./RecipesJobScraper");
+  return {
+    mock: instance,
+    instance: instance(),
+  };
+};
 
-describe("recipes job", () => {
+const getMockRecipe = (recipe?: Partial<Recipe>) => {
+  const instance = jest.fn<Recipe, []>(() => ({ ...defaultMockRecipe, ...recipe }));
+
+  return {
+    mock: instance,
+    instance: instance(),
+  };
+};
+
+const defaultMailRecipients: Pick<Mail, 'from' | 'to'> = {
+  from: 'sender',
+  to: 'receiver',
+};
+
+jest.mock('./RecipesJobScraper');
+
+describe('recipes job', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it("should scrape and validate the recipe", async () => {
+  it('should scrape and validate the recipe', async () => {
     const scrapedRecipe: ScrapedRecipe = {
-      link: "recipe link",
-      prepTime: "5 mins",
-      servings: "4",
-      name: "Recipe name",
-      ingredients: ["pork", "fish"],
+      link: 'recipe link',
+      prepTime: '5 mins',
+      servings: '4',
+      name: 'Recipe name',
+      ingredients: ['pork', 'fish'],
     };
 
     (RecipesJobScraper.scrape as jest.Mock).mockReturnValue(scrapedRecipe);
@@ -85,8 +106,8 @@ describe("recipes job", () => {
     const mockEmailer = getMockEmailer();
 
     const recipesJob = new RecipesJob({
-      recipeRepository: mockRecipeRepository,
-      emailer: mockEmailer,
+      recipeRepository: mockRecipeRepository.instance,
+      emailer: mockEmailer.instance,
     });
 
     const result = await recipesJob.scrape(defaultWebPageScrapedRecipeInfo, 3);
@@ -99,21 +120,21 @@ describe("recipes job", () => {
     });
   });
 
-  it("should scrape and validate multiple recipes", async () => {
+  it('should scrape and validate multiple recipes', async () => {
     const scrapedRecipe1: ScrapedRecipe = {
-      link: "recipe link",
-      prepTime: "5 mins",
-      servings: "4",
-      name: "Recipe name",
-      ingredients: ["pork", "fish"],
+      link: 'recipe link',
+      prepTime: '5 mins',
+      servings: '4',
+      name: 'Recipe name',
+      ingredients: ['pork', 'fish'],
     };
 
     const scrapedRecipe2: ScrapedRecipe = {
-      link: "recipe link 2",
-      prepTime: "3 mins",
-      servings: "2",
-      name: "Recipe name 2",
-      ingredients: ["chicken", "eel"],
+      link: 'recipe link 2',
+      prepTime: '3 mins',
+      servings: '2',
+      name: 'Recipe name 2',
+      ingredients: ['chicken', 'eel'],
     };
 
     const scrapedRecipes = [scrapedRecipe1, scrapedRecipe2];
@@ -125,8 +146,8 @@ describe("recipes job", () => {
     const mockEmailer = getMockEmailer();
 
     const recipesJob = new RecipesJob({
-      recipeRepository: mockRecipeRepository as any,
-      emailer: mockEmailer as any,
+      recipeRepository: mockRecipeRepository.instance,
+      emailer: mockEmailer.instance,
     });
 
     const result = await recipesJob.scrape(defaultWebPageScrapedRecipeInfo, 3);
@@ -148,7 +169,7 @@ describe("recipes job", () => {
     ]);
   });
 
-  it("should throw a ScrapeError when attempts to scrape recipes failed", async () => {
+  it('should throw a ScrapeError when attempts to scrape recipes failed', async () => {
     (RecipesJobScraper.scrape as jest.Mock).mockImplementationOnce(() => {
       throw new Error();
     });
@@ -158,18 +179,16 @@ describe("recipes job", () => {
     const mockEmailer = getMockEmailer();
 
     const recipesJob = new RecipesJob({
-      recipeRepository: mockRecipeRepository as any,
-      emailer: mockEmailer as any,
+      recipeRepository: mockRecipeRepository.instance,
+      emailer: mockEmailer.instance,
     });
 
-    await expect(() =>
-      recipesJob.scrape(defaultWebPageScrapedRecipeInfo, 3)
-    ).rejects.toThrow(ScrapeError);
+    await expect(() => recipesJob.scrape(defaultWebPageScrapedRecipeInfo, 3)).rejects.toThrow(ScrapeError);
   });
 
-  it("should retry to connect to headless browser up to 3 times", async () => {
+  it('should retry to connect to headless browser up to 3 times', async () => {
     const sendTimeoutErrorOnCallingScrape = (numberOfTimesCalled: number) => {
-      for (let i = 0; i < numberOfTimesCalled; i++) {
+      for (let i = 0; i < numberOfTimesCalled; i += 1) {
         (RecipesJobScraper.scrape as jest.Mock).mockImplementationOnce(() => {
           throw new puppeteerErrors.TimeoutError();
         });
@@ -183,20 +202,20 @@ describe("recipes job", () => {
     const mockEmailer = getMockEmailer();
 
     const recipesJob = new RecipesJob({
-      recipeRepository: mockRecipeRepository as any,
-      emailer: mockEmailer as any,
+      recipeRepository: mockRecipeRepository.instance,
+      emailer: mockEmailer.instance,
     });
 
-    const spiedRecipesJob = jest.spyOn(recipesJob, "scrape");
+    const spiedRecipesJob = jest.spyOn(recipesJob, 'scrape');
 
     await recipesJob.scrape(defaultWebPageScrapedRecipeInfo, 3);
 
     expect(spiedRecipesJob).toHaveBeenCalledTimes(4);
   });
 
-  it("should throw a ScrapeError when the retries counter to connect to headless browser ran out", async () => {
+  it('should throw a ScrapeError when the retries counter to connect to headless browser ran out', async () => {
     const sendTimeoutErrorOnCallingScrape = (numberOfTimesCalled: number) => {
-      for (let i = 0; i < numberOfTimesCalled; i++) {
+      for (let i = 0; i < numberOfTimesCalled; i += 1) {
         (RecipesJobScraper.scrape as jest.Mock).mockImplementationOnce(() => {
           throw new puppeteerErrors.TimeoutError();
         });
@@ -210,95 +229,91 @@ describe("recipes job", () => {
     const mockEmailer = getMockEmailer();
 
     const recipesJob = new RecipesJob({
-      recipeRepository: mockRecipeRepository as any,
-      emailer: mockEmailer as any,
+      recipeRepository: mockRecipeRepository.instance,
+      emailer: mockEmailer.instance,
     });
 
-    const spiedRecipesJob = jest.spyOn(recipesJob, "scrape");
+    const spiedRecipesJob = jest.spyOn(recipesJob, 'scrape');
 
-    await expect(() =>
-      recipesJob.scrape(defaultWebPageScrapedRecipeInfo, 3)
-    ).rejects.toThrow(ScrapeError);
+    await expect(() => recipesJob.scrape(defaultWebPageScrapedRecipeInfo, 3)).rejects.toThrow(ScrapeError);
 
     expect(spiedRecipesJob).toHaveBeenCalledTimes(4);
   });
 
-  it("should save the recipe to the database", async () => {
+  it('should save the recipe to the database', async () => {
     const mockRecipeRepository = getMockRecipeRepository();
 
     const mockEmailer = getMockEmailer();
 
     const recipesJob = new RecipesJob({
-      recipeRepository: mockRecipeRepository as any,
-      emailer: mockEmailer as any,
+      recipeRepository: mockRecipeRepository.instance,
+      emailer: mockEmailer.instance,
     });
 
-    const recipe = getMockRecipe({});
-    const result = await recipesJob.save(recipe);
+    const recipe = getMockRecipe().instance;
+    await recipesJob.save(recipe);
 
-    expect(result).toEqual(true);
+    expect(mockRecipeRepository.mock).toHaveBeenCalled();
   });
 
-  it("should throw a RepositoryError when attempting to save the recipe failed", async () => {
+  it('should throw a RepositoryError when attempting to save the recipe failed', async () => {
     const mockRecipeRepository = getMockRecipeRepository({
       create: async () => {
         throw new Error();
       },
     });
 
-    const mockEmailer = getMockEmailer({});
+    const mockEmailer = getMockEmailer();
 
     const recipesJob = new RecipesJob({
-      recipeRepository: mockRecipeRepository as any,
-      emailer: mockEmailer as any,
+      recipeRepository: mockRecipeRepository.instance,
+      emailer: mockEmailer.instance,
     });
 
-    const recipe = getMockRecipe();
+    const recipe = getMockRecipe().instance;
 
     await expect(() => recipesJob.save(recipe)).rejects.toThrow(
-      RepositoryError
+      RepositoryError,
     );
   });
 
-  it("should notify via email that a recipe has been saved", async () => {
+  it('should notify via email that a recipe has been saved', async () => {
     const mockRecipeRepository = getMockRecipeRepository();
 
     const mockEmailer = getMockEmailer();
 
     const recipesJob = new RecipesJob({
-      recipeRepository: mockRecipeRepository as any,
-      emailer: mockEmailer as any,
+      recipeRepository: mockRecipeRepository.instance,
+      emailer: mockEmailer.instance,
     });
 
-    const recipe = getMockRecipe();
+    const recipe = getMockRecipe().instance;
 
-    const result = await recipesJob.notify(recipe);
+    await recipesJob.notify(recipe, defaultMailRecipients);
 
-    expect(result).toEqual(true);
-    expect(mockEmailer.send).toHaveBeenCalledTimes(1);
+    expect(mockEmailer.instance.send).toHaveBeenCalledTimes(1);
   });
 
-  it("should notify via email that multiple recipes have been saved", async () => {
+  it('should notify via email that multiple recipes have been saved', async () => {
     const mockRecipeRepository = getMockRecipeRepository();
 
     const mockEmailer = getMockEmailer();
 
     const recipesJob = new RecipesJob({
-      recipeRepository: mockRecipeRepository as any,
-      emailer: mockEmailer as any,
+      recipeRepository: mockRecipeRepository.instance,
+      emailer: mockEmailer.instance,
     });
 
-    const recipe1 = getMockRecipe();
-    const recipe2 = getMockRecipe({ name: "Another recipe" });
+    const recipe1 = getMockRecipe().instance;
+    const recipe2 = getMockRecipe({ name: 'Another recipe' }).instance;
     const recipes: Recipe[] = [recipe1, recipe2];
 
-    const result = await recipesJob.notify(recipes);
+    await recipesJob.notify(recipes, defaultMailRecipients);
 
-    expect(result).toEqual(true);
-    expect(mockEmailer.send).toHaveBeenCalledTimes(2);
+    expect(mockEmailer.instance.send).toHaveBeenCalledTimes(2);
   });
 
-  it("should throw an EmailError when attempting to notify failed", async () => {
+  it('should throw an EmailError when attempting to notify failed', async () => {
     const mockRecipeRepository = getMockRecipeRepository();
 
     const mockEmailer = getMockEmailer({
@@ -308,12 +323,12 @@ describe("recipes job", () => {
     });
 
     const recipesJob = new RecipesJob({
-      recipeRepository: mockRecipeRepository as any,
-      emailer: mockEmailer as any,
+      recipeRepository: mockRecipeRepository.instance,
+      emailer: mockEmailer.instance,
     });
 
-    const recipe = getMockRecipe();
+    const recipe = getMockRecipe().instance;
 
-    await expect(() => recipesJob.notify(recipe)).rejects.toThrow(EmailError);
+    await expect(() => recipesJob.notify(recipe, defaultMailRecipients)).rejects.toThrow(EmailError);
   });
 });

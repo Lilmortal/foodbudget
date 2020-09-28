@@ -1,8 +1,32 @@
-import { Recipe } from "../../repository/recipe";
-import { Repository } from "../../repository/types";
-import { Mailer } from "../../services/email/Emailer.types";
-import { DocumentNode } from "../scraper";
-import { Job } from "../shared/Job.type";
+import { Recipe } from '../../repository/recipe';
+import { Repository } from '../../repository';
+import { Mail, Mailer } from '../../services/email';
+import { DocumentNode } from '../scraper';
+import { Job } from '../shared';
+
+// @TODO: Think of a better name...
+export interface WebPageScrapedRecipeInfo {
+  /**
+   * The URL of the scraped web page.
+   */
+  url: string;
+  /**
+   * The selector for prep time.
+   */
+  prepTimeSelector: DocumentNode;
+  /**
+   * The selector for servings.
+   */
+  servingsSelector: DocumentNode;
+  /**
+   * The selector for the recipe name.
+   */
+  recipeNameSelector: DocumentNode;
+  /**
+   * The selector for a list of ingredients.
+   */
+  ingredientsSelector: DocumentNode;
+}
 
 export interface ScraperParams {
   /**
@@ -39,46 +63,22 @@ export interface ScraperService {
    * Save the recipes to the database.
    * @param recipes recipes that have been scraped.
    */
-  save(recipes: Recipe[]): Promise<boolean>;
+  save(recipes: Recipe[]): Promise<void>;
 
   /**
    * Notify the receiver that recipes have been scraped.
    * @param recipes recipes that will be sent to the user via email.
+   * @param mailParticipants the sender and the receiver of the email.
    */
-  notify(recipes: Recipe[]): Promise<boolean>;
+  notify(recipes: Recipe[], mailParticipants: Pick<Mail, 'from' | 'to'>): Promise<void>;
 }
 
 export interface ScraperJob extends ScraperParams, ScraperService, Job {}
 
-export interface ScrapedRecipe
-  extends Record<
+export type ScrapedRecipe = Record<
     keyof Pick<
       Recipe,
-      "prepTime" | "servings" | "name" | "ingredients" | "link"
+      'prepTime' | 'servings' | 'name' | 'ingredients' | 'link'
     >,
     string | string[]
-  > {}
-
-// @TODO: Think of a better name...
-export interface WebPageScrapedRecipeInfo {
-  /**
-   * The URL of the scraped web page.
-   */
-  url: string;
-  /**
-   * The selector for prep time.
-   */
-  prepTimeSelector: DocumentNode;
-  /**
-   * The selector for servings.
-   */
-  servingsSelector: DocumentNode;
-  /**
-   * The selector for the recipe name.
-   */
-  recipeNameSelector: DocumentNode;
-  /**
-   * The selector for a list of ingredients.
-   */
-  ingredientsSelector: DocumentNode;
-}
+  >

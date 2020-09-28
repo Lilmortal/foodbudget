@@ -1,5 +1,5 @@
-import { WebPageScrapedRecipeInfo } from "../jobs/recipes";
-import { Service } from "../services/email";
+import { WebPageScrapedRecipeInfo } from '../jobs/recipes';
+import { Service } from '../services/email';
 
 export interface AgendaConfig {
   url: string;

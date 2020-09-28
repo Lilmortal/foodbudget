@@ -1,4 +1,4 @@
-import Agenda from "agenda";
+import Agenda from 'agenda';
 
 // @TODO: Think of a better name...
 interface AgendaService {
@@ -29,10 +29,13 @@ interface AgendaService {
   stop(): void;
 }
 
-export class AgendaJob implements AgendaService {
+class AgendaJob implements AgendaService {
   agendaDatabaseUrl: string;
+
   #instance: Agenda;
+
   #definitions: string[] = [];
+
   #jobs: (() => Promise<Agenda.Job>)[] = [];
 
   constructor(agendaDatabaseUrl: string) {
@@ -47,65 +50,61 @@ export class AgendaJob implements AgendaService {
 
   // @TODO Terminating the application ungracefully does not inform Agenda to restart
   // its jobs queue, this is not working, look into this...
-  async handleGracefulShutDown() {
-    process.on("exit", this.stop);
+  async handleGracefulShutDown(): Promise<void> {
+    process.on('exit', this.stop);
 
-    //catches ctrl+c event
-    process.on("SIGINT", this.stop);
+    // catches ctrl+c event
+    process.on('SIGINT', this.stop);
 
-    process.on("SIGTERM", this.stop);
+    process.on('SIGTERM', this.stop);
 
     // catches "kill pid" (for example: nodemon restart)
-    process.on("SIGUSR1", this.stop);
-    process.on("SIGUSR2", this.stop);
+    process.on('SIGUSR1', this.stop);
+    process.on('SIGUSR2', this.stop);
 
-    //catches uncaught exceptions
-    process.on("uncaughtException", this.stop);
+    // catches uncaught exceptions
+    process.on('uncaughtException', this.stop);
   }
 
   createJob(
     interval: number | string,
     job: () => Promise<void>,
-    definition: string
-  ) {
-    this.#instance.define(definition, async () => await job());
+    definition: string,
+  ): void {
+    this.#instance.define(definition, async () => job());
 
     this.#definitions.push(definition);
-    this.#jobs.push(
-      async () => await this.#instance.every(interval, definition)
-    );
+    this.#jobs.push(async () => this.#instance.every(interval, definition));
 
     console.log(`"${definition}" has been added to the job scheduler queue...`);
   }
 
-  get instance() {
+  get instance(): Agenda {
     return this.#instance;
   }
 
-  get jobNames() {
-    return this.#jobs;
-  }
-
-  async start() {
+  async start(): Promise<void> {
     await this.#instance.start();
 
-    console.log("Agenda job scheduler started.");
+    console.log('Agenda job scheduler started.');
 
     if (this.#jobs.length === 0) {
-      console.warn("There are no jobs currently running, have you added any?");
+      console.warn('There are no jobs currently running, have you added any?');
     }
 
     await Promise.all(
       this.#jobs.map(async (job) => {
         await job();
-      })
+      }),
     );
 
     await this.handleGracefulShutDown();
   }
 
-  async stop() {
-    console.log("Stopping job scheduler...");
+  async stop(): Promise<void> {
+    console.log('Stopping job scheduler...');
     await this.#instance.stop();
   }
 }
+
+export default AgendaJob;

@@ -1,8 +1,10 @@
-import { StatusError } from "../../shared/errors";
+import { StatusError } from '../../shared/errors';
 
-export class EmailError extends StatusError {
+class EmailError extends StatusError {
   constructor(message: string) {
     super(200, message);
-    this.type = "EMAIL_ERROR";
+    this.type = 'EMAIL_ERROR';
   }
 }
+
+export default EmailError;

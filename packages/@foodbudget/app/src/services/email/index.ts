@@ -1,3 +1,3 @@
-export { Emailer } from "./Emailer";
-export type { Service, Mail } from "./Emailer.types";
-export { EmailError } from "./EmailError";
+export { default as Emailer } from './Emailer';
+export type { Service, Mail, Mailer } from './Emailer.types';
+export { default as EmailError } from './EmailError';

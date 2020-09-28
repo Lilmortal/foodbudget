@@ -9,10 +9,12 @@
     "test": "jest",
     "test:integration": "jest --testRegex .*.ispec.ts",
     "test:watch": "jest --watch",
+    "lint:ts": "eslint src/**/*.ts",
+    "lint": "run-p -c 'lint:* --fix'",
     "generate": "prisma generate",
-    "save": "prisma migrate save --experimental",
-    "migrate:up": "prisma migrate up --experimental",
-    "docker:restart": "docker-compose down && docker-compose up -d"
+    "setup": "yarn generate",
+    "migrate:save": "prisma migrate save --experimental",
+    "migrate:up": "prisma migrate up --experimental"
   },
   "dependencies": {
     "@prisma/client": "^2.6.2",

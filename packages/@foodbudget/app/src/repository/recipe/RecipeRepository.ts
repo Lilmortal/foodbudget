@@ -1,15 +1,15 @@
-import { Repository } from "../types";
-import { Recipe } from "./recipe.types";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
+import { Repository } from '../Repository.types';
+import { Recipe } from './recipe.types';
 
-export class RecipeRepository implements Repository<Recipe> {
+class RecipeRepository implements Repository<Recipe> {
   #prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
     this.#prisma = prisma;
   }
 
-  async create(recipes: Recipe | Recipe[]) {
+  async create(recipes: Recipe | Recipe[]): Promise<void> {
     if (Array.isArray(recipes)) {
       // As of now, Prisma 2 does not support createMany. For now, given the low amount
       // of recipes being created per day, the number of Promises being created is fine.
@@ -27,7 +27,7 @@ export class RecipeRepository implements Repository<Recipe> {
               num_saved: 0,
             },
           });
-        })
+        }),
       );
     } else {
       await this.#prisma.recipes.create({
@@ -42,3 +42,5 @@ export class RecipeRepository implements Repository<Recipe> {
     }
   }
 }
+
+export default RecipeRepository;

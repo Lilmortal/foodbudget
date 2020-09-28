@@ -1,12 +1,11 @@
-import { Recipe } from "../../repository/recipe";
-import { ScrapeError } from "../scraper";
-import { ScrapedRecipe } from "./RecipesJob.types";
+import { Recipe } from '../../repository/recipe';
+import { ScrapeError } from '../scraper';
+import { ScrapedRecipe } from './RecipesJob.types';
 
-export interface ValidatedScrapedRecipe
-  extends Pick<
+export type ValidatedScrapedRecipe = Pick<
     Recipe,
-    "prepTime" | "servings" | "name" | "ingredients" | "link"
-  > {}
+    'prepTime' | 'servings' | 'name' | 'ingredients' | 'link'
+  >
 
 export function validate(scrapedRecipe: ScrapedRecipe): ValidatedScrapedRecipe;
 export function validate(
@@ -16,7 +15,7 @@ export function validate(
   scrapedRecipe: ScrapedRecipe | ScrapedRecipe[]
 ): ValidatedScrapedRecipe | ValidatedScrapedRecipe[];
 export function validate(
-  scrapedRecipe: ScrapedRecipe | ScrapedRecipe[]
+  scrapedRecipe: ScrapedRecipe | ScrapedRecipe[],
 ): ValidatedScrapedRecipe | ValidatedScrapedRecipe[] {
   if (Array.isArray(scrapedRecipe)) {
     return scrapedRecipe.map((recipe) => validate(recipe));
@@ -24,11 +23,11 @@ export function validate(
   const emptyResults = [];
 
   const validatedPageInfo: ValidatedScrapedRecipe = {
-    prepTime: "",
+    prepTime: '',
     servings: 0,
-    name: "",
+    name: '',
     ingredients: [],
-    link: "",
+    link: '',
   };
 
   if (scrapedRecipe.link && !Array.isArray(scrapedRecipe.link)) {
@@ -38,37 +37,37 @@ export function validate(
   if (scrapedRecipe.prepTime && !Array.isArray(scrapedRecipe.prepTime)) {
     validatedPageInfo.prepTime = scrapedRecipe.prepTime;
   } else {
-    emptyResults.push("prepTime must be a non-empty string.");
+    emptyResults.push('prepTime must be a non-empty string.');
   }
 
   if (
-    scrapedRecipe.servings &&
-    !Array.isArray(scrapedRecipe.servings) &&
-    !isNaN(Number(scrapedRecipe.servings))
+    scrapedRecipe.servings
+    && !Array.isArray(scrapedRecipe.servings)
+    && !isNaN(Number(scrapedRecipe.servings))
   ) {
     validatedPageInfo.servings = Number(scrapedRecipe.servings);
   } else {
-    emptyResults.push("servings must be a non-empty number.");
+    emptyResults.push('servings must be a non-empty number.');
   }
 
   if (scrapedRecipe.name && !Array.isArray(scrapedRecipe.name)) {
     validatedPageInfo.name = scrapedRecipe.name;
   } else {
-    emptyResults.push("name must be a non-empty string.");
+    emptyResults.push('name must be a non-empty string.');
   }
 
   if (
-    scrapedRecipe.ingredients &&
-    Array.isArray(scrapedRecipe.ingredients) &&
-    scrapedRecipe.ingredients.length > 0
+    scrapedRecipe.ingredients
+    && Array.isArray(scrapedRecipe.ingredients)
+    && scrapedRecipe.ingredients.length > 0
   ) {
     validatedPageInfo.ingredients = scrapedRecipe.ingredients;
   } else {
-    emptyResults.push("ingredients must be a non-empty array.");
+    emptyResults.push('ingredients must be a non-empty array.');
   }
 
   if (emptyResults.length > 0) {
-    throw new ScrapeError(emptyResults.join("\n"));
+    throw new ScrapeError(emptyResults.join('\n'));
   }
 
   return validatedPageInfo;
