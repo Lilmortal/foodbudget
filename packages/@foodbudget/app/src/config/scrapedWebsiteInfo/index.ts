@@ -1,1 +1,1 @@
-export { default } from "./scrapedWebsiteInfo";
+export { default } from './scrapedWebsiteInfo';

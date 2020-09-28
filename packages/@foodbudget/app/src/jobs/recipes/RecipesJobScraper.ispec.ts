@@ -1,28 +1,28 @@
-import path from "path";
-import { WebPageScrapedRecipeInfo } from "./RecipesJob.types";
-import { RecipesJobScraper } from "./RecipesJobScraper";
+import path from 'path';
+import { WebPageScrapedRecipeInfo } from './RecipesJob.types';
+import { RecipesJobScraper } from './RecipesJobScraper';
 
-describe("recipes job scraper", () => {
-  it("should scrape and return the recipes", async () => {
+describe('recipes job scraper', () => {
+  it('should scrape and return the recipes', async () => {
     const scrapedRecipeFilePath = `file:${path.join(
       __dirname,
-      "__mocks__/mockRecipeWebsite.html"
+      '__mocks__/mockRecipeWebsite.html',
     )}`;
 
     const scrapedWebsiteInfo: WebPageScrapedRecipeInfo = {
       url: scrapedRecipeFilePath,
       prepTimeSelector: {
-        class: ".prepTime",
+        class: '.prepTime',
       },
       servingsSelector: {
-        class: ".servings",
+        class: '.servings',
         substring: {
           start: 12,
           end: 13,
         },
       },
       recipeNameSelector: {
-        class: ".recipeName",
+        class: '.recipeName',
         index: 1,
         substring: {
           start: 13,
@@ -30,7 +30,7 @@ describe("recipes job scraper", () => {
         },
       },
       ingredientsSelector: {
-        class: ".ingredients",
+        class: '.ingredients',
       },
     };
 
@@ -38,10 +38,10 @@ describe("recipes job scraper", () => {
 
     expect(results).toEqual({
       link: scrapedRecipeFilePath,
-      prepTime: ["4 mins"],
-      servings: ["5"],
-      name: "Big Mac",
-      ingredients: ["Pig", "Lettuce"],
+      prepTime: ['4 mins'],
+      servings: ['5'],
+      name: 'Big Mac',
+      ingredients: ['Pig', 'Lettuce'],
     });
   });
 });

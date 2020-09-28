@@ -1,1 +1,1 @@
-export { StatusError } from "./StatusError";
+export { StatusError, ErrorType } from './StatusError';

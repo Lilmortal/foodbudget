@@ -1,17 +1,24 @@
-import nodeMailer from "nodemailer";
-import util from "util";
-import { default as MailTransporter } from "nodemailer/lib/mailer";
-import SESTransport from "nodemailer/lib/ses-transport";
-import SMTPTransport from "nodemailer/lib/smtp-transport";
-import { Service, Mailer, MailAuth, MailerParams, Mail } from "./Emailer.types";
-import { EmailError } from "./EmailError";
+import nodeMailer from 'nodemailer';
+import util from 'util';
+import MailTransporter from 'nodemailer/lib/mailer';
+import SESTransport from 'nodemailer/lib/ses-transport';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import {
+  Service, Mailer, MailAuth, MailerParams, Mail,
+} from './Emailer.types';
+import EmailError from './EmailError';
 
-export class Emailer implements Mailer {
+class Emailer implements Mailer {
   service: Service;
+
   host?: string;
+
   port: number;
+
   secure: boolean;
+
   auth: MailAuth;
+
   #transporter: MailTransporter;
 
   private constructor({
@@ -36,18 +43,22 @@ export class Emailer implements Mailer {
     });
   }
 
-  static async create({ service, host, port, secure, auth }: MailerParams) {
-    const emailer = new Emailer({ service, host, port, secure, auth });
+  static async create({
+    service, host, port, secure, auth,
+  }: MailerParams): Promise<Mailer> {
+    const emailer = new Emailer({
+      service, host, port, secure, auth,
+    });
 
     await emailer.verify();
 
     return emailer;
   }
 
-  static async createTestAccount() {
+  static async createTestAccount(): Promise<Mailer> {
     const testAccount = await nodeMailer.createTestAccount();
     const emailer = new Emailer({
-      service: "smtp.ethereal.email",
+      service: 'smtp.ethereal.email',
       host: testAccount.smtp.host,
       port: testAccount.smtp.port,
       secure: testAccount.smtp.secure,
@@ -62,11 +73,11 @@ export class Emailer implements Mailer {
     return emailer;
   }
 
-  async verify() {
+  async verify(): Promise<boolean> {
     let isVerified = false;
     try {
       const promisifiedVerify = util.promisify<boolean>(
-        this.#transporter.verify
+        this.#transporter.verify,
       );
       isVerified = await promisifiedVerify();
     } catch (err) {
@@ -85,13 +96,15 @@ export class Emailer implements Mailer {
     const info:
       | SESTransport.SentMessageInfo
       | SMTPTransport.SentMessageInfo = await this.#transporter.sendMail({
-      from,
-      to,
-      subject,
-      text,
-      html,
-    });
+        from,
+        to,
+        subject,
+        text,
+        html,
+      });
 
     return nodeMailer.getTestMessageUrl(info);
   }
 }
+
+export default Emailer;

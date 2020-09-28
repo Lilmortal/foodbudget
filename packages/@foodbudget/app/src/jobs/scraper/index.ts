@@ -1,3 +1,3 @@
-export type { DocumentNode } from "./Scrape.types";
-export { Scraper } from "./Scraper";
-export { ScrapeError } from "./ScrapeError";
+export type { DocumentNode } from './Scrape.types';
+export { default as Scraper } from './Scraper';
+export { default as ScrapeError } from './ScrapeError';

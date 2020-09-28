@@ -1,8 +1,10 @@
-import { StatusError } from "../../shared/errors";
+import { StatusError } from '../../shared/errors';
 
-export class AgendaJobError extends StatusError {
+class AgendaJobError extends StatusError {
   constructor(message: string) {
     super(200, message);
-    this.type = "AGENDA_JOB_ERROR";
+    this.type = 'AGENDA_JOB_ERROR';
   }
 }
+
+export default AgendaJobError;

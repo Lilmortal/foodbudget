@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:12.14.1
+      - image: circleci/node:14.11.0
     steps:
       - checkout
       - restore_cache:
@@ -15,9 +15,9 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-  release:
+  lint:
     docker:
-      - image: circleci/node:12.14.1
+      - image: circleci/node:14.11.0
     steps:
       - checkout
       - restore_cache:
@@ -27,8 +27,34 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      - run: git config --global user.email "jacktan165@gmail.com"
-      - run: git config --global user.name "Jack Tan"
+      - run: yarn lint
+  test:
+    docker:
+      - image: circleci/node:14.11.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - add_ssh_keys:
+          fingerprints:
+            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
+      - run: yarn test
+  release:
+    docker:
+      - image: circleci/node:14.11.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - add_ssh_keys:
+          fingerprints:
+            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
+      - run: git config --global user.email "thefoodbudget@gmail.com"
+      - run: git config --global user.name "Food Budget"
       - run: yarn release
       - run: git push --follow-tags origin master
 workflows:
@@ -36,9 +62,16 @@ workflows:
   verify:
     jobs:
       - build
+      - lint:
+          requires:
+          - build
+      - test:
+          requires:
+          - build
       - release:
           filters:
             branches:
               only: master
           requires:
-            - build
+            - lint
+            - test

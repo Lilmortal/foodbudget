@@ -9,8 +9,29 @@ export interface MailAuth {
   pass: string;
 }
 
+export interface Mail {
+  /**
+   * Sender email address.
+   */
+  from: string;
+  /**
+   * A list of receiver email addresses.
+   */
+  to: string | string[];
+  /** The title of the email. */
+  subject: string;
+  /**
+   * The body content of the email in text format.
+   */
+  text: string;
+  /**
+   * The body content of the email in html format.
+   */
+  html?: string;
+}
+
 // When adding a new Service type, remember to update the validation in config.
-export type Service = "gmail" | "smtp.ethereal.email";
+export type Service = 'gmail' | 'smtp.ethereal.email';
 
 export interface MailerParams {
   /**
@@ -49,24 +70,3 @@ export interface MailerService {
 }
 
 export interface Mailer extends MailerParams, MailerService {}
-
-export interface Mail {
-  /**
-   * Sender email address.
-   */
-  from: string;
-  /**
-   * A list of receiver email addresses.
-   */
-  to: string | string[];
-  /** The title of the email. */
-  subject: string;
-  /**
-   * The body content of the email in text format.
-   */
-  text: string;
-  /**
-   * The body content of the email in html format.
-   */
-  html?: string;
-}

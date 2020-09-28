@@ -1,21 +1,24 @@
-import { errors as puppeteerErrors } from "puppeteer";
-import config, { Config } from "../../config";
-import { Recipe } from "../../repository/recipe";
-import { RepositoryError } from "../../repository/RepositoryError";
-import { Repository } from "../../repository/types";
-import { EmailError, Mail } from "../../services/email";
-import { Mailer } from "../../services/email/Emailer.types";
-import { ScrapeError } from "../scraper/ScrapeError";
+import { errors as puppeteerErrors } from 'puppeteer';
+import { Config } from '../../config';
+import { Recipe } from '../../repository/recipe';
+import { Repository, RepositoryError } from '../../repository';
+import { EmailError, Mail, Mailer } from '../../services/email';
+import { ScrapeError } from '../scraper';
 import {
   ScraperParams,
   ScraperJob,
   WebPageScrapedRecipeInfo,
-} from "./RecipesJob.types";
-import { validate } from "./RecipesJob.utils";
-import { RecipesJobScraper } from "./RecipesJobScraper";
+} from './RecipesJob.types';
+import { validate } from './RecipesJob.utils';
+import { RecipesJobScraper } from './RecipesJobScraper';
 
-export class RecipesJob implements ScraperJob {
+class RecipesJob implements ScraperJob {
+  interval = '10 seconds';
+
+  definition='Recipe scrape'
+
   recipeRepository: Repository<Recipe>;
+
   emailer: Mailer;
 
   constructor({ recipeRepository, emailer }: ScraperParams) {
@@ -23,29 +26,24 @@ export class RecipesJob implements ScraperJob {
     this.emailer = emailer;
   }
 
-  get interval() {
-    return "10 seconds";
-  }
-
-  get definition() {
-    return "Recipe scrape";
-  }
-
   async scrape(
     scrapedWebsiteInfo: WebPageScrapedRecipeInfo,
     retries: number
   ): Promise<Recipe>;
+
   async scrape(
     scrapedWebsiteInfo: WebPageScrapedRecipeInfo[],
     retries: number
   ): Promise<Recipe[]>;
+
   async scrape(
     scrapedWebsiteInfo: WebPageScrapedRecipeInfo | WebPageScrapedRecipeInfo[],
     retries: number
   ): Promise<Recipe | Recipe[]>;
+
   async scrape(
     scrapedWebsiteInfo: WebPageScrapedRecipeInfo | WebPageScrapedRecipeInfo[],
-    retries: number = 3
+    retries = 3,
   ): Promise<Recipe | Recipe[]> {
     let recipes: Recipe | Recipe[];
     try {
@@ -74,7 +72,7 @@ export class RecipesJob implements ScraperJob {
           throw new ScrapeError(err.message);
         }
 
-        return this.scrape(scrapedWebsiteInfo, --retries);
+        return this.scrape(scrapedWebsiteInfo, retries - 1);
       }
       throw new ScrapeError(err);
     }
@@ -82,30 +80,26 @@ export class RecipesJob implements ScraperJob {
     return recipes;
   }
 
-  async save(recipes: Recipe | Recipe[]) {
+  async save(recipes: Recipe | Recipe[]): Promise<void> {
     try {
       await this.recipeRepository.create(recipes);
     } catch (err) {
       throw new RepositoryError(err);
     }
-
-    return true;
   }
 
-  async notify(recipes: Recipe | Recipe[]) {
+  async notify(recipes: Recipe | Recipe[], mailParticipants: Pick<Mail, 'from' | 'to'>): Promise<void> {
     const getConfirmationMail = (recipe: Recipe): Mail => ({
-      from: config.email.user,
-      to: config.email.user,
+
       subject: `recipe ${recipe.name} has been scraped.`,
-      text: "Now we just have to manuallly input the remaining criterias.",
+      text: 'Now we just have to manuallly input the remaining criterias.',
+      ...mailParticipants,
     });
 
     try {
       if (Array.isArray(recipes)) {
         await Promise.all(
-          recipes.map((recipe) => {
-            this.emailer.send(getConfirmationMail(recipe));
-          })
+          recipes.map((recipe) => this.emailer.send(getConfirmationMail(recipe))),
         );
       } else {
         this.emailer.send(getConfirmationMail(recipes));
@@ -113,25 +107,28 @@ export class RecipesJob implements ScraperJob {
     } catch (err) {
       throw new EmailError(err);
     }
-
-    return true;
   }
 
-  async start(config: Config) {
+  async start(config: Config): Promise<void> {
     const recipes = await this.scrape(
       config.scrapedWebsiteInfo,
-      config.headlessBrowser.retries
+      config.headlessBrowser.retries,
     );
 
-    console.log("Successfully scraped recipes...");
+    console.log('Successfully scraped recipes...');
     console.log(recipes);
 
     await this.save(recipes);
 
-    console.log("recipes saved.");
+    console.log('recipes saved.');
 
-    await this.notify(recipes);
+    await this.notify(recipes, {
+      from: config.email.user,
+      to: config.email.user,
+    });
 
-    console.log("recipe emails sent.");
+    console.log('recipe emails sent.');
   }
 }
+
+export default RecipesJob;

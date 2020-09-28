@@ -1,32 +1,32 @@
-import { WebPageScrapedRecipeInfo } from "../../jobs/recipes";
+import { WebPageScrapedRecipeInfo } from '../../jobs/recipes';
 
 const pageInfo: WebPageScrapedRecipeInfo[] = [
   {
     url:
-      "https://www.recipes.co.nz/shop/EVERYDAY/BalsamicTomatoSlowCookerLambShanks.html",
+      'https://www.recipes.co.nz/shop/EVERYDAY/BalsamicTomatoSlowCookerLambShanks.html',
     prepTimeSelector: {
-      class: ".icon_wrapper .left_col .icon .label",
+      class: '.icon_wrapper .left_col .icon .label',
       index: 0,
       substring: {
         start: 6,
       },
     },
     servingsSelector: {
-      class: ".icon_wrapper .left_col .icon .label",
+      class: '.icon_wrapper .left_col .icon .label',
       index: 2,
       substring: {
         start: 6,
       },
     },
     recipeNameSelector: {
-      class: ".product_info .title",
+      class: '.product_info .title',
       index: 0,
       substring: {
         start: 0,
       },
     },
     ingredientsSelector: {
-      class: ".ingredients ul li",
+      class: '.ingredients ul li',
     },
   },
 ];

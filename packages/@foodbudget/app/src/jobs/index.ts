@@ -1,11 +1,11 @@
-import config from "../config";
+import config from '../config';
 
-import { Recipe } from "../repository/recipe";
-import { Repository } from "../repository/types";
-import { Mailer } from "../services/email/Emailer.types";
-import { AgendaJob, AgendaJobError } from "./agendaJob";
-import { RecipesJob } from "./recipes";
-import { Job } from "./shared/Job.type";
+import { Recipe } from '../repository/recipe';
+import { Repository } from '../repository';
+import { Mailer } from '../services/email';
+import { AgendaJob, AgendaJobError } from './agendaJob';
+import { RecipesJob } from './recipes';
+import { Job } from './shared';
 
 interface Jobs {
   recipeRepository: Repository<Recipe>;
@@ -17,14 +17,14 @@ const run = (agenda: AgendaJob) => async (...jobs: Job[]) => {
     jobs.map(async (job) => {
       await agenda.createJob(
         job.interval,
-        async () => await job.start(config),
-        job.definition
+        async () => job.start(config),
+        job.definition,
       );
-    })
+    }),
   );
 };
 
-const jobs = async ({ recipeRepository, emailer }: Jobs) => {
+const jobs = async ({ recipeRepository, emailer }: Jobs): Promise<void> => {
   const recipesJob = new RecipesJob({ recipeRepository, emailer });
 
   try {

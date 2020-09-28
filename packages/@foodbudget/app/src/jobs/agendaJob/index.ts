@@ -1,2 +1,2 @@
-export { AgendaJob } from "./AgendaJob";
-export { AgendaJobError } from "./AgendaJobError";
+export { default as AgendaJob } from './AgendaJob';
+export { default as AgendaJobError } from './AgendaJobError';

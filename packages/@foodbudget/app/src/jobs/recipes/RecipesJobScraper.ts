@@ -1,5 +1,5 @@
-import { DocumentNode, Scraper } from "../scraper";
-import { ScrapedRecipe, WebPageScrapedRecipeInfo } from "./RecipesJob.types";
+import { DocumentNode, Scraper } from '../scraper';
+import { ScrapedRecipe, WebPageScrapedRecipeInfo } from './RecipesJob.types';
 
 const scrapeRecipes = async (pageInfo: string) => {
   // Unfortunately we have to move these functions inside this scope.
@@ -8,7 +8,7 @@ const scrapeRecipes = async (pageInfo: string) => {
   // are not defined.
   const getDocumentNodeTexts = (nodeSelector: DocumentNode) => {
     const nodeList: NodeListOf<HTMLElement> = document.querySelectorAll(
-      nodeSelector.class
+      nodeSelector.class,
     );
 
     let nodeText: string | string[];
@@ -16,15 +16,13 @@ const scrapeRecipes = async (pageInfo: string) => {
       // It's not an array, hence treat it like a single node.
       nodeText = nodeList[nodeSelector.index].innerText.substring(
         nodeSelector.substring?.start || 0,
-        nodeSelector.substring?.end
+        nodeSelector.substring?.end,
       );
     } else {
-      nodeText = Array.from(nodeList).map((node) =>
-        node.innerText.substring(
-          nodeSelector.substring?.start || 0,
-          nodeSelector.substring?.end
-        )
-      );
+      nodeText = Array.from(nodeList).map((node) => node.innerText.substring(
+        nodeSelector.substring?.start || 0,
+        nodeSelector.substring?.end,
+      ));
     }
 
     return nodeText;
@@ -47,7 +45,7 @@ const scrapeRecipes = async (pageInfo: string) => {
 };
 
 const recipeJobScraper = new Scraper<WebPageScrapedRecipeInfo, ScrapedRecipe>(
-  scrapeRecipes
+  scrapeRecipes,
 );
 
 export interface RecipesJobScraperServices {
@@ -65,7 +63,7 @@ async function scrape(
   scrapedInfo: WebPageScrapedRecipeInfo[]
 ): Promise<ScrapedRecipe[]>;
 async function scrape(
-  scrapedInfo: WebPageScrapedRecipeInfo | WebPageScrapedRecipeInfo[]
+  scrapedInfo: WebPageScrapedRecipeInfo | WebPageScrapedRecipeInfo[],
 ): Promise<ScrapedRecipe | ScrapedRecipe[]> {
   return recipeJobScraper.scrape(scrapedInfo);
 }

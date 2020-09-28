@@ -1,13 +1,10 @@
-import { PrismaClient } from "@prisma/client";
-import config from "./config";
-import jobs from "./jobs";
-import { Recipe, RecipeRepository } from "./repository/recipe";
-import { RepositoryError } from "./repository/RepositoryError";
-import { Emailer, EmailError } from "./services/email";
-import { handleError } from "./app.utils";
-import { Mailer } from "./services/email/Emailer.types";
-import { Repository } from "./repository/types";
-import { StatusError } from "./shared/errors";
+import { PrismaClient } from '@prisma/client';
+import config from './config';
+import jobs from './jobs';
+import { Recipe, RecipeRepository } from './repository/recipe';
+import { Emailer, EmailError, Mailer } from './services/email';
+import { handleError } from './app.utils';
+import { Repository, RepositoryError } from './repository';
 
 let emailer: Mailer | undefined;
 (async () => {
@@ -22,7 +19,7 @@ let emailer: Mailer | undefined;
 
   let recipeRepository: Repository<Recipe>;
   try {
-    const prisma = new PrismaClient({ log: ["query"] });
+    const prisma = new PrismaClient({ log: ['query'] });
 
     recipeRepository = new RecipeRepository(prisma);
   } catch (err) {
@@ -30,4 +27,4 @@ let emailer: Mailer | undefined;
   }
 
   await jobs({ recipeRepository, emailer });
-})().catch(async (err) => await handleError({ err, emailer }));
+})().catch(async (err) => handleError({ err, emailer }));
