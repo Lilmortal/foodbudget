@@ -1,10 +1,12 @@
 import { PrismaClient } from '@prisma/client';
+import express from 'express';
 import config from './config';
 import jobs from './jobs';
 import { Recipe, RecipeRepository } from './repository/recipe';
 import { Emailer, EmailError, Mailer } from './services/email';
-import { handleError } from './app.utils';
 import { Repository, RepositoryError } from './repository';
+import loaders from './loaders';
+import { StatusError } from './utils/errors';
 
 let emailer: Mailer | undefined;
 (async () => {
@@ -26,5 +28,15 @@ let emailer: Mailer | undefined;
     throw new RepositoryError(err);
   }
 
-  await jobs({ recipeRepository, emailer });
-})().catch(async (err) => handleError({ err, emailer }));
+  // await jobs({ recipeRepository, emailer });
+
+  const app = express();
+  await loaders({ app, config });
+
+  app.listen(config.api.port, (err: Error) => {
+    console.log(`Server is up and running at port ${config.api.port}`);
+    if (err) {
+      throw new StatusError(500, err.message);
+    }
+  });
+})();
