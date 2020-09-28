@@ -63,10 +63,10 @@ workflows:
     jobs:
       - build
       - lint:
-        requires:
+          requires:
           - build
       - test:
-        requires:
+          requires:
           - build
       - release:
           filters:
