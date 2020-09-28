@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.2](https://github.com/Lilmortal/foodbudget/compare/v1.7.1...v1.7.2) (2020-09-28)
+
+
+### Bug Fixes
+
+* dont send an email if there is an email error ([df8ed84](https://github.com/Lilmortal/foodbudget/commit/df8ed84bde3c1d2d5b97019abb588d6402387e09))
+
 ### [1.7.1](https://github.com/Lilmortal/foodbudget/compare/v1.7.0...v1.7.1) (2020-09-27)
 
 ## [1.7.0](https://github.com/Lilmortal/foodbudget/compare/v1.6.0...v1.7.0) (2020-09-26)
