@@ -25,13 +25,13 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "yarn lint && run-p -c 'test*'"
+      "pre-commit": "yarn lint && run-p -c 'test:*'"
     }
   },
   "scripts": {
     "setup": "docker-compose down -v && docker-compose up -d && lerna run setup --stream",
     "start": "lerna run start --stream --parallel",
-    "test": "lerna run test --stream --parallel",
+    "test:unit": "lerna run test --stream --parallel",
     "test:integration": "lerna run test:integration --stream --parallel",
     "lint": "lerna run lint --stream --parallel",
     "release": "lerna publish --no-commit-hooks"

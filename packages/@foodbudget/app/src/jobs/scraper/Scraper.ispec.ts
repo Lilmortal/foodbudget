@@ -1,6 +1,14 @@
 import Scraper from './Scraper';
 
 describe('scraper', () => {
+  beforeEach(() => {
+    jest.setTimeout(30000);
+  });
+
+  afterEach(() => {
+    jest.setTimeout(5000);
+  });
+
   it('should run the given function and return the computed result', async () => {
     const scrapeFunc = async (info: string) => {
       const parsedInfo = JSON.parse(info);

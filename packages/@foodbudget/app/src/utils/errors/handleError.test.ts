@@ -1,6 +1,6 @@
-import * as utils from './app.utils';
-import { EmailError, Mailer } from './services/email';
-import { StatusError } from './shared/errors';
+import * as utils from './handleError';
+import { EmailError, Mailer } from '../../services/email';
+import { StatusError } from './StatusError';
 
 const getMockEmailer = (implementation?: Partial<Mailer>) => jest.fn<Mailer, []>(() => ({
   service: 'gmail',

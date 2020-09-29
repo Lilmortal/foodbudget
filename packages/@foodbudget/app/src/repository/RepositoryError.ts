@@ -1,4 +1,4 @@
-import { StatusError } from '../shared/errors';
+import { StatusError } from '../utils/errors';
 
 class RepositoryError extends StatusError {
   constructor(message: string) {

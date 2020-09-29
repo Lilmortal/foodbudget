@@ -1,8 +1,8 @@
-import { AgendaJobError } from './jobs/agendaJob';
-import { ScrapeError } from './jobs/scraper';
-import { StatusError } from './shared/errors';
-import { RepositoryError } from './repository';
-import { EmailError, Mail, Mailer } from './services/email';
+import { AgendaJobError } from '../../jobs/agendaJob';
+import { ScrapeError } from '../../jobs/scraper';
+import { StatusError } from './StatusError';
+import { RepositoryError } from '../../repository';
+import { EmailError, Mail, Mailer } from '../../services/email';
 
 const isStatusError = (err: unknown): err is StatusError => (err as StatusError).status !== undefined;
 
@@ -12,7 +12,7 @@ interface HandleErrorParams {
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export const handleError = async ({ err, emailer }: HandleErrorParams): Promise<void> => {
+export const handleError = async ({ err, emailer }: HandleErrorParams): Promise<StatusError> => {
   const sendErrorEmail = async (
     subject: string,
     text: string,
@@ -42,37 +42,37 @@ export const handleError = async ({ err, emailer }: HandleErrorParams): Promise<
     if (err instanceof ScrapeError) {
       console.log('Scraping error. \n', err.message);
       await sendErrorEmail('Error', '');
-      return;
+      return err;
     }
 
     if (err instanceof AgendaJobError) {
       console.log('Job scheduler error. \n', err.message);
       await sendErrorEmail('Error', '');
-      return;
+      return err;
     }
 
     if (err instanceof RepositoryError) {
       console.log('Database error. \n', err.message);
       await sendErrorEmail('Error', '');
-      return;
+      return err;
     }
 
     if (err instanceof EmailError) {
       console.log('Email service error. \n', err.message);
-      return;
+      return err;
     }
 
     if (err instanceof StatusError) {
       console.log(err.message);
       await sendErrorEmail('Error', '');
+      return err;
     }
-  } else {
-    if (err instanceof Error) {
-      console.log(err.message);
-      await sendErrorEmail('Error', '');
-      return;
-    }
-    console.log(err);
+  } else if (err instanceof Error) {
+    console.log(err.message);
     await sendErrorEmail('Error', '');
+    return new StatusError(500, err.message);
   }
+  console.log(err);
+  await sendErrorEmail('Error', '');
+  return new StatusError(500, `${err}`);
 };

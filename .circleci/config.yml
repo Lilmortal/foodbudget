@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:14.11.0
+      - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
       - restore_cache:
@@ -17,7 +17,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
   lint:
     docker:
-      - image: circleci/node:14.11.0
+      - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
       - restore_cache:
@@ -28,9 +28,9 @@ jobs:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: yarn lint
-  test:
+  unitTest:
     docker:
-      - image: circleci/node:14.11.0
+      - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
       - restore_cache:
@@ -40,10 +40,23 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      - run: yarn test
+      - run: yarn test:unit
+  integrationTest:
+    docker:
+      - image: circleci/node:14.11.0-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - add_ssh_keys:
+          fingerprints:
+            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
+      - run: yarn test:integration      
   release:
     docker:
-      - image: circleci/node:14.11.0
+      - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
       - restore_cache:
@@ -65,7 +78,10 @@ workflows:
       - lint:
           requires:
           - build
-      - test:
+      - unitTest:
+          requires:
+          - build
+      - integrationTest:
           requires:
           - build
       - release:
@@ -74,4 +90,5 @@ workflows:
               only: master
           requires:
             - lint
-            - test
+            - unitTest
+            - integrationTest

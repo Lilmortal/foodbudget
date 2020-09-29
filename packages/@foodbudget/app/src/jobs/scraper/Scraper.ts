@@ -15,7 +15,7 @@ function setupHeadlessBrowser<T extends { url: string }, R>(
 ) {
   return {
     scrape: async (scrapedDocumentNodes: T | T[]): Promise<R | R[]> => {
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
       const page = await browser.newPage();
 
       const scrape = async (scrapedPageInfo: T): Promise<R> => {

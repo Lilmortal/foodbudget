@@ -19,13 +19,19 @@
   "dependencies": {
     "@prisma/client": "^2.6.2",
     "agenda": "^3.1.0",
+    "apollo-server-express": "^2.18.1",
+    "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-serve-static-core": "^0.1.1",
+    "graphql": "^15.3.0",
     "nodemailer": "^6.4.11",
     "puppeteer": "^5.3.0"
   },
   "devDependencies": {
     "@prisma/cli": "^2.6.2",
     "@types/agenda": "^2.0.9",
+    "@types/express-serve-static-core": "^4.17.13",
     "@types/jest": "^26.0.14",
     "@types/nodemailer": "^6.4.0",
     "@types/puppeteer": "^3.0.2",

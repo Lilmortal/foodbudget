@@ -15,9 +15,15 @@ export interface HeadlessBrowserConfig {
   retries: number;
 }
 
+export interface ApiConfig {
+  prefix: string;
+  port: number;
+}
+
 export interface Config {
   agenda: AgendaConfig;
   email: EmailConfig;
   scrapedWebsiteInfo: WebPageScrapedRecipeInfo[];
   headlessBrowser: HeadlessBrowserConfig;
+  api: ApiConfig;
 }

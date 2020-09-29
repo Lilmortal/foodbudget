@@ -42,10 +42,6 @@ const validate = (config: Config) => {
     errors.push('EMAIL_PASSWORD is missing.');
   }
 
-  if (!config.headlessBrowser.retries) {
-    errors.push('HEADLESS_BROWSER_RETRIES is missing.');
-  }
-
   if (errors.length > 0) {
     console.error(
       'There are errors attempting to retrieve environment variables.',
@@ -74,7 +70,11 @@ const config: Config = {
   },
   scrapedWebsiteInfo: [...scrapedWebsiteInfo],
   headlessBrowser: {
-    retries: Number(process.env.HEADLESS_BROWSER_RETRIES),
+    retries: 3,
+  },
+  api: {
+    prefix: '/',
+    port: 8080,
   },
 };
 
