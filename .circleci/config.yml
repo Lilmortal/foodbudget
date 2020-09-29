@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:14.11.0
+      - image: circleci/node:14.11.0-latest-browsers
     steps:
       - checkout
       - restore_cache:
@@ -17,7 +17,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
   lint:
     docker:
-      - image: circleci/node:14.11.0
+      - image: circleci/node:14.11.0-latest-browsers
     steps:
       - checkout
       - restore_cache:
@@ -30,7 +30,7 @@ jobs:
       - run: yarn lint
   unitTest:
     docker:
-      - image: circleci/node:14.11.0
+      - image: circleci/node:14.11.0-latest-browsers
     steps:
       - checkout
       - restore_cache:
@@ -43,7 +43,7 @@ jobs:
       - run: yarn test:unit
   integrationTest:
     docker:
-      - image: circleci/node:14.11.0
+      - image: circleci/node:14.11.0-latest-browsers
     steps:
       - checkout
       - restore_cache:
@@ -56,7 +56,7 @@ jobs:
       - run: yarn test:integration      
   release:
     docker:
-      - image: circleci/node:14.11.0
+      - image: circleci/node:14.11.0-latest-browsers
     steps:
       - checkout
       - restore_cache:
