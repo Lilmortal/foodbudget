@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client';
-import { Repository } from '../Repository.types';
-import { Recipe } from './recipe.types';
+import Repository from '../Repository.types';
+import { Recipe } from './Recipe.types';
 
-class RecipeRepository implements Repository<Recipe> {
-  #prisma: PrismaClient;
+export default class RecipeRepository implements Repository<Recipe> {
+  readonly #prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
     this.#prisma = prisma;
@@ -42,5 +42,3 @@ class RecipeRepository implements Repository<Recipe> {
     }
   }
 }
-
-export default RecipeRepository;

@@ -10,11 +10,5 @@
       "message": "chore: [ci skip] publish",
       "allowBranch": "master"
     }
-  },
-  "ignoreChanges": [
-    "**/CHANGELOG.md",
-    "**/node_modules/**",
-    "**/package.json",
-    "**/*.md"
-  ]
+  }
 }

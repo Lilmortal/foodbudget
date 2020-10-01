@@ -3,22 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [1.2.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/app@1.1.0...@foodbudget/app@1.2.0) (2020-09-29)
-
-
-### Bug Fixes
-
-* added no-sandbox and disable-setuid-sandbox to puppeteer, update yarn.lock to latest version ([5299e93](https://github.com/Lilmortal/foodbudget/commit/5299e93bdc7f671790d629d455e4ac017e8094b8))
-
-
-### Features
-
-* added express POC ([c803a58](https://github.com/Lilmortal/foodbudget/commit/c803a5822b6ee91f4d8f283a373dbc72dea19b5a))
-
-
-
-
-
 # 1.1.0 (2020-09-28)
 
 

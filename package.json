@@ -1,8 +1,9 @@
 {
   "name": "foodbudget",
-  "version": "1.7.3",
+  "version": "1.7.0",
+  "main": "index.js",
   "repository": "https://github.com/Lilmortal/foodbudget.git",
-  "author": "The Food Budget <thefoodbudget@gmail.com>",
+  "author": "Jack Tan <jacktan165@gmail.com>",
   "license": "MIT",
   "private": true,
   "workspaces": [
@@ -10,16 +11,19 @@
   ],
   "devDependencies": {
     "@commitlint/config-conventional": "^9.1.2",
-    "@typescript-eslint/eslint-plugin": "^4.2.0",
-    "@typescript-eslint/parser": "^4.2.0",
+    "@types/jest": "^26.0.14",
+    "@typescript-eslint/eslint-plugin": "^4.3.0",
     "commitlint": "^9.1.2",
     "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.1",
     "husky": "^4.3.0",
+    "jest": "^26.4.2",
     "lerna": "^3.22.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
+    "standard-version": "^9.0.0",
+    "ts-jest": "^26.4.1",
     "typescript": "^4.0.2"
   },
   "husky": {
@@ -31,8 +35,9 @@
   "scripts": {
     "setup": "docker-compose down -v && docker-compose up -d && lerna run setup --stream",
     "start": "lerna run start --stream --parallel",
-    "test:unit": "lerna run test --stream --parallel",
-    "test:integration": "lerna run test:integration --stream --parallel",
+    "test:unit": "jest",
+    "test:integration": "jest --testRegex **/.*.ispec.ts",
+    "test:watch": "jest --watch",
     "lint": "lerna run lint --stream --parallel",
     "release": "lerna publish --no-commit-hooks"
   },

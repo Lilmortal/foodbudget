@@ -1,2 +1,1 @@
-export { default as RepositoryError } from './RepositoryError';
-export { Repository } from './Repository.types';
+export { default } from './Repository.types';
