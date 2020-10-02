@@ -59,7 +59,6 @@ export default class JobRecipesScraper implements JobScraperInterface<ScrapedRec
   async start(config: Config): Promise<void> {
     const scrapedRecipes = await this.scrape(config.scrapedRecipeElements);
 
-    console.log(scrapedRecipes);
     scrapedRecipes.forEach((scrapedRecipe) => {
       console.log('Successfully scraped recipes...');
 

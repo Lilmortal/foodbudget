@@ -36,7 +36,7 @@
     "setup": "docker-compose down -v && docker-compose up -d && lerna run setup --stream",
     "start": "lerna run start --stream --parallel",
     "test:unit": "jest",
-    "test:integration": "jest --testRegex **/.*.ispec.ts",
+    "test:integration": "jest --testRegex .*/src/.*.ispec.ts",
     "test:watch": "jest --watch",
     "lint": "lerna run lint --stream --parallel",
     "release": "lerna publish --no-commit-hooks"

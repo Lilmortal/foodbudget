@@ -1,20 +1,8 @@
 import path from 'path';
-import { OnScrape } from '../Scraper.types';
-import RecipesScraper from './RecipesScraper';
-import { ScrapedRecipe, ScrapedRecipeHTMLElements } from './RecipesScraper.types';
+import ImportedRecipesScraper from './ImportedRecipesScraper';
+import { ScrapedRecipeHTMLElements } from './RecipesScraper.types';
 
-const onScrape: OnScrape<ScrapedRecipe> = async () => ({
-  prepTime: '4 mins',
-  servings: '4',
-  name: 'Big Mac',
-  ingredients: ['Pig', 'Lettuce'],
-  link: 'recipe link',
-  cuisines: [],
-  diets: [],
-  allergies: [],
-});
-
-describe('recipes job scraper', () => {
+describe('imported recipes job scraper', () => {
   it('should scrape and return the recipes', async () => {
     const scrapedRecipeFilePath = `file:${path.join(
       __dirname,
@@ -25,9 +13,11 @@ describe('recipes job scraper', () => {
       url: scrapedRecipeFilePath,
       prepTimeHtmlElement: {
         class: '.prepTime',
+        index: 0,
       },
       servingsHtmlElement: {
         class: '.servings',
+        index: 0,
         substring: {
           start: 12,
           end: 13,
@@ -46,13 +36,12 @@ describe('recipes job scraper', () => {
       },
     };
 
-    const recipesScraper = new RecipesScraper(onScrape);
-    const results = await recipesScraper.scrape(scrapedWebsiteInfo);
+    const results = await ImportedRecipesScraper.scrape(scrapedWebsiteInfo);
 
     expect(results).toEqual({
-      link: 'recipe link',
+      link: scrapedRecipeFilePath,
       prepTime: '4 mins',
-      servings: 4,
+      servings: 5,
       name: 'Big Mac',
       ingredients: ['Pig', 'Lettuce'],
       cuisines: [],

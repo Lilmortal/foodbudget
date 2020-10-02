@@ -1,9 +1,9 @@
-import Emailer from './Emailer';
-import EmailError from '../../errors/src/types/EmailError';
+import { EmailError } from '@foodbudget/errors';
+import { Emailer } from './Emailer';
 
 describe('emailer', () => {
   beforeEach(() => {
-    jest.setTimeout(15000);
+    jest.setTimeout(20000);
   });
 
   afterEach(() => {
@@ -14,8 +14,8 @@ describe('emailer', () => {
     const emailer = await Emailer.createTestAccount();
 
     const url = await emailer.send({
-      from: emailer.auth.user,
-      to: emailer.auth.user,
+      from: 'test@test.com',
+      to: 'test@test.com',
       subject: 'Test',
       text: 'Text message',
       html: '<b>HTML</b>',

@@ -7,8 +7,7 @@ export default class CronJob implements CronServices {
 
   readonly #instance: Agenda;
 
-  // Agenda.Job
-  readonly #jobs: (() => Promise<any>)[] = [];
+  readonly #jobs: (() => Promise<Agenda.Job>)[] = [];
 
   constructor(agendaDatabaseUrl: string) {
     this.#agendaDatabaseUrl = agendaDatabaseUrl;
@@ -42,9 +41,9 @@ export default class CronJob implements CronServices {
     const pushJob = (job: Job) => {
       this.#instance.define(job.definition, async () => job.start(config));
 
-      // this.#jobs.push(async () => this.#instance.every(interval, definition));
+      this.#jobs.push(async () => this.#instance.every(job.interval, job.definition));
 
-      this.#jobs.push(async () => job.start(config));
+      // this.#jobs.push(async () => job.start(config));
 
       console.log(`"${job.definition}" has been added to the job scheduler queue...`);
     };

@@ -1,4 +1,5 @@
 import { Recipe } from '@foodbudget/app';
+import { ScrapeError } from '@foodbudget/errors';
 import Scraper from '../Scraper';
 import { OnScrape } from '../Scraper.types';
 import { ScrapedRecipe } from './RecipesScraper.types';
@@ -17,6 +18,12 @@ export const mapping = (scrapedRecipe: ScrapedRecipe): Recipe => {
     link: '',
   };
 
+  if (scrapedRecipe.link && !Array.isArray(scrapedRecipe.link)) {
+    recipe.link = scrapedRecipe.link;
+  } else {
+    validationErrors.push('link must be a non-empty string.');
+  }
+
   if (scrapedRecipe.prepTime && !Array.isArray(scrapedRecipe.prepTime)) {
     recipe.prepTime = scrapedRecipe.prepTime;
   } else {
@@ -24,7 +31,7 @@ export const mapping = (scrapedRecipe: ScrapedRecipe): Recipe => {
   }
 
   if (
-    scrapedRecipe.servings && !isNaN(Number(scrapedRecipe.servings))
+    scrapedRecipe.servings && !Array.isArray(scrapedRecipe.servings) && !isNaN(Number(scrapedRecipe.servings))
   ) {
     recipe.servings = Number(scrapedRecipe.servings);
   } else {
@@ -48,7 +55,7 @@ export const mapping = (scrapedRecipe: ScrapedRecipe): Recipe => {
   }
 
   if (validationErrors.length > 0) {
-    throw new Error(validationErrors.join('\n'));
+    throw new ScrapeError(validationErrors.join('\n'));
   }
 
   return recipe;

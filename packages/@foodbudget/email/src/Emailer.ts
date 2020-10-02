@@ -3,12 +3,13 @@ import util from 'util';
 import MailTransporter from 'nodemailer/lib/mailer';
 import SESTransport from 'nodemailer/lib/ses-transport';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { EmailError } from '@foodbudget/errors';
 import {
   Mailer, MailerParams, Mail,
 } from './Emailer.types';
 import config from './config';
 
-class Emailer implements Mailer {
+export class Emailer implements Mailer {
   readonly #transporter: MailTransporter;
 
   private constructor({
@@ -65,7 +66,7 @@ class Emailer implements Mailer {
       );
       isVerified = await promisifiedVerify();
     } catch (err) {
-      throw new Error(`Attempting to verify account failed:
+      throw new EmailError(`Attempting to verify account failed:
       ${err.message || err}`);
     }
     return isVerified;
