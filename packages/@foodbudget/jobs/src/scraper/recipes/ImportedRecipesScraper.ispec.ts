@@ -1,14 +1,15 @@
+import { ScrapeError } from '@foodbudget/errors';
 import path from 'path';
 import ImportedRecipesScraper from './ImportedRecipesScraper';
 import { ScrapedRecipeHTMLElements } from './RecipesScraper.types';
 
 describe('imported recipes job scraper', () => {
-  it('should scrape and return the recipes', async () => {
-    const scrapedRecipeFilePath = `file:${path.join(
-      __dirname,
-      '__mocks__/mockRecipeWebsite.html',
-    )}`;
+  const scrapedRecipeFilePath = `file:${path.join(
+    __dirname,
+    '__mocks__/mockRecipeWebsite.html',
+  )}`;
 
+  it('should scrape a mock website and return the mapped recipes', async () => {
     const scrapedWebsiteInfo: ScrapedRecipeHTMLElements = {
       url: scrapedRecipeFilePath,
       prepTimeHtmlElement: {
@@ -48,5 +49,26 @@ describe('imported recipes job scraper', () => {
       diets: [],
       allergies: [],
     });
+  });
+
+  it('should throw a ScrapeError if attempting to scrape an invalid document selector', async () => {
+    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements = {
+      url: scrapedRecipeFilePath,
+      prepTimeHtmlElement: {
+        class: '.invalidClass',
+      },
+      servingsHtmlElement: {
+        class: '.servings',
+
+      },
+      recipeNameHtmlElement: {
+        class: '.recipeName',
+      },
+      ingredientsHtmlElement: {
+        class: '.ingredients',
+      },
+    };
+
+    expect(ImportedRecipesScraper.scrape(scrapedWebsiteInfo)).toThrow(ScrapeError);
   });
 });

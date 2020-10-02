@@ -1,45 +1,31 @@
-import path from 'path';
+import { ScrapeError } from '@foodbudget/errors';
 import { OnScrape } from '../Scraper.types';
 import RecipesScraper from './RecipesScraper';
 import { ScrapedRecipe, ScrapedRecipeHTMLElements } from './RecipesScraper.types';
 
-const onScrape: OnScrape<ScrapedRecipe> = async () => ({
-  prepTime: '4 mins',
-  servings: '4',
-  name: 'Big Mac',
-  ingredients: ['Pig', 'Lettuce'],
-  link: 'recipe link',
-  cuisines: [],
-  diets: [],
-  allergies: [],
-});
-
 describe('recipes job scraper', () => {
-  it('should scrape and return the recipes', async () => {
-    const scrapedRecipeFilePath = `file:${path.join(
-      __dirname,
-      '__mocks__/mockRecipeWebsite.html',
-    )}`;
+  it('should scrape and return the mapped recipes given the onScrape function', async () => {
+    const onScrape: OnScrape<ScrapedRecipe> = async () => ({
+      prepTime: '4 mins',
+      servings: '4',
+      name: 'Big Mac',
+      ingredients: ['Pig', 'Lettuce'],
+      link: 'http://fakewebsite.com',
+      cuisines: [],
+      diets: [],
+      allergies: [],
+    });
 
     const scrapedWebsiteInfo: ScrapedRecipeHTMLElements = {
-      url: scrapedRecipeFilePath,
+      url: 'http://fakewebsite.com',
       prepTimeHtmlElement: {
         class: '.prepTime',
       },
       servingsHtmlElement: {
         class: '.servings',
-        substring: {
-          start: 12,
-          end: 13,
-        },
       },
       recipeNameHtmlElement: {
         class: '.recipeName',
-        index: 1,
-        substring: {
-          start: 13,
-          end: 20,
-        },
       },
       ingredientsHtmlElement: {
         class: '.ingredients',
@@ -50,7 +36,7 @@ describe('recipes job scraper', () => {
     const results = await recipesScraper.scrape(scrapedWebsiteInfo);
 
     expect(results).toEqual({
-      link: 'recipe link',
+      link: 'http://fakewebsite.com',
       prepTime: '4 mins',
       servings: 4,
       name: 'Big Mac',
@@ -59,5 +45,39 @@ describe('recipes job scraper', () => {
       diets: [],
       allergies: [],
     });
+  });
+
+  it('should throw a ScrapeError if prepTime is an empty string', async () => {
+    const onScrape: OnScrape<ScrapedRecipe> = async () => ({
+      prepTime: '',
+      servings: '4',
+      name: 'Big Mac',
+      ingredients: ['Pig', 'Lettuce'],
+      link: 'http://fakewebsite.com',
+      cuisines: [],
+      diets: [],
+      allergies: [],
+    });
+
+    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements = {
+      url: 'http://fakewebsite.com',
+      prepTimeHtmlElement: {
+        class: '.prepTime',
+      },
+      servingsHtmlElement: {
+        class: '.servings',
+      },
+      recipeNameHtmlElement: {
+        class: '.recipeName',
+      },
+      ingredientsHtmlElement: {
+        class: '.ingredients',
+      },
+    };
+
+    const recipesScraper = new RecipesScraper(onScrape);
+    const results = await recipesScraper.scrape(scrapedWebsiteInfo);
+
+    expect(results).toThrow(ScrapeError);
   });
 });

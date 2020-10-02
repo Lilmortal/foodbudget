@@ -12,14 +12,14 @@ export default class JobRecipesScraper implements JobScraperInterface<ScrapedRec
 
   definition = 'Job recipes';
 
-  readonly #serviceManager: ServiceManager;
+  readonly serviceManager: ServiceManager;
 
   readonly #emailer: Mailer;
 
   readonly #recipeScrapers: RecipesScraper<ScrapedRecipe>[];
 
   constructor({ serviceManager, emailer, recipeScrapers }: JobScraperParams) {
-    this.#serviceManager = serviceManager;
+    this.serviceManager = serviceManager;
     this.#emailer = emailer;
     this.#recipeScrapers = recipeScrapers;
   }
@@ -30,7 +30,7 @@ export default class JobRecipesScraper implements JobScraperInterface<ScrapedRec
 
   async save(recipes: Recipe | Recipe[]): Promise<void> {
     try {
-      await this.#serviceManager.recipeServices.save(recipes);
+      await this.serviceManager.recipeServices.save(recipes);
     } catch (err) {
       throw new RepositoryError(err);
     }

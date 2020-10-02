@@ -6,5 +6,5 @@ export interface RecipeServicesParams {
 }
 
 export interface RecipeServicesInterface {
-    save(recipe: Recipe): void;
+    save(recipe: Recipe | Recipe[]): Promise<void>;
 }

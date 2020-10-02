@@ -8,8 +8,8 @@ import setupHeadlessBrowser from './utils';
 jest.mock('./utils');
 
 describe('scraper', () => {
-  let onScrape: jest.Mock<(scrapeInfo: string) => Promise<ScrapedRecipe>>;
-  let mapping: jest.Mock<(scrapedResult: ScrapedRecipe) => Recipe>;
+  let mockOnScrape: jest.Mock<(scrapeInfo: string) => Promise<ScrapedRecipe>>;
+  let mockMapping: jest.Mock<(scrapedResult: ScrapedRecipe) => Recipe>;
   let scrapedRecipe: ScrapedRecipe;
   let recipe: Recipe;
 
@@ -36,8 +36,8 @@ describe('scraper', () => {
       allergies: [],
     };
 
-    onScrape = jest.fn(() => async () => scrapedRecipe);
-    mapping = jest.fn(() => () => recipe);
+    mockOnScrape = jest.fn(() => async () => scrapedRecipe);
+    mockMapping = jest.fn(() => () => recipe);
   });
 
   afterEach(() => {
@@ -49,7 +49,7 @@ describe('scraper', () => {
     (setupHeadlessBrowser as jest.Mock).mockImplementation(() => ({
       scrape: async () => scrapedRecipe,
     }));
-    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: onScrape(), mapping: mapping() });
+    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), mapping: mockMapping() });
 
     await expect(scraper.scrape(scrapedRecipeElements)).resolves.toEqual(recipe);
   });
@@ -59,14 +59,14 @@ describe('scraper', () => {
       scrape: async () => [scrapedRecipe],
     }));
 
-    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: onScrape(), mapping: mapping() });
+    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), mapping: mockMapping() });
 
     await expect(scraper.scrape(scrapedRecipeElements)).resolves.toEqual([recipe]);
   });
 
-  it('should retry scraping up to 3 times', async () => {
-    const throwAnErrorWhenAttemptingToScrape = (call: number) => {
-      for (let i = 0; i < call; i += 1) {
+  it('should retry scraping up to 4 times when it throws an error', async () => {
+    const throwAnErrorWhenAttemptingToScrape = (retries: number) => {
+      for (let i = 0; i < retries; i += 1) {
         (setupHeadlessBrowser as jest.Mock).mockImplementationOnce(() => ({
           scrape: async () => {
             throw new Error();
@@ -75,32 +75,33 @@ describe('scraper', () => {
       }
     };
 
-    throwAnErrorWhenAttemptingToScrape(3);
+    const retries = 4;
+    throwAnErrorWhenAttemptingToScrape(retries);
 
     (setupHeadlessBrowser as jest.Mock).mockImplementation(() => ({
       scrape: async () => scrapedRecipe,
     }));
 
-    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: onScrape(), mapping: mapping() });
+    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), mapping: mockMapping() });
     const spiedScrape = jest.spyOn(scraper, 'scrape');
 
     await expect(scraper.scrape(scrapedRecipeElements)).resolves.toEqual(recipe);
 
-    expect(spiedScrape).toBeCalledTimes(4);
+    expect(spiedScrape).toBeCalledTimes(retries);
   });
 
-  it('should throw a ScraperError after attempting to retry scraping up to 4 times', async () => {
+  it('should throw a ScrapeError after attempting to retry scraping up to 3 times', async () => {
     (setupHeadlessBrowser as jest.Mock).mockImplementation(() => ({
       scrape: async () => {
         throw new Error();
       },
     }));
 
-    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: onScrape(), mapping: mapping() });
+    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), mapping: mockMapping() });
     const spiedScrape = jest.spyOn(scraper, 'scrape');
 
-    await expect(scraper.scrape(scrapedRecipeElements)).rejects.toThrow(ScrapeError);
+    await expect(scraper.scrape(scrapedRecipeElements, 2)).rejects.toThrow(ScrapeError);
 
-    expect(spiedScrape).toBeCalledTimes(4);
+    expect(spiedScrape).toBeCalledTimes(3);
   });
 });
