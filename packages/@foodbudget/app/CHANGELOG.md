@@ -13,14 +13,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Code Refactoring
 
-* split app, email, errors and jobs into different modules ([4aa0637](https://github.com/Lilmortal/foodbudget/commit/4aa0637a3091058fa22f19478ed770557daac4f7))
+* Rework the Scrapers logic. Added a new ServiceManager, this will be exposed for other modules to use.
 
 
 ### BREAKING CHANGES
 
-* Rework the Scrapers logic.
-Added a new ServiceManager, this will be exposed for other modules to use.
-(WIP)
+* Split app, email, errors and jobs into different modules ([4aa0637](https://github.com/Lilmortal/foodbudget/commit/4aa0637a3091058fa22f19478ed770557daac4f7))
 
 
 
