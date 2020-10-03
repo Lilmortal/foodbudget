@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import { RepositoryError, ServiceError } from '@foodbudget/errors';
-import Repository from '../repository';
-import { Recipe, RecipeRepository } from '../repository/recipe';
 import { ServiceManager } from './serviceManager.types';
-import RecipeServices from '../services/recipe';
+import RecipeServices from '../recipes/services';
+import { Recipe, RecipeRepository } from '../recipes/repository';
+import Repository from '../types';
 
 const serviceManager = (): ServiceManager => {
   let recipeRepository: Repository<Recipe>;

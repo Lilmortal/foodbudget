@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import Repository from '../Repository.types';
+import Repository from '../../types/Repository.types';
 import { Recipe } from './Recipe.types';
 
 export default class RecipeRepository implements Repository<Recipe> {

@@ -1,7 +1,6 @@
 import { EmailError, RepositoryError } from '@foodbudget/errors';
 import { Mail, Mailer } from '@foodbudget/email';
-import { ServiceManager } from '@foodbudget/app';
-import { Recipe } from '../../../app/src/repository/recipe';
+import { Recipe, ServiceManager } from '@foodbudget/app';
 import { Config } from '../config';
 import { RecipesScraper, ScrapedRecipeHTMLElements } from '../scraper/recipes';
 import { JobScraperInterface, JobScraperParams } from './JobScraper.types';
@@ -28,7 +27,7 @@ export default class JobRecipesScraper implements JobScraperInterface<ScrapedRec
     return Promise.all(this.#recipeScrapers.map(async (scraper) => scraper.scrape(scrapedElements)));
   }
 
-  async save(recipes: Recipe | Recipe[]): Promise<void> {
+async save(recipes: Recipe | Recipe[]): Promise<void> {
     try {
       await this.serviceManager.recipeServices.save(recipes);
     } catch (err) {

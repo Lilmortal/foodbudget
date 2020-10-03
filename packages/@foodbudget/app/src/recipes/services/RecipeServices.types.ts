@@ -1,5 +1,5 @@
-import Repository from '../../repository';
-import { Recipe } from '../../repository/recipe';
+import Repository from '../../types';
+import { Recipe } from '../repository';
 
 export interface RecipeServicesParams {
     repository: Repository<Recipe>;
