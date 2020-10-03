@@ -1,4 +1,4 @@
 export { default } from './config';
 export {
-  AgendaConfig, EmailConfig, Config, ApiConfig,
+  Config, ApiConfig,
 } from './config.types';

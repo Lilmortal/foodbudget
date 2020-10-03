@@ -1,10 +1,10 @@
 import {
   Express, Request, Response, NextFunction,
 } from 'express-serve-static-core';
-import { StatusError } from '../utils/errors';
+import { StatusError } from '@foodbudget/errors';
 import { LoaderParams } from './loaders.type';
 import routes from '../routes';
-import { handleError } from '../utils/errors/handleError';
+import { handleError } from '../utils/handleError';
 
 const handleHealthChecks = (app: Express) => {
   app.get('/healthcheck', (_req, res) => {
@@ -26,9 +26,9 @@ const handleErrors = (app: Express) => {
   });
 };
 
-const expressLoader = ({ app, config }: LoaderParams): void => {
+const expressLoader = ({ app, config, serviceManager }: LoaderParams): void => {
   handleHealthChecks(app);
-  app.use(config.api.prefix, routes);
+  app.use(config.api.prefix, routes(serviceManager));
 
   handle404Routes(app);
   handleErrors(app);

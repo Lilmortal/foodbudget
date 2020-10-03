@@ -1,0 +1,11 @@
+{
+  "name": "@foodbudget/errors",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "author": "Jack Tan",
+  "license": "MIT",
+
+  "dependencies": {
+    "@foodbudget/email": "^1.0.0"
+  }
+}
