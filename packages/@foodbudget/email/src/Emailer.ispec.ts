@@ -3,7 +3,7 @@ import { Emailer } from './Emailer';
 
 describe('emailer', () => {
   beforeEach(() => {
-    jest.setTimeout(20000);
+    jest.setTimeout(30000);
   });
 
   afterEach(() => {

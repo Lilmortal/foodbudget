@@ -14,13 +14,13 @@ export default class JobRecipesScraper implements JobScraperInterface<ScrapedRec
 
   readonly serviceManager: ServiceManager;
 
-  readonly #emailer: Mailer;
+  readonly emailer: Mailer;
 
   readonly #recipeScrapers: RecipesScraper<ScrapedRecipe>[];
 
   constructor({ serviceManager, emailer, recipeScrapers }: JobScraperParams) {
     this.serviceManager = serviceManager;
-    this.#emailer = emailer;
+    this.emailer = emailer;
     this.#recipeScrapers = recipeScrapers;
   }
 
@@ -50,7 +50,7 @@ export default class JobRecipesScraper implements JobScraperInterface<ScrapedRec
       } else {
         recipeNames = recipes.name;
       }
-      this.#emailer.send(getConfirmationMail(recipeNames));
+      this.emailer.send(getConfirmationMail(recipeNames));
     } catch (err) {
       throw new EmailError(err);
     }
@@ -59,16 +59,16 @@ export default class JobRecipesScraper implements JobScraperInterface<ScrapedRec
   async start(config: Config): Promise<void> {
     const scrapedRecipes = await this.scrape(config.scrapedRecipeElements);
 
-    scrapedRecipes.forEach((scrapedRecipe) => {
+    await Promise.all(scrapedRecipes.map(async (scrapedRecipe) => {
       console.log('Successfully scraped recipes...');
 
-      this.save(scrapedRecipe);
+      await this.save(scrapedRecipe);
 
       console.log('recipes saved.');
 
-      this.notify(scrapedRecipe, { from: config.email.sender, to: config.email.receiver });
+      await this.notify(scrapedRecipe, { from: config.email.sender, to: config.email.receiver });
 
       console.log('recipe emails sent.');
-    });
+    }));
   }
 }

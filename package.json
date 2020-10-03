@@ -13,6 +13,7 @@
     "@commitlint/config-conventional": "^9.1.2",
     "@types/jest": "^26.0.14",
     "@typescript-eslint/eslint-plugin": "^4.3.0",
+    "@typescript-eslint/parser": "^4.3.0",
     "commitlint": "^9.1.2",
     "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
@@ -35,10 +36,12 @@
   "scripts": {
     "setup": "docker-compose down -v && docker-compose up -d && lerna run setup --stream",
     "start": "lerna run start --stream --parallel",
+    "start:cron": "lerna run start:cron --stream --parallel",
     "test:unit": "jest",
     "test:integration": "jest --testRegex .*/src/.*.ispec.ts",
-    "test:watch": "jest --watch",
-    "lint": "lerna run lint --stream --parallel",
+    "test": "jest --watch",
+    "lint:ts": "eslint **/*.ts",
+    "lint": "run-p -c 'lint:* --fix'",
     "release": "lerna publish --no-commit-hooks"
   },
   "commitlint": {

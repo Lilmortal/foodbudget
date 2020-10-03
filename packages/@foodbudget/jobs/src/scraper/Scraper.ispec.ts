@@ -36,7 +36,6 @@ describe('scraper', () => {
     const scraper = new Scraper<number, string>({ onScrape, mapping });
 
     const info = { url: 'https://doesnotexist.com', num: 2 };
-    const result = await scraper.scrape(info);
-    expect(result).toThrow(ScrapeError);
+    await expect(scraper.scrape(info)).rejects.toThrow(ScrapeError);
   });
 });

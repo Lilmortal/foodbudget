@@ -41,5 +41,7 @@ module.exports = {
         message: 'Do not commit fdescribe. Use describe instead.',
       },
     ],
+    semi: 'off',
+    '@typescript-eslint/semi': ['error'],
   },
 };

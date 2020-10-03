@@ -4,6 +4,14 @@ import RecipesScraper from './RecipesScraper';
 import { ScrapedRecipe, ScrapedRecipeHTMLElements } from './RecipesScraper.types';
 
 describe('recipes job scraper', () => {
+  beforeEach(() => {
+    jest.setTimeout(30000);
+  });
+
+  afterEach(() => {
+    jest.setTimeout(5000);
+  });
+
   it('should scrape and return the mapped recipes given the onScrape function', async () => {
     const onScrape: OnScrape<ScrapedRecipe> = async () => ({
       prepTime: '4 mins',
@@ -76,8 +84,7 @@ describe('recipes job scraper', () => {
     };
 
     const recipesScraper = new RecipesScraper(onScrape);
-    const results = await recipesScraper.scrape(scrapedWebsiteInfo);
 
-    expect(results).toThrow(ScrapeError);
+    await expect(recipesScraper.scrape(scrapedWebsiteInfo)).rejects.toThrow(ScrapeError);
   });
 });

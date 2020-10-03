@@ -85,9 +85,9 @@ describe('scraper', () => {
     const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), mapping: mockMapping() });
     const spiedScrape = jest.spyOn(scraper, 'scrape');
 
-    await expect(scraper.scrape(scrapedRecipeElements)).resolves.toEqual(recipe);
+    await expect(scraper.scrape(scrapedRecipeElements, retries)).resolves.toEqual(recipe);
 
-    expect(spiedScrape).toBeCalledTimes(retries);
+    expect(spiedScrape).toBeCalledTimes(retries + 1);
   });
 
   it('should throw a ScrapeError after attempting to retry scraping up to 3 times', async () => {

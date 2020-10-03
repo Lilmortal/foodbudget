@@ -16,14 +16,6 @@ const getMockEmailer = (implementation?: Partial<Mailer>) => jest.fn<Mailer, []>
 }))();
 
 describe('error handling', () => {
-  beforeEach(() => {
-    jest.spyOn(console, 'log').mockImplementation(() => undefined);
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('should handle email failed to send', async () => {
     const mockEmailer = getMockEmailer({
       send: async () => {

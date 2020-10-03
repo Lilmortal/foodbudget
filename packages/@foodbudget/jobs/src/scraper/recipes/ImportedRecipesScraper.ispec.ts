@@ -69,6 +69,6 @@ describe('imported recipes job scraper', () => {
       },
     };
 
-    expect(ImportedRecipesScraper.scrape(scrapedWebsiteInfo)).toThrow(ScrapeError);
+    await expect(ImportedRecipesScraper.scrape(scrapedWebsiteInfo)).rejects.toThrow(ScrapeError);
   });
 });

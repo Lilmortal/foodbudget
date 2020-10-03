@@ -69,4 +69,4 @@ export interface MailerService {
   verify(): Promise<boolean>;
 }
 
-export type Mailer = MailerService
+export type Mailer = MailerService;

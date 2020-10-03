@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'path';
 import dotenv from 'dotenv';
 import { Service } from '../Emailer.types';
 import { Config } from './config.types';
@@ -64,7 +64,7 @@ const config: Config = {
 };
 
 if (!validate(config)) {
-  process.exit(0);
+  process.exit(1);
 }
 
 export default config;
