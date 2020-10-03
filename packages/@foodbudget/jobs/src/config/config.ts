@@ -6,8 +6,7 @@ import scrapedRecipeElements from './scrapedRecipesElements';
 const env = dotenv.config({ path: path.resolve(__dirname, '../../../../../.env') });
 
 if (env.error) {
-  console.error('.env file is missing.');
-  process.exit(1);
+  throw env.error;
 }
 
 const validate = (config: Config) => {

@@ -5,7 +5,7 @@ import { Config } from './config.types';
 const env = dotenv.config({ path: path.resolve(__dirname, '../../../../../.env') });
 
 if (env.error) {
-  throw new Error('.env file is missing.');
+  throw env.error;
 }
 
 const config: Config = {
