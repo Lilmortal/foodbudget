@@ -3,10 +3,12 @@ import dotenv from 'dotenv';
 import { Service } from '../Emailer.types';
 import { Config } from './config.types';
 
-const env = dotenv.config({ path: path.resolve(__dirname, '../../../../../.env') });
+if (!process.env.CI) {
+  const env = dotenv.config({ path: path.resolve(__dirname, '../../../../../.env') });
 
-if (env.error) {
-  throw env.error;
+  if (env.error) {
+    throw env.error;
+  }
 }
 
 const services = ['gmail', 'smtp.ethereal.email'] as Service[];

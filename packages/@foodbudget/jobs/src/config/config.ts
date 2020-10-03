@@ -3,10 +3,12 @@ import path from 'path';
 import { Config } from './config.types';
 import scrapedRecipeElements from './scrapedRecipesElements';
 
-const env = dotenv.config({ path: path.resolve(__dirname, '../../../../../.env') });
+if (!process.env.CI) {
+  const env = dotenv.config({ path: path.resolve(__dirname, '../../../../../.env') });
 
-if (env.error) {
-  throw env.error;
+  if (env.error) {
+    throw env.error;
+  }
 }
 
 const validate = (config: Config) => {
