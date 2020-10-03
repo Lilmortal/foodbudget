@@ -62,7 +62,7 @@ export default class CronJob implements CronServices {
   }
 
   async start(): Promise<void> {
-    // await this.#instance.start();
+    await this.#instance.start();
 
     console.log('Agenda job scheduler started.');
 

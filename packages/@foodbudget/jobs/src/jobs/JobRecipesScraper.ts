@@ -27,7 +27,7 @@ export default class JobRecipesScraper implements JobScraperInterface<ScrapedRec
     return Promise.all(this.#recipeScrapers.map(async (scraper) => scraper.scrape(scrapedElements)));
   }
 
-async save(recipes: Recipe | Recipe[]): Promise<void> {
+  async save(recipes: Recipe | Recipe[]): Promise<void> {
     try {
       await this.serviceManager.recipeServices.save(recipes);
     } catch (err) {
@@ -59,6 +59,7 @@ async save(recipes: Recipe | Recipe[]): Promise<void> {
     const scrapedRecipes = await this.scrape(config.scrapedRecipeElements);
 
     await Promise.all(scrapedRecipes.map(async (scrapedRecipe) => {
+      console.log(scrapedRecipe);
       console.log('Successfully scraped recipes...');
 
       await this.save(scrapedRecipe);
