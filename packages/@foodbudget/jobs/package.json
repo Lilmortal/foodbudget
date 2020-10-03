@@ -1,6 +1,6 @@
 {
   "name": "@foodbudget/jobs",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "src/index.ts",
   "author": "Jack Tan",
   "license": "MIT",
@@ -8,9 +8,9 @@
     "start:cron": "ts-node-dev --respawn src/index.ts"
   },
   "dependencies": {
-    "@foodbudget/app": "^1.1.0",
-    "@foodbudget/email": "^1.0.0",
-    "@foodbudget/errors": "^1.0.0",
+    "@foodbudget/app": "^2.0.0",
+    "@foodbudget/email": "^2.0.0",
+    "@foodbudget/errors": "^2.0.0",
     "agenda": "^3.1.0",
     "dotenv": "^8.2.0",
     "puppeteer": "^5.3.0"
