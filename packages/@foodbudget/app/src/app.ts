@@ -1,11 +1,12 @@
 import express from 'express';
-import loaders from './loaders';
+import server from './apolloServer';
 import config from './config';
-import serviceManager from './serviceManager';
+import loaders from './loaders';
 
-(async () => {
-  const app = express();
-  await loaders({ app, config, serviceManager: serviceManager() });
+const app = express();
 
-  app.listen(config.api.port, () => console.log(`App is now running at port ${config.api.port}`));
-})();
+server.applyMiddleware({ app, path: config.api.prefix });
+
+loaders({ app });
+
+app.listen(config.api.port, () => console.log(`App is now running at port ${config.api.port}`));
