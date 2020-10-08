@@ -1,4 +1,4 @@
-import { Recipe, ServiceManager } from '@foodbudget/app';
+import { Recipe, ServiceManager } from '@foodbudget/api';
 
 import { Mailer } from '@foodbudget/email';
 import { EmailError, RepositoryError } from '@foodbudget/errors';
@@ -30,6 +30,7 @@ describe('job recipes scraper', () => {
 
     mockServiceManager = jest.fn<ServiceManager, []>(() => ({
       recipeServices: {
+        get: jest.fn(),
         save: jest.fn(),
       },
     }));
@@ -39,6 +40,7 @@ describe('job recipes scraper', () => {
       verify: jest.fn(),
     }));
 
+    console.log(RecipesScraper);
     mockRecipeScraper = jest.fn((RecipesScraper as jest.Mock).mockImplementation(() => ({
       scrape: async () => recipe,
     })));
@@ -79,6 +81,7 @@ describe('job recipes scraper', () => {
         save: jest.fn(() => {
           throw new Error();
         }),
+        get: jest.fn(),
       },
     }));
 

@@ -3,15 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [2.0.1](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/app@2.0.0...@foodbudget/app@2.0.1) (2020-10-03)
+## [2.0.1](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@2.0.0...@foodbudget/api@2.0.1) (2020-10-03)
 
-**Note:** Version bump only for package @foodbudget/app
-
-
+**Note:** Version bump only for package @foodbudget/api
 
 
 
-# [2.0.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/app@1.2.0...@foodbudget/app@2.0.0) (2020-10-03)
+
+
+# [2.0.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@1.2.0...@foodbudget/api@2.0.0) (2020-10-03)
 
 
 ### Bug Fixes

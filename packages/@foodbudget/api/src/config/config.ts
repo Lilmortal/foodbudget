@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
-import path from 'path';
+import findConfig from 'find-config';
 import { Config } from './config.types';
 
 if (!process.env.CI) {
-  const env = dotenv.config({ path: path.resolve(__dirname, '../../../../../.env') });
+  const env = dotenv.config({ path: findConfig('.env') || undefined });
   if (env.error) {
     throw env.error;
   }

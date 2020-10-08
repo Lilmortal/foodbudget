@@ -1,4 +1,4 @@
-import { ServiceManager } from '@foodbudget/app';
+import { ServiceManager } from '@foodbudget/api';
 import { Mail, Mailer } from '../../../email/src';
 import { Job } from '../cron';
 import RecipesScraper from '../scraper/recipes/RecipesScraper';

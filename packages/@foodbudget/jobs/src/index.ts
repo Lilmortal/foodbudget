@@ -1,5 +1,5 @@
 import emailer from '@foodbudget/email';
-import { serviceManager } from '@foodbudget/app';
+import { serviceManager } from '@foodbudget/api';
 import config from './config';
 
 import CronJob from './cron';
@@ -9,7 +9,7 @@ import ImportedRecipesScraper from './scraper/recipes/ImportedRecipesScraper';
 (async () => {
   const mailer = await emailer;
   const recipesJob = new JobRecipesScraper({
-    serviceManager: serviceManager(),
+    serviceManager,
     emailer: mailer,
     recipeScrapers: [ImportedRecipesScraper],
   });
