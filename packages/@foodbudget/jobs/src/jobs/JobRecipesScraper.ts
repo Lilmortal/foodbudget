@@ -3,10 +3,10 @@ import { Mail, Mailer } from '@foodbudget/email';
 import { Recipe, ServiceManager } from '@foodbudget/api';
 import { Config } from '../config';
 import { RecipesScraper, ScrapedRecipeHTMLElements } from '../scraper/recipes';
-import { JobScraperInterface, JobScraperParams } from './JobScraper.types';
+import { JobScraperParams } from './JobScraper.types';
 import { ScrapedRecipe } from '../scraper/recipes/RecipesScraper.types';
 
-export default class JobRecipesScraper implements JobScraperInterface<ScrapedRecipeHTMLElements, Recipe> {
+export default class JobRecipesScraper {
   interval = '1000 seconds';
 
   definition = 'Job recipes';
@@ -15,16 +15,16 @@ export default class JobRecipesScraper implements JobScraperInterface<ScrapedRec
 
   readonly emailer: Mailer;
 
-  readonly #recipeScrapers: RecipesScraper<ScrapedRecipe>[];
+  private readonly recipeScrapers: RecipesScraper<ScrapedRecipe>[];
 
   constructor({ serviceManager, emailer, recipeScrapers }: JobScraperParams) {
     this.serviceManager = serviceManager;
     this.emailer = emailer;
-    this.#recipeScrapers = recipeScrapers;
+    this.recipeScrapers = recipeScrapers;
   }
 
   async scrape(scrapedElements: ScrapedRecipeHTMLElements | ScrapedRecipeHTMLElements[]): Promise<(Recipe | Recipe[])[]> {
-    return Promise.all(this.#recipeScrapers.map(async (scraper) => scraper.scrape(scrapedElements)));
+    return Promise.all(this.recipeScrapers.map(async (scraper) => scraper.scrape(scrapedElements)));
   }
 
   async save(recipes: Recipe | Recipe[]): Promise<void> {

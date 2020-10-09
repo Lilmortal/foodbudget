@@ -49,7 +49,7 @@ describe('scraper', () => {
     (setupHeadlessBrowser as jest.Mock).mockImplementation(() => ({
       scrape: async () => scrapedRecipe,
     }));
-    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), mapping: mockMapping() });
+    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
 
     await expect(scraper.scrape(scrapedRecipeElements)).resolves.toEqual(recipe);
   });
@@ -59,7 +59,7 @@ describe('scraper', () => {
       scrape: async () => [scrapedRecipe],
     }));
 
-    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), mapping: mockMapping() });
+    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
 
     await expect(scraper.scrape(scrapedRecipeElements)).resolves.toEqual([recipe]);
   });
@@ -82,7 +82,7 @@ describe('scraper', () => {
       scrape: async () => scrapedRecipe,
     }));
 
-    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), mapping: mockMapping() });
+    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
     const spiedScrape = jest.spyOn(scraper, 'scrape');
 
     await expect(scraper.scrape(scrapedRecipeElements, retries)).resolves.toEqual(recipe);
@@ -97,7 +97,7 @@ describe('scraper', () => {
       },
     }));
 
-    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), mapping: mockMapping() });
+    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
     const spiedScrape = jest.spyOn(scraper, 'scrape');
 
     await expect(scraper.scrape(scrapedRecipeElements, 2)).rejects.toThrow(ScrapeError);

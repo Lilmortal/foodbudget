@@ -1,5 +1,5 @@
-import { RecipeServicesInterface } from '../recipes/services';
+import RecipeServices from '../recipes/services';
 
 export interface ServiceManager {
-    recipeServices: RecipeServicesInterface;
+    recipeServices: Required<RecipeServices>;
 }

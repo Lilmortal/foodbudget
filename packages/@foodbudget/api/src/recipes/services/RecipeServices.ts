@@ -1,9 +1,9 @@
 import { recipes } from '@prisma/client';
 import { Repository } from '../../shared/types/Repository.types';
 import { Recipe } from '../repositories';
-import { RecipeServicesInterface, RecipeServicesParams } from './RecipeServices.types';
+import { RecipeServicesParams } from './RecipeServices.types';
 
-export default class RecipeServices implements RecipeServicesInterface {
+export default class RecipeServices {
     private readonly repository: Repository<Recipe, recipes>;
 
     constructor({ repository }: RecipeServicesParams) {

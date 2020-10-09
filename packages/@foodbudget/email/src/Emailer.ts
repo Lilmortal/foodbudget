@@ -10,7 +10,7 @@ import {
 import config from './config';
 
 export class Emailer implements Mailer {
-  readonly #transporter: MailTransporter;
+  private readonly transporter: MailTransporter;
 
   private constructor({
     service,
@@ -19,7 +19,7 @@ export class Emailer implements Mailer {
     secure = false,
     auth,
   }: MailerParams) {
-    this.#transporter = nodeMailer.createTransport({
+    this.transporter = nodeMailer.createTransport({
       service,
       host,
       port,
@@ -62,7 +62,7 @@ export class Emailer implements Mailer {
     let isVerified = false;
     try {
       const promisifiedVerify = util.promisify<boolean>(
-        this.#transporter.verify,
+        this.transporter.verify,
       );
       isVerified = await promisifiedVerify();
     } catch (err) {
@@ -81,7 +81,7 @@ export class Emailer implements Mailer {
   }: Mail): Promise<string | boolean> {
     const info:
       | SESTransport.SentMessageInfo
-      | SMTPTransport.SentMessageInfo = await this.#transporter.sendMail({
+      | SMTPTransport.SentMessageInfo = await this.transporter.sendMail({
         from,
         to,
         subject,

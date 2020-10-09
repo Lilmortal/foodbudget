@@ -20,6 +20,7 @@ const scrapeRecipes = async (scrapeInfo: string): Promise<ScrapedRecipe> => {
         HTMLElement.substring?.end,
       );
     }
+
     return Array.from(nodeList).map((node) => node.innerText.substring(
       HTMLElement.substring?.start || 0,
       HTMLElement.substring?.end,

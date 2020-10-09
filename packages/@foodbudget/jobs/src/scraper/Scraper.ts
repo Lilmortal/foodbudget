@@ -1,19 +1,18 @@
 import { ScrapeError } from '@foodbudget/errors';
 import {
   ScraperParams,
-  ScraperInterface,
   ScrapedElements, OnScrape,
 } from './Scraper.types';
 import setupHeadlessBrowser from './utils';
 
-export default class Scraper<S, R> implements ScraperInterface<R> {
-  readonly #onScrape: OnScrape<S>;
+export default class Scraper<S, R> {
+  private readonly onScrape: OnScrape<S>;
 
-  readonly #mapping: (scrapedResult: S) => R;
+  private readonly onMapping: (scrapedResult: S) => R;
 
-  constructor({ onScrape, mapping }: ScraperParams<S, R>) {
-    this.#onScrape = onScrape;
-    this.#mapping = mapping;
+  constructor({ onScrape, onMapping }: ScraperParams<S, R>) {
+    this.onScrape = onScrape;
+    this.onMapping = onMapping;
   }
 
   async scrape<E extends ScrapedElements>(
@@ -36,15 +35,15 @@ export default class Scraper<S, R> implements ScraperInterface<R> {
     retries = 3,
   ): Promise<R | R[]> {
     try {
-      const headlessBrowser = setupHeadlessBrowser<E, S>(this.#onScrape);
+      const headlessBrowser = setupHeadlessBrowser<E, S>(this.onScrape);
 
       const scrapedResults = await headlessBrowser.scrape(scrapedElements);
 
       if (Array.isArray(scrapedResults)) {
-        return Promise.all(scrapedResults.map((result) => this.#mapping(result)));
+        return Promise.all(scrapedResults.map((result) => this.onMapping(result)));
       }
 
-      return this.#mapping(scrapedResults);
+      return this.onMapping(scrapedResults);
     } catch (err) {
       // @TODO: Find where TimeoutError is.
       // if (err instanceof puppeteer.errors.TimeoutError) {
