@@ -1,6 +1,6 @@
 import { EmailError, RepositoryError } from '@foodbudget/errors';
 import { Mail, Mailer } from '@foodbudget/email';
-import { Recipe, ServiceManager } from '@foodbudget/app';
+import { Recipe, ServiceManager } from '@foodbudget/api';
 import { Config } from '../config';
 import { RecipesScraper, ScrapedRecipeHTMLElements } from '../scraper/recipes';
 import { JobScraperInterface, JobScraperParams } from './JobScraper.types';

@@ -1,4 +1,4 @@
-import { Recipe } from '@foodbudget/app';
+import { Recipe } from '@foodbudget/api';
 import { ScrapedElements, ScrapedHTMLElement } from '../Scraper.types';
 
 export interface ScrapedRecipeHTMLElements extends ScrapedElements {

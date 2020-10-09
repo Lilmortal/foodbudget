@@ -34,7 +34,7 @@
     }
   },
   "scripts": {
-    "setup": "docker-compose down -v && docker-compose up -d && lerna run setup --stream",
+    "setup": "lerna run setup --stream --parallel",
     "start": "lerna run start --stream --parallel",
     "start:cron": "lerna run start:cron --stream --parallel",
     "test:unit": "jest",
