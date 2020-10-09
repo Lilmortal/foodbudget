@@ -1,4 +1,4 @@
-import { Recipe } from '@foodbudget/app';
+import { Recipe } from '@foodbudget/api';
 import { ScrapeError } from '@foodbudget/errors';
 import Scraper from '../Scraper';
 import { OnScrape } from '../Scraper.types';

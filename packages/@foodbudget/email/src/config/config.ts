@@ -1,10 +1,10 @@
-import path from 'path';
 import dotenv from 'dotenv';
+import findConfig from 'find-config';
 import { Service } from '../Emailer.types';
 import { Config } from './config.types';
 
 if (!process.env.CI) {
-  const env = dotenv.config({ path: path.resolve(__dirname, '../../../../../.env') });
+  const env = dotenv.config({ path: findConfig('.env') || undefined });
 
   if (env.error) {
     throw env.error;
