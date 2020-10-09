@@ -3,7 +3,7 @@ import { RepositoryError, ServiceError } from '@foodbudget/errors';
 import { ServiceManager } from './serviceManager.types';
 import RecipeServices from '../recipes/services';
 import { Recipe, RecipeRepository } from '../recipes/repository';
-import Repository from '../types';
+import { Repository } from '../types/Repository.types';
 
 let recipeRepository: Repository<Recipe, recipes>;
 try {

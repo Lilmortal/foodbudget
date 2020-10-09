@@ -40,7 +40,6 @@ describe('job recipes scraper', () => {
       verify: jest.fn(),
     }));
 
-    console.log(RecipesScraper);
     mockRecipeScraper = jest.fn((RecipesScraper as jest.Mock).mockImplementation(() => ({
       scrape: async () => recipe,
     })));

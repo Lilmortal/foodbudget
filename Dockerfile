@@ -15,8 +15,8 @@ RUN yarn
 
 ADD https://github.com/palfrey/wait-for-db/releases/download/v1.0.0/wait-for-db-linux-x86 /src/app/wait-for-db
 RUN chmod +x /src/app/wait-for-db
-RUN ./wait-for-db -m postgres -c postgresql://user:pass@foodbudget-db:5433 -t 1000000
+# RUN ./wait-for-db -m postgres -c postgresql://user:pass@foodbudget-db:5432 -t 1000000
 
-RUN yarn setup
-CMD ["yarn", "start"]
+# RUN yarn setup
+# CMD ["yarn", "start"]
 EXPOSE 8080

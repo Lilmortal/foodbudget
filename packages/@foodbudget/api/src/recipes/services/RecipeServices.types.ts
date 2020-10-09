@@ -1,5 +1,5 @@
 import { recipes } from '@prisma/client';
-import Repository from '../../types';
+import { Repository } from '../../types/Repository.types';
 import { Recipe } from '../repository';
 
 export interface RecipeServicesParams {
