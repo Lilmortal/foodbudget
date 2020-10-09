@@ -1,9 +1,9 @@
 import { queryField, stringArg } from '@nexus/schema';
-import { Context } from '../../types/ApolloServer.types';
-import { Recipe } from '../repository';
+import { Context } from '../../shared/types/ApolloServer.types';
+import { Recipe } from '../repositories';
 
 const getRecipes = queryField('recipes', {
-  type: 'recipes',
+  type: 'String',
   args: {
     name: stringArg(),
     ingredients: stringArg({ list: true }),

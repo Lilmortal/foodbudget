@@ -11,7 +11,7 @@ if (!process.env.CI) {
 
 const config: Config = {
   api: {
-    prefix: '/',
+    prefix: '/graphql',
     port: 8080,
   },
 };

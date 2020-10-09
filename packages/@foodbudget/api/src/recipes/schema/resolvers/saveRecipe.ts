@@ -1,9 +1,9 @@
 import { mutationField, stringArg, intArg } from '@nexus/schema';
-import { Context } from '../../../types/ApolloServer.types';
-import { Recipe } from '../../repository';
+import { Context } from '../../../shared/types/ApolloServer.types';
+import { Recipe } from '../../repositories';
 
 const saveRecipe = mutationField('recipes', {
-  type: 'recipes',
+  type: 'String',
   args: {
     name: stringArg({ required: true }),
     link: stringArg({ required: true }),
@@ -23,15 +23,7 @@ const saveRecipe = mutationField('recipes', {
       cuisines: [],
     };
 
-    let result;
-    try {
-      result = await ctx.serviceManager.recipeServices.save(recipe);
-    } catch (err) {
-      console.log(err);
-      throw new Error(err);
-    }
-
-    return result;
+    return ctx.serviceManager.recipeServices.save(recipe);
   },
 });
 

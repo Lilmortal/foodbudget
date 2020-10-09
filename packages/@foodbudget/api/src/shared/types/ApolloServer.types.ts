@@ -1,4 +1,4 @@
-import { ServiceManager } from '../serviceManager';
+import { ServiceManager } from '../../serviceManager';
 
 export interface Context {
     serviceManager: ServiceManager

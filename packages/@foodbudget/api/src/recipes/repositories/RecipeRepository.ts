@@ -1,16 +1,16 @@
 import { PrismaClient, recipes } from '@prisma/client';
-import { Repository } from '../../types/Repository.types';
+import { Repository } from '../../shared/types/Repository.types';
 import { Recipe } from './Recipe.types';
 
 export default class RecipeRepository implements Repository<Recipe, recipes> {
-  readonly #prisma: PrismaClient;
+  private readonly prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
-    this.#prisma = prisma;
+    this.prisma = prisma;
   }
 
   async get(recipe: Partial<Recipe>): Promise<recipes[] | undefined> {
-    return this.#prisma.recipes.findMany(
+    return this.prisma.recipes.findMany(
       {
         where: {
           OR: [{
@@ -58,7 +58,7 @@ export default class RecipeRepository implements Repository<Recipe, recipes> {
       // See https://github.com/prisma/prisma-client-js/issues/332 for progress on this.
       await Promise.all(
         recipesDTO.map(async (recipe) => {
-          await this.#prisma.recipes.create({
+          await this.prisma.recipes.create({
             data: {
               recipe_name: recipe.name,
               prep_time: recipe.prepTime,
@@ -70,7 +70,7 @@ export default class RecipeRepository implements Repository<Recipe, recipes> {
         }),
       );
     } else {
-      await this.#prisma.recipes.create({
+      await this.prisma.recipes.create({
         data: {
           recipe_name: recipesDTO.name,
           prep_time: recipesDTO.prepTime,

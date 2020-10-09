@@ -22,7 +22,8 @@
     "express-serve-static-core": "^0.1.1",
     "find-config": "^1.0.0",
     "graphql": "^15.3.0",
-    "pg": "^8.4.0"
+    "pg": "^8.4.0",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@prisma/cli": "^2.6.2",

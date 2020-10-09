@@ -3,7 +3,7 @@ import {
 } from 'express-serve-static-core';
 import { StatusError } from '@foodbudget/errors';
 import { LoaderParams } from './loaders.type';
-import handleError from '../utils/handleError';
+import logger from '../logger';
 
 const handleHealthChecks = (app: Express) => {
   app.get('/healthcheck', (_req, res) => {
@@ -18,10 +18,16 @@ const handle404Routes = (app: Express) => {
 };
 
 const handleErrors = (app: Express) => {
+  const isStatusError = (err: unknown): err is StatusError => (err as StatusError).status !== undefined;
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   app.use(async (err: unknown, _req: Request, res: Response, _next: NextFunction) => {
-    const handledError = handleError(err);
-    return res.status(handledError.status).json({ error: handledError.message });
+    if (isStatusError(err)) {
+      logger.error(err.stack || err.message);
+      return res.status(err.status).json({ error: err.message });
+    }
+
+    return res.status(500).json({ error: err });
   });
 };
 
