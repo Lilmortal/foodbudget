@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0 (2020-10-09)
+
+
+### chore
+
+* nexus POC ([3dc7d38](https://github.com/Lilmortal/foodbudget/commit/3dc7d38b0797aa1892e55aba6f35868ebfec1820))
+
+
+### Features
+
+* added winston logging tool, prettify error msg ([ec9e942](https://github.com/Lilmortal/foodbudget/commit/ec9e9420e19d31f794314bc6a1baaf265d0cb779))
+
+
+### BREAKING CHANGES
+
+* dockerize the applications, rename @foodbudget/app to @foodbudget/api
+
+
+
+
+
 ## [2.0.1](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@2.0.0...@foodbudget/api@2.0.1) (2020-10-03)
 
 **Note:** Version bump only for package @foodbudget/api
