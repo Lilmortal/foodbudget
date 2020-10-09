@@ -6,7 +6,7 @@ const prettifyStackTrace = (stackTraces: string[]) => {
   return stackTraces.join('\n');
 };
 
-const isPrismaError = (stackTraces: string[]) => stackTraces[1].startsWith('\x1B[31mInvalid \x1B[1m');
+const isPrismaError = (stackTraces: string[]) => stackTraces[1]?.startsWith('\x1B[31mInvalid \x1B[1m');
 
 const prettifyError = (err: Error): string => {
   const errorMessages = [];
