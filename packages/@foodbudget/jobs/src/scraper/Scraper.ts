@@ -1,4 +1,3 @@
-import { ScrapeError } from '@foodbudget/errors';
 import {
   ScraperParams,
   ScrapedElements, OnScrape,
@@ -49,12 +48,12 @@ export default class Scraper<S, R> {
       // if (err instanceof puppeteer.errors.TimeoutError) {
       if (err instanceof Error) {
         if (retries <= 0) {
-          throw new ScrapeError(err.message);
+          throw err;
         }
 
         return this.scrape(scrapedElements, retries - 1);
       }
-      throw new ScrapeError(err);
+      throw new Error(err);
     }
   }
 }

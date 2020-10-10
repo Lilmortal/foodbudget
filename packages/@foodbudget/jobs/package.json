@@ -10,7 +10,7 @@
   "dependencies": {
     "@foodbudget/api": "^2.0.1",
     "@foodbudget/email": "^2.0.0",
-    "@foodbudget/errors": "^2.0.0",
+    "@foodbudget/logger": "^1.0.0",
     "agenda": "^3.1.0",
     "dotenv": "^8.2.0",
     "find-config": "^1.0.0",

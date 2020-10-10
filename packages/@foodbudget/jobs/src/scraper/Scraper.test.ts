@@ -1,5 +1,4 @@
 import { Recipe } from '@foodbudget/api';
-import { ScrapeError } from '@foodbudget/errors';
 import scrapedRecipeElements from '../config/scrapedRecipesElements';
 import { ScrapedRecipe } from './recipes';
 import Scraper from './Scraper';
@@ -90,7 +89,7 @@ describe('scraper', () => {
     expect(spiedScrape).toBeCalledTimes(retries + 1);
   });
 
-  it('should throw a ScrapeError after attempting to retry scraping up to 3 times', async () => {
+  it('should throw an Error after attempting to retry scraping up to 3 times', async () => {
     (setupHeadlessBrowser as jest.Mock).mockImplementation(() => ({
       scrape: async () => {
         throw new Error();
@@ -100,7 +99,7 @@ describe('scraper', () => {
     const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
     const spiedScrape = jest.spyOn(scraper, 'scrape');
 
-    await expect(scraper.scrape(scrapedRecipeElements, 2)).rejects.toThrow(ScrapeError);
+    await expect(scraper.scrape(scrapedRecipeElements, 2)).rejects.toThrowError();
 
     expect(spiedScrape).toBeCalledTimes(3);
   });

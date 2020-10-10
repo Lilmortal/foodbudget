@@ -1,4 +1,3 @@
-import { ScrapeError } from '@foodbudget/errors';
 import path from 'path';
 import ImportedRecipesScraper from './ImportedRecipesScraper';
 import { ScrapedRecipeHTMLElements } from './RecipesScraper.types';
@@ -51,7 +50,7 @@ describe('imported recipes job scraper', () => {
     });
   });
 
-  it('should throw a ScrapeError if attempting to scrape an invalid document selector', async () => {
+  it('should throw an Error if attempting to scrape an invalid document selector', async () => {
     const scrapedWebsiteInfo: ScrapedRecipeHTMLElements = {
       url: scrapedRecipeFilePath,
       prepTimeHtmlElement: {
@@ -69,6 +68,6 @@ describe('imported recipes job scraper', () => {
       },
     };
 
-    await expect(ImportedRecipesScraper.scrape(scrapedWebsiteInfo)).rejects.toThrow(ScrapeError);
+    await expect(ImportedRecipesScraper.scrape(scrapedWebsiteInfo)).rejects.toThrowError();
   });
 });

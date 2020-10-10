@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@foodbudget/email": "^2.0.0",
-    "@foodbudget/errors": "^2.0.0",
+    "@foodbudget/logger": "^1.0.0",
     "@nexus/schema": "^0.16.0",
     "@prisma/client": "^2.6.2",
     "apollo-server-express": "^2.18.1",
@@ -22,6 +22,7 @@
     "express-serve-static-core": "^0.1.1",
     "find-config": "^1.0.0",
     "graphql": "^15.3.0",
+    "passport-google-oauth": "^2.0.0",
     "pg": "^8.4.0",
     "winston": "^3.3.3"
   },

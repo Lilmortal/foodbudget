@@ -1,4 +1,3 @@
-import { ScrapeError } from '@foodbudget/errors';
 import { OnScrape } from '../Scraper.types';
 import RecipesScraper from './RecipesScraper';
 import { ScrapedRecipe, ScrapedRecipeHTMLElements } from './RecipesScraper.types';
@@ -55,7 +54,7 @@ describe('recipes job scraper', () => {
     });
   });
 
-  it('should throw a ScrapeError if prepTime is an empty string', async () => {
+  it('should throw an Error if prepTime is an empty string', async () => {
     const onScrape: OnScrape<ScrapedRecipe> = async () => ({
       prepTime: '',
       servings: '4',
@@ -85,6 +84,6 @@ describe('recipes job scraper', () => {
 
     const recipesScraper = new RecipesScraper(onScrape);
 
-    await expect(recipesScraper.scrape(scrapedWebsiteInfo)).rejects.toThrow(ScrapeError);
+    await expect(recipesScraper.scrape(scrapedWebsiteInfo)).rejects.toThrowError();
   });
 });

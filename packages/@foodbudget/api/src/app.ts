@@ -1,8 +1,8 @@
 import express from 'express';
+import logger from '@foodbudget/logger';
 import server from './apolloServer';
 import config from './config';
 import loaders from './loaders';
-import logger from './logger';
 
 const app = express();
 

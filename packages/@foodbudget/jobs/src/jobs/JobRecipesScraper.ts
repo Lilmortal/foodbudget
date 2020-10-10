@@ -1,4 +1,3 @@
-import { EmailError, RepositoryError } from '@foodbudget/errors';
 import { Mail, Mailer } from '@foodbudget/email';
 import { Recipe, ServiceManager } from '@foodbudget/api';
 import { Config } from '../config';
@@ -31,7 +30,7 @@ export default class JobRecipesScraper {
     try {
       await this.serviceManager.recipeServices.save(recipes);
     } catch (err) {
-      throw new RepositoryError(err);
+      throw new Error(err);
     }
   }
 
@@ -51,7 +50,7 @@ export default class JobRecipesScraper {
       }
       this.emailer.send(getConfirmationMail(recipeNames));
     } catch (err) {
-      throw new EmailError(err);
+      throw new Error(err);
     }
   }
 

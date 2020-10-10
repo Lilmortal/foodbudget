@@ -1,5 +1,5 @@
 import { ApolloServer } from 'apollo-server-express';
-import logger from './logger';
+import logger from '@foodbudget/logger';
 import schema from './schema';
 import serviceManager from './serviceManager';
 import prettifyError from './utils/prettifyError';

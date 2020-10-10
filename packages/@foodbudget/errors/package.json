@@ -1,7 +1,0 @@
-{
-  "name": "@foodbudget/errors",
-  "version": "2.0.0",
-  "main": "src/index.ts",
-  "author": "Jack Tan",
-  "license": "MIT"
-}

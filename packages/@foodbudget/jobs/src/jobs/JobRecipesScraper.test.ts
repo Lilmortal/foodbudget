@@ -1,7 +1,6 @@
 import { Recipe, ServiceManager } from '@foodbudget/api';
 
 import { Mailer } from '@foodbudget/email';
-import { EmailError, RepositoryError } from '@foodbudget/errors';
 import config from '../config';
 import { RecipesScraper, ScrapedRecipe } from '../scraper/recipes';
 import JobRecipesScraper from './JobRecipesScraper';
@@ -74,7 +73,7 @@ describe('job recipes scraper', () => {
     expect(jobRecipesScraper.serviceManager.recipeServices.save).toBeCalled();
   });
 
-  it('should throw a RepositoryError if saving the recipe failed', async () => {
+  it('should throw an Error if saving the recipe failed', async () => {
     mockServiceManager.mockImplementationOnce(() => ({
       recipeServices: {
         save: jest.fn(() => {
@@ -88,7 +87,7 @@ describe('job recipes scraper', () => {
       { serviceManager: mockServiceManager(), emailer: mockEmailer(), recipeScrapers },
     );
 
-    await expect(jobRecipesScraper.start(config)).rejects.toThrowError(RepositoryError);
+    await expect(jobRecipesScraper.start(config)).rejects.toThrowError();
   });
 
   it('should scrape and notify that a recipe has been scraped via email', async () => {
@@ -100,7 +99,7 @@ describe('job recipes scraper', () => {
     expect(jobRecipesScraper.emailer.send).toBeCalled();
   });
 
-  it('should throw an EmailError if notifying via email failed', async () => {
+  it('should throw an Error if notifying via email failed', async () => {
     mockEmailer.mockImplementationOnce(() => ({
       send: jest.fn(() => {
         throw new Error();
@@ -112,6 +111,6 @@ describe('job recipes scraper', () => {
       { serviceManager: mockServiceManager(), emailer: mockEmailer(), recipeScrapers },
     );
 
-    await expect(jobRecipesScraper.start(config)).rejects.toThrowError(EmailError);
+    await expect(jobRecipesScraper.start(config)).rejects.toThrowError();
   });
 });

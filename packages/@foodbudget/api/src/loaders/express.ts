@@ -1,9 +1,9 @@
 import {
   Express, Request, Response, NextFunction,
 } from 'express-serve-static-core';
-import { StatusError } from '@foodbudget/errors';
+import logger from '@foodbudget/logger';
 import { LoaderParams } from './loaders.type';
-import logger from '../logger';
+import { StatusError } from '../shared/errors';
 
 const handleHealthChecks = (app: Express) => {
   app.get('/healthcheck', (_req, res) => {

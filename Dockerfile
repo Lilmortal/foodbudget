@@ -8,7 +8,7 @@ COPY yarn.lock /src/app/yarn.lock
 COPY lerna.json /src/app/lerna.json
 
 COPY packages/@foodbudget/api /src/app/packages/@foodbudget/api
-COPY packages/@foodbudget/errors /src/app/packages/@foodbudget/errors
+COPY packages/@foodbudget/logger /src/app/packages/@foodbudget/logger
 COPY .env /src/app/.env
 RUN yarn
 

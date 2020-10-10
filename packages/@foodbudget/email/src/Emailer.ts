@@ -3,11 +3,11 @@ import util from 'util';
 import MailTransporter from 'nodemailer/lib/mailer';
 import SESTransport from 'nodemailer/lib/ses-transport';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
-import { EmailError } from '@foodbudget/errors';
 import {
   Mailer, MailerParams, Mail,
 } from './Emailer.types';
 import config from './config';
+import EmailError from './EmailError';
 
 export class Emailer implements Mailer {
   private readonly transporter: MailTransporter;

@@ -1,4 +1,3 @@
-import { ScrapeError } from '@foodbudget/errors';
 import Scraper from './Scraper';
 import { OnScrape } from './Scraper.types';
 
@@ -26,7 +25,7 @@ describe('scraper', () => {
     expect(result).toEqual('4mapped');
   });
 
-  it('should throw a ScrapeError if the onScrape function failed', async () => {
+  it('should throw an Error if the onScrape function failed', async () => {
     const onScrape: OnScrape<number> = async () => {
       throw new Error();
     };
@@ -36,6 +35,6 @@ describe('scraper', () => {
     const scraper = new Scraper<number, string>({ onScrape, onMapping });
 
     const info = { url: 'https://doesnotexist.com', num: 2 };
-    await expect(scraper.scrape(info)).rejects.toThrow(ScrapeError);
+    await expect(scraper.scrape(info)).rejects.toThrowError();
   });
 });

@@ -1,5 +1,5 @@
-import { EmailError } from '@foodbudget/errors';
 import { Emailer } from './Emailer';
+import EmailError from './EmailError';
 
 describe('emailer', () => {
   beforeEach(() => {
