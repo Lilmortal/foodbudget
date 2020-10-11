@@ -6,7 +6,7 @@ import prettifyError from './utils/prettifyError';
 
 const server = new ApolloServer({
   schema,
-  context: () => ({ serviceManager }),
+  context: ({ req, res }) => ({ serviceManager, req, res }),
   formatError: (err) => {
     logger.error(prettifyError(err));
     return err;

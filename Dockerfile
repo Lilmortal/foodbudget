@@ -18,5 +18,3 @@ RUN chmod +x /src/app/wait-for-db
 COPY init.sh /src/app/init.sh
 RUN chmod +x /src/app/init.sh
 CMD /src/app/init.sh
-
-EXPOSE 8080
