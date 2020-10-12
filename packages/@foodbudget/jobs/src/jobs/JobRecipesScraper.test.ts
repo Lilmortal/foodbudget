@@ -32,6 +32,10 @@ describe('job recipes scraper', () => {
         get: jest.fn(),
         save: jest.fn(),
       },
+      userServices: {
+        login: jest.fn(),
+        register: jest.fn(),
+      },
     }));
 
     mockEmailer = jest.fn<Mailer, []>(() => ({
@@ -80,6 +84,10 @@ describe('job recipes scraper', () => {
           throw new Error();
         }),
         get: jest.fn(),
+      },
+      userServices: {
+        login: jest.fn(),
+        register: jest.fn(),
       },
     }));
 

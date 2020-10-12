@@ -1,6 +1,6 @@
 import { PrismaClient, recipes } from '@prisma/client';
 import { Repository } from '../../shared/types/Repository.types';
-import { Recipe } from './Recipe.types';
+import { Recipe } from '../Recipe.types';
 
 export default class RecipeRepository implements Repository<Recipe, recipes> {
   private readonly prisma: PrismaClient;
@@ -9,7 +9,7 @@ export default class RecipeRepository implements Repository<Recipe, recipes> {
     this.prisma = prisma;
   }
 
-  async get(recipe: Partial<Recipe>): Promise<recipes[] | undefined> {
+  async getMany(recipe: Partial<Recipe>): Promise<recipes[] | undefined> {
     return this.prisma.recipes.findMany(
       {
         where: {
@@ -46,7 +46,12 @@ export default class RecipeRepository implements Repository<Recipe, recipes> {
           }],
         },
       },
-    );
+    ) || [];
+  }
+
+  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
+  async getOne(recipe: Partial<Recipe>): Promise<recipes | undefined> {
+    return undefined;
   }
 
   async create(recipesDTO: Recipe | Recipe[]): Promise<void> {

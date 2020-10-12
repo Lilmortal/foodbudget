@@ -1,6 +1,6 @@
 import { recipes } from '@prisma/client';
 import { Repository } from '../../shared/types/Repository.types';
-import { Recipe } from '../repositories';
+import { Recipe } from '../Recipe.types';
 import { RecipeServicesParams } from './RecipeServices.types';
 
 export default class RecipeServices {
@@ -11,7 +11,7 @@ export default class RecipeServices {
     }
 
     async get(recipe: Partial<Recipe>): Promise<recipes[] | undefined> {
-      return this.repository.get(recipe);
+      return this.repository.getMany(recipe);
     }
 
     async save(recipesDto: Recipe | Recipe[]): Promise<void> {

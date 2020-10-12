@@ -34,8 +34,10 @@
     }
   },
   "scripts": {
-    "setup": "lerna run setup --stream --parallel",
-    "start": "lerna run start --stream --parallel",
+    "start": "dotenv -e .env -- lerna run start --stream --parallel",
+    "generate": "dotenv -e .env -- yarn workspace @foodbudget/api generate",
+    "migrate:save": "dotenv -e .env -- yarn workspace @foodbudget/api migrate:save",
+    "migrate:up": "dotenv -e .env -- yarn workspace @foodbudget/api migrate:up",
     "start:cron": "lerna run start:cron --stream --parallel",
     "test:unit": "jest",
     "test:integration": "jest --testRegex .*/src/.*.ispec.ts",
@@ -48,5 +50,8 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "dependencies": {
+    "dotenv-cli": "^4.0.0"
   }
 }

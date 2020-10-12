@@ -1,0 +1,188 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "user_allergies",
+      "field": "user_email",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "user_allergies",
+      "field": "user_id"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_allergies",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "newValue": "[user_email]"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_allergies",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "newValue": "[email]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_diets",
+      "field": "user_email",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "user_diets",
+      "field": "user_id"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_diets",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "newValue": "[user_email]"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_diets",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "newValue": "[email]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_pantries",
+      "field": "user_email",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "user_pantries",
+      "field": "user_id"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_pantries",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "newValue": "[user_email]"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_pantries",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "newValue": "[email]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "user_saved_recipes",
+      "field": "user_email",
+      "type": "String",
+      "arity": "Optional"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "user_saved_recipes",
+      "field": "user_id"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_saved_recipes",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "newValue": "[user_email]"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "user_saved_recipes",
+          "field": "users"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "newValue": "[email]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "users",
+      "field": "email",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "users",
+          "field": "email"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "DeleteField",
+      "model": "users",
+      "field": "username"
+    }
+  ]
+}

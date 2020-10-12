@@ -1,6 +1,6 @@
 import { mutationField, stringArg, intArg } from '@nexus/schema';
-import { Context } from '../../../shared/types/ApolloServer.types';
-import { Recipe } from '../../repositories';
+import { Context } from '../../../context';
+import { Recipe } from '../../Recipe.types';
 
 const saveRecipe = mutationField('recipes', {
   type: 'String',
