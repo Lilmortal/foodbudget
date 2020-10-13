@@ -4,25 +4,37 @@ import { User } from '../User.types';
 import { UserServicesParams } from './UserServices.types';
 
 export default class UserServices {
-    private readonly repository: Repository<User, users>;
+    private readonly repository: Repository<users>;
 
     constructor({ repository }: UserServicesParams) {
       this.repository = repository;
     }
 
-    async login(email: string): Promise<void> {
-      const user: Partial<User> = {
+    async getUser(userEntity: Pick<Partial<users>, 'id' | 'email'>): Promise<users | undefined> {
+      const user = await this.repository.getOne(userEntity);
+
+      return user;
+    }
+
+    async login(email: string): Promise<users | undefined> {
+      const userEntity: User = {
         email,
       };
 
-      const results = await this.repository.getOne(user);
+      const user = await this.repository.getOne(userEntity);
 
-      if (!results) {
-        throw new Error('could not find user.');
-      }
+      return user;
     }
 
-    async register(user: User): Promise<void> {
-      await this.repository.create(user);
+    async register(email: string): Promise<users> {
+      const userEntity: Omit<users, 'id'> = {
+        email,
+        password: '',
+        nickname: '',
+      };
+
+      const user = await this.repository.create(userEntity);
+
+      return user;
     }
 }

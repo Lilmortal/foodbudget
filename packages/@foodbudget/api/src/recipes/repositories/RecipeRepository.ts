@@ -2,7 +2,7 @@ import { PrismaClient, recipes } from '@prisma/client';
 import { Repository } from '../../shared/types/Repository.types';
 import { Recipe } from '../Recipe.types';
 
-export default class RecipeRepository implements Repository<Recipe, recipes> {
+export default class RecipeRepository implements Repository<recipes> {
   private readonly prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
@@ -54,36 +54,37 @@ export default class RecipeRepository implements Repository<Recipe, recipes> {
     return undefined;
   }
 
-  async create(recipesDTO: Recipe | Recipe[]): Promise<void> {
-    if (Array.isArray(recipesDTO)) {
+  async create(recipesEntity: recipes): Promise<recipes>;
+
+  async create(recipesEntity: recipes[]): Promise<recipes[]>;
+
+  async create(recipesEntity: recipes | recipes[]): Promise<recipes | recipes[]> {
+    if (Array.isArray(recipesEntity)) {
       // As of now, Prisma 2 does not support createMany. For now, given the low amount
       // of recipes being created per day, the number of Promises being created is fine.
       // If this becomes a bottleneck, we will have to use raw SQL under the hood.
 
       // See https://github.com/prisma/prisma-client-js/issues/332 for progress on this.
-      await Promise.all(
-        recipesDTO.map(async (recipe) => {
-          await this.prisma.recipes.create({
-            data: {
-              recipe_name: recipe.name,
-              prep_time: recipe.prepTime,
-              servings: recipe.servings,
-              link: recipe.link,
-              num_saved: 0,
-            },
-          });
-        }),
+      return Promise.all(
+        recipesEntity.map(async (recipe) => this.prisma.recipes.create({
+          data: {
+            recipe_name: recipe.recipe_name,
+            prep_time: recipe.prep_time,
+            servings: recipe.servings,
+            link: recipe.link,
+            num_saved: 0,
+          },
+        })),
       );
-    } else {
-      await this.prisma.recipes.create({
-        data: {
-          recipe_name: recipesDTO.name,
-          prep_time: recipesDTO.prepTime,
-          servings: recipesDTO.servings,
-          link: recipesDTO.link,
-          num_saved: 0,
-        },
-      });
     }
+    return this.prisma.recipes.create({
+      data: {
+        recipe_name: recipesEntity.recipe_name,
+        prep_time: recipesEntity.prep_time,
+        servings: recipesEntity.servings,
+        link: recipesEntity.link,
+        num_saved: 0,
+      },
+    });
   }
 }

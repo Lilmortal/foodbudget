@@ -1,4 +1,5 @@
-import { GraphQLError, printError } from 'graphql';
+import { ApolloError } from 'apollo-server-express';
+import { printError } from 'graphql';
 
 const prettifyStackTrace = (stackTraces: string[]) => {
   // Remove the error message as we already printed it out.
@@ -10,7 +11,7 @@ const isPrismaError = (stackTraces: string[]) => stackTraces[1]?.startsWith('\x1
 
 const prettifyError = (err: Error): string => {
   const errorMessages = [];
-  if (err instanceof GraphQLError) {
+  if (err instanceof ApolloError) {
     errorMessages.push(printError(err));
 
     const stackTraces = err.extensions?.exception?.stacktrace as string[];
