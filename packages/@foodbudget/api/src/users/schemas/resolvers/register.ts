@@ -3,7 +3,7 @@ import logger from '@foodbudget/logger';
 import { Context } from '../../../context';
 import { userField } from '../schema';
 
-const login = mutationField('login', {
+const register = mutationField('register', {
   type: userField,
   args: {
     email: stringArg({ required: true }),
@@ -11,14 +11,13 @@ const login = mutationField('login', {
   },
   async resolve(_parent, args, ctx: Context) {
     try {
-      const user = await ctx.serviceManager.userServices.login({ email: args.email, password: args.password });
+      const user = await ctx.serviceManager.userServices.register({ email: args.email, password: args.password });
 
       if (user) {
-        logger.info(`${user?.email} has logged in.`);
+        logger.info(`${user?.email} has registered.`);
         return user;
       }
-
-      logger.warn(`${args.email} failed to login.`);
+      logger.warn(`${args.email} is already registered.`);
       return null;
     } catch (err) {
       logger.error(err.message);
@@ -27,4 +26,4 @@ const login = mutationField('login', {
   },
 });
 
-export default login;
+export default register;

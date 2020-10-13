@@ -39,11 +39,12 @@ const validate = (config: Config) => {
 
   if (errors.length > 0) {
     logger.error(
-      `There are errors attempting to retrieve environment variables. 
-      Please add them in the .env file if you forget to add them in.`,
+      `
+There are errors attempting to retrieve environment variables. 
+Please add them in the .env file if you forget to add them in.
+      
+${errors.map((error) => `* ${error}`).join('\n').trim()}`,
     );
-
-    logger.error(errors.map((error) => `* ${error}`).join('\n'));
 
     return false;
   }

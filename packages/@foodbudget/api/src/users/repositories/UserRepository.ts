@@ -16,11 +16,7 @@ export default class UserRepository implements Repository<users> {
 
   async getOne(user: Partial<users>): Promise<users | undefined> {
     const result = await this.prisma.users.findOne({
-      where: {
-        id: user.id,
-        google_id: user.google_id,
-        email: user.email,
-      },
+      where: user,
     });
 
     if (result === null) {
@@ -40,6 +36,7 @@ export default class UserRepository implements Repository<users> {
         data: user,
       })));
     }
+
     return this.prisma.users.create({
       data: usersEntity,
     });
@@ -63,6 +60,26 @@ export default class UserRepository implements Repository<users> {
       data: usersEntity,
       where: {
         email: usersEntity.email,
+      },
+    });
+  }
+
+  async delete(usersEntity: Pick<users, 'id'>): Promise<users>;
+
+  async delete(usersEntity: Pick<users, 'id'>[]): Promise<users[]>;
+
+  async delete(usersEntity: Pick<users, 'id'> | Pick<users, 'id'>[]): Promise<users | users[]> {
+    if (Array.isArray(usersEntity)) {
+      return Promise.all(usersEntity.map(async (user) => this.prisma.users.delete({
+        where: {
+          id: user.id,
+        },
+      })));
+    }
+
+    return this.prisma.users.delete({
+      where: {
+        id: usersEntity.id,
       },
     });
   }

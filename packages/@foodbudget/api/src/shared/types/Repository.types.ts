@@ -1,4 +1,4 @@
-export interface Repository<T> {
+export interface Repository<T extends {id: number}> {
   getMany(obj: Partial<T>): Promise<T[] | undefined>;
   getOne(obj: Partial<T>): Promise<T | undefined>;
 
@@ -9,4 +9,8 @@ export interface Repository<T> {
   update(obj: Partial<T>): Promise<T>;
   update(obj: Partial<T>[]): Promise<T[]>;
   update(obj: Partial<T> | Partial<T>[]): Promise<T | T[]>;
+
+  delete(obj: Pick<T, 'id'>): Promise<T>;
+  delete(obj: Pick<T, 'id'>[]): Promise<T[]>;
+  delete(obj: Pick<T, 'id'> | Pick<T, 'id'>[]): Promise<T | T[]>;
 }

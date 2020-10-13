@@ -41,6 +41,10 @@ const googleTokenStrategyCallback = (
 
       if (!user) {
         user = await serviceManager.userServices.register({ google_id: id, email });
+
+        if (!user) {
+          throw new Error(`Attempting to register ${email} failed.`);
+        }
       }
 
       const userJWTPayload: UserJWTPayload = {
@@ -96,9 +100,9 @@ const init = ({ app, config, serviceManager } : LoaderParams): void => {
 
       res.cookie('refresh-token', refreshToken, { httpOnly: true });
       res.redirect('http://localhost:8080/graphql');
+    } else {
+      res.redirect('http://locahost:8080/login?failureMessage=User ID is not found.');
     }
-
-    res.redirect('http://locahost:8080/login?failureMessage=User ID is not found.');
   });
 
   app.get('/refresh-token', (req: Request, res: Response) => {

@@ -9,6 +9,6 @@ const app = express();
 
 server.applyMiddleware({ app, path: config.api.prefix });
 
-loaders({ app, serviceManager });
+loaders({ app, config, serviceManager });
 
 app.listen(config.api.port, () => logger.info(`App is now running at port ${config.api.port}`));

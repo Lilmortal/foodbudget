@@ -4,10 +4,14 @@ import {
 import { users } from '@prisma/client';
 import { Context } from '../../context';
 
-const userField = objectType({
+export const userField = objectType({
   name: 'user',
   definition(t) {
-    t.string('email', { description: '' });
+    // @TODO: Don't show id, keep this for debugging for now
+    t.int('id');
+    t.string('googleId');
+    t.string('password');
+    t.string('email', { description: 'user email.' });
     t.string('nickname');
   },
 });

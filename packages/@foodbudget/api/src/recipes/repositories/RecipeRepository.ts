@@ -109,4 +109,13 @@ export default class RecipeRepository implements Repository<recipes> {
       },
     });
   }
+
+  delete(obj: Pick<recipes, 'id'>): Promise<recipes>;
+
+  delete(obj: Pick<recipes, 'id'>[]): Promise<recipes[]>;
+
+  delete(obj: Pick<recipes, 'id'> | Pick<recipes, 'id'>[]): Promise<recipes | recipes[]> {
+    console.log(this);
+    throw new Error('Method not implemented.');
+  }
 }
