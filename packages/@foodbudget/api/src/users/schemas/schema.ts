@@ -23,7 +23,7 @@ const getUser = queryField('user', {
       id: args.id,
       email: args.email,
     };
-    return ctx.serviceManager.userServices.getUser(userDto) || '';
+    return ctx.serviceManager.userServices.get(userDto) || '';
   },
 });
 

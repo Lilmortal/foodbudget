@@ -21,6 +21,22 @@ const validate = (config: Config) => {
     errors.push('GOOGLE_CLIENT_SECRET is missing.');
   }
 
+  if (!config.token.access.expireTime) {
+    errors.push('ACCESS_TOKEN_EXPIRE_TIME is missing.');
+  }
+
+  if (!config.token.access.secret) {
+    errors.push('ACCESS_TOKEN_SECRET is missing.');
+  }
+
+  if (!config.token.refresh.expireTime) {
+    errors.push('REFRESH_TOKEN_EXPIRE_TIME is missing.');
+  }
+
+  if (!config.token.refresh.secret) {
+    errors.push('REFRESH_TOKEN_SECRET is missing.');
+  }
+
   if (errors.length > 0) {
     logger.error(
       `There are errors attempting to retrieve environment variables. 
@@ -43,6 +59,16 @@ const config: Config = {
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID || '',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+  },
+  token: {
+    access: {
+      secret: process.env.ACCESS_TOKEN_SECRET || '',
+      expireTime: process.env.ACCESS_TOKEN_EXPIRE_TIME || '',
+    },
+    refresh: {
+      secret: process.env.REFRESH_TOKEN_SECRET || '',
+      expireTime: process.env.REFRESH_TOKEN_EXPIRE_TIME || '',
+    },
   },
 };
 

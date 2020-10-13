@@ -8,7 +8,17 @@ export interface GoogleConfig {
   clientSecret: string;
 }
 
+export interface TokenContentConfig {
+  secret: string;
+  expireTime: string;
+}
+export interface TokenConfig {
+  access: TokenContentConfig;
+  refresh: TokenContentConfig;
+}
+
 export interface Config {
   api: ApiConfig;
   google: GoogleConfig;
+  token: TokenConfig;
 }

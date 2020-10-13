@@ -87,4 +87,26 @@ export default class RecipeRepository implements Repository<recipes> {
       },
     });
   }
+
+  async update(recipesEntity: Partial<recipes>): Promise<recipes>;
+
+  async update(recipesEntity: Partial<recipes>[]): Promise<recipes[]>;
+
+  async update(recipesEntity: Partial<recipes> | Partial<recipes>[]): Promise<recipes | recipes[]> {
+    if (Array.isArray(recipesEntity)) {
+      return Promise.all(recipesEntity.map(async (recipe) => this.prisma.recipes.update({
+        data: recipe,
+        where: {
+          id: recipe.id,
+        },
+      })));
+    }
+
+    return this.prisma.recipes.update({
+      data: recipesEntity,
+      where: {
+        id: recipesEntity.id,
+      },
+    });
+  }
 }

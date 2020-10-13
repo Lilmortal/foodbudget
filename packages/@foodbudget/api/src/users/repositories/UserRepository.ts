@@ -7,6 +7,8 @@ export default class UserRepository implements Repository<users> {
   constructor(prisma: PrismaClient) {
     this.prisma = prisma;
   }
+
+  // Will come handy in future with the release of friends list
   // eslint-disable-next-line class-methods-use-this, lines-between-class-members, @typescript-eslint/no-unused-vars
   async getMany(user: Partial<users>): Promise<users[] | undefined> {
     return undefined;
@@ -16,6 +18,7 @@ export default class UserRepository implements Repository<users> {
     const result = await this.prisma.users.findOne({
       where: {
         id: user.id,
+        google_id: user.google_id,
         email: user.email,
       },
     });
@@ -34,18 +37,32 @@ export default class UserRepository implements Repository<users> {
   async create(usersEntity: Omit<users, 'id'> | Omit<users, 'id'>[]): Promise<users | users[]> {
     if (Array.isArray(usersEntity)) {
       return Promise.all(usersEntity.map(async (user) => this.prisma.users.create({
-        data: {
-          email: user.email,
-          nickname: user.nickname,
-          password: user.password,
-        },
+        data: user,
       })));
     }
     return this.prisma.users.create({
-      data: {
+      data: usersEntity,
+    });
+  }
+
+  async update(usersEntity: Partial<users>): Promise<users>;
+
+  async update(usersEntity: Partial<users>[]): Promise<users[]>;
+
+  async update(usersEntity: Partial<users> | Partial<users>[]): Promise<users | users[]> {
+    if (Array.isArray(usersEntity)) {
+      return Promise.all(usersEntity.map(async (user) => this.prisma.users.update({
+        data: user,
+        where: {
+          email: user.email,
+        },
+      })));
+    }
+
+    return this.prisma.users.update({
+      data: usersEntity,
+      where: {
         email: usersEntity.email,
-        nickname: usersEntity.nickname,
-        password: usersEntity.password,
       },
     });
   }

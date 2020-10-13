@@ -17,6 +17,7 @@
     "@nexus/schema": "^0.16.0",
     "@prisma/client": "^2.6.2",
     "apollo-server-express": "^2.18.1",
+    "argon2": "^0.27.0",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
