@@ -7,13 +7,8 @@ import { Context } from '../../context';
 export const userField = objectType({
   name: 'user',
   definition(t) {
-    // @TODO: Don't show id, keep this for debugging for now
-    t.int('id');
-    t.string('googleId');
-    t.string('facebookId');
-    t.string('password');
     t.string('email', { description: 'user email.' });
-    t.string('nickname');
+    t.string('nickname', { description: 'user name that will be shown to others.' });
   },
 });
 
