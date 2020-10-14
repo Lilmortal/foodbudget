@@ -10,6 +10,7 @@ export const onMapping = (scrapedRecipe: ScrapedRecipe): Recipe => {
     prepTime: '',
     servings: 0,
     name: '',
+    numSaved: 0,
     ingredients: [],
     cuisines: [],
     diets: [],

@@ -9,7 +9,7 @@ const deleteUser = mutationField('deleteUser', {
   },
   async resolve(_parent, args, ctx: Context) {
     try {
-      const isUserDeleted = await ctx.serviceManager.userServices.delete({ id: args.id });
+      const isUserDeleted = await ctx.serviceManager.userServices.delete(args.id);
 
       if (isUserDeleted) {
         logger.info(`User with id ${args.id} has been deleted.`);

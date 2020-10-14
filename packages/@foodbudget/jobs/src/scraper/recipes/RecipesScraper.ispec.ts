@@ -15,6 +15,7 @@ describe('recipes job scraper', () => {
     const onScrape: OnScrape<ScrapedRecipe> = async () => ({
       prepTime: '4 mins',
       servings: '4',
+      numSaved: '0',
       name: 'Big Mac',
       ingredients: ['Pig', 'Lettuce'],
       link: 'http://fakewebsite.com',
@@ -59,6 +60,7 @@ describe('recipes job scraper', () => {
       prepTime: '',
       servings: '4',
       name: 'Big Mac',
+      numSaved: '0',
       ingredients: ['Pig', 'Lettuce'],
       link: 'http://fakewebsite.com',
       cuisines: [],

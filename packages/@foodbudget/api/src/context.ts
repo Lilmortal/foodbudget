@@ -1,9 +1,15 @@
+import { Request, Response } from 'express';
 import serviceManager, { ServiceManager } from './serviceManager';
 
-export interface Context {
+interface ContextParams {
+    req: Request;
+    res: Response;
+}
+
+export interface Context extends ContextParams {
     serviceManager: ServiceManager
 }
 
-const context = (): Context => ({ serviceManager });
+const context = ({ req, res }: ContextParams): Context => ({ serviceManager, req, res });
 
 export default context;

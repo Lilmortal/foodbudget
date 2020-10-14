@@ -14,7 +14,7 @@ const register = mutationField('register', {
       const user = await ctx.serviceManager.userServices.register({ email: args.email, password: args.password });
 
       if (user) {
-        logger.info(`${user?.email} has registered.`);
+        logger.info(`${user.email} has registered.`);
         return user;
       }
       logger.warn(`${args.email} is already registered.`);

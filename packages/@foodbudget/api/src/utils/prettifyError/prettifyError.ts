@@ -16,6 +16,7 @@ const prettifyError = (err: Error): string => {
 
     const stackTraces = err.extensions?.exception?.stacktrace as string[];
 
+    // Prisma prints its own stack trace.
     if (!isPrismaError(stackTraces)) {
       errorMessages.push(prettifyStackTrace(stackTraces));
     }

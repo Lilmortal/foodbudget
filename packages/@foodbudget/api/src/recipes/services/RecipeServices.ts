@@ -1,6 +1,19 @@
 import { recipes } from '@prisma/client';
 import { Repository } from '../../shared/types/Repository.types';
+import { Recipe } from '../Recipe.types';
 import { RecipeServicesParams } from './RecipeServices.types';
+
+const mapRecipe = (recipe: Recipe): Omit<recipes, 'id'> => {
+  const mappedRecipe: Omit<recipes, 'id'> = {
+    recipe_name: recipe.name,
+    link: recipe.link,
+    prep_time: recipe.prepTime,
+    servings: recipe.servings,
+    num_saved: recipe.numSaved,
+  };
+
+  return mappedRecipe;
+};
 
 export default class RecipeServices {
     private readonly repository: Repository<recipes>;
@@ -9,15 +22,15 @@ export default class RecipeServices {
       this.repository = repository;
     }
 
-    async get(recipeEntity: Partial<recipes>): Promise<recipes[] | undefined> {
-      return this.repository.getMany(recipeEntity);
+    async get(recipeDto: Partial<Recipe>): Promise<recipes[] | undefined> {
+      return this.repository.getMany(recipeDto);
     }
 
-    async save(recipesEntity: Omit<recipes, 'id'> | Omit<recipes, 'id'>[]): Promise<void> {
-      if (Array.isArray(recipesEntity)) {
-        await Promise.all(recipesEntity.map((recipe) => this.repository.create(recipe)));
+    async save(recipesDto: Recipe | Recipe[]): Promise<void> {
+      if (Array.isArray(recipesDto)) {
+        await Promise.all(recipesDto.map((recipe) => this.repository.create(mapRecipe(recipe))));
+      } else {
+        await this.repository.create(mapRecipe(recipesDto));
       }
-
-      await this.repository.create(recipesEntity);
     }
 }

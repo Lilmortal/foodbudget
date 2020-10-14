@@ -1,5 +1,4 @@
 import { Recipe, ServiceManager } from '@foodbudget/api';
-
 import { Mailer } from '@foodbudget/email';
 import config from '../config';
 import { RecipesScraper, ScrapedRecipe } from '../scraper/recipes';
@@ -21,6 +20,7 @@ describe('job recipes scraper', () => {
       name: 'recipe name',
       prepTime: '4 mins',
       servings: 4,
+      numSaved: 0,
       ingredients: ['pork', 'mushroom'],
       cuisines: [],
       diets: [],

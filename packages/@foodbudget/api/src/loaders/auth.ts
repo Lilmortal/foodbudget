@@ -3,19 +3,15 @@ import passport, { Profile } from 'passport';
 import { Strategy as GoogleTokenStrategy, VerifyCallback } from 'passport-google-oauth20';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { Request, Response } from 'express';
-import { sign, verify } from 'jsonwebtoken';
+import ms from 'ms';
+
 import logger from '@foodbudget/logger';
 import { LoaderParams } from './loaders.type';
 import { ServiceManager } from '../serviceManager';
 import { LoginRequest } from '../users/services/UserServices';
-import { Config } from '../config';
-
-interface UserJWTPayload extends Express.User {
-  userId: string | undefined;
-}
-
-const isUserJWTPayload = (token: unknown): token is UserJWTPayload => token
-&& (token as UserJWTPayload).userId !== undefined;
+import {
+  isRefreshTokenValid, RefreshToken, renewRefreshToken, createAccessToken, getDecodedRefreshToken,
+} from '../auth';
 
 const validateProfile = (profile: Profile): profile is Profile & Pick<Required<Profile>, 'emails'> => {
   if (!profile.emails || !profile.emails[0].value) {
@@ -71,7 +67,7 @@ const handleTokenStrategy = (
         }
       }
 
-      const userJWTPayload: UserJWTPayload = {
+      const userJWTPayload: RefreshToken = {
         userId: user.id.toString(),
       };
       done(undefined, userJWTPayload);
@@ -91,26 +87,9 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-interface Token {
-  payload: UserJWTPayload;
-  secret: string;
-  expireTime: string;
-}
-
-const createNewToken = ({ payload, secret, expireTime }: Token) => {
-  const token = sign(payload, secret, { expiresIn: expireTime });
-  return token;
-};
-
-const handleTokenVerification = (config: Config) => (req: Request, res: Response) => {
-  if (isUserJWTPayload(req.user) && req.user.userId) {
-    const refreshToken = createNewToken({
-      payload: { userId: req.user.userId },
-      secret: config.token.refresh.secret,
-      expireTime: config.token.refresh.expireTime,
-    });
-
-    res.cookie('refresh-token', refreshToken, { httpOnly: true });
+const handleTokenVerification = (req: Request, res: Response) => {
+  if (req.user && isRefreshTokenValid(req.user)) {
+    renewRefreshToken(req.user.userId, res);
     res.redirect('http://localhost:8080/graphql');
   } else {
     res.redirect('http://locahost:8080/login?failureMessage=User ID is not found.');
@@ -135,43 +114,26 @@ const init = ({ app, config, serviceManager } : LoaderParams): void => {
 
   app.get('/v1/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
   app.get('/v1/auth/google/verify', passport.authenticate('google',
-    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification(config));
+    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification);
 
   app.get('/v1/auth/facebook', passport.authenticate('facebook', { scope: ['email'] }));
   app.get('/v1/auth/facebook/verify', passport.authenticate('facebook',
-    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification(config));
+    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification);
 
   app.get('/refresh-token', (req: Request, res: Response) => {
-    const refreshToken = req.cookies['refresh-token'];
-    if (!refreshToken) {
-      res.redirect('http://localhost:8080/login');
-    }
+    try {
+      const decodedRefreshToken = getDecodedRefreshToken(req);
+      const accessToken = createAccessToken(decodedRefreshToken.userId, config);
+      const expiryTime = new Date(Date.now() + ms(config.token.access.expireTime));
 
-    const decodedRefreshToken = verify(refreshToken, 'secretKey');
-    if (isUserJWTPayload(decodedRefreshToken) && decodedRefreshToken.userId) {
-      const accessToken = createNewToken({
-        payload: { userId: decodedRefreshToken.userId },
-        secret: config.token.access.secret,
-        expireTime: config.token.access.expireTime,
-      });
-
-      // TODO
-      // 15 minutes
-      const expiryTime = new Date(Date.now() + 900000);
-
-      const newRefreshToken = createNewToken({
-        payload: { userId: decodedRefreshToken.userId },
-        secret: config.token.refresh.secret,
-        expireTime: config.token.refresh.expireTime,
-      });
-
-      res.cookie('refresh-token', newRefreshToken, { httpOnly: true });
+      renewRefreshToken(decodedRefreshToken.userId, res);
 
       res.status(200).send({
         accessToken,
         expiryTime,
       });
-    } else {
+    } catch (err) {
+      logger.error(err.message);
       res.redirect('http://localhost:8080/login');
     }
   });

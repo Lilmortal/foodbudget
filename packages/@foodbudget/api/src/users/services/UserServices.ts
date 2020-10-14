@@ -146,7 +146,7 @@ export default class UserServices {
       return mapUser(updatedUser);
     }
 
-    async update(userDto: Pick<Partial<users>, 'email' | 'nickname' | 'password'>): Promise<User> {
+    async update(userDto: Pick<Partial<User>, 'email' | 'nickname' | 'password'>): Promise<User> {
       const userEntity: Omit<Partial<users>, 'id'> = {
         email: userDto.email,
         ...userDto.nickname && { nickname: userDto.nickname },
@@ -158,11 +158,15 @@ export default class UserServices {
       return mapUser(user);
     }
 
-    async delete(userDto: Pick<users, 'id'>): Promise<boolean> {
+    async delete(id: number): Promise<boolean> {
       // @TODO: Send a one off cron job to delete the user in 5 days.
       // But for now, delete the user straight away.
 
-      const user = await this.repository.delete(userDto);
+      const userEntity: Pick<users, 'id'> = {
+        id,
+      };
+
+      const user = await this.repository.delete(userEntity);
 
       if (!user) {
         return false;

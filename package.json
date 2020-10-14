@@ -41,9 +41,10 @@
     "start:cron": "lerna run start:cron --stream --parallel",
     "test:unit": "jest",
     "test:integration": "jest --testRegex .*/src/.*.ispec.ts",
+    "check-types": "tsc --noemit",
     "test": "jest --watch",
-    "lint:ts": "eslint **/*.ts",
-    "lint": "run-p -c 'lint:* --fix'",
+    "lint:ts": "eslint **/*.ts --fix && yarn check-types",
+    "lint": "run-p -c 'lint:*'",
     "release": "lerna publish --no-commit-hooks"
   },
   "commitlint": {

@@ -1,3 +1,4 @@
-export { default as serviceManager, ServiceManager } from './serviceManager';
-export { Repository } from './shared/types/Repository.types';
-export { Recipe } from './recipes';
+export { default as serviceManager } from './serviceManager';
+export type { ServiceManager } from './serviceManager';
+export type { Repository } from './shared/types/Repository.types';
+export type { Recipe } from './recipes';

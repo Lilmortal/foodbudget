@@ -51,6 +51,7 @@ export interface Recipe {
   link: string;
   prepTime: string;
   servings: number;
+  numSaved: number;
   name: string;
   ingredients: string[];
   cuisines: Cuisine[];

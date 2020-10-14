@@ -38,6 +38,7 @@ const scrapeRecipes = async (scrapeInfo: string): Promise<ScrapedRecipe> => {
     prepTime,
     servings,
     name,
+    numSaved: '0',
     ingredients,
     link: parsedScrapedInfo.url,
     cuisines: [],
