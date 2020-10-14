@@ -13,7 +13,7 @@ export default class RecipeServices {
       return this.repository.getMany(recipeEntity);
     }
 
-    async save(recipesEntity: recipes | recipes[]): Promise<void> {
+    async save(recipesEntity: Omit<recipes, 'id'> | Omit<recipes, 'id'>[]): Promise<void> {
       if (Array.isArray(recipesEntity)) {
         await Promise.all(recipesEntity.map((recipe) => this.repository.create(recipe)));
       }

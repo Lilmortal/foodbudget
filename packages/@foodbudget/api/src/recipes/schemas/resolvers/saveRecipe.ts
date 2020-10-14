@@ -13,7 +13,7 @@ const saveRecipe = mutationField('recipes', {
     ingredients: stringArg({ required: true, list: true }),
   },
   async resolve(_parent, args, ctx: Context) {
-    // const recipe: recipes = {
+    // const recipe: Recipe = {
     //   recipe_name: args.name,
     //   link: args.link,
     //   prep_time: args.prepTime,
@@ -22,7 +22,6 @@ const saveRecipe = mutationField('recipes', {
     // };
 
     return undefined;
-
     // return ctx.serviceManager.recipeServices.save(recipe);
   },
 });

@@ -50,8 +50,16 @@ export default class RecipeRepository implements Repository<recipes> {
   }
 
   // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
-  async getOne(recipe: Partial<Recipe>): Promise<recipes | undefined> {
-    return undefined;
+  async getOne(recipesEntity: Partial<Recipe>): Promise<recipes | undefined> {
+    const result = await this.prisma.recipes.findOne({
+      where: recipesEntity,
+    });
+
+    if (result === null) {
+      return undefined;
+    }
+
+    return result;
   }
 
   async create(recipesEntity: recipes): Promise<recipes>;
@@ -110,12 +118,23 @@ export default class RecipeRepository implements Repository<recipes> {
     });
   }
 
-  delete(obj: Pick<recipes, 'id'>): Promise<recipes>;
+  async delete(recipesEntity: Pick<recipes, 'id'>): Promise<recipes>;
 
-  delete(obj: Pick<recipes, 'id'>[]): Promise<recipes[]>;
+  async delete(recipesEntity: Pick<recipes, 'id'>[]): Promise<recipes[]>;
 
-  delete(obj: Pick<recipes, 'id'> | Pick<recipes, 'id'>[]): Promise<recipes | recipes[]> {
-    console.log(this);
-    throw new Error('Method not implemented.');
+  async delete(recipesEntity: Pick<recipes, 'id'> | Pick<recipes, 'id'>[]): Promise<recipes | recipes[]> {
+    if (Array.isArray(recipesEntity)) {
+      return Promise.all(recipesEntity.map(async (recipe) => this.prisma.recipes.delete({
+        where: {
+          id: recipe.id,
+        },
+      })));
+    }
+
+    return this.prisma.recipes.delete({
+      where: {
+        id: recipesEntity.id,
+      },
+    });
   }
 }
