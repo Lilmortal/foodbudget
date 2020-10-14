@@ -33,8 +33,11 @@ describe('job recipes scraper', () => {
         save: jest.fn(),
       },
       userServices: {
+        get: jest.fn(),
         login: jest.fn(),
         register: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
       },
     }));
 
@@ -86,8 +89,11 @@ describe('job recipes scraper', () => {
         get: jest.fn(),
       },
       userServices: {
+        get: jest.fn(),
         login: jest.fn(),
         register: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
       },
     }));
 
