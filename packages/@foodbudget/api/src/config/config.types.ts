@@ -3,7 +3,7 @@ export interface ApiConfig {
   port: number;
 }
 
-export interface GoogleConfig {
+export interface SocialConfig {
   clientId: string;
   clientSecret: string;
 }
@@ -19,6 +19,7 @@ export interface TokenConfig {
 
 export interface Config {
   api: ApiConfig;
-  google: GoogleConfig;
+  google: SocialConfig;
+  facebook: SocialConfig;
   token: TokenConfig;
 }

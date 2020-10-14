@@ -10,6 +10,7 @@ export const userField = objectType({
     // @TODO: Don't show id, keep this for debugging for now
     t.int('id');
     t.string('googleId');
+    t.string('facebookId');
     t.string('password');
     t.string('email', { description: 'user email.' });
     t.string('nickname');

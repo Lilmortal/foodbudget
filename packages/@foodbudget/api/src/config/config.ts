@@ -21,6 +21,14 @@ const validate = (config: Config) => {
     errors.push('GOOGLE_CLIENT_SECRET is missing.');
   }
 
+  if (!config.facebook.clientId) {
+    errors.push('FACEBOOK_CLIENT_ID is missing.');
+  }
+
+  if (!config.facebook.clientSecret) {
+    errors.push('FACEBOOK_CLIENT_SECRET is missing.');
+  }
+
   if (!config.token.access.expireTime) {
     errors.push('ACCESS_TOKEN_EXPIRE_TIME is missing.');
   }
@@ -60,6 +68,10 @@ const config: Config = {
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID || '',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+  },
+  facebook: {
+    clientId: process.env.FACEBOOK_CLIENT_ID || '',
+    clientSecret: process.env.FACEBOOK_CLIENT_SECRET || '',
   },
   token: {
     access: {

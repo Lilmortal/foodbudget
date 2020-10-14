@@ -8,9 +8,9 @@ const mapUser = (userEntity: users): User => {
   const user: User = {
     id: userEntity.id,
     googleId: userEntity.google_id || undefined,
+    facebookId: userEntity.facebook_id || undefined,
     email: userEntity.email,
     nickname: userEntity.nickname || undefined,
-    // @TODO: Remove
     password: userEntity.password || undefined,
   };
 
@@ -21,15 +21,21 @@ interface GoogleLoginRequest {
   googleId: string;
 }
 
+interface FacebookLoginRequest {
+  facebookId: string;
+}
 interface AccountLoginRequest {
   email: string;
   password: string;
 }
 
-type LoginRequest = GoogleLoginRequest | AccountLoginRequest;
+export type LoginRequest = GoogleLoginRequest | FacebookLoginRequest | AccountLoginRequest;
 
 const isGoogleLoginRequest = (request: LoginRequest)
 : request is GoogleLoginRequest => (request as GoogleLoginRequest).googleId !== undefined;
+
+const isFacebookLoginRequest = (request: LoginRequest)
+: request is FacebookLoginRequest => (request as FacebookLoginRequest).facebookId !== undefined;
 
 const isAccountLoginRequest = (request: LoginRequest)
 : request is AccountLoginRequest => (request as AccountLoginRequest).email !== undefined
@@ -57,6 +63,10 @@ export default class UserServices {
       if (isGoogleLoginRequest(request)) {
         userEntity = {
           google_id: request.googleId,
+        };
+      } else if (isFacebookLoginRequest(request)) {
+        userEntity = {
+          facebook_id: request.facebookId,
         };
       } else if (isAccountLoginRequest(request)) {
         userEntity = {
@@ -87,35 +97,42 @@ export default class UserServices {
       return user;
     }
 
-    async register(userDto: Partial<Omit<users, 'id'>> & Pick<users, 'email'>): Promise<User | undefined> {
-      const userEntity: Omit<users, 'id'> = {
+    async register(userDto: Partial<Omit<User, 'id'>> & Pick<User, 'email'>): Promise<User | undefined> {
+      const user = await this.repository.getOne({ email: userDto.email });
+
+      if (!user) {
+        const userEntity: Omit<users, 'id'> = {
+          email: userDto.email,
+          google_id: userDto.googleId || null,
+          facebook_id: userDto.facebookId || null,
+          nickname: userDto.nickname || null,
+          password: userDto.password || null,
+        };
+
+        const createdUser = await this.repository.create(userEntity);
+        return mapUser(createdUser);
+      }
+
+      if (!userDto.googleId && !userDto.facebookId && user.password) {
+        return undefined;
+      }
+
+      const updatedUserEntity: Omit<Partial<users>, 'id'> & Pick<users, 'email'> = {
         email: userDto.email,
-        google_id: userDto.google_id || null,
-        nickname: userDto.nickname || null,
-        password: null,
+        ...userDto.googleId && { google_id: userDto.googleId },
+        ...userDto.facebookId && { facebook_id: userDto.facebookId },
       };
 
       if (userDto.password) {
         const hashedPassword = await argon2.hash(userDto.password);
-        userEntity.password = hashedPassword;
+        updatedUserEntity.password = hashedPassword;
       }
 
-      const user = await this.repository.getOne({ email: userDto.email });
-
-      if (!user) {
-        const createdUser = await this.repository.create(userEntity);
-        return mapUser(createdUser);
-      }
-      // User has created an account via social auth but have not created an account manually.
-      if (!user.password) {
-        const updatedUser = await this.repository.update(userEntity);
-        return mapUser(updatedUser);
-      }
-
-      return undefined;
+      const updatedUser = await this.repository.update(updatedUserEntity);
+      return mapUser(updatedUser);
     }
 
-    async update(userDto: Omit<Partial<users>, 'id'> & Pick<users, 'email'>): Promise<User> {
+    async update(userDto: Pick<Partial<users>, 'email' | 'nickname' | 'password'>): Promise<User> {
       const userEntity: Omit<Partial<users>, 'id'> = {
         email: userDto.email,
       };

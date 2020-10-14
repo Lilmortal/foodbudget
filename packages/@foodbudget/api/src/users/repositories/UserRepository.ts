@@ -42,11 +42,12 @@ export default class UserRepository implements Repository<users> {
     });
   }
 
-  async update(usersEntity: Partial<users>): Promise<users>;
+  async update(usersEntity: Omit<Partial<users>, 'id'> & Pick<users, 'email'>): Promise<users>;
 
-  async update(usersEntity: Partial<users>[]): Promise<users[]>;
+  async update(usersEntity: (Omit<Partial<users>, 'id'> & Pick<users, 'email'>)[]): Promise<users[]>;
 
-  async update(usersEntity: Partial<users> | Partial<users>[]): Promise<users | users[]> {
+  async update(usersEntity: Omit<Partial<users>, 'id'> & Pick<users, 'email'>
+  | (Omit<Partial<users>, 'id'> & Pick<users, 'email'>)[]): Promise<users | users[]> {
     if (Array.isArray(usersEntity)) {
       return Promise.all(usersEntity.map(async (user) => this.prisma.users.update({
         data: user,

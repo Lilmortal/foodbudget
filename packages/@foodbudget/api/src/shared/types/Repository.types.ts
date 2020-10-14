@@ -6,9 +6,9 @@ export interface Repository<T extends {id: number}> {
   create(obj: Omit<T, 'id'>[]): Promise<T[]>;
   create(obj: Omit<T, 'id'> | Omit<T, 'id'>[]): Promise<T | T[]>;
 
-  update(obj: Partial<T>): Promise<T>;
-  update(obj: Partial<T>[]): Promise<T[]>;
-  update(obj: Partial<T> | Partial<T>[]): Promise<T | T[]>;
+  update(obj: Omit<Partial<T>, 'id'>): Promise<T>;
+  update(obj: Omit<Partial<T>, 'id'>[]): Promise<T[]>;
+  update(obj: Omit<Partial<T>, 'id'> | Omit<Partial<T>, 'id'>[]): Promise<T | T[]>;
 
   delete(obj: Pick<T, 'id'>): Promise<T>;
   delete(obj: Pick<T, 'id'>[]): Promise<T[]>;

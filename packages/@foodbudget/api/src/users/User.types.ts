@@ -1,9 +1,8 @@
 export interface User {
     id: number;
-    // @TODO: remove
     googleId?: string;
+    facebookId?: string;
     email: string;
     nickname?: string;
-    // @TODO: remove
     password?: string;
 }
