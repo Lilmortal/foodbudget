@@ -56,7 +56,7 @@ export interface MailerParams {
   auth: MailAuth;
 }
 
-export interface MailerService {
+export interface Mailer {
   /**
    * Send an email.
    * @param mail mail information that will be sent.
@@ -68,5 +68,3 @@ export interface MailerService {
    */
   verify(): Promise<boolean>;
 }
-
-export type Mailer = MailerService;

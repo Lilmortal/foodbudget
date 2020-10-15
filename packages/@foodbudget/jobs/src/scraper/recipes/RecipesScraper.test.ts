@@ -1,5 +1,4 @@
-import { ScrapeError } from '@foodbudget/errors';
-import { mapping } from './RecipesScraper';
+import { onMapping } from './RecipesScraper';
 import { ScrapedRecipe } from './RecipesScraper.types';
 
 const getValidRecipePageInfo = (
@@ -8,6 +7,7 @@ const getValidRecipePageInfo = (
   prepTime: '5 min',
   servings: '4',
   name: 'Recipe name',
+  numSaved: '0',
   ingredients: ['4 cups of water'],
   link: 'link',
   cuisines: [],
@@ -17,48 +17,49 @@ const getValidRecipePageInfo = (
 });
 
 describe('recipe scraper', () => {
-  it('should throw a ScrapeError if prepTime is an empty string', () => {
-    expect(() => mapping(getValidRecipePageInfo({ prepTime: '' }))).toThrow(ScrapeError);
+  it('should throw an Error if prepTime is an empty string', () => {
+    expect(() => onMapping(getValidRecipePageInfo({ prepTime: '' }))).toThrowError();
   });
 
-  it('should throw a ScrapeError if prepTime is an array', () => {
-    expect(() => mapping(getValidRecipePageInfo({ prepTime: ['5 mins'] }))).toThrow(ScrapeError);
+  it('should throw an Error if prepTime is an array', () => {
+    expect(() => onMapping(getValidRecipePageInfo({ prepTime: ['5 mins'] }))).toThrowError();
   });
 
-  it('should throw a ScrapeError if servings is an empty string', () => {
-    expect(() => mapping(getValidRecipePageInfo({ servings: '' }))).toThrow(ScrapeError);
+  it('should throw an Error if servings is an empty string', () => {
+    expect(() => onMapping(getValidRecipePageInfo({ servings: '' }))).toThrowError();
   });
 
-  it('should throw a ScrapeError if servings is an array', () => {
-    expect(() => mapping(getValidRecipePageInfo({ servings: ['4'] }))).toThrow(ScrapeError);
+  it('should throw an Error if servings is an array', () => {
+    expect(() => onMapping(getValidRecipePageInfo({ servings: ['4'] }))).toThrowError();
   });
 
-  it('should throw a ScrapeError if servings is an invalid number', () => {
-    expect(() => mapping(getValidRecipePageInfo({ servings: '4g' }))).toThrow(ScrapeError);
+  it('should throw an Error if servings is an invalid number', () => {
+    expect(() => onMapping(getValidRecipePageInfo({ servings: '4g' }))).toThrowError();
   });
 
-  it('should throw a ScrapeError if name is an empty string', () => {
-    expect(() => mapping(getValidRecipePageInfo({ name: '' }))).toThrow(ScrapeError);
+  it('should throw an Error if name is an empty string', () => {
+    expect(() => onMapping(getValidRecipePageInfo({ name: '' }))).toThrowError();
   });
 
-  it('should throw a ScrapeError if name is an array', () => {
-    expect(() => mapping(getValidRecipePageInfo({ name: ['5 mins'] }))).toThrow(ScrapeError);
+  it('should throw an Error if name is an array', () => {
+    expect(() => onMapping(getValidRecipePageInfo({ name: ['5 mins'] }))).toThrowError();
   });
 
-  it('should throw a ScrapeError if ingredients is an empty array', () => {
-    expect(() => mapping(getValidRecipePageInfo({ ingredients: [] }))).toThrow(ScrapeError);
+  it('should throw an Error if ingredients is an empty array', () => {
+    expect(() => onMapping(getValidRecipePageInfo({ ingredients: [] }))).toThrowError();
   });
 
-  it('should throw a ScrapeError if ingredients is not an array', () => {
-    expect(() => mapping(getValidRecipePageInfo({ ingredients: '5 mins' }))).toThrow(ScrapeError);
+  it('should throw an Error if ingredients is not an array', () => {
+    expect(() => onMapping(getValidRecipePageInfo({ ingredients: '5 mins' }))).toThrowError();
   });
 
   it('should return a mapped recipe', () => {
-    const mappedRecipe = mapping(getValidRecipePageInfo());
+    const mappedRecipe = onMapping(getValidRecipePageInfo());
     expect(mappedRecipe).toEqual({
       prepTime: '5 min',
       servings: 4,
       name: 'Recipe name',
+      numSaved: 0,
       ingredients: ['4 cups of water'],
       link: 'link',
       cuisines: [],

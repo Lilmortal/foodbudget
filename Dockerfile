@@ -7,16 +7,14 @@ COPY tsconfig.json /src/app/tsconfig.json
 COPY yarn.lock /src/app/yarn.lock
 COPY lerna.json /src/app/lerna.json
 
-COPY packages/@foodbudget/api/package.json /src/app/packages/@foodbudget/api/package.json
-
 COPY packages/@foodbudget/api /src/app/packages/@foodbudget/api
-
+COPY packages/@foodbudget/logger /src/app/packages/@foodbudget/logger
+COPY .env /src/app/.env
 RUN yarn
 
 ADD https://github.com/palfrey/wait-for-db/releases/download/v1.0.0/wait-for-db-linux-x86 /src/app/wait-for-db
 RUN chmod +x /src/app/wait-for-db
-# RUN ./wait-for-db -m postgres -c postgresql://user:pass@foodbudget-db:5432 -t 1000000
 
-# RUN yarn setup
-# CMD ["yarn", "start"]
-EXPOSE 8080
+COPY init.sh /src/app/init.sh
+RUN chmod +x /src/app/init.sh
+CMD /src/app/init.sh

@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+model adjectives {
+  adjectives_type   String              @id
+  recipe_adjectives recipe_adjectives[]
+}
+
+model allergies {
+  allergy_type     String             @id
+  recipe_allergies recipe_allergies[]
+  user_allergies   user_allergies[]
+}
+
+model cuisines {
+  cuisine_type    String            @id
+  recipe_cuisines recipe_cuisines[]
+}
+
+model diets {
+  diet_type    String         @id
+  recipe_diets recipe_diets[]
+  user_diets   user_diets[]
+}
+
+model ingredients {
+  ingredient_name    String               @id
+  price              Float
+  recipe_ingredients recipe_ingredients[]
+  user_pantries      user_pantries[]
+}
+
+model recipe_adjectives {
+  id              Int         @id @default(autoincrement())
+  recipe_id       Int?
+  adjectives_type String?
+  adjectives      adjectives? @relation(fields: [adjectives_type], references: [adjectives_type])
+  recipes         recipes?    @relation(fields: [recipe_id], references: [id])
+}
+
+model recipe_allergies {
+  id           Int        @id @default(autoincrement())
+  recipe_id    Int?
+  allergy_type String?
+  allergies    allergies? @relation(fields: [allergy_type], references: [allergy_type])
+  recipes      recipes?   @relation(fields: [recipe_id], references: [id])
+}
+
+model recipe_cuisines {
+  id           Int       @id @default(autoincrement())
+  recipe_id    Int?
+  cuisine_type String?
+  cuisines     cuisines? @relation(fields: [cuisine_type], references: [cuisine_type])
+  recipes      recipes?  @relation(fields: [recipe_id], references: [id])
+}
+
+model recipe_diets {
+  id        Int      @id @default(autoincrement())
+  recipe_id Int?
+  diet_type String?
+  diets     diets?   @relation(fields: [diet_type], references: [diet_type])
+  recipes   recipes? @relation(fields: [recipe_id], references: [id])
+}
+
+model recipe_ingredients {
+  id              Int          @id @default(autoincrement())
+  recipe_id       Int?
+  ingredient_name String?
+  quantity        Float
+  ingredients     ingredients? @relation(fields: [ingredient_name], references: [ingredient_name])
+  recipes         recipes?     @relation(fields: [recipe_id], references: [id])
+}
+
+model recipes {
+  id                 Int                  @id @default(autoincrement())
+  recipe_name        String
+  link               String               @unique
+  prep_time          String
+  servings           Float
+  num_saved          Float
+  recipe_adjectives  recipe_adjectives[]
+  recipe_allergies   recipe_allergies[]
+  recipe_cuisines    recipe_cuisines[]
+  recipe_diets       recipe_diets[]
+  recipe_ingredients recipe_ingredients[]
+  user_saved_recipes user_saved_recipes[]
+}
+
+model user_allergies {
+  id           Int        @id @default(autoincrement())
+  user_id      Int?
+  allergy_type String?
+  allergies    allergies? @relation(fields: [allergy_type], references: [allergy_type])
+  users        users?     @relation(fields: [user_id], references: [id])
+}
+
+model user_diets {
+  id        Int     @id @default(autoincrement())
+  user_id   Int?
+  diet_type String?
+  diets     diets?  @relation(fields: [diet_type], references: [diet_type])
+  users     users?  @relation(fields: [user_id], references: [id])
+}
+
+model user_pantries {
+  id              Int          @id @default(autoincrement())
+  user_id         Int?
+  ingredient_name String?
+  ingredients     ingredients? @relation(fields: [ingredient_name], references: [ingredient_name])
+  users           users?       @relation(fields: [user_id], references: [id])
+}
+
+model user_saved_recipes {
+  id        Int      @id @default(autoincrement())
+  user_id   Int?
+  recipe_id Int?
+  recipes   recipes? @relation(fields: [recipe_id], references: [id])
+  users     users?   @relation(fields: [user_id], references: [id])
+}
+
+model users {
+  id                 Int                  @id @default(autoincrement())
+  google_id          String?              @unique
+  facebook_id        String?              @unique
+  email              String               @unique
+  password           String?
+  nickname           String?
+  user_allergies     user_allergies[]
+  user_diets         user_diets[]
+  user_pantries      user_pantries[]
+  user_saved_recipes user_saved_recipes[]
+}

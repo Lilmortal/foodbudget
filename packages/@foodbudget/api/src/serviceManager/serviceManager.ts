@@ -1,9 +1,13 @@
-import { PrismaClient, recipes } from '@prisma/client';
-import { RepositoryError, ServiceError } from '@foodbudget/errors';
+import { PrismaClient, recipes, users } from '@prisma/client';
 import { ServiceManager } from './serviceManager.types';
 import RecipeServices from '../recipes/services';
-import { Recipe, RecipeRepository } from '../recipes/repositories';
 import { Repository } from '../shared/types/Repository.types';
+import { RepositoryError, ServiceError } from '../shared/errors';
+import RecipeRepository from '../recipes/repositories';
+import UserRepository from '../users/repositories';
+import UserServices from '../users/services';
+import { User } from '../users';
+import { Recipe } from '../recipes';
 
 let recipeRepository: Repository<Recipe, recipes>;
 try {
@@ -21,8 +25,25 @@ try {
   throw new ServiceError(err);
 }
 
+let userRepository: Repository<User, users>;
+try {
+  const prisma = new PrismaClient({ log: ['query'] });
+
+  userRepository = new UserRepository(prisma);
+} catch (err) {
+  throw new RepositoryError(err);
+}
+
+let userServices: UserServices;
+try {
+  userServices = new UserServices({ repository: userRepository });
+} catch (err) {
+  throw new ServiceError(err);
+}
+
 const serviceManager: ServiceManager = {
   recipeServices,
+  userServices,
 };
 
 export default serviceManager;

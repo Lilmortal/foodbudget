@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import findConfig from 'find-config';
+import logger from '@foodbudget/logger';
 import { Service } from '../Emailer.types';
 import { Config } from './config.types';
 
@@ -41,15 +42,12 @@ const validate = (config: Config) => {
   }
 
   if (errors.length > 0) {
-    console.error(
-      'There are errors attempting to retrieve environment variables.',
+    logger.error(
+      `There are errors attempting to retrieve environment variables. 
+      Please add them in the .env file if you forget to add them in.`,
     );
 
-    console.error(
-      'Please add them in the .env file if you forget to add them in.',
-    );
-
-    console.error(errors.map((error) => `* ${error}`).join('\n'));
+    logger.error(errors.map((error) => `* ${error}`).join('\n'));
 
     return false;
   }

@@ -1,5 +1,9 @@
-import { Express } from 'express-serve-static-core';
+import { Application } from 'express';
+import { Config } from '../config';
+import { ServiceManager } from '../serviceManager';
 
 export interface LoaderParams {
-    app: Express,
+    app: Application;
+    serviceManager: ServiceManager;
+    config: Config;
 }

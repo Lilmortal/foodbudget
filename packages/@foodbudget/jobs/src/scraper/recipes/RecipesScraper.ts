@@ -1,16 +1,16 @@
 import { Recipe } from '@foodbudget/api';
-import { ScrapeError } from '@foodbudget/errors';
 import Scraper from '../Scraper';
 import { OnScrape } from '../Scraper.types';
 import { ScrapedRecipe } from './RecipesScraper.types';
 
-export const mapping = (scrapedRecipe: ScrapedRecipe): Recipe => {
+export const onMapping = (scrapedRecipe: ScrapedRecipe): Recipe => {
   const validationErrors = [];
 
   const recipe: Recipe = {
     prepTime: '',
     servings: 0,
     name: '',
+    numSaved: 0,
     ingredients: [],
     cuisines: [],
     diets: [],
@@ -55,7 +55,7 @@ export const mapping = (scrapedRecipe: ScrapedRecipe): Recipe => {
   }
 
   if (validationErrors.length > 0) {
-    throw new ScrapeError(validationErrors.join('\n'));
+    throw new Error(validationErrors.join('\n'));
   }
 
   return recipe;
@@ -63,6 +63,6 @@ export const mapping = (scrapedRecipe: ScrapedRecipe): Recipe => {
 
 export default class RecipesScraper<S extends ScrapedRecipe> extends Scraper<S, Recipe> {
   constructor(onScrape: OnScrape<S>) {
-    super({ onScrape, mapping });
+    super({ onScrape, onMapping });
   }
 }

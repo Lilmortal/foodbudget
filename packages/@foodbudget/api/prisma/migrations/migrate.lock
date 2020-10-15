@@ -4,3 +4,7 @@
 20200915150642-update-id-to-serial
 20200915151204-update-user-id-from-int-to-string
 20200919071458-unique-recipe-links
+20201012080419-migrate-user-id-from-username-to-email
+20201013013140-add-user-id
+20201013073228-add-google-id-to-users
+20201013144839-add-facebook-id-to-users

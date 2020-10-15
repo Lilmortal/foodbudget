@@ -1,6 +1,7 @@
 import { mutationField, stringArg, intArg } from '@nexus/schema';
-import { Context } from '../../../shared/types/ApolloServer.types';
-import { Recipe } from '../../repositories';
+import { recipes } from '@prisma/client';
+import { Context } from '../../../context';
+import { Recipe } from '../../Recipe.types';
 
 const saveRecipe = mutationField('recipes', {
   type: 'String',
@@ -12,18 +13,16 @@ const saveRecipe = mutationField('recipes', {
     ingredients: stringArg({ required: true, list: true }),
   },
   async resolve(_parent, args, ctx: Context) {
-    const recipe: Recipe = {
-      name: args.name,
-      link: args.link,
-      prepTime: args.prepTime,
-      servings: args.servings,
-      ingredients: args.ingredients,
-      allergies: [],
-      diets: [],
-      cuisines: [],
-    };
+    // const recipe: Recipe = {
+    //   recipe_name: args.name,
+    //   link: args.link,
+    //   prep_time: args.prepTime,
+    //   servings: args.servings,
+    //   // ingredients: args.ingredients,
+    // };
 
-    return ctx.serviceManager.recipeServices.save(recipe);
+    return undefined;
+    // return ctx.serviceManager.recipeServices.save(recipe);
   },
 });
 

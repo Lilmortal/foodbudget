@@ -1,4 +1,3 @@
-import { ScrapeError } from '@foodbudget/errors';
 import { OnScrape } from '../Scraper.types';
 import RecipesScraper from './RecipesScraper';
 import { ScrapedRecipe, ScrapedRecipeHTMLElements } from './RecipesScraper.types';
@@ -16,6 +15,7 @@ describe('recipes job scraper', () => {
     const onScrape: OnScrape<ScrapedRecipe> = async () => ({
       prepTime: '4 mins',
       servings: '4',
+      numSaved: '0',
       name: 'Big Mac',
       ingredients: ['Pig', 'Lettuce'],
       link: 'http://fakewebsite.com',
@@ -48,6 +48,7 @@ describe('recipes job scraper', () => {
       prepTime: '4 mins',
       servings: 4,
       name: 'Big Mac',
+      numSaved: 0,
       ingredients: ['Pig', 'Lettuce'],
       cuisines: [],
       diets: [],
@@ -55,11 +56,12 @@ describe('recipes job scraper', () => {
     });
   });
 
-  it('should throw a ScrapeError if prepTime is an empty string', async () => {
+  it('should throw an Error if prepTime is an empty string', async () => {
     const onScrape: OnScrape<ScrapedRecipe> = async () => ({
       prepTime: '',
       servings: '4',
       name: 'Big Mac',
+      numSaved: '0',
       ingredients: ['Pig', 'Lettuce'],
       link: 'http://fakewebsite.com',
       cuisines: [],
@@ -85,6 +87,6 @@ describe('recipes job scraper', () => {
 
     const recipesScraper = new RecipesScraper(onScrape);
 
-    await expect(recipesScraper.scrape(scrapedWebsiteInfo)).rejects.toThrow(ScrapeError);
+    await expect(recipesScraper.scrape(scrapedWebsiteInfo)).rejects.toThrowError();
   });
 });

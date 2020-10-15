@@ -94,40 +94,43 @@ model recipes {
 
 model user_allergies {
   id           Int        @id @default(autoincrement())
-  user_id      String?
+  user_id      Int?
   allergy_type String?
   allergies    allergies? @relation(fields: [allergy_type], references: [allergy_type])
-  users        users?     @relation(fields: [user_id], references: [username])
+  users        users?     @relation(fields: [user_id], references: [id])
 }
 
 model user_diets {
   id        Int     @id @default(autoincrement())
-  user_id   String?
+  user_id   Int?
   diet_type String?
   diets     diets?  @relation(fields: [diet_type], references: [diet_type])
-  users     users?  @relation(fields: [user_id], references: [username])
+  users     users?  @relation(fields: [user_id], references: [id])
 }
 
 model user_pantries {
   id              Int          @id @default(autoincrement())
-  user_id         String?
+  user_id         Int?
   ingredient_name String?
   ingredients     ingredients? @relation(fields: [ingredient_name], references: [ingredient_name])
-  users           users?       @relation(fields: [user_id], references: [username])
+  users           users?       @relation(fields: [user_id], references: [id])
 }
 
 model user_saved_recipes {
   id        Int      @id @default(autoincrement())
-  user_id   String?
+  user_id   Int?
   recipe_id Int?
   recipes   recipes? @relation(fields: [recipe_id], references: [id])
-  users     users?   @relation(fields: [user_id], references: [username])
+  users     users?   @relation(fields: [user_id], references: [id])
 }
 
 model users {
-  username           String               @id
-  password           String
-  nickname           String
+  id                 Int                  @id @default(autoincrement())
+  google_id          String?              @unique
+  facebook_id        String?              @unique
+  email              String               @unique
+  password           String?
+  nickname           String?
   user_allergies     user_allergies[]
   user_diets         user_diets[]
   user_pantries      user_pantries[]
