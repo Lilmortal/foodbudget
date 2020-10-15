@@ -48,6 +48,7 @@ describe('recipes job scraper', () => {
       prepTime: '4 mins',
       servings: 4,
       name: 'Big Mac',
+      numSaved: 0,
       ingredients: ['Pig', 'Lettuce'],
       cuisines: [],
       diets: [],
