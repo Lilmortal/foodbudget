@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@3.0.0...@foodbudget/api@4.0.0) (2020-10-15)
+
+
+### Bug Fixes
+
+* don't show id and password when querying users ([db32cb3](https://github.com/Lilmortal/foodbudget/commit/db32cb39e6aea55f7e3a0e3903b3d5ed13a13b10))
+* merge conflict ([5f296e3](https://github.com/Lilmortal/foodbudget/commit/5f296e3fa85dc30eef07633c5f12f88aecc3635f))
+* users login via google id ([d9a28b4](https://github.com/Lilmortal/foodbudget/commit/d9a28b47e54cde23bc804152d0890be3ceb76f65))
+
+
+### Code Refactoring
+
+* moved Errors to its own packages ([b2fe0d1](https://github.com/Lilmortal/foodbudget/commit/b2fe0d1228feb2c392144d8dbfe50f56253f993a))
+
+
+### Features
+
+* user can integrate normal registration with social login ([877b290](https://github.com/Lilmortal/foodbudget/commit/877b29072690c46802fda88d4df7578c66933013))
+* user is able to login via facebook ([abebd79](https://github.com/Lilmortal/foodbudget/commit/abebd79c3b1daa44fca4b9c883c10d04a98157d7))
+* users can now login from google ([89ac5fd](https://github.com/Lilmortal/foodbudget/commit/89ac5fd9de1b4c1183a16b60d2891dac737d3cd2))
+
+
+### BREAKING CHANGES
+
+* Removed errors packages, added logger packages
+
+
+
+
+
 # 3.0.0 (2020-10-09)
 
 
