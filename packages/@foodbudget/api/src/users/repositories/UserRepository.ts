@@ -1,7 +1,8 @@
 import { PrismaClient, users } from '@prisma/client';
 import { Repository } from '../../shared/types/Repository.types';
+import { User } from '../User.types';
 
-export default class UserRepository implements Repository<users> {
+export default class UserRepository implements Repository<User, users> {
   private readonly prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
@@ -10,11 +11,11 @@ export default class UserRepository implements Repository<users> {
 
   // Will come handy in future with the release of friends list
   // eslint-disable-next-line class-methods-use-this, lines-between-class-members, @typescript-eslint/no-unused-vars
-  async getMany(user: Partial<users>): Promise<users[] | undefined> {
+  async getMany(user: Partial<User>): Promise<users[] | undefined> {
     return undefined;
   }
 
-  async getOne(user: Partial<users>): Promise<users | undefined> {
+  async getOne(user: Partial<User>): Promise<users | undefined> {
     const result = await this.prisma.users.findOne({
       where: user,
     });
@@ -26,30 +27,30 @@ export default class UserRepository implements Repository<users> {
     return result;
   }
 
-  async create(usersEntity: Omit<users, 'id'>): Promise<users>;
+  async create(usersDto: User): Promise<users>;
 
-  async create(usersEntity: Omit<users, 'id'>[]): Promise<users[]>;
+  async create(usersDto: User[]): Promise<users[]>;
 
-  async create(usersEntity: Omit<users, 'id'> | Omit<users, 'id'>[]): Promise<users | users[]> {
-    if (Array.isArray(usersEntity)) {
-      return Promise.all(usersEntity.map(async (user) => this.prisma.users.create({
+  async create(usersDto: User | User[]): Promise<users | users[]> {
+    if (Array.isArray(usersDto)) {
+      return Promise.all(usersDto.map(async (user) => this.prisma.users.create({
         data: user,
       })));
     }
 
     return this.prisma.users.create({
-      data: usersEntity,
+      data: usersDto,
     });
   }
 
-  async update(usersEntity: Omit<Partial<users>, 'id'> & Pick<users, 'email'>): Promise<users>;
+  async update(usersDto: Partial<User> & Pick<User, 'email'>): Promise<users>;
 
-  async update(usersEntity: (Omit<Partial<users>, 'id'> & Pick<users, 'email'>)[]): Promise<users[]>;
+  async update(usersDto: (Partial<User> & Pick<User, 'email'>)[]): Promise<users[]>;
 
-  async update(usersEntity: Omit<Partial<users>, 'id'> & Pick<users, 'email'>
-  | (Omit<Partial<users>, 'id'> & Pick<users, 'email'>)[]): Promise<users | users[]> {
-    if (Array.isArray(usersEntity)) {
-      return Promise.all(usersEntity.map(async (user) => this.prisma.users.update({
+  async update(usersDto: Partial<User> & Pick<User, 'email'>
+  | (Partial<User> & Pick<User, 'email'>)[]): Promise<users | users[]> {
+    if (Array.isArray(usersDto)) {
+      return Promise.all(usersDto.map(async (user) => this.prisma.users.update({
         data: user,
         where: {
           email: user.email,
@@ -58,29 +59,29 @@ export default class UserRepository implements Repository<users> {
     }
 
     return this.prisma.users.update({
-      data: usersEntity,
+      data: usersDto,
       where: {
-        email: usersEntity.email,
+        email: usersDto.email,
       },
     });
   }
 
-  async delete(usersEntity: Pick<users, 'id'>): Promise<users>;
+  async delete(ids: number): Promise<users>;
 
-  async delete(usersEntity: Pick<users, 'id'>[]): Promise<users[]>;
+  async delete(ids: number[]): Promise<users[]>;
 
-  async delete(usersEntity: Pick<users, 'id'> | Pick<users, 'id'>[]): Promise<users | users[]> {
-    if (Array.isArray(usersEntity)) {
-      return Promise.all(usersEntity.map(async (user) => this.prisma.users.delete({
+  async delete(ids: number | number[]): Promise<users | users[]> {
+    if (Array.isArray(ids)) {
+      return Promise.all(ids.map(async (id) => this.prisma.users.delete({
         where: {
-          id: user.id,
+          id,
         },
       })));
     }
 
     return this.prisma.users.delete({
       where: {
-        id: usersEntity.id,
+        id: ids,
       },
     });
   }

@@ -8,10 +8,10 @@ import ms from 'ms';
 import logger from '@foodbudget/logger';
 import { LoaderParams } from './loaders.type';
 import { ServiceManager } from '../serviceManager';
-import { LoginRequest } from '../users/services/UserServices';
 import {
   isRefreshTokenValid, RefreshToken, renewRefreshToken, createAccessToken, getDecodedRefreshToken,
 } from '../auth';
+import { LoginRequest } from '../users/services';
 
 const validateProfile = (profile: Profile): profile is Profile & Pick<Required<Profile>, 'emails'> => {
   if (!profile.emails || !profile.emails[0].value) {

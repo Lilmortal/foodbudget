@@ -6,8 +6,10 @@ import { RepositoryError, ServiceError } from '../shared/errors';
 import RecipeRepository from '../recipes/repositories';
 import UserRepository from '../users/repositories';
 import UserServices from '../users/services';
+import { User } from '../users';
+import { Recipe } from '../recipes';
 
-let recipeRepository: Repository<recipes>;
+let recipeRepository: Repository<Recipe, recipes>;
 try {
   const prisma = new PrismaClient({ log: ['query'] });
 
@@ -23,7 +25,7 @@ try {
   throw new ServiceError(err);
 }
 
-let userRepository: Repository<users>;
+let userRepository: Repository<User, users>;
 try {
   const prisma = new PrismaClient({ log: ['query'] });
 

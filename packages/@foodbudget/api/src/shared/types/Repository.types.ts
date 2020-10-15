@@ -1,16 +1,16 @@
-export interface Repository<T extends {id: number}> {
-  getMany(obj: Partial<T>): Promise<T[] | undefined>;
-  getOne(obj: Partial<T>): Promise<T | undefined>;
+export interface Repository<D, E extends {id: number}> {
+  getMany(obj: Partial<D>): Promise<E[] | undefined>;
+  getOne(obj: Partial<D>): Promise<E | undefined>;
 
-  create(obj: Omit<T, 'id'>): Promise<T>;
-  create(obj: Omit<T, 'id'>[]): Promise<T[]>;
-  create(obj: Omit<T, 'id'> | Omit<T, 'id'>[]): Promise<T | T[]>;
+  create(obj: Omit<D, 'id'>): Promise<E>;
+  create(obj: Omit<D, 'id'>[]): Promise<E[]>;
+  create(obj: Omit<D, 'id'> | Omit<E, 'id'>[]): Promise<E | E[]>;
 
-  update(obj: Omit<Partial<T>, 'id'>): Promise<T>;
-  update(obj: Omit<Partial<T>, 'id'>[]): Promise<T[]>;
-  update(obj: Omit<Partial<T>, 'id'> | Omit<Partial<T>, 'id'>[]): Promise<T | T[]>;
+  update(obj: Partial<D>): Promise<E>;
+  update(obj: (Partial<D>)[]): Promise<E[]>;
+  update(obj: Partial<D>| (Partial<D>)[]): Promise<E | E[]>;
 
-  delete(obj: Pick<T, 'id'>): Promise<T>;
-  delete(obj: Pick<T, 'id'>[]): Promise<T[]>;
-  delete(obj: Pick<T, 'id'> | Pick<T, 'id'>[]): Promise<T | T[]>;
+  delete(id: number): Promise<E>;
+  delete(id: number[]): Promise<E[]>;
+  delete(id: number | number[]): Promise<E | E[]>;
 }
