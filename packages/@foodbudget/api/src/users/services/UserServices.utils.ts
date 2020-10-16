@@ -5,19 +5,6 @@ import {
   AccountLoginRequest, FacebookLoginRequest, GoogleLoginRequest, LoginRequest,
 } from './UserServices.types';
 
-export const mapUserEntityToDto = (userEntity: users): User => {
-  const user: User = {
-    id: userEntity.id,
-    googleId: userEntity.google_id || undefined,
-    facebookId: userEntity.facebook_id || undefined,
-    email: userEntity.email,
-    nickname: userEntity.nickname || undefined,
-    password: userEntity.password || undefined,
-  };
-
-  return user;
-};
-
 export const isGoogleLoginRequest = (request: LoginRequest)
   : request is GoogleLoginRequest => (request as GoogleLoginRequest).googleId !== undefined;
 

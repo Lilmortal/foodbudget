@@ -2,9 +2,10 @@ import { users } from '@prisma/client';
 import argon2 from 'argon2';
 import { Repository } from '../../shared/types/Repository.types';
 import { User } from '../User.types';
+import userMapper from './userMapper';
 import { LoginRequest, UserServicesParams } from './UserServices.types';
 import {
-  getUserEntity, isRegisteringExistedAccountViaPassword, isRequestCredentialsValid, mapUserEntityToDto,
+  getUserEntity, isRegisteringExistedAccountViaPassword, isRequestCredentialsValid,
 } from './UserServices.utils';
 
 export default class UserServices {
@@ -18,7 +19,7 @@ export default class UserServices {
       const user = await this.repository.getOne(userEntity);
 
       if (user) {
-        return mapUserEntityToDto(user);
+        return userMapper.toDto(user);
       }
       return user;
     }
@@ -33,7 +34,7 @@ export default class UserServices {
       const user = await this.repository.getOne(userEntity);
 
       if (user && await isRequestCredentialsValid(request, user)) {
-        return mapUserEntityToDto(user);
+        return userMapper.toDto(user);
       }
 
       return undefined;
@@ -54,7 +55,7 @@ export default class UserServices {
         };
 
         const createdUser = await this.repository.create(userEntity);
-        return mapUserEntityToDto(createdUser);
+        return userMapper.toDto(createdUser);
       }
 
       if (isRegisteringExistedAccountViaPassword(userDto, user)) {
@@ -74,7 +75,7 @@ export default class UserServices {
       };
 
       const updatedUser = await this.repository.update(updatedUserEntity);
-      return mapUserEntityToDto(updatedUser);
+      return userMapper.toDto(updatedUser);
     }
 
     async update(userDto: Pick<Partial<User>, 'email' | 'nickname' | 'password'>): Promise<User> {
@@ -86,7 +87,7 @@ export default class UserServices {
 
       const user = await this.repository.update(userEntity);
 
-      return mapUserEntityToDto(user);
+      return userMapper.toDto(user);
     }
 
     async delete(id: number): Promise<boolean> {

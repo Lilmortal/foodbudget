@@ -8,9 +8,9 @@ jest.mock('./utils');
 
 describe('scraper', () => {
   let mockOnScrape: jest.Mock<(scrapeInfo: string) => Promise<ScrapedRecipe>>;
-  let mockMapping: jest.Mock<(scrapedResult: ScrapedRecipe) => Recipe>;
+  let mockMapping: jest.Mock<(scrapedResult: ScrapedRecipe) => Omit<Recipe, 'id'>>;
   let scrapedRecipe: ScrapedRecipe;
-  let recipe: Recipe;
+  let recipe: Omit<Recipe, 'id'>;
 
   beforeEach(() => {
     scrapedRecipe = {
@@ -50,7 +50,7 @@ describe('scraper', () => {
     (setupHeadlessBrowser as jest.Mock).mockImplementation(() => ({
       scrape: async () => scrapedRecipe,
     }));
-    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
+    const scraper = new Scraper<ScrapedRecipe, Omit<Recipe, 'id'>>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
 
     await expect(scraper.scrape(scrapedRecipeElements)).resolves.toEqual(recipe);
   });
@@ -60,7 +60,7 @@ describe('scraper', () => {
       scrape: async () => [scrapedRecipe],
     }));
 
-    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
+    const scraper = new Scraper<ScrapedRecipe, Omit<Recipe, 'id'>>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
 
     await expect(scraper.scrape(scrapedRecipeElements)).resolves.toEqual([recipe]);
   });
@@ -83,7 +83,7 @@ describe('scraper', () => {
       scrape: async () => scrapedRecipe,
     }));
 
-    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
+    const scraper = new Scraper<ScrapedRecipe, Omit<Recipe, 'id'>>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
     const spiedScrape = jest.spyOn(scraper, 'scrape');
 
     await expect(scraper.scrape(scrapedRecipeElements, retries)).resolves.toEqual(recipe);
@@ -98,7 +98,7 @@ describe('scraper', () => {
       },
     }));
 
-    const scraper = new Scraper<ScrapedRecipe, Recipe>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
+    const scraper = new Scraper<ScrapedRecipe, Omit<Recipe, 'id'>>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
     const spiedScrape = jest.spyOn(scraper, 'scrape');
 
     await expect(scraper.scrape(scrapedRecipeElements, 2)).rejects.toThrowError();

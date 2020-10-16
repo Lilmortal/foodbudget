@@ -3,10 +3,10 @@ import Scraper from '../Scraper';
 import { OnScrape } from '../Scraper.types';
 import { ScrapedRecipe } from './RecipesScraper.types';
 
-export const onMapping = (scrapedRecipe: ScrapedRecipe): Recipe => {
+export const onMapping = (scrapedRecipe: ScrapedRecipe): Omit<Recipe, 'id'> => {
   const validationErrors = [];
 
-  const recipe: Recipe = {
+  const recipe: Omit<Recipe, 'id'> = {
     prepTime: '',
     servings: 0,
     name: '',
@@ -61,7 +61,7 @@ export const onMapping = (scrapedRecipe: ScrapedRecipe): Recipe => {
   return recipe;
 };
 
-export default class RecipesScraper<S extends ScrapedRecipe> extends Scraper<S, Recipe> {
+export default class RecipesScraper<S extends ScrapedRecipe> extends Scraper<S, Omit<Recipe, 'id'>> {
   constructor(onScrape: OnScrape<S>) {
     super({ onScrape, onMapping });
   }

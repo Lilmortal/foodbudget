@@ -7,7 +7,7 @@ import JobRecipesScraper from './JobRecipesScraper';
 jest.mock('../scraper/recipes');
 
 describe('job recipes scraper', () => {
-  let recipe: Recipe;
+  let recipe: Omit<Recipe, 'id'>;
   let mockServiceManager: jest.Mock<ServiceManager, []>;
   let mockEmailer: jest.Mock<Mailer>;
   let mockRecipeScraper: jest.Mock<RecipesScraper<ScrapedRecipe>>;

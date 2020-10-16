@@ -22,11 +22,12 @@ export default class JobRecipesScraper {
     this.recipeScrapers = recipeScrapers;
   }
 
-  async scrape(scrapedElements: ScrapedRecipeHTMLElements | ScrapedRecipeHTMLElements[]): Promise<(Recipe | Recipe[])[]> {
+  async scrape(scrapedElements: ScrapedRecipeHTMLElements | ScrapedRecipeHTMLElements[]):
+  Promise<(Omit<Recipe, 'id'> | Omit<Recipe, 'id'>[])[]> {
     return Promise.all(this.recipeScrapers.map(async (scraper) => scraper.scrape(scrapedElements)));
   }
 
-  async save(recipes: Recipe | Recipe[]): Promise<void> {
+  async save(recipes: Omit<Recipe, 'id'> | Omit<Recipe, 'id'>[]): Promise<void> {
     try {
       await this.serviceManager.recipeServices.save(recipes);
     } catch (err) {
@@ -34,7 +35,8 @@ export default class JobRecipesScraper {
     }
   }
 
-  async notify(recipes: Recipe | Recipe[], mailParticipants: Pick<Mail, 'from' | 'to'>): Promise<void> {
+  async notify(recipes: Omit<Recipe, 'id'> | Omit<Recipe, 'id'>[], mailParticipants: Pick<Mail, 'from' | 'to'>):
+  Promise<void> {
     const getConfirmationMail = (recipeNames: string): Mail => ({
       subject: `recipe ${recipeNames} has been scraped.`,
       text: 'Now we just have to manually input the remaining criterias.',

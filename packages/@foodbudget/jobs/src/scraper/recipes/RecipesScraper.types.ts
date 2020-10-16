@@ -20,4 +20,4 @@ export interface ScrapedRecipeHTMLElements extends ScrapedElements {
     ingredientsHtmlElement: ScrapedHTMLElement;
   }
 
-export type ScrapedRecipe = Record<keyof Recipe, string | string[]>;
+export type ScrapedRecipe = Record<keyof Omit<Recipe, 'id'>, string | string[]>;

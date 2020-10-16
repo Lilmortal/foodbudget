@@ -48,6 +48,7 @@ export type Allergy =
   | 'Wheat';
 
 export interface Recipe {
+  id: number;
   link: string;
   prepTime: string;
   servings: number;
