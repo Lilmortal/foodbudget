@@ -1,14 +1,15 @@
 import { Response } from 'express';
-import config from '../../config';
-import { REFRESH_TOKEN_KEY } from '../../loaders/auth/constants';
+import { REFRESH_TOKEN_KEY } from './constants';
 import createToken from './createToken';
 import { RefreshToken } from './Token.types';
 
-const renewRefreshToken = (userId: string, res: Response): void => {
+const renewRefreshToken = (
+  userId: string, res: Response, refreshTokenSecret: string, refreshTokenExpireTime: string,
+): void => {
   const refreshToken = createToken<RefreshToken>({
     payload: { userId },
-    secret: config.token.refresh.secret,
-    expireTime: config.token.refresh.expireTime,
+    secret: refreshTokenSecret,
+    expireTime: refreshTokenExpireTime,
   });
 
   // secure if NODE_ENV is production

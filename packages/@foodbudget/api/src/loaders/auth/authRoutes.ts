@@ -8,10 +8,11 @@ import { LoaderParams } from '../loaders.type';
 import {
   createAccessToken, getDecodedRefreshToken, isRefreshTokenValid, renewRefreshToken,
 } from '../../shared/tokens';
+import { Config } from '../../config';
 
-const handleTokenVerification = (req: Request, res: Response) => {
+const handleTokenVerification = (config: Config) => (req: Request, res: Response) => {
   if (req.user && isRefreshTokenValid(req.user)) {
-    renewRefreshToken(req.user.userId, res);
+    renewRefreshToken(req.user.userId, res, config.token.refresh.secret, config.token.refresh.expireTime);
     res.redirect('http://localhost:8080/graphql');
   } else {
     res.redirect('http://locahost:8080/login?failureMessage=User ID is not found.');
@@ -21,19 +22,19 @@ const handleTokenVerification = (req: Request, res: Response) => {
 const authRoutes = ({ app, config } : LoaderParams): void => {
   app.get('/v1/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
   app.get('/v1/auth/google/verify', passport.authenticate('google',
-    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification);
+    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification(config));
 
   app.get('/v1/auth/facebook', passport.authenticate('facebook', { scope: ['email'] }));
   app.get('/v1/auth/facebook/verify', passport.authenticate('facebook',
-    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification);
+    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification(config));
 
   app.get('/refresh-token', (req: Request, res: Response) => {
     try {
-      const decodedRefreshToken = getDecodedRefreshToken(req);
+      const decodedRefreshToken = getDecodedRefreshToken(req, config.token.refresh.secret);
       const accessToken = createAccessToken(decodedRefreshToken.userId, config);
       const expiryTime = new Date(Date.now() + ms(config.token.access.expireTime));
 
-      renewRefreshToken(decodedRefreshToken.userId, res);
+      renewRefreshToken(decodedRefreshToken.userId, res, config.token.refresh.secret, config.token.refresh.expireTime);
 
       res.status(200).send({
         accessToken,

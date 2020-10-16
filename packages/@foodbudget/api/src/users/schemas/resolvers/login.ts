@@ -16,7 +16,7 @@ const login = mutationField('login', {
 
       if (user) {
         logger.info(`${user.email} has logged in.`);
-        renewRefreshToken(user.id.toString(), ctx.res);
+        renewRefreshToken(user.id.toString(), ctx.res, ctx.config.token.refresh.secret, ctx.config.token.refresh.expireTime);
         return user;
       }
 

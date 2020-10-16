@@ -2,13 +2,12 @@ import { verify } from 'jsonwebtoken';
 import { Request } from 'express';
 import { RefreshToken } from './Token.types';
 import isRefreshTokenValid from './isRefreshTokenValid';
-import { REFRESH_TOKEN_KEY } from '../../loaders/auth/constants';
-import config from '../../config';
+import { REFRESH_TOKEN_KEY } from './constants';
 
-const getDecodedRefreshToken = (req: Request): RefreshToken => {
+const getDecodedRefreshToken = (req: Request, refreshTokenSecret: string): RefreshToken => {
   const refreshToken = req.cookies[REFRESH_TOKEN_KEY];
 
-  const decodedRefreshToken = verify(refreshToken, config.token.refresh.secret);
+  const decodedRefreshToken = verify(refreshToken, refreshTokenSecret);
 
   if (isRefreshTokenValid(decodedRefreshToken)) {
     return decodedRefreshToken;
