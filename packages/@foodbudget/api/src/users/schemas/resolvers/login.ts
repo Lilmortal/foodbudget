@@ -2,7 +2,7 @@ import { mutationField, stringArg } from '@nexus/schema';
 import logger from '@foodbudget/logger';
 import { Context } from '../../../context';
 import { userField } from '../schema';
-import { renewRefreshToken } from '../../../auth';
+import { renewRefreshToken } from '../../../shared/tokens';
 
 const login = mutationField('login', {
   type: userField,

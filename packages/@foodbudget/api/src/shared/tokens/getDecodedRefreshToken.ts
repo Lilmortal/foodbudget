@@ -2,7 +2,7 @@ import { verify } from 'jsonwebtoken';
 import { Request } from 'express';
 import { RefreshToken } from './Token.types';
 import isRefreshTokenValid from './isRefreshTokenValid';
-import { REFRESH_TOKEN_KEY } from '../constants';
+import { REFRESH_TOKEN_KEY } from '../../loaders/auth/constants';
 import config from '../../config';
 
 const getDecodedRefreshToken = (req: Request): RefreshToken => {

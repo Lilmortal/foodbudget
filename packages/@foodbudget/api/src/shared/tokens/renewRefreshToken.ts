@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import config from '../../config';
-import { REFRESH_TOKEN_KEY } from '../constants';
+import { REFRESH_TOKEN_KEY } from '../../loaders/auth/constants';
 import createToken from './createToken';
 import { RefreshToken } from './Token.types';
 
