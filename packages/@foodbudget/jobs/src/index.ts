@@ -15,12 +15,8 @@ import ImportedRecipesScraper from './scraper/recipes/ImportedRecipesScraper';
     recipeScrapers: [ImportedRecipesScraper],
   });
 
-  try {
-    const cron = new CronJob(config.cron.url);
+  const cron = new CronJob(config.cron.url);
 
-    cron.createJobs([recipesJob], config);
-    await cron.start();
-  } catch (err) {
-    logger.log(err);
-  }
+  cron.createJobs([recipesJob], config);
+  await cron.start();
 })();

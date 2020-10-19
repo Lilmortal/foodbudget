@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@foodbudget/email": "^4.0.0",
+    "@foodbudget/errors": "^1.0.1",
     "@foodbudget/logger": "^2.0.0",
     "@nexus/schema": "^0.16.0",
     "@prisma/client": "^2.6.2",

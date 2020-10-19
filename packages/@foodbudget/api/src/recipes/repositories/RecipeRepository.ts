@@ -1,7 +1,7 @@
 import logger from '@foodbudget/logger';
 import { PrismaClient } from '@prisma/client';
+import { AppError } from '@foodbudget/errors';
 import IngredientServices from '../../ingredients/services';
-import { StatusError } from '../../shared/errors';
 import { PartialBy } from '../../shared/types/PartialBy.types';
 import { Repository, SaveOptions } from '../../shared/types/Repository.types';
 import { Recipe, RecipeResponse } from '../Recipe.types';
@@ -270,7 +270,7 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
     if (Array.isArray(ids)) {
       return Promise.all(ids.map(async (id) => {
         if (isNaN(Number(id))) {
-          throw new StatusError(500, 'Given recipe ID is not a number.');
+          throw new AppError({ message: 'Given recipe ID is not a number.', isOperational: true, httpStatus: 500 });
         }
 
         return this.prisma.recipes.delete({
@@ -296,7 +296,7 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
     }
 
     if (isNaN(Number(ids))) {
-      throw new StatusError(500, 'Given recipe ID is not a number.');
+      throw new AppError({ message: 'Given recipe ID is not a number.', isOperational: true, httpStatus: 500 });
     }
 
     const result = await this.prisma.recipes.delete({

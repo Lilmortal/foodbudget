@@ -29,11 +29,7 @@ export default class JobRecipesScraper {
   }
 
   async save(recipes: Omit<Recipe, 'id'> | Omit<Recipe, 'id'>[]): Promise<void> {
-    try {
-      await this.serviceManager.recipeServices.save(recipes);
-    } catch (err) {
-      throw new Error(err);
-    }
+    await this.serviceManager.recipeServices.save(recipes);
   }
 
   async notify(recipes: Omit<Recipe, 'id'> | Omit<Recipe, 'id'>[], mailParticipants: Pick<Mail, 'from' | 'to'>):
@@ -45,16 +41,12 @@ export default class JobRecipesScraper {
     });
 
     let recipeNames = '';
-    try {
-      if (Array.isArray(recipes)) {
-        recipeNames = recipes.map((recipe) => recipe.name).join(', ');
-      } else {
-        recipeNames = recipes.name;
-      }
-      this.emailer.send(getConfirmationMail(recipeNames));
-    } catch (err) {
-      throw new Error(err);
+    if (Array.isArray(recipes)) {
+      recipeNames = recipes.map((recipe) => recipe.name).join(', ');
+    } else {
+      recipeNames = recipes.name;
     }
+    this.emailer.send(getConfirmationMail(recipeNames));
   }
 
   async start(config: Config): Promise<void> {

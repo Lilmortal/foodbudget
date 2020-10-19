@@ -1,6 +1,6 @@
 import logger from '@foodbudget/logger';
 import { PrismaClient, users } from '@prisma/client';
-import { StatusError } from '../../shared/errors';
+import { AppError } from '@foodbudget/errors';
 import { PartialBy } from '../../shared/types/PartialBy.types';
 import { Repository, SaveOptions } from '../../shared/types/Repository.types';
 import { User } from '../User.types';
@@ -23,7 +23,7 @@ export default class UserRepository implements Repository<User, users> {
     });
 
     if (result.length > 1) {
-      throw new StatusError(500, 'Multiple users found.');
+      throw new AppError({ message: 'Multiple users found.', isOperational: true, httpStatus: 500 });
     }
 
     if (result === null) {
@@ -103,7 +103,7 @@ export default class UserRepository implements Repository<User, users> {
     if (Array.isArray(ids)) {
       return Promise.all(ids.map(async (id) => {
         if (isNaN(Number(id))) {
-          throw new StatusError(500, 'Given user ID is not a number.');
+          throw new AppError({ message: 'Given user ID is not a number.', isOperational: true, httpStatus: 500 });
         }
 
         return this.prisma.users.delete({
@@ -115,7 +115,7 @@ export default class UserRepository implements Repository<User, users> {
     }
 
     if (isNaN(Number(ids))) {
-      throw new StatusError(500, 'Given user ID is not a number.');
+      throw new AppError({ message: 'Given user ID is not a number.', isOperational: true, httpStatus: 500 });
     }
 
     const result = await this.prisma.users.delete({

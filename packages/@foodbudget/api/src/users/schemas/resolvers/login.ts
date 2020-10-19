@@ -11,23 +11,18 @@ const login = mutationField('login', {
     password: stringArg({ required: true }),
   },
   async resolve(_parent, args, ctx: Context) {
-    try {
-      const user = await ctx.serviceManager.userServices.login({ email: args.email, password: args.password });
+    const user = await ctx.serviceManager.userServices.login({ email: args.email, password: args.password });
 
-      if (user) {
-        logger.info(`${user.email} has logged in.`);
-        renewAuthRefreshToken(
-          user.id.toString(), ctx.config.token.refresh.secret, ctx.config.token.refresh.expireTime,
-        );
-        return user;
-      }
-
-      logger.warn(`${args.email} failed to login.`);
-      return null;
-    } catch (err) {
-      logger.error(err.message);
-      return null;
+    if (user) {
+      logger.info(`${user.email} has logged in.`);
+      renewAuthRefreshToken(
+        user.id.toString(), ctx.config.token.refresh.secret, ctx.config.token.refresh.expireTime,
+      );
+      return user;
     }
+
+    logger.warn(`${args.email} failed to login.`);
+    return null;
   },
 });
 

@@ -1,5 +1,5 @@
+import { AppError } from '@foodbudget/errors';
 import { Emailer } from './Emailer';
-import EmailError from './EmailError';
 
 describe('emailer', () => {
   beforeEach(() => {
@@ -26,12 +26,12 @@ describe('emailer', () => {
     expect(url).not.toBeUndefined();
   });
 
-  it('should throw an EmailerError given invalid credentials', async () => {
+  it('should throw an AppError given invalid credentials', async () => {
     expect(
       Emailer.create({
         service: 'smtp.ethereal.email',
         auth: { user: 'fake user', pass: 'fake pass' },
       }),
-    ).rejects.toThrowError(EmailError);
+    ).rejects.toThrowError(AppError);
   });
 });

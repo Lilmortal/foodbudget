@@ -3,11 +3,11 @@ import util from 'util';
 import MailTransporter from 'nodemailer/lib/mailer';
 import SESTransport from 'nodemailer/lib/ses-transport';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { AppError } from '@foodbudget/errors';
 import {
   Mailer, MailerParams, Mail,
 } from './Emailer.types';
 import config from './config';
-import EmailError from './EmailError';
 
 export class Emailer implements Mailer {
   private readonly transporter: MailTransporter;
@@ -66,8 +66,11 @@ export class Emailer implements Mailer {
       );
       isVerified = await promisifiedVerify();
     } catch (err) {
-      throw new EmailError(`Attempting to verify account failed:
-      ${err.message || err}`);
+      throw new AppError({
+        message: `Attempting to verify account failed:
+      ${err.message || err}`,
+        isOperational: true,
+      });
     }
     return isVerified;
   }
@@ -79,25 +82,34 @@ export class Emailer implements Mailer {
     text,
     html,
   }: Mail): Promise<string | boolean> {
-    const info:
-      | SESTransport.SentMessageInfo
-      | SMTPTransport.SentMessageInfo = await this.transporter.sendMail({
+    let info: SESTransport.SentMessageInfo | SMTPTransport.SentMessageInfo;
+
+    try {
+      info = await this.transporter.sendMail({
         from,
         to,
         subject,
         text,
         html,
       });
+    } catch (err) {
+      throw new AppError({ message: `Attempting to send mail failed: ${err.message || err}`, isOperational: true });
+    }
 
-    return nodeMailer.getTestMessageUrl(info);
+    let messageUrl: string | boolean;
+
+    try {
+      messageUrl = nodeMailer.getTestMessageUrl(info);
+    } catch (err) {
+      throw new AppError({ message: `Attempting to get message url failed: ${err.message || err}`, isOperational: true });
+    }
+
+    return messageUrl;
   }
 }
 
-// @TODO: Think about this
-export default (async () => {
-  const emailer = await Emailer.create(
-    { service: config.email.service, auth: { user: config.email.user, pass: config.email.password } },
-  );
+const emailer = (async () => Emailer.create(
+  { service: config.email.service, auth: { user: config.email.user, pass: config.email.password } },
+))();
 
-  return emailer;
-})();
+export default emailer;

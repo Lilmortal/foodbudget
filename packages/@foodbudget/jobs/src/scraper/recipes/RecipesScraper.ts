@@ -1,4 +1,5 @@
 import { Recipe } from '@foodbudget/api';
+import { AppError } from '@foodbudget/errors';
 import Scraper from '../Scraper';
 import { OnScrape } from '../Scraper.types';
 import { ScrapedRecipe } from './RecipesScraper.types';
@@ -59,7 +60,7 @@ export const onMapping = (scrapedRecipe: ScrapedRecipe): Omit<Recipe, 'id'> => {
   // }
 
   if (validationErrors.length > 0) {
-    throw new Error(validationErrors.join('\n'));
+    throw new AppError({ message: validationErrors.join('\n'), isOperational: true });
   }
 
   return recipe;

@@ -3,10 +3,10 @@ import express, {
 } from 'express';
 import logger from '@foodbudget/logger';
 import cookieParser from 'cookie-parser';
+import { AppError, ErrorHandler } from '@foodbudget/errors';
 import server from './apolloServer';
 import config from './config';
 import serviceManager from './serviceManager';
-import { StatusError } from './shared/errors';
 import handleAuth from './auth';
 
 const handleHealthChecks = (app: Application) => {
@@ -17,21 +17,18 @@ const handleHealthChecks = (app: Application) => {
 
 const handle404Routes = (app: Application) => {
   app.use(() => {
-    throw new StatusError(404, 'Page not found');
+    throw new AppError({ message: 'Page not found', isOperational: true, httpStatus: 404 });
   });
 };
 
 const handleErrors = (app: Application) => {
-  const isStatusError = (err: unknown): err is StatusError => (err as StatusError).status !== undefined;
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  app.use(async (err: unknown, _req: Request, res: Response, _next: NextFunction) => {
-    if (isStatusError(err)) {
-      logger.error(err.stack || err.message);
-      return res.status(err.status).json({ error: err.message });
+  // eslint-disable-next-line consistent-return
+  app.use(async (err: unknown, _req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    if (err instanceof AppError && ErrorHandler.isOperational(err)) {
+      return res.status(err.httpStatus || 500).json({ error: err.message });
     }
 
-    return res.status(500).json({ error: err });
+    next(err);
   });
 };
 

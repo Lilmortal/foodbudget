@@ -1,3 +1,4 @@
+import { AppError } from '../../../errors/src';
 import {
   ScraperParams,
   ScrapedElements, OnScrape,
@@ -53,7 +54,7 @@ export default class Scraper<S, R> {
 
         return this.scrape(scrapedElements, retries - 1);
       }
-      throw new Error(err);
+      throw new AppError({ message: err.message || err, isOperational: true });
     }
   }
 }
