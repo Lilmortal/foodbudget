@@ -44,10 +44,12 @@ describe('imported recipes job scraper', () => {
       servings: 5,
       name: 'Big Mac',
       numSaved: 0,
-      ingredients: ['Pig', 'Lettuce'],
+      ingredients: [],
       cuisines: [],
       diets: [],
       allergies: [],
+      adjectives: [],
+      meals: [],
     });
   });
 

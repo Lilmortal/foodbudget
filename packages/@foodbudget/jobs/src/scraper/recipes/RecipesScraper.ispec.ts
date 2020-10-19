@@ -17,7 +17,7 @@ describe('recipes job scraper', () => {
       servings: '4',
       numSaved: '0',
       name: 'Big Mac',
-      ingredients: ['Pig', 'Lettuce'],
+      ingredients: [],
       link: 'http://fakewebsite.com',
       cuisines: [],
       diets: [],
@@ -51,10 +51,12 @@ describe('recipes job scraper', () => {
       servings: 4,
       name: 'Big Mac',
       numSaved: 0,
-      ingredients: ['Pig', 'Lettuce'],
+      ingredients: [],
       cuisines: [],
       diets: [],
       allergies: [],
+      adjectives: [],
+      meals: [],
     });
   });
 
@@ -64,7 +66,7 @@ describe('recipes job scraper', () => {
       servings: '4',
       name: 'Big Mac',
       numSaved: '0',
-      ingredients: ['Pig', 'Lettuce'],
+      ingredients: [],
       link: 'http://fakewebsite.com',
       cuisines: [],
       diets: [],
