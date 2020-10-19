@@ -4,11 +4,11 @@ import { Strategy as GoogleTokenStrategy, VerifyCallback } from 'passport-google
 import { Strategy as FacebookStrategy } from 'passport-facebook';
 
 import logger from '@foodbudget/logger';
-import { LoaderParams } from '../loaders.type';
-import { ServiceManager } from '../../serviceManager';
+import { Application } from 'express';
 
-import { LoginRequest } from '../../users/services';
-import { RefreshToken } from '../../shared/tokens';
+import UserServices, { LoginRequest } from '../users/services';
+import { Config } from '../config';
+import { AuthRefreshTokenPayload } from '../shared/tokens';
 
 const validateProfile = (profile: Profile): profile is Profile & Pick<Required<Profile>, 'emails'> => {
   if (!profile.emails || !profile.emails[0].value) {
@@ -50,7 +50,7 @@ const getSocialLoginRequest = (strategy: Strategy, id: string) => {
 };
 
 const handleTokenStrategy = (
-  serviceManager: ServiceManager,
+  userServices: Required<UserServices>,
   strategy: Strategy,
 ) => async (accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) => {
   try {
@@ -60,20 +60,20 @@ const handleTokenStrategy = (
 
       const socialLoginRequest = getSocialLoginRequest(strategy, id);
 
-      let user = await serviceManager.userServices.login({ ...socialLoginRequest });
+      let user = await userServices.login({ ...socialLoginRequest });
 
       if (!user) {
-        user = await serviceManager.userServices.register({ ...socialLoginRequest, email });
+        user = await userServices.register({ ...socialLoginRequest, email });
 
         if (!user) {
           throw new Error(`Attempting to register ${email} failed.`);
         }
       }
 
-      const userJWTPayload: RefreshToken = {
+      const authRefreshTokenPayload: AuthRefreshTokenPayload = {
         userId: user.id.toString(),
       };
-      done(undefined, userJWTPayload);
+      done(undefined, authRefreshTokenPayload);
     }
   } catch (err) {
     logger.error(err.message);
@@ -90,19 +90,19 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-const authLoader = ({ app, config, serviceManager } : LoaderParams): void => {
+const authLoader = (app: Application, config: Config, userServices: Required<UserServices>): void => {
   passport.use(new GoogleTokenStrategy({
     clientID: config.google.clientId,
     clientSecret: config.google.clientSecret,
     callbackURL: 'http://localhost:8080/v1/auth/google/verify',
-  }, handleTokenStrategy(serviceManager, 'google')));
+  }, handleTokenStrategy(userServices, 'google')));
 
   passport.use(new FacebookStrategy({
     clientID: config.facebook.clientId,
     clientSecret: config.facebook.clientSecret,
     callbackURL: 'http://localhost:8080/v1/auth/facebook/verify',
     profileFields: ['id', 'email'],
-  }, handleTokenStrategy(serviceManager, 'facebook')));
+  }, handleTokenStrategy(userServices, 'facebook')));
 
   app.use(passport.initialize());
 };

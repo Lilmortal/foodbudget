@@ -2,7 +2,7 @@ import { mutationField, stringArg } from '@nexus/schema';
 import logger from '@foodbudget/logger';
 import { Context } from '../../../context';
 import { userField } from '../schema';
-import { renewRefreshToken } from '../../../shared/tokens';
+import { renewAuthRefreshToken } from '../../../shared/tokens';
 
 const login = mutationField('login', {
   type: userField,
@@ -16,7 +16,9 @@ const login = mutationField('login', {
 
       if (user) {
         logger.info(`${user.email} has logged in.`);
-        renewRefreshToken(user.id.toString(), ctx.res, ctx.config.token.refresh.secret, ctx.config.token.refresh.expireTime);
+        renewAuthRefreshToken(
+          user.id.toString(), ctx.config.token.refresh.secret, ctx.config.token.refresh.expireTime,
+        );
         return user;
       }
 

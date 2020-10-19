@@ -4,6 +4,11 @@ export interface Token<P> {
     expireTime: string;
 }
 
-export interface RefreshToken {
+export interface AuthRefreshTokenPayload {
     userId: string;
+}
+
+export interface RefreshToken {
+    key: string;
+    value: string;
 }
