@@ -11,6 +11,7 @@ export default class IngredientRepository implements Repository<Ingredient, ingr
   }
 
   get = async (ingredient: Partial<Ingredient>): Promise<ingredients[] | undefined> => {
+    logger.info('get ingredient repository request: %o', ingredient);
     const result = await this.prisma.ingredients.findMany(
       {
         where: {
@@ -24,11 +25,12 @@ export default class IngredientRepository implements Repository<Ingredient, ingr
       },
     );
 
-    logger.info('Retrieved ingredients: %o', result);
+    logger.info('ingredients found: %o', result);
     return result;
   };
 
   getOne = async (ingredient: Partial<Ingredient>): Promise<ingredients | undefined> => {
+    logger.info('get one ingredient repository request: %o', ingredient);
     const result = await this.prisma.ingredients.findOne(
       {
         where: {
@@ -42,7 +44,7 @@ export default class IngredientRepository implements Repository<Ingredient, ingr
       return undefined;
     }
 
-    logger.info('Retrieved ingredient: %o', result);
+    logger.info('ingredient found: %o', result);
     return result;
   };
 
@@ -50,6 +52,8 @@ export default class IngredientRepository implements Repository<Ingredient, ingr
     const overrideOrUpdate = (
       shouldUpdate: boolean, value: Record<string, unknown>,
     ) => (override ? value : shouldUpdate && value);
+
+    logger.info('upsert ingredient repository request: %o', ingredient);
 
     const result = await this.prisma.ingredients.upsert({
       create: {
@@ -67,7 +71,7 @@ export default class IngredientRepository implements Repository<Ingredient, ingr
       },
     });
 
-    logger.info('Upserted ingredient: %o', result);
+    logger.info('upserted ingredient: %o', result);
 
     return result;
   };
@@ -96,6 +100,7 @@ export default class IngredientRepository implements Repository<Ingredient, ingr
   async delete(names: string[]): Promise<ingredients[]>;
 
   async delete(names: string | string[]): Promise<ingredients | ingredients[]> {
+    logger.info('delete ingredient name repository request: %o', name);
     if (Array.isArray(names)) {
       return Promise.all(names.map(async (name) => this.prisma.ingredients.delete({
         where: {
@@ -110,7 +115,7 @@ export default class IngredientRepository implements Repository<Ingredient, ingr
       },
     });
 
-    logger.info('Deleted ingredient: %o', result);
+    logger.info('deleted ingredient: %o', result);
     return result;
   }
 }

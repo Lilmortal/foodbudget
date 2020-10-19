@@ -1,7 +1,16 @@
 import { mutationField, stringArg, floatArg } from '@nexus/schema';
+import { AppError } from '@foodbudget/errors';
+import logger from '@foodbudget/logger';
 import { Context } from '../../../context';
 import { Ingredient } from '../../Ingredient.types';
 import { ingredientField } from '../schemaFields';
+
+const validateArguments = (args: unknown):boolean => {
+  if (typeof (args as Ingredient).name === 'string' && (args as Ingredient).name.length > 0) {
+    return true;
+  }
+  throw new AppError({ message: 'Invalid ingredient argument.', isOperational: true });
+};
 
 const saveIngredient = mutationField('ingredients', {
   type: ingredientField,
@@ -11,6 +20,10 @@ const saveIngredient = mutationField('ingredients', {
     amount: floatArg(),
   },
   async resolve(_parent, args, ctx: Context) {
+    validateArguments(args);
+
+    logger.info('save ingredient request: %o', args);
+
     const ingredient: Ingredient = {
       name: args.name,
       price: {
@@ -19,7 +32,10 @@ const saveIngredient = mutationField('ingredients', {
       },
     };
 
-    return ctx.serviceManager.ingredientServices.save(ingredient);
+    const result = ctx.serviceManager.ingredientServices.save(ingredient);
+
+    logger.info('saved ingredient response: %o', result);
+    return result;
   },
 });
 

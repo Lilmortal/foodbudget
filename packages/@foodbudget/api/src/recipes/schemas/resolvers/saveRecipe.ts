@@ -1,3 +1,4 @@
+import logger from '@foodbudget/logger';
 import {
   mutationField, stringArg, intArg, arg,
 } from '@nexus/schema';
@@ -24,6 +25,8 @@ const saveRecipe = mutationField('recipes', {
     meals: arg({ type: mealType, list: true }),
   },
   async resolve(_parent, args, ctx: Context) {
+    logger.info('save recipe request: %o', args);
+
     const recipe: Recipe = {
       id: args.id,
       name: args.name,
@@ -41,6 +44,7 @@ const saveRecipe = mutationField('recipes', {
 
     const result = await ctx.serviceManager.recipeServices.save(recipe);
 
+    logger.info('saved recipe response: %o', recipe);
     return result;
   },
 });

@@ -70,16 +70,12 @@ export default class UserServices {
     return userMapper.toDto(user);
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(id: string): Promise<User> {
     // @TODO: Send a one off cron job to delete the user in 5 days.
     // But for now, delete the user straight away.
 
     const user = await this.repository.delete(id);
 
-    if (!user) {
-      return false;
-    }
-
-    return true;
+    return userMapper.toDto(user);
   }
 }

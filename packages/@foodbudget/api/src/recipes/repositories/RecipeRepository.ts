@@ -13,6 +13,7 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
   }
 
   get = async (recipe: Partial<Recipe>): Promise<RecipeResponse[] | undefined> => {
+    logger.info('get recipe repository request: %o', recipe);
     const result = await this.prisma.recipes.findMany(
       {
         where: {
@@ -68,11 +69,13 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
       },
     );
 
-    logger.info('Retrieved recipes: %o', result);
+    logger.info('recipes found: %o', result);
     return result;
   };
 
   getOne = async (recipe: Partial<Recipe>): Promise<RecipeResponse | undefined> => {
+    logger.info('get one ingredient repository request: %o', recipe);
+
     const result = await this.prisma.recipes.findOne(
       {
         where: {
@@ -100,7 +103,7 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
       return undefined;
     }
 
-    logger.info('Retrieved recipe: %o', result);
+    logger.info('recipe found: %o', result);
     return result;
   };
 
@@ -108,6 +111,8 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
     const overrideOrUpdate = (
       shouldUpdate: boolean, value: Record<string, unknown>,
     ) => (override ? value : shouldUpdate && value);
+
+    logger.info('upsert ingredient repository request: %o', recipe);
 
     if (recipe.ingredients) {
       await Promise.all(recipe.ingredients.map(async (ingredient) => {
@@ -238,7 +243,7 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
       },
     });
 
-    logger.info('Upserted recipe: %o', result);
+    logger.info('upserted recipe: %o', result);
 
     return result;
   };
@@ -267,6 +272,8 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
   async delete(ids: string[]): Promise<RecipeResponse[]>;
 
   async delete(ids: string | string[]): Promise<RecipeResponse | RecipeResponse[]> {
+    logger.info('delete ingredient repository request: %o', ids);
+
     if (Array.isArray(ids)) {
       return Promise.all(ids.map(async (id) => {
         if (isNaN(Number(id))) {
@@ -319,7 +326,7 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
       },
     });
 
-    logger.info('Deleted recipe: %o', result);
+    logger.info('deleted recipe: %o', result);
     return result;
   }
 }

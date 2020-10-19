@@ -7,7 +7,6 @@ const ingredientMapper: Mapper<Ingredient, ingredients> = ({
     name: dto.name,
     price_currency: dto.price.currency,
     price_amount: dto.price.amount,
-    // TODO
     usersId: null,
   }),
   toDto: (entity: ingredients): Ingredient => ({

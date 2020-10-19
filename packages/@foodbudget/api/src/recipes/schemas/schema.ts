@@ -1,11 +1,20 @@
 import {
   arg, intArg, queryField, stringArg,
 } from '@nexus/schema';
+import { AppError } from '@foodbudget/errors';
+import logger from '@foodbudget/logger';
 import { Context } from '../../context';
 import { Recipe } from '../Recipe.types';
 import {
   adjectiveType, allergyType, cuisineType, dietType, mealType, recipeField, recipeIngredientArg,
 } from './schemaFields';
+
+const validateArguments = (args: unknown):boolean => {
+  if (typeof (args as Recipe).name === 'string' && (args as Recipe).name.length > 0) {
+    return true;
+  }
+  throw new AppError({ message: 'Invalid ingredient argument.', isOperational: true });
+};
 
 // eslint-disable-next-line import/prefer-default-export
 export const getRecipes = queryField('recipes', {
@@ -26,7 +35,9 @@ export const getRecipes = queryField('recipes', {
     meals: arg({ type: mealType, list: true }),
   },
   async resolve(_parent, args, ctx: Context) {
-    // validateArgs(args);
+    validateArguments(args);
+
+    logger.info('get recipes request: %o', args);
 
     const recipe: Partial<Recipe> = {
       id: args.id,
@@ -43,6 +54,8 @@ export const getRecipes = queryField('recipes', {
       meals: args.meals,
     };
     const result = await ctx.serviceManager.recipeServices.get(recipe);
+
+    logger.info('get recipes response: %o', result);
     return result;
   },
 });

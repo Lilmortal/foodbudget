@@ -1,3 +1,4 @@
+import logger from '@foodbudget/logger';
 import { floatArg, queryField, stringArg } from '@nexus/schema';
 import { Context } from '../../context';
 import { Ingredient } from '../Ingredient.types';
@@ -13,6 +14,8 @@ export const getIngredients = queryField('ingredients', {
     amount: floatArg(),
   },
   async resolve(_parent, args, ctx: Context) {
+    logger.info('get ingredient request: %o', args);
+
     const ingredients: Partial<Ingredient> = {
       name: args.name,
       price: {
@@ -21,6 +24,7 @@ export const getIngredients = queryField('ingredients', {
       },
     };
     const result = await ctx.serviceManager.ingredientServices.get(ingredients);
+    logger.info('get ingredient response: %o', result);
     return result;
   },
 });

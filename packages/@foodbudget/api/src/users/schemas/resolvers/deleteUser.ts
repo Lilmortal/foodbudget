@@ -8,14 +8,16 @@ const deleteUser = mutationField('deleteUser', {
     id: intArg({ required: true }),
   },
   async resolve(_parent, args, ctx: Context) {
-    const isUserDeleted = await ctx.serviceManager.userServices.delete(args.id);
+    logger.info('delete user request: %o', args);
 
-    if (isUserDeleted) {
-      logger.info(`User with id ${args.id} has been deleted.`);
-      return true;
+    const deletedUser = await ctx.serviceManager.userServices.delete(args.id);
+
+    if (deletedUser) {
+      logger.info('delete user response: %o', deletedUser);
+      return deletedUser;
     }
 
-    logger.warn(`Failed to delete user with id ${args.id}.`);
+    logger.warn(`failed to delete user with id ${args.id}.`);
     return false;
   },
 });

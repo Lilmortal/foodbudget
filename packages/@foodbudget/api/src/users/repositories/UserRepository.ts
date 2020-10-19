@@ -13,6 +13,8 @@ export default class UserRepository implements Repository<User, users> {
   }
 
   async get(user: Partial<User>): Promise<users[] | undefined> {
+    logger.info('get users repository request: %o', user);
+
     const result = await this.prisma.users.findMany({
       where: {
         id: user.id,
@@ -30,11 +32,13 @@ export default class UserRepository implements Repository<User, users> {
       return undefined;
     }
 
-    logger.info('Retrieved users: %o', { ...result, password: undefined });
+    logger.info('users retrieved: %o', result);
     return result;
   }
 
   async getOne(user: Partial<User>): Promise<users | undefined> {
+    logger.info('get one user repository request: %o', user);
+
     const result = await this.prisma.users.findOne({
       where: {
         id: user.id,
@@ -48,7 +52,7 @@ export default class UserRepository implements Repository<User, users> {
       return undefined;
     }
 
-    logger.info('Retrieved user: %o', { ...result, password: undefined });
+    logger.info('user retrieved: %o', { ...result, password: undefined });
 
     return result;
   }
@@ -78,7 +82,7 @@ export default class UserRepository implements Repository<User, users> {
       },
     });
 
-    logger.info('Upserted user: %o', { ...result, password: undefined });
+    logger.info('user upserted: %o', result);
 
     return result;
   };
@@ -100,6 +104,8 @@ export default class UserRepository implements Repository<User, users> {
   async delete(ids: string[]): Promise<users[]>;
 
   async delete(ids: string | string[]): Promise<users | users[]> {
+    logger.info('delete user repository request: %o', ids);
+
     if (Array.isArray(ids)) {
       return Promise.all(ids.map(async (id) => {
         if (isNaN(Number(id))) {
@@ -124,7 +130,7 @@ export default class UserRepository implements Repository<User, users> {
       },
     });
 
-    logger.info('Deleted user: %o', { ...result, password: undefined });
+    logger.info('user deleted: %o', result);
 
     return result;
   }
