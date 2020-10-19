@@ -8,3 +8,10 @@
 20201013013140-add-user-id
 20201013073228-add-google-id-to-users
 20201013144839-add-facebook-id-to-users
+20201017005155-removed-type-alias-and-add-price-currency
+20201017011451-add-recipe-meals
+20201018071523-recipe-ingredients-id-change-to-recipe-link-and-ingredient-name
+20201018112809-recipes-use-enum
+20201018115218-removed-3rd-normalization-tables
+20201018124303-remove-prefix
+20201019032046-update-ingredient-to-be-singular-in-recipe-ingredients

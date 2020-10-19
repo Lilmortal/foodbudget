@@ -22,6 +22,8 @@ describe('recipes job scraper', () => {
       cuisines: [],
       diets: [],
       allergies: [],
+      adjectives: [],
+      meals: [],
     });
 
     const scrapedWebsiteInfo: ScrapedRecipeHTMLElements = {
@@ -67,6 +69,8 @@ describe('recipes job scraper', () => {
       cuisines: [],
       diets: [],
       allergies: [],
+      adjectives: [],
+      meals: [],
     });
 
     const scrapedWebsiteInfo: ScrapedRecipeHTMLElements = {

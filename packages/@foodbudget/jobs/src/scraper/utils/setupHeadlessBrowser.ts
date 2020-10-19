@@ -1,3 +1,4 @@
+import logger from '@foodbudget/logger';
 import puppeteer from 'puppeteer';
 import { OnScrape, ScrapedElements } from '../Scraper.types';
 
@@ -31,7 +32,7 @@ export default function setupHeadlessBrowser<E extends ScrapedElements, S>(
       };
 
       // This enables us to read all console logs being displayed in the puppeteer browser in our terminal.
-      page.on('console', (msg) => console.log(msg.text()));
+      page.on('console', (msg) => logger.info(msg.text()));
 
       let scrapedResults: S | S[];
       if (Array.isArray(scrapedElements)) {

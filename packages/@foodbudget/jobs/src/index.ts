@@ -1,5 +1,6 @@
 import emailer from '@foodbudget/email';
 import { serviceManager } from '@foodbudget/api';
+import logger from '@foodbudget/logger';
 import config from './config';
 
 import CronJob from './cron';
@@ -20,6 +21,6 @@ import ImportedRecipesScraper from './scraper/recipes/ImportedRecipesScraper';
     cron.createJobs([recipesJob], config);
     await cron.start();
   } catch (err) {
-    console.log(err);
+    logger.log(err);
   }
 })();

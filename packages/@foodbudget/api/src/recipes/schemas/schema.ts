@@ -1,26 +1,48 @@
-import { queryField, stringArg } from '@nexus/schema';
+import {
+  arg, intArg, queryField, stringArg,
+} from '@nexus/schema';
 import { Context } from '../../context';
 import { Recipe } from '../Recipe.types';
+import {
+  adjectiveType, allergyType, cuisineType, dietType, mealType, recipeField, recipeIngredientArg,
+} from './schemaFields';
 
-const getRecipes = queryField('recipes', {
-  type: 'String',
+// eslint-disable-next-line import/prefer-default-export
+export const getRecipes = queryField('recipes', {
+  type: recipeField,
+  list: true,
   args: {
+    id: intArg(),
+    link: stringArg(),
+    prepTime: stringArg(),
+    servings: intArg(),
+    numSaved: intArg(),
     name: stringArg(),
-    ingredients: stringArg({ list: true }),
-    allergies: stringArg({ list: true }),
-    cuisines: stringArg({ list: true }),
-    diets: stringArg({ list: true }),
+    ingredients: arg({ type: recipeIngredientArg, list: true }),
+    cuisines: arg({ type: cuisineType, list: true }),
+    diets: arg({ type: dietType, list: true }),
+    allergies: arg({ type: allergyType, list: true }),
+    adjectives: arg({ type: adjectiveType, list: true }),
+    meals: arg({ type: mealType, list: true }),
   },
-  resolve(_parent, args, ctx: Context) {
+  async resolve(_parent, args, ctx: Context) {
+    // validateArgs(args);
+
     const recipe: Partial<Recipe> = {
+      id: args.id,
+      link: args.link,
+      prepTime: args.prepTime,
+      servings: args.servings,
+      numSaved: args.numSaved,
       name: args.name,
       ingredients: args.ingredients,
-      allergies: args.allergies,
       cuisines: args.cuisines,
       diets: args.diets,
+      allergies: args.allergies,
+      adjectives: args.adjectives,
+      meals: args.meals,
     };
-    return ctx.serviceManager.recipeServices.get(recipe);
+    const result = await ctx.serviceManager.recipeServices.get(recipe);
+    return result;
   },
 });
-
-export default getRecipes;

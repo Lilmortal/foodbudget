@@ -1,3 +1,5 @@
+import { Allergy, Diet } from '../recipes';
+
 export interface User {
     id: number;
     googleId?: string;
@@ -5,4 +7,6 @@ export interface User {
     email: string;
     nickname?: string;
     password?: string;
+    allergies?: Allergy[];
+    diets?: Diet[];
 }

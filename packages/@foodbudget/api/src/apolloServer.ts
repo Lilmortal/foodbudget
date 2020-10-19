@@ -1,6 +1,6 @@
 import { ApolloError, ApolloServer } from 'apollo-server-express';
 import logger from '@foodbudget/logger';
-import { printError } from 'graphql';
+import { GraphQLError, printError } from 'graphql';
 import schema from './schema';
 import context from './context';
 
@@ -14,7 +14,7 @@ const isPrismaError = (stackTraces: string[]) => stackTraces[1]?.startsWith('\x1
 
 const prettifyError = (err: Error): string => {
   const errorMessages = [];
-  if (err instanceof ApolloError) {
+  if (err instanceof GraphQLError || err instanceof ApolloError) {
     errorMessages.push(printError(err));
 
     const stackTraces = err.extensions?.exception?.stacktrace as string[];
@@ -23,7 +23,6 @@ const prettifyError = (err: Error): string => {
     if (!isPrismaError(stackTraces)) {
       errorMessages.push(prettifyStackTrace(stackTraces));
     }
-
     return errorMessages.join('\n');
   }
 

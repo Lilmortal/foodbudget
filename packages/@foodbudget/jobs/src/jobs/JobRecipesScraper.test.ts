@@ -21,13 +21,21 @@ describe('job recipes scraper', () => {
       prepTime: '4 mins',
       servings: 4,
       numSaved: 0,
-      ingredients: ['pork', 'mushroom'],
+      ingredients: [],
+      // ingredients: ['pork', 'mushroom'],
       cuisines: [],
       diets: [],
       allergies: [],
+      adjectives: [],
+      meals: [],
     };
 
+    // TODO: Extract this out
     mockServiceManager = jest.fn<ServiceManager, []>(() => ({
+      ingredientServices: {
+        get: jest.fn(),
+        save: jest.fn(),
+      },
       recipeServices: {
         get: jest.fn(),
         save: jest.fn(),
@@ -82,6 +90,10 @@ describe('job recipes scraper', () => {
 
   it('should throw an Error if saving the recipe failed', async () => {
     mockServiceManager.mockImplementationOnce(() => ({
+      ingredientServices: {
+        get: jest.fn(),
+        save: jest.fn(),
+      },
       recipeServices: {
         save: jest.fn(() => {
           throw new Error();

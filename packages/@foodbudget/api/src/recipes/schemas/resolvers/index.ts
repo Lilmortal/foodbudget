@@ -1,1 +1,2 @@
-export { default } from './saveRecipe';
+// eslint-disable-next-line import/prefer-default-export
+export { default as saveRecipe } from './saveRecipe';

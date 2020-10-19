@@ -36,16 +36,14 @@ export const getUserEntity = (request: LoginRequest): Partial<User>|undefined =>
 
 export const isRequestCredentialsValid = async (request: LoginRequest, user: users): Promise<boolean> => {
   if (isAccountLoginRequest(request)) {
-    if (user.password && await argon2.verify(user.password, request.password)) {
-      return true;
+    if (!user.password || !await argon2.verify(user.password, request.password)) {
+      return false;
     }
-
-    return false;
   }
 
   return true;
 };
 
 export const isRegisteringExistedAccountViaPassword = (
-  userDto: Pick<User, 'googleId' | 'facebookId'>, user: users,
-): boolean => !userDto.googleId && !userDto.facebookId && user.password !== undefined;
+  userDto: Partial<Omit<User, 'id'>> & Pick<User, 'email'>, userEntity: users,
+): boolean => (!!userEntity.google_id || !!userEntity.facebook_id) && userDto.password !== undefined;

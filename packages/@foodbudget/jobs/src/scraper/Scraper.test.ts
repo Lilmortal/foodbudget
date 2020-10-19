@@ -19,10 +19,16 @@ describe('scraper', () => {
       servings: '4',
       numSaved: '0',
       name: 'Recipe name',
-      ingredients: ['pork', 'mushroom'],
+      ingredients: [],
+      // ingredients: [
+      //   { name: 'pork', quantity: 1, price: { amount: 4, currency: 'NZD' } },
+      //   { name: 'mushroom', quantity: 2, price: { amount: 5, currency: 'AUD' } },
+      // ],
       cuisines: [],
       diets: [],
       allergies: [],
+      adjectives: [],
+      meals: [],
     };
 
     recipe = {
@@ -31,10 +37,16 @@ describe('scraper', () => {
       servings: 4,
       numSaved: 0,
       name: 'Recipe name',
-      ingredients: ['pork', 'mushroom'],
+      ingredients: [],
+      // ingredients: [
+      //   { name: 'pork', quantity: 1, price: { amount: 4, currency: 'NZD' } },
+      //   { name: 'mushroom', quantity: 2, price: { amount: 5, currency: 'AUD' } },
+      // ],
       cuisines: [],
       diets: [],
       allergies: [],
+      adjectives: [],
+      meals: [],
     };
 
     mockOnScrape = jest.fn(() => async () => scrapedRecipe);

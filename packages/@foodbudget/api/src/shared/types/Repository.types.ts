@@ -1,16 +1,16 @@
-export interface Repository<D, E extends {id: number}> {
-  getMany(obj: Partial<D>): Promise<E[] | undefined>;
+export interface SaveOptions {
+  override?: false;
+}
+
+export interface Repository<D, E> {
+  get(obj: Partial<D>): Promise<E[] | undefined>;
   getOne(obj: Partial<D>): Promise<E | undefined>;
 
-  create(obj: Omit<D, 'id'>): Promise<E>;
-  create(obj: Omit<D, 'id'>[]): Promise<E[]>;
-  create(obj: Omit<D, 'id'> | Omit<E, 'id'>[]): Promise<E | E[]>;
+  save(obj: Partial<D>, options?: SaveOptions): Promise<E>;
+  save(obj: Partial<D>[], options?: SaveOptions): Promise<E[]>;
+  save(obj: Partial<D>| Partial<D>[], options?: SaveOptions): Promise<E | E[]>;
 
-  update(obj: Partial<D>): Promise<E>;
-  update(obj: (Partial<D>)[]): Promise<E[]>;
-  update(obj: Partial<D>| (Partial<D>)[]): Promise<E | E[]>;
-
-  delete(id: number): Promise<E>;
-  delete(id: number[]): Promise<E[]>;
-  delete(id: number | number[]): Promise<E | E[]>;
+  delete(obj: string): Promise<E>;
+  delete(obj: string[]): Promise<E[]>;
+  delete(obj: string | string[]): Promise<E | E[]>;
 }

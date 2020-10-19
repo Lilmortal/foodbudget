@@ -16,6 +16,8 @@ export const onMapping = (scrapedRecipe: ScrapedRecipe): Omit<Recipe, 'id'> => {
     diets: [],
     allergies: [],
     link: '',
+    adjectives: [],
+    meals: [],
   };
 
   if (scrapedRecipe.link && !Array.isArray(scrapedRecipe.link)) {
@@ -44,15 +46,17 @@ export const onMapping = (scrapedRecipe: ScrapedRecipe): Omit<Recipe, 'id'> => {
     validationErrors.push('name must be a non-empty string.');
   }
 
-  if (
-    scrapedRecipe.ingredients
-    && Array.isArray(scrapedRecipe.ingredients)
-    && scrapedRecipe.ingredients.length > 0
-  ) {
-    recipe.ingredients = scrapedRecipe.ingredients;
-  } else {
-    validationErrors.push('ingredients must be a non-empty array.');
-  }
+  // if (
+  //   scrapedRecipe.ingredients
+  //   && Array.isArray(scrapedRecipe.ingredients)
+  //   && scrapedRecipe.ingredients.length > 0
+  // ) {
+  //   recipe.ingredients = scrapedRecipe.ingredients.map(ingredient => ({
+  //     name: ingredient
+  //   }));
+  // } else {
+  //   validationErrors.push('ingredients must be a non-empty array.');
+  // }
 
   if (validationErrors.length > 0) {
     throw new Error(validationErrors.join('\n'));

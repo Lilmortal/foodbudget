@@ -6,6 +6,7 @@ const loggerFormat = format.combine(
   format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   format.align(),
   format.splat(),
+  format.json(),
   format.simple(),
   format.errors({ stacks: true }),
   format.printf((info) => `${info.timestamp} [${info.level}] ${info.message}`),

@@ -44,6 +44,8 @@ const scrapeRecipes = async (scrapeInfo: string): Promise<ScrapedRecipe> => {
     cuisines: [],
     diets: [],
     allergies: [],
+    adjectives: [],
+    meals: [],
   };
 };
 

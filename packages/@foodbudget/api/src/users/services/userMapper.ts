@@ -10,6 +10,8 @@ const userMapper: Mapper<User, users> = ({
     email: dto.email,
     nickname: dto.nickname || null,
     password: dto.password || null,
+    allergies: dto.allergies || [],
+    diets: dto.diets || [],
   }),
   toDto: (entity: users): User => ({
     id: entity.id,
@@ -18,7 +20,8 @@ const userMapper: Mapper<User, users> = ({
     email: entity.email,
     nickname: entity.nickname || undefined,
     password: entity.password || undefined,
-
+    allergies: entity.allergies,
+    diets: entity.diets,
   }),
 });
 

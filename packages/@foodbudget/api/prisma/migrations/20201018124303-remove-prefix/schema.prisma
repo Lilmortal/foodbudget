@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+enum Cuisine {
+  AMERICAN
+  ITALIAN
+  ASIAN
+  MEXICAN
+  SOUTHERN_AND_SOUL_FOOD
+  FRENCH
+  SOUTH_WESTERN
+  BARBEQUE
+  INDIAN
+  CHINESE
+  CAJUN_AND_CREOLE
+  MEDITERRANEAN
+  GREEK
+  ENGLISH
+  SPANISH
+  THAI
+  GERMAN
+  MOROCCAN
+  IRISH
+  JAPANESE
+  CUBAN
+  HAWAIIAN
+  SWEDISH
+  HUNGARIAN
+  PORTUGUESE
+}
+
+enum Diet {
+  KETOGENIC
+  VEGETARIAN_NO_MEAT_AND_EGGS
+  VEGETARIAN_NO_MEAT_AND_DAIRY
+  PESCATARIAN
+  VEGAN
+  LOW_FOODMAP
+  VEGETARIAN
+  PALEO
+}
+
+enum Allergy {
+  GLUTEN
+  PEANUT
+  SEAFOOD
+  SESAME
+  SOY
+  DIARY
+  EGG
+  SULPHITE
+  TREE_NUT
+  WHEAT
+}
+
+enum Meal {
+  BREAKFAST
+  LUNCH
+  DINNER
+}
+
+model ingredients {
+  name               String               @id
+  price_currency     String
+  price_amount       Float
+  recipe_ingredients recipe_ingredients[]
+  users              users?               @relation(fields: [usersId], references: [id])
+  usersId            Int?
+}
+
+model recipe_ingredients {
+  recipe_link     String
+  ingredient_name String
+  quantity        Float
+  ingredients     ingredients @relation(fields: [ingredient_name], references: [name])
+  recipes         recipes     @relation(fields: [recipe_link], references: [link])
+
+  @@id([recipe_link, ingredient_name])
+}
+
+model recipes {
+  id          Int                  @id @default(autoincrement())
+  name        String
+  link        String               @unique
+  prep_time   String
+  servings    Float
+  num_saved   Float
+  adjectives  String[]
+  allergies   Allergy[]
+  cuisines    Cuisine[]
+  diets       Diet[]
+  meals       Meal[]
+  ingredients recipe_ingredients[]
+  users       users?               @relation(fields: [usersId], references: [id])
+  usersId     Int?
+}
+
+model users {
+  id            Int           @id @default(autoincrement())
+  google_id     String?       @unique
+  facebook_id   String?       @unique
+  email         String        @unique
+  password      String?
+  nickname      String?
+  allergies     Allergy[]
+  diets         Diet[]
+  pantries      ingredients[]
+  saved_recipes recipes[]
+}

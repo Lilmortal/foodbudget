@@ -1,5 +1,6 @@
 import { Mail, Mailer } from '@foodbudget/email';
 import { Recipe, ServiceManager } from '@foodbudget/api';
+import logger from '@foodbudget/logger';
 import { Config } from '../config';
 import { RecipesScraper, ScrapedRecipeHTMLElements } from '../scraper/recipes';
 import { JobScraperParams } from './JobScraper.types';
@@ -60,16 +61,16 @@ export default class JobRecipesScraper {
     const scrapedRecipes = await this.scrape(config.scrapedRecipeElements);
 
     await Promise.all(scrapedRecipes.map(async (scrapedRecipe) => {
-      console.log(scrapedRecipe);
-      console.log('Successfully scraped recipes...');
+      logger.info(scrapedRecipe);
+      logger.info('Successfully scraped recipes...');
 
       await this.save(scrapedRecipe);
 
-      console.log('recipes saved.');
+      logger.info('recipes saved.');
 
       await this.notify(scrapedRecipe, { from: config.email.sender, to: config.email.receiver });
 
-      console.log('recipe emails sent.');
+      logger.info('recipe emails sent.');
     }));
   }
 }

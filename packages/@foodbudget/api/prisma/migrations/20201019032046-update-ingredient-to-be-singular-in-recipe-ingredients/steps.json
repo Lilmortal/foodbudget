@@ -1,0 +1,56 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "recipe_ingredients",
+      "field": "ingredient",
+      "type": "ingredients",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "recipe_ingredients",
+          "field": "ingredient"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_ingredients",
+          "field": "ingredient"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[ingredient_name]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_ingredients",
+          "field": "ingredient"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[name]"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "recipe_ingredients",
+      "field": "ingredients"
+    }
+  ]
+}

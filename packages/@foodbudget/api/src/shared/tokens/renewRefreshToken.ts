@@ -12,6 +12,7 @@ const renewRefreshToken = (
     expireTime: refreshTokenExpireTime,
   });
 
+  // TODO: return cookie object instead
   // secure if NODE_ENV is production
   res.cookie(REFRESH_TOKEN_KEY, refreshToken, { httpOnly: true });
 };
