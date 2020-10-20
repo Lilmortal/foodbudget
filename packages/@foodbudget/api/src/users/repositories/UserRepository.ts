@@ -13,7 +13,7 @@ export default class UserRepository implements Repository<User, users> {
   }
 
   async get(user: Partial<User>): Promise<users[] | undefined> {
-    logger.info('get users repository request: %o', user);
+    logger.info('get users repository request', user);
 
     const result = await this.prisma.users.findMany({
       where: {
@@ -32,12 +32,12 @@ export default class UserRepository implements Repository<User, users> {
       return undefined;
     }
 
-    logger.info('users retrieved: %o', result);
+    logger.info('users retrieved', result);
     return result;
   }
 
   async getOne(user: Partial<User>): Promise<users | undefined> {
-    logger.info('get one user repository request: %o', user);
+    logger.info('get one user repository request', user);
 
     const result = await this.prisma.users.findOne({
       where: {
@@ -52,7 +52,7 @@ export default class UserRepository implements Repository<User, users> {
       return undefined;
     }
 
-    logger.info('user retrieved: %o', { ...result, password: undefined });
+    logger.info('user retrieved', result);
 
     return result;
   }
@@ -82,7 +82,7 @@ export default class UserRepository implements Repository<User, users> {
       },
     });
 
-    logger.info('user upserted: %o', result);
+    logger.info('user upserted', result);
 
     return result;
   };
@@ -104,7 +104,7 @@ export default class UserRepository implements Repository<User, users> {
   async delete(ids: string[]): Promise<users[]>;
 
   async delete(ids: string | string[]): Promise<users | users[]> {
-    logger.info('delete user repository request: %o', ids);
+    logger.info('delete user repository request', ids);
 
     if (Array.isArray(ids)) {
       return Promise.all(ids.map(async (id) => {
@@ -130,7 +130,7 @@ export default class UserRepository implements Repository<User, users> {
       },
     });
 
-    logger.info('user deleted: %o', result);
+    logger.info('user deleted', result);
 
     return result;
   }

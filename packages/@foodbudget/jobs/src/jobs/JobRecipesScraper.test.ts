@@ -1,5 +1,5 @@
 import { Recipe, ServiceManager } from '@foodbudget/api';
-import { RefreshTokenPayload } from '@foodbudget/api/src/auth/Auth.types';
+import { AccessTokenPayload, RefreshTokenPayload } from '@foodbudget/api/src/auth/Auth.types';
 import { Mailer } from '@foodbudget/email';
 import config from '../config';
 import { RecipesScraper, ScrapedRecipe } from '../scraper/recipes';
@@ -50,8 +50,10 @@ describe('job recipes scraper', () => {
       },
       authServices: {
         refreshTokenKey: 'refresh-token',
+        isAccessToken: (token: unknown): token is AccessTokenPayload => false,
         isRefreshToken: (token: unknown): token is RefreshTokenPayload => false,
         createRefreshToken: jest.fn(),
+        decodeAccessToken: jest.fn(),
         decodeRefreshToken: jest.fn(),
         createAccessToken: jest.fn(),
       },
@@ -117,8 +119,10 @@ describe('job recipes scraper', () => {
       },
       authServices: {
         refreshTokenKey: 'refresh-token',
+        isAccessToken: (token: unknown): token is AccessTokenPayload => false,
         isRefreshToken: (token: unknown): token is RefreshTokenPayload => false,
         createRefreshToken: jest.fn(),
+        decodeAccessToken: jest.fn(),
         decodeRefreshToken: jest.fn(),
         createAccessToken: jest.fn(),
       },

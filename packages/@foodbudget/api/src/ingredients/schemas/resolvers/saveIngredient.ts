@@ -22,7 +22,7 @@ const saveIngredient = mutationField('ingredients', {
   async resolve(_parent, args, ctx: Context) {
     validateArguments(args);
 
-    logger.info('save ingredient request: %o', args);
+    logger.info('save ingredient request', args);
 
     const ingredient: Ingredient = {
       name: args.name,
@@ -34,7 +34,7 @@ const saveIngredient = mutationField('ingredients', {
 
     const result = ctx.serviceManager.ingredientServices.save(ingredient);
 
-    logger.info('saved ingredient response: %o', result);
+    logger.info('saved ingredient response', result);
     return result;
   },
 });

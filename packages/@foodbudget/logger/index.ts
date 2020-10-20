@@ -3,7 +3,7 @@ import config from './config';
 import mask from './mask';
 
 const loggerFormat = format.combine(
-  format((info) => ({ ...info, level: info.level.toUpperCase(), message: mask(info.message) }))(),
+  format((info) => ({ ...info, level: info.level.toUpperCase(), message: mask(info) }))(),
   format.colorize(),
   format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   format.align(),

@@ -1,28 +1,31 @@
 const isPrivate = (key: string) => /.*password*/.test(key) || /.*email*/.test(key);
 
-const mask = (message: string): string => {
-  try {
-    const messageJson = JSON.parse(message);
-    if (typeof messageJson === 'object') {
-      const maskedMessage: Record<string, string | undefined> = {};
-      Object.keys(messageJson).forEach((key) => {
-        if (typeof messageJson[key] === 'object') {
-          maskedMessage[key] = mask(messageJson[key]);
-        }
+const isObject = (info: unknown): info is Record<string, unknown> => typeof info === 'object'
+&& info !== null && !Array.isArray(info);
 
-        if (isPrivate(key)) {
-          maskedMessage[key] = '*****';
-        } else {
-          maskedMessage[key] = messageJson[key];
-        }
-      });
+const mask = (info: unknown): string => {
+  const maskedMessage: Record<string, string | undefined> = {};
+  if (isObject(info)) {
+    Object.keys(info).forEach((key) => {
+      if (key === 'message' || key === 'level') {
+        return;
+      }
+      if (typeof info[key] === 'object' && !Array.isArray(info[key])) {
+        maskedMessage[key] = mask(info[key]);
+      }
 
-      return JSON.stringify(maskedMessage);
-    }
-    return message;
-  } catch {
-    return message;
+      if (isPrivate(key)) {
+        maskedMessage[key] = '*****';
+      } else {
+        maskedMessage[key] = info[key] as string | undefined;
+      }
+    });
+    const query = Object.keys(maskedMessage).length > 0 ? `\n${JSON.stringify(maskedMessage)}` : '';
+
+    return `${info.message}${query}`;
   }
+
+  return info as string;
 };
 
 export default mask;

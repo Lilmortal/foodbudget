@@ -37,7 +37,7 @@ export const getRecipes = queryField('recipes', {
   async resolve(_parent, args, ctx: Context) {
     validateArguments(args);
 
-    logger.info('get recipes request: %o', args);
+    logger.info('get recipes request', args);
 
     const recipe: Partial<Recipe> = {
       id: args.id,
@@ -55,7 +55,7 @@ export const getRecipes = queryField('recipes', {
     };
     const result = await ctx.serviceManager.recipeServices.get(recipe);
 
-    logger.info('get recipes response: %o', result);
+    logger.info('get recipes response', result);
     return result;
   },
 });

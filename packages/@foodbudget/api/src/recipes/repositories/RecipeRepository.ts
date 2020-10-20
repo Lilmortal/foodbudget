@@ -13,7 +13,7 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
   }
 
   get = async (recipe: Partial<Recipe>): Promise<RecipeResponse[] | undefined> => {
-    logger.info('get recipe repository request: %o', recipe);
+    logger.info('get recipe repository request', recipe);
     const result = await this.prisma.recipes.findMany(
       {
         where: {
@@ -69,12 +69,12 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
       },
     );
 
-    logger.info('recipes found: %o', result);
+    logger.info('recipes found', result);
     return result;
   };
 
   getOne = async (recipe: Partial<Recipe>): Promise<RecipeResponse | undefined> => {
-    logger.info('get one ingredient repository request: %o', recipe);
+    logger.info('get one ingredient repository request', recipe);
 
     const result = await this.prisma.recipes.findOne(
       {
@@ -103,7 +103,7 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
       return undefined;
     }
 
-    logger.info('recipe found: %o', result);
+    logger.info('recipe found', result);
     return result;
   };
 
@@ -112,7 +112,7 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
       shouldUpdate: boolean, value: Record<string, unknown>,
     ) => (override ? value : shouldUpdate && value);
 
-    logger.info('upsert ingredient repository request: %o', recipe);
+    logger.info('upsert ingredient repository request', recipe);
 
     if (recipe.ingredients) {
       await Promise.all(recipe.ingredients.map(async (ingredient) => {
@@ -243,7 +243,7 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
       },
     });
 
-    logger.info('upserted recipe: %o', result);
+    logger.info('upserted recipe', result);
 
     return result;
   };
@@ -272,7 +272,7 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
   async delete(ids: string[]): Promise<RecipeResponse[]>;
 
   async delete(ids: string | string[]): Promise<RecipeResponse | RecipeResponse[]> {
-    logger.info('delete ingredient repository request: %o', ids);
+    logger.info('delete ingredient repository request', ids);
 
     if (Array.isArray(ids)) {
       return Promise.all(ids.map(async (id) => {
@@ -326,7 +326,7 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
       },
     });
 
-    logger.info('deleted recipe: %o', result);
+    logger.info('deleted recipe', result);
     return result;
   }
 }

@@ -14,7 +14,7 @@ export const getIngredients = queryField('ingredients', {
     amount: floatArg(),
   },
   async resolve(_parent, args, ctx: Context) {
-    logger.info('get ingredient request: %o', args);
+    logger.info('get ingredient request', args);
 
     const ingredients: Partial<Ingredient> = {
       name: args.name,
@@ -24,7 +24,7 @@ export const getIngredients = queryField('ingredients', {
       },
     };
     const result = await ctx.serviceManager.ingredientServices.get(ingredients);
-    logger.info('get ingredient response: %o', result);
+    logger.info('get ingredient response', result);
     return result;
   },
 });

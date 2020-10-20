@@ -25,7 +25,7 @@ const saveRecipe = mutationField('recipes', {
     meals: arg({ type: mealType, list: true }),
   },
   async resolve(_parent, args, ctx: Context) {
-    logger.info('save recipe request: %o', args);
+    logger.info('save recipe request', args);
 
     const recipe: Recipe = {
       id: args.id,
@@ -44,7 +44,7 @@ const saveRecipe = mutationField('recipes', {
 
     const result = await ctx.serviceManager.recipeServices.save(recipe);
 
-    logger.info('saved recipe response: %o', recipe);
+    logger.info('saved recipe response', recipe);
     return result;
   },
 });

@@ -5,7 +5,7 @@
   "author": "Jack Tan",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node-dev --respawn --poll src/app.ts",
+    "start": "ts-node-dev --respawn src/app.ts",
     "generate": "prisma generate",
     "setup": "yarn generate && yarn migrate:up",
     "migrate:save": "prisma migrate save --experimental",

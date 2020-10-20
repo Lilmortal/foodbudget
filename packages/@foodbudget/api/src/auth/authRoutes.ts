@@ -31,6 +31,11 @@ const authRoutes = ({ app, authServices }: AuthRoutesParams): void => {
   app.get('/v1/refresh-token', (req: Request, res: Response) => {
     try {
       const refreshToken = req.cookies[authServices.refreshTokenKey];
+
+      if (!refreshToken) {
+        res.redirect('http://localhost:8080/login');
+      }
+
       const decodedRefreshToken = authServices.decodeRefreshToken(refreshToken);
       const accessToken = authServices.createAccessToken(decodedRefreshToken.userId);
       const renewedRefreshToken = authServices.createRefreshToken(decodedRefreshToken.userId);

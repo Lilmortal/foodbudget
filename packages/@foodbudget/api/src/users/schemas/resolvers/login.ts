@@ -9,7 +9,7 @@ const login = mutationField('login', {
     password: stringArg({ required: true }),
   },
   async resolve(_parent, args, ctx: Context) {
-    logger.info('login request: %o', args);
+    logger.info('login request', args);
     const user = await ctx.serviceManager.userServices.login({ email: args.email, password: args.password });
 
     if (user) {

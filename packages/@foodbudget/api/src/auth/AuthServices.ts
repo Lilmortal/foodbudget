@@ -25,15 +25,39 @@ export default class AuthServices {
       return this.REFRESH_TOKEN_KEY;
     }
 
+    isAccessToken = (token: unknown): token is AccessTokenPayload => typeof token === 'object'
+    && (token as AccessTokenPayload).userId !== undefined && typeof (token as AccessTokenPayload).userId === 'string'
+    && (token as AccessTokenPayload).scope !== undefined && Array.isArray((token as AccessTokenPayload).scope)
+    && (token as AccessTokenPayload).expireTimeInUtc !== undefined
+    && typeof (token as AccessTokenPayload).expireTimeInUtc === 'string';
+
     isRefreshToken = (token: unknown): token is RefreshTokenPayload => typeof token === 'object'
     && (token as RefreshTokenPayload).userId !== undefined && typeof (token as RefreshTokenPayload).userId === 'string';
+
+    decodeAccessToken(accessToken: string): AccessTokenPayload {
+      const decodedToken = verify(accessToken, this.tokenConfig.access.secret);
+
+      if (typeof decodedToken === 'string') {
+        throw new AppError(
+          { message: "decoded access token shouldn't be in string format.", isOperational: true, httpStatus: 401 },
+        );
+      }
+
+      if (!this.isAccessToken(decodedToken)) {
+        throw new AppError(
+          { message: 'decoded token is not in access token format.', isOperational: true, httpStatus: 401 },
+        );
+      }
+
+      return decodedToken;
+    }
 
     decodeRefreshToken(refreshToken: string): RefreshTokenPayload {
       const decodedToken = verify(refreshToken, this.tokenConfig.refresh.secret);
 
       if (typeof decodedToken === 'string') {
         throw new AppError(
-          { message: "decoded token shouldn't be in string format.", isOperational: true, httpStatus: 401 },
+          { message: "decoded refresh token shouldn't be in string format.", isOperational: true, httpStatus: 401 },
         );
       }
 
@@ -76,6 +100,7 @@ export default class AuthServices {
         value: refreshToken,
         options: {
           httpOnly: true,
+          expires: new Date(expireTimeInMs),
         },
       };
     }
