@@ -7,8 +7,8 @@ import logger from '@foodbudget/logger';
 import { Application } from 'express';
 
 import UserServices, { LoginRequest } from '../users/services';
-import { Config } from '../config';
-import { AuthRefreshTokenPayload } from '../shared/tokens';
+import { RefreshTokenPayload } from './Auth.types';
+import { SocialConfig } from '../config';
 
 const validateProfile = (profile: Profile): profile is Profile & Pick<Required<Profile>, 'emails'> => {
   if (!profile.emails || !profile.emails[0].value) {
@@ -70,10 +70,10 @@ const handleTokenStrategy = (
         }
       }
 
-      const authRefreshTokenPayload: AuthRefreshTokenPayload = {
+      const refreshTokenPayload: Pick<RefreshTokenPayload, 'userId'> = {
         userId: user.id.toString(),
       };
-      done(undefined, authRefreshTokenPayload);
+      done(undefined, refreshTokenPayload);
     }
   } catch (err) {
     logger.error(err.message);
@@ -90,23 +90,30 @@ passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
-const authLoader = (app: Application, config: Config, userServices: Required<UserServices>): void => {
+export interface AuthLoaderParams {
+  app: Application;
+  googleConfig: SocialConfig;
+  facebookConfig: SocialConfig;
+  userServices: Required<UserServices>;
+}
+
+const authLoader = ({
+  app, googleConfig, facebookConfig, userServices,
+}: AuthLoaderParams): void => {
   passport.use(new GoogleTokenStrategy({
-    clientID: config.google.clientId,
-    clientSecret: config.google.clientSecret,
+    clientID: googleConfig.clientId,
+    clientSecret: googleConfig.clientSecret,
     callbackURL: 'http://localhost:8080/v1/auth/google/verify',
   }, handleTokenStrategy(userServices, 'google')));
 
   passport.use(new FacebookStrategy({
-    clientID: config.facebook.clientId,
-    clientSecret: config.facebook.clientSecret,
+    clientID: facebookConfig.clientId,
+    clientSecret: facebookConfig.clientSecret,
     callbackURL: 'http://localhost:8080/v1/auth/facebook/verify',
     profileFields: ['id', 'email'],
   }, handleTokenStrategy(userServices, 'facebook')));
 
   app.use(passport.initialize());
 };
-
-// @TODO: app.use, verify if access token is valid
 
 export default authLoader;

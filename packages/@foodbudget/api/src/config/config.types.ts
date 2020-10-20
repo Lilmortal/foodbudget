@@ -10,8 +10,9 @@ export interface SocialConfig {
 
 export interface TokenContentConfig {
   secret: string;
-  expireTime: string;
+  expireTimeInMs: number;
 }
+
 export interface TokenConfig {
   access: TokenContentConfig;
   refresh: TokenContentConfig;

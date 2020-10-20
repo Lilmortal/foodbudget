@@ -29,16 +29,16 @@ const validate = (config: Config) => {
     errors.push('FACEBOOK_CLIENT_SECRET is missing.');
   }
 
-  if (!config.token.access.expireTime) {
-    errors.push('ACCESS_TOKEN_EXPIRE_TIME is missing.');
+  if (!config.token.access.expireTimeInMs) {
+    errors.push('ACCESS_TOKEN_EXPIRE_TIME_IN_MS is missing.');
   }
 
   if (!config.token.access.secret) {
     errors.push('ACCESS_TOKEN_SECRET is missing.');
   }
 
-  if (!config.token.refresh.expireTime) {
-    errors.push('REFRESH_TOKEN_EXPIRE_TIME is missing.');
+  if (!config.token.refresh.expireTimeInMs) {
+    errors.push('REFRESH_TOKEN_EXPIRE_TIME_IN_MS is missing.');
   }
 
   if (!config.token.refresh.secret) {
@@ -76,11 +76,11 @@ const config: Config = {
   token: {
     access: {
       secret: process.env.ACCESS_TOKEN_SECRET || '',
-      expireTime: process.env.ACCESS_TOKEN_EXPIRE_TIME || '',
+      expireTimeInMs: Number(process.env.ACCESS_TOKEN_EXPIRE_TIME_IN_MS) || 0,
     },
     refresh: {
       secret: process.env.REFRESH_TOKEN_SECRET || '',
-      expireTime: process.env.REFRESH_TOKEN_EXPIRE_TIME || '',
+      expireTimeInMs: Number(process.env.REFRESH_TOKEN_EXPIRE_TIME_IN_MS) || 0,
     },
   },
 };

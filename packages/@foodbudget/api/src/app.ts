@@ -39,7 +39,13 @@ server.applyMiddleware({ app, path: config.api.prefix });
 app.use(cookieParser());
 
 handleHealthChecks(app);
-handleAuth(app, config, serviceManager.userServices);
+handleAuth({
+  app,
+  googleConfig: config.google,
+  facebookConfig: config.facebook,
+  userServices: serviceManager.userServices,
+  authServices: serviceManager.authServices,
+});
 handle404Routes(app);
 handleErrors(app);
 

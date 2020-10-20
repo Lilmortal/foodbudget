@@ -1,11 +1,9 @@
 import { mutationField, stringArg } from '@nexus/schema';
 import logger from '@foodbudget/logger';
 import { Context } from '../../../context';
-import { userField } from '../schema';
-import { renewAuthRefreshToken } from '../../../shared/tokens';
 
 const login = mutationField('login', {
-  type: userField,
+  type: 'String',
   args: {
     email: stringArg({ required: true }),
     password: stringArg({ required: true }),
@@ -16,10 +14,11 @@ const login = mutationField('login', {
 
     if (user) {
       logger.info(`${user.email} has logged in.`);
-      renewAuthRefreshToken(
-        user.id.toString(), ctx.config.token.refresh.secret, ctx.config.token.refresh.expireTime,
-      );
-      return user;
+      const refreshToken = ctx.serviceManager.authServices.createRefreshToken(user.id.toString());
+      const accessToken = ctx.serviceManager.authServices.createAccessToken(user.id.toString());
+
+      ctx.res.cookie(refreshToken.name, refreshToken.value, refreshToken.options);
+      return accessToken;
     }
 
     logger.warn(`${args.email} failed to login.`);
