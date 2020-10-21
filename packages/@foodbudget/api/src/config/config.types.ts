@@ -18,9 +18,12 @@ export interface TokenConfig {
   refresh: TokenContentConfig;
 }
 
+export type EnvConfig = 'production' | 'development';
+
 export interface Config {
   api: ApiConfig;
   google: SocialConfig;
   facebook: SocialConfig;
   token: TokenConfig;
+  env: EnvConfig;
 }

@@ -1,7 +1,7 @@
 import logger from '@foodbudget/logger';
 import dotenv from 'dotenv';
 import findConfig from 'find-config';
-import { Config } from './config.types';
+import { Config, EnvConfig } from './config.types';
 
 if (!process.env.CI) {
   const env = dotenv.config({ path: findConfig('.env') || undefined });
@@ -9,6 +9,8 @@ if (!process.env.CI) {
     throw env.error;
   }
 }
+
+const isEnvValid = (env: string): env is EnvConfig => env === 'production' || env === 'development';
 
 const validate = (config: Config) => {
   const errors = [];
@@ -43,6 +45,10 @@ const validate = (config: Config) => {
 
   if (!config.token.refresh.secret) {
     errors.push('REFRESH_TOKEN_SECRET is missing.');
+  }
+
+  if (!isEnvValid(config.env)) {
+    errors.push('NODE_ENV is invalid.');
   }
 
   if (errors.length > 0) {
@@ -83,6 +89,7 @@ const config: Config = {
       expireTimeInMs: Number(process.env.REFRESH_TOKEN_EXPIRE_TIME_IN_MS) || 0,
     },
   },
+  env: (process.env.NODE_ENV as EnvConfig) || 'development',
 };
 
 if (!validate(config)) {

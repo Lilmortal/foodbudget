@@ -34,12 +34,7 @@ export default class AuthServices {
     && (token as RefreshTokenPayload).userId !== undefined && typeof (token as RefreshTokenPayload).userId === 'string';
 
     decodeAccessToken(accessToken: string): AccessTokenPayload {
-      let decodedToken: string | object;
-      try {
-        decodedToken = verify(accessToken, this.tokenConfig.access.secret);
-      } catch (err) {
-        throw new AppError({ message: `access token is in invalid format.\n${err}`, isOperational: true, httpStatus: 401 });
-      }
+      const decodedToken = verify(accessToken, this.tokenConfig.access.secret);
 
       if (typeof decodedToken === 'string') {
         throw new AppError(
@@ -57,12 +52,7 @@ export default class AuthServices {
     }
 
     decodeRefreshToken(refreshToken: string): RefreshTokenPayload {
-      let decodedToken: string | object;
-      try {
-        decodedToken = verify(refreshToken, this.tokenConfig.refresh.secret);
-      } catch (err) {
-        throw new AppError({ message: `refresh token is in invalid format.\n${err}`, isOperational: true, httpStatus: 401 });
-      }
+      const decodedToken = verify(refreshToken, this.tokenConfig.refresh.secret);
 
       if (typeof decodedToken === 'string') {
         throw new AppError(

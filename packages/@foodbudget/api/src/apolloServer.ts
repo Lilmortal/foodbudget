@@ -1,8 +1,13 @@
-import { ApolloError, ApolloServer } from 'apollo-server-express';
+import {
+  ApolloError, ApolloServer, ValidationError,
+} from 'apollo-server-express';
 import logger from '@foodbudget/logger';
 import { GraphQLError, printError } from 'graphql';
+import { v4 } from 'uuid';
+import { AppError } from '@foodbudget/errors';
 import schema from './schema';
 import context from './context';
+import config from './config';
 
 const prettifyStackTrace = (stackTraces: string[]) => {
   // Remove the error message as we already printed it out.
@@ -20,7 +25,7 @@ const prettifyError = (err: Error): string => {
     const stackTraces = err.extensions?.exception?.stacktrace as string[];
 
     // Prisma prints its own stack trace.
-    if (!isPrismaError(stackTraces)) {
+    if (stackTraces && !isPrismaError(stackTraces)) {
       errorMessages.push(prettifyStackTrace(stackTraces));
     }
     return errorMessages.join('\n');
@@ -29,12 +34,34 @@ const prettifyError = (err: Error): string => {
   return err.message;
 };
 
+const removeStackTraceOnProd = (err: Error) => {
+  if (config.env === 'production') {
+    if ((err instanceof GraphQLError || err instanceof ApolloError) && err.extensions?.exception?.stacktrace) {
+      // eslint-disable-next-line no-param-reassign
+      delete err.extensions.exception;
+    }
+
+    // eslint-disable-next-line no-param-reassign
+    delete err.stack;
+  }
+};
+
 const server = new ApolloServer({
   schema,
   context,
-  formatError: (err) => {
-    logger.error(prettifyError(err));
-    return err;
+  debug: true,
+  formatError: (err: GraphQLError) => {
+    const id = v4();
+
+    logger.error(`${id}: ${prettifyError(err)}`);
+
+    removeStackTraceOnProd(err);
+
+    if (err instanceof ValidationError || err instanceof AppError) {
+      return err;
+    }
+
+    return new GraphQLError(`Internal server error: ${id}`);
   },
 });
 
