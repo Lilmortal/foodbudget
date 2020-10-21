@@ -9,12 +9,26 @@ if (!process.env.CI) {
   }
 }
 
+export type EnvConfig = 'development' | 'test' | 'production';
+
 export interface Config {
-  env: string;
+  env: EnvConfig;
 }
 
-const config: Config = {
-  env: process.env.NODE_ENV || 'development',
+const isEnvValid = (env: string): env is EnvConfig => env === 'production' || env === 'development' || env === 'test';
+
+const validate = (config: Config) => {
+  const errors = [];
+
+  if (!isEnvValid(config.env)) {
+    errors.push('NODE_ENV is invalid.');
+  }
 };
+
+const config: Config = {
+  env: (process.env.NODE_ENV as EnvConfig) || 'development',
+};
+
+validate(config);
 
 export default config;

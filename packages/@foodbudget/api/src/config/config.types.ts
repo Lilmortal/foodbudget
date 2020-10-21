@@ -18,7 +18,7 @@ export interface TokenConfig {
   refresh: TokenContentConfig;
 }
 
-export type EnvConfig = 'production' | 'development';
+export type EnvConfig = 'production' | 'development' | 'test';
 
 export interface Config {
   api: ApiConfig;

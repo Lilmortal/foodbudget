@@ -10,7 +10,7 @@ if (!process.env.CI) {
   }
 }
 
-const isEnvValid = (env: string): env is EnvConfig => env === 'production' || env === 'development';
+const isEnvValid = (env: string): env is EnvConfig => env === 'production' || env === 'development' || env === 'test';
 
 const validate = (config: Config) => {
   const errors = [];

@@ -15,6 +15,7 @@ const loggerFormat = format.combine(
 
 const logger = createLogger({
   level: 'info',
+  silent: config.env === 'test',
   transports: [
     new transports.Console({
       format: loggerFormat,
