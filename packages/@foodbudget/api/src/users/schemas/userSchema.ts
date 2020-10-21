@@ -19,14 +19,14 @@ const getUser = queryField('user', {
     id: intArg(),
     email: stringArg(),
   },
-  resolve(_parent, args, ctx: Context) {
+  async resolve(_parent, args, ctx: Context) {
     logger.info('incoming get user request', args);
 
     const userDto: Partial<users> = {
       id: args.id,
       email: args.email,
     };
-    const result = ctx.serviceManager.userServices.get(userDto);
+    const result = await ctx.serviceManager.userServices.get(userDto);
 
     logger.info('retrieved user response', result);
     return result;

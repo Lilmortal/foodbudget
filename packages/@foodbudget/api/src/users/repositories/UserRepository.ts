@@ -29,6 +29,7 @@ export default class UserRepository implements Repository<User, users> {
     }
 
     if (result === null) {
+      logger.info('no user found');
       return undefined;
     }
 
@@ -49,6 +50,7 @@ export default class UserRepository implements Repository<User, users> {
     });
 
     if (result === null) {
+      logger.info('no user found');
       return undefined;
     }
 
