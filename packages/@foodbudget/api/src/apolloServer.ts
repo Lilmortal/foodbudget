@@ -3,7 +3,6 @@ import {
 } from 'apollo-server-express';
 import logger from '@foodbudget/logger';
 import { GraphQLError, printError } from 'graphql';
-import { v4 } from 'uuid';
 import { AppError } from '@foodbudget/errors';
 import schema from './schema';
 import context from './context';
@@ -51,9 +50,8 @@ const server = new ApolloServer({
   context,
   debug: true,
   formatError: (err: GraphQLError) => {
-    const id = v4();
-
-    logger.error(`${id}: ${prettifyError(err)}`);
+    const { sessionId } = logger.defaultMeta;
+    logger.error(prettifyError(err));
 
     removeStackTraceOnProd(err);
 
@@ -61,7 +59,7 @@ const server = new ApolloServer({
       return err;
     }
 
-    return new GraphQLError(`Internal server error: ${id}`);
+    return new GraphQLError(`Internal server error: ${sessionId}`);
   },
 });
 

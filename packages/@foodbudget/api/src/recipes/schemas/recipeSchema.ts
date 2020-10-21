@@ -27,7 +27,7 @@ export const getRecipes = queryField('recipes', {
     meals: arg({ type: mealType, list: true }),
   },
   async resolve(_parent, args, ctx: Context) {
-    logger.info('get recipes request', args);
+    logger.info('incoming get recipes request', args);
 
     const recipe: Partial<Recipe> = {
       id: args.id,

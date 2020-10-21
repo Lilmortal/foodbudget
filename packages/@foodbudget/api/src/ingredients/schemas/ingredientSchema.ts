@@ -14,7 +14,7 @@ export const getIngredients = queryField('ingredients', {
     amount: floatArg(),
   },
   async resolve(_parent, args, ctx: Context) {
-    logger.info('get ingredient request', args);
+    logger.info('incoming get ingredient request', args);
 
     const ingredients: Partial<Ingredient> = {
       name: args.name,

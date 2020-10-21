@@ -1,3 +1,4 @@
+import logger from '@foodbudget/logger';
 import {
   intArg, objectType, queryField, stringArg,
 } from '@nexus/schema';
@@ -19,12 +20,15 @@ const getUser = queryField('user', {
     email: stringArg(),
   },
   resolve(_parent, args, ctx: Context) {
+    logger.info('incoming get user request', args);
+
     const userDto: Partial<users> = {
       id: args.id,
       email: args.email,
     };
     const result = ctx.serviceManager.userServices.get(userDto);
 
+    logger.info('retrieved user response', result);
     return result;
   },
 });
