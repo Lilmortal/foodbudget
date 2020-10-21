@@ -56,6 +56,7 @@ describe('job recipes scraper', () => {
         decodeAccessToken: jest.fn(),
         decodeRefreshToken: jest.fn(),
         createAccessToken: jest.fn(),
+        extractAccessToken: jest.fn(),
       },
     }));
 
@@ -125,6 +126,7 @@ describe('job recipes scraper', () => {
         decodeAccessToken: jest.fn(),
         decodeRefreshToken: jest.fn(),
         createAccessToken: jest.fn(),
+        extractAccessToken: jest.fn(),
       },
     }));
 

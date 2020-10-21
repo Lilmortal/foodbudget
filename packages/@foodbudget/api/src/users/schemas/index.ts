@@ -1,2 +1,2 @@
-export { default } from './schema';
+export { default } from './userSchema';
 export * from './resolvers';

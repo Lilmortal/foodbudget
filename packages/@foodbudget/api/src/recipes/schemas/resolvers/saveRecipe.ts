@@ -6,7 +6,7 @@ import { Context } from '../../../context';
 import { Recipe } from '../../Recipe.types';
 import {
   adjectiveType, allergyType, cuisineType, dietType, mealType, recipeField, recipeIngredientArg,
-} from '../schemaFields';
+} from '../recipeSchemaFields';
 
 const saveRecipe = mutationField('recipes', {
   type: recipeField,
@@ -25,6 +25,9 @@ const saveRecipe = mutationField('recipes', {
     meals: arg({ type: mealType, list: true }),
   },
   async resolve(_parent, args, ctx: Context) {
+    // if (!ctx.scope?.includes('ADMIN')) {
+    //   throw new AppError({ message: 'Forbidden request', isOperational: true, httpStatus: 403 });
+    // }
     logger.info('save recipe request', args);
 
     const recipe: Recipe = {

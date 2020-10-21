@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Application, Request, Response } from 'express';
-import logger from '@foodbudget/logger';
 
+import { AppError } from '@foodbudget/errors';
 import AuthServices from './AuthServices';
 
 const handleTokenVerification = (authServices: Required<AuthServices>) => (req: Request, res: Response) => {
@@ -34,9 +34,28 @@ const authRoutes = ({ app, authServices }: AuthRoutesParams): void => {
 
       if (!refreshToken) {
         res.redirect('http://localhost:8080/login');
+        throw new AppError(
+          {
+            message: 'refresh token either expired or does not exist. Redirecting to login page...',
+            isOperational: true,
+            httpStatus: 401,
+          },
+        );
       }
 
       const decodedRefreshToken = authServices.decodeRefreshToken(refreshToken);
+
+      if (decodedRefreshToken.userId === undefined || decodedRefreshToken.expireTimeInUtc === undefined) {
+        res.redirect('http://localhost:8080/login');
+        throw new AppError(
+          {
+            message: 'refresh token has been tampered with, redirecting to login page...',
+            isOperational: true,
+            httpStatus: 401,
+          },
+        );
+      }
+
       const accessToken = authServices.createAccessToken(decodedRefreshToken.userId);
       const renewedRefreshToken = authServices.createRefreshToken(decodedRefreshToken.userId);
 
@@ -46,8 +65,14 @@ const authRoutes = ({ app, authServices }: AuthRoutesParams): void => {
         accessToken,
       });
     } catch (err) {
-      logger.error(err.message);
       res.redirect('http://localhost:8080/login');
+      throw new AppError(
+        {
+          message: err.message,
+          isOperational: true,
+          httpStatus: 401,
+        },
+      );
     }
   });
 };

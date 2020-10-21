@@ -13,7 +13,7 @@ const login = mutationField('login', {
     const user = await ctx.serviceManager.userServices.login({ email: args.email, password: args.password });
 
     if (user) {
-      logger.info(`${user.email} has logged in.`);
+      logger.info('user has logged in.');
       const refreshToken = ctx.serviceManager.authServices.createRefreshToken(user.id.toString());
       const accessToken = ctx.serviceManager.authServices.createAccessToken(user.id.toString());
 
@@ -21,7 +21,7 @@ const login = mutationField('login', {
       return accessToken;
     }
 
-    logger.warn(`${args.email} failed to login.`);
+    logger.warn('user failed to login.');
     return null;
   },
 });

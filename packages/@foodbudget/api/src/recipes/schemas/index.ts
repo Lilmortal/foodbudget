@@ -1,2 +1,2 @@
-export * from './schema';
+export * from './recipeSchema';
 export { saveRecipe } from './resolvers';

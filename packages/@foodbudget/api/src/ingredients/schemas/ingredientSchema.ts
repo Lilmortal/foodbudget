@@ -2,7 +2,7 @@ import logger from '@foodbudget/logger';
 import { floatArg, queryField, stringArg } from '@nexus/schema';
 import { Context } from '../../context';
 import { Ingredient } from '../Ingredient.types';
-import { ingredientField } from './schemaFields';
+import { ingredientField } from './ingredientSchemaFields';
 
 // eslint-disable-next-line import/prefer-default-export
 export const getIngredients = queryField('ingredients', {

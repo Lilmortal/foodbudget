@@ -3,7 +3,7 @@ import { AppError } from '@foodbudget/errors';
 import logger from '@foodbudget/logger';
 import { Context } from '../../../context';
 import { Ingredient } from '../../Ingredient.types';
-import { ingredientField } from '../schemaFields';
+import { ingredientField } from '../ingredientSchemaFields';
 
 const validateArguments = (args: unknown):boolean => {
   if (typeof (args as Ingredient).name === 'string' && (args as Ingredient).name.length > 0) {

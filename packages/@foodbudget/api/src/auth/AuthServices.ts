@@ -1,5 +1,4 @@
 import { AppError } from '@foodbudget/errors';
-import { addSeconds } from 'date-fns';
 import addMilliseconds from 'date-fns/addMilliseconds';
 import { sign, verify } from 'jsonwebtoken';
 import { TokenConfig } from '../config';
@@ -35,7 +34,12 @@ export default class AuthServices {
     && (token as RefreshTokenPayload).userId !== undefined && typeof (token as RefreshTokenPayload).userId === 'string';
 
     decodeAccessToken(accessToken: string): AccessTokenPayload {
-      const decodedToken = verify(accessToken, this.tokenConfig.access.secret);
+      let decodedToken: string | object;
+      try {
+        decodedToken = verify(accessToken, this.tokenConfig.access.secret);
+      } catch (err) {
+        throw new AppError({ message: `access token is in invalid format.\n${err}`, isOperational: true, httpStatus: 401 });
+      }
 
       if (typeof decodedToken === 'string') {
         throw new AppError(
@@ -53,7 +57,12 @@ export default class AuthServices {
     }
 
     decodeRefreshToken(refreshToken: string): RefreshTokenPayload {
-      const decodedToken = verify(refreshToken, this.tokenConfig.refresh.secret);
+      let decodedToken: string | object;
+      try {
+        decodedToken = verify(refreshToken, this.tokenConfig.refresh.secret);
+      } catch (err) {
+        throw new AppError({ message: `refresh token is in invalid format.\n${err}`, isOperational: true, httpStatus: 401 });
+      }
 
       if (typeof decodedToken === 'string') {
         throw new AppError(
@@ -73,12 +82,11 @@ export default class AuthServices {
     createAccessToken(userId: string): string {
       const currentTime = Date.now();
       const expireTimeInMs = addMilliseconds(currentTime, this.tokenConfig.access.expireTimeInMs);
-      const expireTimeInSeconds = addSeconds(currentTime, this.tokenConfig.access.expireTimeInMs / 1000);
 
       const accessToken = createToken<AccessTokenPayload>({
         payload: { userId, scope: [], expireTimeInUtc: expireTimeInMs.toUTCString() },
         secret: this.tokenConfig.access.secret,
-        expireTimeInSeconds: expireTimeInSeconds.getTime(),
+        expireTimeInSeconds: this.tokenConfig.access.expireTimeInMs / 1000,
       });
 
       return accessToken;
@@ -87,12 +95,11 @@ export default class AuthServices {
     createRefreshToken(userId: string): RefreshToken {
       const currentTime = Date.now();
       const expireTimeInMs = addMilliseconds(currentTime, this.tokenConfig.refresh.expireTimeInMs);
-      const expireTimeInSeconds = addSeconds(currentTime, this.tokenConfig.refresh.expireTimeInMs / 1000);
 
       const refreshToken = createToken<RefreshTokenPayload>({
         payload: { userId, expireTimeInUtc: expireTimeInMs.toUTCString() },
         secret: this.tokenConfig.refresh.secret,
-        expireTimeInSeconds: expireTimeInSeconds.getTime(),
+        expireTimeInSeconds: this.tokenConfig.refresh.expireTimeInMs / 1000,
       });
 
       return {
@@ -101,7 +108,18 @@ export default class AuthServices {
         options: {
           httpOnly: true,
           expires: new Date(expireTimeInMs),
+          secure: process.env.NODE_ENV === 'production',
         },
       };
+    }
+
+    extractAccessToken(header: string): AccessTokenPayload {
+      if (!header.startsWith('Bearer ')) {
+        throw new AppError({ message: 'Request header format is invalid.', isOperational: true, httpStatus: 401 });
+      }
+
+      const token = header.substring(7);
+      const decodedToken = this.decodeAccessToken(token);
+      return decodedToken;
     }
 }
