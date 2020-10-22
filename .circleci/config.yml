@@ -5,11 +5,11 @@ jobs:
       - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
-      # - restore_cache:
-      #     keys:
-      #       - v2-dependencies-{{ checksum "package.json" }}
-      #       # fallback to using the latest cache if no exact match is found
-      #       - v2-dependencies-
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v2-dependencies-
       - run: yarn
       - save_cache:
           paths:
@@ -68,18 +68,9 @@ jobs:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: git config --global user.email "thefoodbudget@gmail.com"
       - run: git config --global user.name "Food Budget"
+      - run: npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
       - run: yarn release
       - run: git push --follow-tags origin master
-commands:
-  create_concatenated_yarn_lock:
-    description: "Concatenate all yarn.lock files recognized by lerna.js into single file. File is used as checksum source for part of caching key."
-    parameters:
-      filename:
-        type: string
-    steps:
-      - run:
-          name: Combine yarn.lock files to single file
-          command: npx lerna la -a | awk -F packages '{printf "\"packages%s/yarn.lock\" ", $2}' | xargs cat > << parameters.filename >>
 workflows:
   version: 2
   verify:
