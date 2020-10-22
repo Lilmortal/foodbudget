@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/logger@2.0.0...@foodbudget/logger@2.1.0) (2020-10-22)
+
+
+### Features
+
+* added mask function around sensitive objects during logging ([8cc1e86](https://github.com/Lilmortal/foodbudget/commit/8cc1e869a4956c4fa52d371866c54ddf1167aa80))
+* recipe mutations returns ingredients ([6bffe1e](https://github.com/Lilmortal/foodbudget/commit/6bffe1e55f46c56f92a1fe44d1c2e91987e8177d))
+
+
+
+
+
 # 2.0.0 (2020-10-15)
 
 

@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@4.0.0...@foodbudget/api@4.1.0) (2020-10-22)
+
+
+### Bug Fixes
+
+* tokens not properly expired ([e761171](https://github.com/Lilmortal/foodbudget/commit/e761171b6bb8d0e83369833d9a238a8c919ec661))
+
+
+### Features
+
+* add ID to recipeDTO, added mappers ([4b94661](https://github.com/Lilmortal/foodbudget/commit/4b946615d1714a3fa8f3f168ee63681cd18c81cb))
+* added appError and error packages ([0540d0a](https://github.com/Lilmortal/foodbudget/commit/0540d0a7224639d3212ddef5f92804200464d170))
+* recipe mutations returns ingredients ([6bffe1e](https://github.com/Lilmortal/foodbudget/commit/6bffe1e55f46c56f92a1fe44d1c2e91987e8177d))
+
+
+
+
+
 # [4.0.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@3.0.0...@foodbudget/api@4.0.0) (2020-10-15)
 
 

@@ -1,12 +1,12 @@
 {
   "name": "@foodbudget/errors",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "main": "src/index.ts",
   "author": "Jack Tan",
   "license": "MIT",
   "dependencies": {
-    "@foodbudget/email": "^4.0.0",
-    "@foodbudget/logger": "^2.0.0",
+    "@foodbudget/email": "^4.1.0",
+    "@foodbudget/logger": "^2.1.0",
     "dotenv": "^8.2.0",
     "find-config": "^1.0.0"
   },

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/email@4.0.0...@foodbudget/email@4.1.0) (2020-10-22)
+
+
+### Features
+
+* added appError and error packages ([0540d0a](https://github.com/Lilmortal/foodbudget/commit/0540d0a7224639d3212ddef5f92804200464d170))
+
+
+
+
+
 # [4.0.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/email@3.0.0...@foodbudget/email@4.0.0) (2020-10-15)
 
 
