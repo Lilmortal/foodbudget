@@ -1,8 +1,5 @@
 import nodeMailer from 'nodemailer';
-import util from 'util';
 import MailTransporter from 'nodemailer/lib/mailer';
-import SESTransport from 'nodemailer/lib/ses-transport';
-import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { AppError } from '@foodbudget/errors';
 import {
   Mailer, MailerParams, Mail,
@@ -35,7 +32,10 @@ export class Emailer implements Mailer {
       service, host, port, secure, auth,
     });
 
-    await emailer.verify();
+    const isVerified = await emailer.verify();
+    if (!isVerified) {
+      throw new AppError({ message: 'emailer account is not verified', isOperational: true });
+    }
 
     return emailer;
   }
@@ -53,26 +53,16 @@ export class Emailer implements Mailer {
       },
     });
 
-    await emailer.verify();
+    const isVerified = await emailer.verify();
+    if (!isVerified) {
+      throw new AppError({ message: 'emailer account is not verified', isOperational: true });
+    }
 
     return emailer;
   }
 
   async verify(): Promise<boolean> {
-    let isVerified = false;
-    try {
-      const promisifiedVerify = util.promisify<boolean>(
-        this.transporter.verify,
-      );
-      isVerified = await promisifiedVerify();
-    } catch (err) {
-      throw new AppError({
-        message: `Attempting to verify account failed:
-      ${err.message || err}`,
-        isOperational: true,
-      });
-    }
-    return isVerified;
+    return this.transporter.verify();
   }
 
   async send({
@@ -82,19 +72,13 @@ export class Emailer implements Mailer {
     text,
     html,
   }: Mail): Promise<string | boolean> {
-    let info: SESTransport.SentMessageInfo | SMTPTransport.SentMessageInfo;
-
-    try {
-      info = await this.transporter.sendMail({
-        from,
-        to,
-        subject,
-        text,
-        html,
-      });
-    } catch (err) {
-      throw new AppError({ message: `Attempting to send mail failed: ${err.message || err}`, isOperational: true });
-    }
+    const info = await this.transporter.sendMail({
+      from,
+      to,
+      subject,
+      text,
+      html,
+    });
 
     let messageUrl: string | boolean;
 
