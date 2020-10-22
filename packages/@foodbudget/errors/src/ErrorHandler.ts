@@ -1,4 +1,4 @@
-import Emailer from '@foodbudget/email';
+import createEmailer from '@foodbudget/email';
 import logger from '@foodbudget/logger';
 import config from '../config';
 import AppError from './AppError';
@@ -7,7 +7,7 @@ export default class ErrorHandler {
     static handleError = async (err: Error): Promise<void> => {
       logger.error(err);
       if (config.env === 'PROD') {
-        const emailer = await Emailer;
+        const emailer = await createEmailer();
         emailer.send({
           from: config.email.from,
           to: config.email.to,

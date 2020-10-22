@@ -108,8 +108,8 @@ export class Emailer implements Mailer {
   }
 }
 
-const emailer = (async () => Emailer.create(
+const createEmailer = (async (): Promise<Mailer> => Emailer.create(
   { service: config.email.service, auth: { user: config.email.user, pass: config.email.password } },
-))();
+));
 
-export default emailer;
+export default createEmailer;

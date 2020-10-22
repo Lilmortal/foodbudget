@@ -1,4 +1,4 @@
-import { AppError } from '../../../errors/src';
+import { AppError } from '@foodbudget/errors';
 import {
   ScraperParams,
   ScrapedElements, OnScrape,

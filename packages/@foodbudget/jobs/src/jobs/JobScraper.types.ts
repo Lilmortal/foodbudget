@@ -1,5 +1,5 @@
 import { ServiceManager } from '@foodbudget/api';
-import { Mailer } from '../../../email/src';
+import { Mailer } from '@foodbudget/email';
 import RecipesScraper from '../scraper/recipes/RecipesScraper';
 import { ScrapedRecipe } from '../scraper/recipes/RecipesScraper.types';
 
