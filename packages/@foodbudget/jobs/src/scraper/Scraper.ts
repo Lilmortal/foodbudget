@@ -1,3 +1,4 @@
+import { AppError } from '@foodbudget/errors';
 import {
   ScraperParams,
   ScrapedElements, OnScrape,
@@ -44,8 +45,7 @@ export default class Scraper<S, R> {
 
       return this.onMapping(scrapedResults);
     } catch (err) {
-      // @TODO: Find where TimeoutError is.
-      // if (err instanceof puppeteer.errors.TimeoutError) {
+      // @TODO: Find where puppeteer.errors.TimeoutError is.
       if (err instanceof Error) {
         if (retries <= 0) {
           throw err;
@@ -53,7 +53,7 @@ export default class Scraper<S, R> {
 
         return this.scrape(scrapedElements, retries - 1);
       }
-      throw new Error(err);
+      throw new AppError({ message: err.message || err, isOperational: true });
     }
   }
 }

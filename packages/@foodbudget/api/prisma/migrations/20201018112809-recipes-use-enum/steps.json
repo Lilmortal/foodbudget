@@ -1,0 +1,105 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateEnum",
+      "enum": "Cuisine",
+      "values": [
+        "AMERICAN",
+        "ITALIAN",
+        "ASIAN",
+        "MEXICAN",
+        "SOUTHERN_AND_SOUL_FOOD",
+        "FRENCH",
+        "SOUTH_WESTERN",
+        "BARBEQUE",
+        "INDIAN",
+        "CHINESE",
+        "CAJUN_AND_CREOLE",
+        "MEDITERRANEAN",
+        "GREEK",
+        "ENGLISH",
+        "SPANISH",
+        "THAI",
+        "GERMAN",
+        "MOROCCAN",
+        "IRISH",
+        "JAPANESE",
+        "CUBAN",
+        "HAWAIIAN",
+        "SWEDISH",
+        "HUNGARIAN",
+        "PORTUGUESE"
+      ]
+    },
+    {
+      "tag": "CreateEnum",
+      "enum": "Diet",
+      "values": [
+        "KETOGENIC",
+        "VEGETARIAN_NO_MEAT_AND_EGGS",
+        "VEGETARIAN_NO_MEAT_AND_DAIRY",
+        "PESCATARIAN",
+        "VEGAN",
+        "LOW_FOODMAP",
+        "VEGETARIAN",
+        "PALEO"
+      ]
+    },
+    {
+      "tag": "CreateEnum",
+      "enum": "Allergy",
+      "values": [
+        "GLUTEN",
+        "PEANUT",
+        "SEAFOOD",
+        "SESAME",
+        "SOY",
+        "DIARY",
+        "EGG",
+        "SULPHITE",
+        "TREE_NUT",
+        "WHEAT"
+      ]
+    },
+    {
+      "tag": "CreateEnum",
+      "enum": "Meal",
+      "values": [
+        "BREAKFAST",
+        "LUNCH",
+        "DINNER"
+      ]
+    },
+    {
+      "tag": "UpdateField",
+      "model": "recipes",
+      "field": "recipe_adjectives",
+      "type": "String"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "recipes",
+      "field": "recipe_allergies",
+      "type": "Allergy"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "recipes",
+      "field": "recipe_cuisines",
+      "type": "Cuisine"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "recipes",
+      "field": "recipe_diets",
+      "type": "Diet"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "recipes",
+      "field": "recipe_meals",
+      "type": "Meal"
+    }
+  ]
+}

@@ -2,103 +2,80 @@ import { users } from '@prisma/client';
 import argon2 from 'argon2';
 import { Repository } from '../../shared/types/Repository.types';
 import { User } from '../User.types';
-import { LoginRequest, UserServicesParams } from './UserServices.types';
+import userMapper from './userMapper';
+import { LoginRequest } from './UserServices.types';
 import {
-  getUserEntity, isRegisteringExistedAccountViaPassword, isRequestCredentialsValid, mapUserEntityToDto,
+  getUserEntity, isRegisteringExistedAccountViaPassword, isRequestCredentialsValid,
 } from './UserServices.utils';
 
 export default class UserServices {
-    private readonly repository: Repository<User, users>;
+  constructor(private readonly repository: Repository<User, users>) {
+    this.repository = repository;
+  }
 
-    constructor({ repository }: UserServicesParams) {
-      this.repository = repository;
+  async get(userEntity: Pick<Partial<User>, 'id' | 'email'>): Promise<User | undefined> {
+    const user = await this.repository.getOne(userEntity);
+
+    if (user) {
+      return userMapper.toDto(user);
     }
+    return user;
+  }
 
-    async get(userEntity: Pick<Partial<User>, 'id' | 'email'>): Promise<User | undefined> {
-      const user = await this.repository.getOne(userEntity);
+  async login(request: LoginRequest): Promise<User | undefined> {
+    const userEntity = getUserEntity(request);
 
-      if (user) {
-        return mapUserEntityToDto(user);
-      }
-      return user;
-    }
-
-    async login(request: LoginRequest): Promise<User | undefined> {
-      const userEntity = getUserEntity(request);
-
-      if (!userEntity) {
-        return undefined;
-      }
-
-      const user = await this.repository.getOne(userEntity);
-
-      if (user && await isRequestCredentialsValid(request, user)) {
-        return mapUserEntityToDto(user);
-      }
-
+    if (!userEntity) {
       return undefined;
     }
 
-    async register(userDto: Partial<Omit<User, 'id'>> & Pick<User, 'email'>): Promise<User | undefined> {
-      // Check if user exist
-      const user = await this.repository.getOne({ email: userDto.email });
+    const user = await this.repository.getOne(userEntity);
 
-      // If it does not exist, create it
-      if (!user) {
-        const userEntity: Omit<User, 'id'> = {
-          email: userDto.email,
-          googleId: userDto.googleId,
-          facebookId: userDto.facebookId,
-          nickname: userDto.nickname,
-          password: userDto.password ? await argon2.hash(userDto.password) : undefined,
-        };
-
-        const createdUser = await this.repository.create(userEntity);
-        return mapUserEntityToDto(createdUser);
-      }
-
-      if (isRegisteringExistedAccountViaPassword(userDto, user)) {
-        return undefined;
-      }
-
-      /**
-       * Linking all viable means of logging.
-       * For example, if user logged in via google before, and is now logging in via
-       * facebook for the first time, link those two under the same account.
-       */
-      const updatedUserEntity: Partial<User> & Pick<User, 'email'> = {
-        email: userDto.email,
-        ...userDto.googleId && { google_id: userDto.googleId },
-        ...userDto.facebookId && { facebook_id: userDto.facebookId },
-        ...userDto.password && { password: await argon2.hash(userDto.password) },
-      };
-
-      const updatedUser = await this.repository.update(updatedUserEntity);
-      return mapUserEntityToDto(updatedUser);
+    if (user && await isRequestCredentialsValid(request, user)) {
+      return userMapper.toDto(user);
     }
 
-    async update(userDto: Pick<Partial<User>, 'email' | 'nickname' | 'password'>): Promise<User> {
-      const userEntity: Partial<User> = {
-        email: userDto.email,
-        ...userDto.nickname && { nickname: userDto.nickname },
-        ...userDto.password && { password: await argon2.hash(userDto.password) },
-      };
+    return undefined;
+  }
 
-      const user = await this.repository.update(userEntity);
+  /**
+    * Linking all viable means of logging.
+    * For example, if user logged in via google before, and is now logging in via
+    * facebook for the first time, link those two under the same account.
+    *
+    * @param userDto
+  */
+  async register(userDto: Partial<Omit<User, 'id'>> & Pick<User, 'email'>): Promise<User | undefined> {
+    const user = await this.repository.getOne({ email: userDto.email });
 
-      return mapUserEntityToDto(user);
+    if (user && isRegisteringExistedAccountViaPassword(userDto, user)) {
+      return undefined;
     }
 
-    async delete(id: number): Promise<boolean> {
-      // @TODO: Send a one off cron job to delete the user in 5 days.
-      // But for now, delete the user straight away.
+    const userEntity: Omit<User, 'id'> = {
+      ...userDto,
+      password: userDto.password ? await argon2.hash(userDto.password) : undefined,
+    };
 
-      const user = await this.repository.delete(id);
+    const createdUser = await this.repository.save(userEntity);
+    return userMapper.toDto(createdUser);
+  }
 
-      if (!user) {
-        return false;
-      }
+  async update(userDto: User): Promise<User> {
+    const user = await this.repository.save({
+      ...userDto,
+      ...userDto.password && { password: await argon2.hash(userDto.password) },
+    });
 
-      return true;
-    }
+    return userMapper.toDto(user);
+  }
+
+  async delete(id: string): Promise<User> {
+    // @TODO: Send a one off cron job to delete the user in 5 days.
+    // But for now, delete the user straight away.
+
+    const user = await this.repository.delete(id);
+
+    return userMapper.toDto(user);
+  }
 }

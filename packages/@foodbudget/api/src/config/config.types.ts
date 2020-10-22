@@ -10,16 +10,20 @@ export interface SocialConfig {
 
 export interface TokenContentConfig {
   secret: string;
-  expireTime: string;
+  expireTimeInMs: number;
 }
+
 export interface TokenConfig {
   access: TokenContentConfig;
   refresh: TokenContentConfig;
 }
+
+export type EnvConfig = 'production' | 'development' | 'test';
 
 export interface Config {
   api: ApiConfig;
   google: SocialConfig;
   facebook: SocialConfig;
   token: TokenConfig;
+  env: EnvConfig;
 }

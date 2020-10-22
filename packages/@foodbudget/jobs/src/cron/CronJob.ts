@@ -1,3 +1,4 @@
+import logger from '@foodbudget/logger';
 import Agenda from 'agenda';
 import { Config } from '../config';
 import { Job } from './CronJob.types';
@@ -45,7 +46,7 @@ export default class CronJob {
 
       // this.jobs.push(async () => job.start(config));
 
-      console.log(`"${job.definition}" has been added to the job scheduler queue...`);
+      logger.info(`"${job.definition}" has been added to the job scheduler queue...`);
     };
 
     if (Array.isArray(jobs)) {
@@ -60,10 +61,10 @@ export default class CronJob {
   async start(): Promise<void> {
     await this.instance.start();
 
-    console.log('Agenda job scheduler started.');
+    logger.info('Agenda job scheduler started.');
 
     if (this.jobs.length === 0) {
-      console.warn('There are no jobs currently running, have you added any?');
+      logger.warn('There are no jobs currently running, have you added any?');
     }
 
     await Promise.all(
@@ -74,7 +75,7 @@ export default class CronJob {
   }
 
   async stop(): Promise<void> {
-    console.log('Stopping job scheduler...');
+    logger.info('Stopping job scheduler...');
     await this.instance.stop();
   }
 }

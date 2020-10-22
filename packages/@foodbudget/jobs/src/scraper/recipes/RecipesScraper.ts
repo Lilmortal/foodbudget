@@ -1,12 +1,13 @@
 import { Recipe } from '@foodbudget/api';
+import { AppError } from '@foodbudget/errors';
 import Scraper from '../Scraper';
 import { OnScrape } from '../Scraper.types';
 import { ScrapedRecipe } from './RecipesScraper.types';
 
-export const onMapping = (scrapedRecipe: ScrapedRecipe): Recipe => {
+export const onMapping = (scrapedRecipe: ScrapedRecipe): Omit<Recipe, 'id'> => {
   const validationErrors = [];
 
-  const recipe: Recipe = {
+  const recipe: Omit<Recipe, 'id'> = {
     prepTime: '',
     servings: 0,
     name: '',
@@ -16,6 +17,8 @@ export const onMapping = (scrapedRecipe: ScrapedRecipe): Recipe => {
     diets: [],
     allergies: [],
     link: '',
+    adjectives: [],
+    meals: [],
   };
 
   if (scrapedRecipe.link && !Array.isArray(scrapedRecipe.link)) {
@@ -44,24 +47,26 @@ export const onMapping = (scrapedRecipe: ScrapedRecipe): Recipe => {
     validationErrors.push('name must be a non-empty string.');
   }
 
-  if (
-    scrapedRecipe.ingredients
-    && Array.isArray(scrapedRecipe.ingredients)
-    && scrapedRecipe.ingredients.length > 0
-  ) {
-    recipe.ingredients = scrapedRecipe.ingredients;
-  } else {
-    validationErrors.push('ingredients must be a non-empty array.');
-  }
+  // if (
+  //   scrapedRecipe.ingredients
+  //   && Array.isArray(scrapedRecipe.ingredients)
+  //   && scrapedRecipe.ingredients.length > 0
+  // ) {
+  //   recipe.ingredients = scrapedRecipe.ingredients.map(ingredient => ({
+  //     name: ingredient
+  //   }));
+  // } else {
+  //   validationErrors.push('ingredients must be a non-empty array.');
+  // }
 
   if (validationErrors.length > 0) {
-    throw new Error(validationErrors.join('\n'));
+    throw new AppError({ message: validationErrors.join('\n'), isOperational: true });
   }
 
   return recipe;
 };
 
-export default class RecipesScraper<S extends ScrapedRecipe> extends Scraper<S, Recipe> {
+export default class RecipesScraper<S extends ScrapedRecipe> extends Scraper<S, Omit<Recipe, 'id'>> {
   constructor(onScrape: OnScrape<S>) {
     super({ onScrape, onMapping });
   }

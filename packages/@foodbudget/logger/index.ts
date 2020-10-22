@@ -1,26 +1,31 @@
 import { createLogger, format, transports } from 'winston';
+import config from './config';
+import formatMessage from './formatMessage';
 
 const loggerFormat = format.combine(
-  format((info) => ({ ...info, level: info.level.toUpperCase() }))(),
+  format((info) => ({ ...info, level: info.level.toUpperCase(), message: formatMessage(info) }))(),
   format.colorize(),
   format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   format.align(),
   format.splat(),
-  format.simple(),
+  format.json(),
   format.errors({ stacks: true }),
   format.printf((info) => `${info.timestamp} [${info.level}] ${info.message}`),
 );
 
 const logger = createLogger({
-  level: 'error',
+  level: 'info',
+  silent: config.env === 'test',
   transports: [
     new transports.Console({
       format: loggerFormat,
     }),
   ],
+  // Let error packages handle uncaught exceptions
+  exitOnError: false,
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (config.env !== 'production') {
   logger.level = 'debug';
 }
 

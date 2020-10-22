@@ -13,6 +13,8 @@ const getValidRecipePageInfo = (
   cuisines: [],
   diets: [],
   allergies: [],
+  adjectives: [],
+  meals: [],
   ...scrapedRecipe,
 });
 
@@ -45,13 +47,13 @@ describe('recipe scraper', () => {
     expect(() => onMapping(getValidRecipePageInfo({ name: ['5 mins'] }))).toThrowError();
   });
 
-  it('should throw an Error if ingredients is an empty array', () => {
-    expect(() => onMapping(getValidRecipePageInfo({ ingredients: [] }))).toThrowError();
-  });
+  // it('should throw an Error if ingredients is an empty array', () => {
+  //   expect(() => onMapping(getValidRecipePageInfo({ ingredients: [] }))).toThrowError();
+  // });
 
-  it('should throw an Error if ingredients is not an array', () => {
-    expect(() => onMapping(getValidRecipePageInfo({ ingredients: '5 mins' }))).toThrowError();
-  });
+  // it('should throw an Error if ingredients is not an array', () => {
+  //   expect(() => onMapping(getValidRecipePageInfo({ ingredients: '5 mins' }))).toThrowError();
+  // });
 
   it('should return a mapped recipe', () => {
     const mappedRecipe = onMapping(getValidRecipePageInfo());
@@ -60,11 +62,13 @@ describe('recipe scraper', () => {
       servings: 4,
       name: 'Recipe name',
       numSaved: 0,
-      ingredients: ['4 cups of water'],
+      ingredients: [],
       link: 'link',
       cuisines: [],
       diets: [],
       allergies: [],
+      adjectives: [],
+      meals: [],
     });
   });
 });

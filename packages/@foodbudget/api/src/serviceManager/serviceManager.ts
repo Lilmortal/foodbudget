@@ -1,49 +1,29 @@
-import { PrismaClient, recipes, users } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { AuthServices } from '../auth';
+import config from '../config';
+import { IngredientRepository, IngredientServices } from '../ingredients';
+import { RecipeRepository, RecipeServices } from '../recipes';
+import { UserRepository, UserServices } from '../users';
 import { ServiceManager } from './serviceManager.types';
-import RecipeServices from '../recipes/services';
-import { Repository } from '../shared/types/Repository.types';
-import { RepositoryError, ServiceError } from '../shared/errors';
-import RecipeRepository from '../recipes/repositories';
-import UserRepository from '../users/repositories';
-import UserServices from '../users/services';
-import { User } from '../users';
-import { Recipe } from '../recipes';
 
-let recipeRepository: Repository<Recipe, recipes>;
-try {
-  const prisma = new PrismaClient({ log: ['query'] });
+const prisma = new PrismaClient({ log: ['query'] });
 
-  recipeRepository = new RecipeRepository(prisma);
-} catch (err) {
-  throw new RepositoryError(err);
-}
+const userRepository = new UserRepository(prisma);
+const userServices = new UserServices(userRepository);
 
-let recipeServices: RecipeServices;
-try {
-  recipeServices = new RecipeServices({ repository: recipeRepository });
-} catch (err) {
-  throw new ServiceError(err);
-}
+const ingredientRepository = new IngredientRepository(prisma);
+const ingredientServices = new IngredientServices(ingredientRepository);
 
-let userRepository: Repository<User, users>;
-try {
-  const prisma = new PrismaClient({ log: ['query'] });
+const recipeRepository = new RecipeRepository(prisma, ingredientServices);
+const recipeServices = new RecipeServices(recipeRepository);
 
-  userRepository = new UserRepository(prisma);
-} catch (err) {
-  throw new RepositoryError(err);
-}
-
-let userServices: UserServices;
-try {
-  userServices = new UserServices({ repository: userRepository });
-} catch (err) {
-  throw new ServiceError(err);
-}
+const authServices = new AuthServices(config.token);
 
 const serviceManager: ServiceManager = {
   recipeServices,
   userServices,
+  ingredientServices,
+  authServices,
 };
 
 export default serviceManager;

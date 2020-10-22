@@ -1,0 +1,111 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "recipe_ingredients",
+      "field": "recipe_link",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "recipe_ingredients",
+      "field": "ingredient_name",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "recipe_ingredients",
+      "field": "id"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "recipe_ingredients",
+      "field": "recipe_id"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "recipe_ingredients",
+      "field": "name"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "recipe_ingredients",
+      "field": "ingredients",
+      "arity": "Required"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_ingredients",
+          "field": "ingredients"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "newValue": "[ingredient_name]"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "recipe_ingredients",
+      "field": "recipes",
+      "arity": "Required"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_ingredients",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "newValue": "[recipe_link]"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "recipe_ingredients",
+          "field": "recipes"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "newValue": "[link]"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "recipe_ingredients"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Model",
+          "model": "recipe_ingredients"
+        },
+        "directive": "id"
+      },
+      "argument": "",
+      "value": "[recipe_link, ingredient_name]"
+    }
+  ]
+}

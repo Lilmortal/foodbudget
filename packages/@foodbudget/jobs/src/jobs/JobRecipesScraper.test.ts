@@ -1,4 +1,5 @@
 import { Recipe, ServiceManager } from '@foodbudget/api';
+import { AccessTokenPayload, RefreshTokenPayload } from '@foodbudget/api/src/auth/Auth.types';
 import { Mailer } from '@foodbudget/email';
 import config from '../config';
 import { RecipesScraper, ScrapedRecipe } from '../scraper/recipes';
@@ -7,7 +8,7 @@ import JobRecipesScraper from './JobRecipesScraper';
 jest.mock('../scraper/recipes');
 
 describe('job recipes scraper', () => {
-  let recipe: Recipe;
+  let recipe: Omit<Recipe, 'id'>;
   let mockServiceManager: jest.Mock<ServiceManager, []>;
   let mockEmailer: jest.Mock<Mailer>;
   let mockRecipeScraper: jest.Mock<RecipesScraper<ScrapedRecipe>>;
@@ -21,13 +22,21 @@ describe('job recipes scraper', () => {
       prepTime: '4 mins',
       servings: 4,
       numSaved: 0,
-      ingredients: ['pork', 'mushroom'],
+      ingredients: [],
+      // ingredients: ['pork', 'mushroom'],
       cuisines: [],
       diets: [],
       allergies: [],
+      adjectives: [],
+      meals: [],
     };
 
+    // TODO: Extract this out
     mockServiceManager = jest.fn<ServiceManager, []>(() => ({
+      ingredientServices: {
+        get: jest.fn(),
+        save: jest.fn(),
+      },
       recipeServices: {
         get: jest.fn(),
         save: jest.fn(),
@@ -38,6 +47,16 @@ describe('job recipes scraper', () => {
         register: jest.fn(),
         update: jest.fn(),
         delete: jest.fn(),
+      },
+      authServices: {
+        refreshTokenKey: 'refresh-token',
+        isAccessToken: (token: unknown): token is AccessTokenPayload => false,
+        isRefreshToken: (token: unknown): token is RefreshTokenPayload => false,
+        createRefreshToken: jest.fn(),
+        decodeAccessToken: jest.fn(),
+        decodeRefreshToken: jest.fn(),
+        createAccessToken: jest.fn(),
+        extractAccessToken: jest.fn(),
       },
     }));
 
@@ -82,6 +101,10 @@ describe('job recipes scraper', () => {
 
   it('should throw an Error if saving the recipe failed', async () => {
     mockServiceManager.mockImplementationOnce(() => ({
+      ingredientServices: {
+        get: jest.fn(),
+        save: jest.fn(),
+      },
       recipeServices: {
         save: jest.fn(() => {
           throw new Error();
@@ -94,6 +117,16 @@ describe('job recipes scraper', () => {
         register: jest.fn(),
         update: jest.fn(),
         delete: jest.fn(),
+      },
+      authServices: {
+        refreshTokenKey: 'refresh-token',
+        isAccessToken: (token: unknown): token is AccessTokenPayload => false,
+        isRefreshToken: (token: unknown): token is RefreshTokenPayload => false,
+        createRefreshToken: jest.fn(),
+        decodeAccessToken: jest.fn(),
+        decodeRefreshToken: jest.fn(),
+        createAccessToken: jest.fn(),
+        extractAccessToken: jest.fn(),
       },
     }));
 
