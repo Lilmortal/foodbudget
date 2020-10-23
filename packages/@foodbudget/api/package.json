@@ -14,7 +14,8 @@
     "generate": "prisma generate",
     "setup": "yarn generate && yarn migrate:up",
     "migrate:save": "prisma migrate save --experimental",
-    "migrate:up": "prisma migrate up --experimental"
+    "migrate:up": "prisma migrate up --experimental",
+    "prepublishOnly": "yarn build"
   },
   "dependencies": {
     "@foodbudget/email": "^4.1.0",

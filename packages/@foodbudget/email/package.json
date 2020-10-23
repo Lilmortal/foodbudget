@@ -20,6 +20,7 @@
     "ts-node-dev": "^1.0.0-pre.62"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.json"
+    "build": "rm -rf dist && tsc -p tsconfig.json",
+    "prepublishOnly": "yarn build"
   }
 }

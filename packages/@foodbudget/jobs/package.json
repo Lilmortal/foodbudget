@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "start:cron": "ts-node-dev --respawn src/index.ts",
-    "build": "rm -rf dist && tsc -p tsconfig.json"
+    "build": "rm -rf dist && tsc -p tsconfig.json",
+    "prepublishOnly": "yarn build"
   },
   "dependencies": {
     "@foodbudget/api": "^4.1.0",
