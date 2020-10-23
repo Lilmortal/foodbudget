@@ -5,6 +5,9 @@
   "types": "dist/src/index.d.ts",
   "author": "Jack Tan",
   "license": "MIT",
+  "files": [
+    "/dist"
+  ],
   "dependencies": {
     "@foodbudget/email": "^4.1.0",
     "@foodbudget/logger": "^2.1.0",

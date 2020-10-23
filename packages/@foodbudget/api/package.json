@@ -5,6 +5,9 @@
   "types": "dist/src/index.d.ts",
   "author": "Jack Tan",
   "license": "MIT",
+  "files": [
+    "/dist"
+  ],
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.json",
     "start": "ts-node-dev --respawn src/app.ts",

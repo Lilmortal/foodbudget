@@ -5,6 +5,9 @@
   "types": "dist/src/index.d.ts",
   "author": "Jack Tan",
   "license": "MIT",
+  "files": [
+    "/dist"
+  ],
   "dependencies": {
     "@foodbudget/logger": "^2.1.0",
     "dotenv": "^8.2.0",
