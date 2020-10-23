@@ -1,6 +1,5 @@
 import nodeMailer from 'nodemailer';
 import MailTransporter from 'nodemailer/lib/mailer';
-import { AppError } from '@foodbudget/errors';
 import {
   Mailer, MailerParams, Mail,
 } from './Emailer.types';
@@ -34,7 +33,7 @@ export class Emailer implements Mailer {
 
     const isVerified = await emailer.verify();
     if (!isVerified) {
-      throw new AppError({ message: 'emailer account is not verified', isOperational: true });
+      throw new Error('emailer account is not verified');
     }
 
     return emailer;
@@ -55,7 +54,7 @@ export class Emailer implements Mailer {
 
     const isVerified = await emailer.verify();
     if (!isVerified) {
-      throw new AppError({ message: 'emailer account is not verified', isOperational: true });
+      throw new Error('emailer account is not verified');
     }
 
     return emailer;
@@ -85,7 +84,7 @@ export class Emailer implements Mailer {
     try {
       messageUrl = nodeMailer.getTestMessageUrl(info);
     } catch (err) {
-      throw new AppError({ message: `Attempting to get message url failed: ${err.message || err}`, isOperational: true });
+      throw new Error(`Attempting to get message url failed: ${err.message || err}`);
     }
 
     return messageUrl;

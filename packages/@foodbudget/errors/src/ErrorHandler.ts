@@ -1,6 +1,6 @@
 import createEmailer from '@foodbudget/email';
 import logger from '@foodbudget/logger';
-import config from '../config';
+import config from './config';
 import AppError from './AppError';
 
 export default class ErrorHandler {
