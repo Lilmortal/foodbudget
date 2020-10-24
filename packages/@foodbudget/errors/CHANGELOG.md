@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/errors@3.0.0...@foodbudget/errors@3.1.0) (2020-10-24)
+
+
+### Features
+
+* add build script to all modules, transpile ts to js in /dist ([28eb354](https://github.com/Lilmortal/foodbudget/commit/28eb354ce6879195e9479a589ca448e78263d5fb))
+
+
+
+
+
 # [3.0.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/errors@2.0.1...@foodbudget/errors@3.0.0) (2020-10-22)
 
 
