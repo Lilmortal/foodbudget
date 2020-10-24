@@ -15,7 +15,6 @@
     "setup": "yarn generate && yarn migrate:up",
     "migrate:save": "prisma migrate save --experimental",
     "migrate:up": "prisma migrate up --experimental",
-    "release": "lerna publish --no-commit-hooks --yes",
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
