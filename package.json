@@ -46,7 +46,7 @@
     "test": "jest --watch",
     "lint:ts": "eslint **/*.ts --fix && yarn check-types",
     "lint": "run-p -c 'lint:*'",
-    "release": "lerna run release --stream --parallel"
+    "release": "lerna publish --no-commit-hooks --yes"
   },
   "commitlint": {
     "extends": [
