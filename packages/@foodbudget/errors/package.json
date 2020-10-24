@@ -19,6 +19,7 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.json",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "release": "lerna publish --no-commit-hooks --yes"
   }
 }
