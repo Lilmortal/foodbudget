@@ -1,19 +1,25 @@
 {
   "name": "@foodbudget/api",
   "version": "4.1.0",
-  "main": "src/index.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "author": "Jack Tan",
   "license": "MIT",
+  "files": [
+    "/dist"
+  ],
   "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.json",
     "start": "ts-node-dev --respawn src/app.ts",
     "generate": "prisma generate",
     "setup": "yarn generate && yarn migrate:up",
     "migrate:save": "prisma migrate save --experimental",
-    "migrate:up": "prisma migrate up --experimental"
+    "migrate:up": "prisma migrate up --experimental",
+    "prepublishOnly": "yarn build"
   },
   "dependencies": {
     "@foodbudget/email": "^4.1.0",
-    "@foodbudget/errors": "^1.0.1",
+    "@foodbudget/errors": "^3.0.0",
     "@foodbudget/logger": "^2.1.0",
     "@nexus/schema": "^0.16.0",
     "@prisma/client": "^2.6.2",

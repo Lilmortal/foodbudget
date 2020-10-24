@@ -1,15 +1,17 @@
 {
   "compilerOptions": {
     "strict": true,
-    "target": "esnext",
+    "target": "es2017",
     "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "./dist",
     "esModuleInterop": true,
     "removeComments": true,
     "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "declaration": true,
+    "composite": true,
+    "declarationMap": true,
   }
 }

@@ -34,6 +34,7 @@
     }
   },
   "scripts": {
+    "build": "dotenv -e .env -- lerna run build --stream",
     "start": "dotenv -e .env -- lerna run start --stream --parallel",
     "generate": "dotenv -e .env -- yarn workspace @foodbudget/api generate",
     "migrate:save": "dotenv -e .env -- yarn workspace @foodbudget/api migrate:save",
