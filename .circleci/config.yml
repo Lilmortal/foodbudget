@@ -5,7 +5,7 @@ jobs:
       - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
-      - create_concatenated_package_lock:
+      - create_concatenated_yarn_lock:
           filename: combined-yarn-lock.txt
       - restore_cache:
           keys:
@@ -26,7 +26,7 @@ jobs:
       - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
-      - create_concatenated_package_lock:
+      - create_concatenated_yarn_lock:
           filename: combined-yarn-lock.txt
       - restore_cache:
           keys:
@@ -46,6 +46,8 @@ jobs:
       - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
+      - create_concatenated_yarn_lock:
+          filename: combined-yarn-lock.txt
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
@@ -59,6 +61,8 @@ jobs:
       - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
+      - create_concatenated_yarn_lock:
+          filename: combined-yarn-lock.txt
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
@@ -72,6 +76,8 @@ jobs:
       - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
+      - create_concatenated_yarn_lock:
+          filename: combined-yarn-lock.txt
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
@@ -85,6 +91,8 @@ jobs:
       - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
+      - create_concatenated_yarn_lock:
+          filename: combined-yarn-lock.txt
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
@@ -98,7 +106,7 @@ jobs:
       - run: yarn release
       - run: git push --follow-tags origin master
 commands:
-  create_concatenated_package_lock:
+  create_concatenated_yarn_lock:
     description: "Concatenate all yarn.lock files recognized by lerna.js into single file. File is used as checksum source for part of caching key."
     parameters:
       filename:
