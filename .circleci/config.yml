@@ -112,15 +112,18 @@ workflows:
   verify:
     jobs:
       - build
+      - transpile:
+         requires:
+          - build
       - lint:
           requires:
-          - build
+          - transpile
       - unitTest:
           requires:
-          - build
+          - transpile
       - integrationTest:
           requires:
-          - build
+          - transpile
       - release:
           filters:
             branches:
