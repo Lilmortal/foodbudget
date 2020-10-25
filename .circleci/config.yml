@@ -40,7 +40,7 @@ jobs:
               - packages/@foodbudget/errors/dist
               - packages/@foodbudget/jobs/dist
               - packages/@foodbudget/logger/dist
-            key: v1-dependencies-{{ transpiled-files }}
+            key: v1-dependencies-transpiled-files
   lint:
     docker:
       - image: circleci/node:14.11.0-browsers
