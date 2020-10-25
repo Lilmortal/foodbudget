@@ -94,7 +94,7 @@ jobs:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: git config --global user.email "thefoodbudget@gmail.com"
       - run: git config --global user.name "Food Budget"
-      - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
+      - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > ~/repo/.npmrc
       - run: yarn release
       - run: git push --follow-tags origin master
 commands:
@@ -104,11 +104,10 @@ commands:
       filename:
         type: string
     steps:
-      - run: npx lerna la -a | awk -F packages '{printf "\"packages%s/yarn.lock\" ", $2}'
-      - run: npx lerna la -a | awk -F packages '{printf "\"packages%s/yarn.lock\" ", $2}' | xargs ls -d 2> /dev/null
       - run:
           name: Combine yarn.lock files to single file
-          command: npx lerna la -a | awk -F packages '{printf "\"packages%s/yarn.lock\" ", $2}' | xargs ls -d 2> /dev/null | xargs cat > << parameters.filename >>
+          # command: npx lerna la -a | awk -F packages '{printf "\"packages%s/yarn.lock\" ", $2}' | xargs ls -d 2> /dev/null | xargs cat > << parameters.filename >>
+          command: echo packages/@foodbudget/api/yarn.lock | xargs cat > << parameters.filename >>
 workflows:
   version: 2
   verify:
