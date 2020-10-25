@@ -33,10 +33,10 @@ const formatMessage = (info: Record<string, unknown>): string => {
       ...query,
     };
 
-    return `${info.message}\n${JSON.stringify(formattedMessage, null, 2)}`;
+    return `${info.message || ''}\n${JSON.stringify(formattedMessage, null, 2)}`;
   }
 
-  return `${info.message}${query ? `\n${JSON.stringify(query, null, 2)}` : ''}`;
+  return `${info.message || ''}${query ? `\n${JSON.stringify(query, null, 2)}` : ''}`;
 };
 
 export default formatMessage;

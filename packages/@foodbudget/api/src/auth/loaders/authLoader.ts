@@ -6,9 +6,9 @@ import { Strategy as FacebookStrategy } from 'passport-facebook';
 import logger from '@foodbudget/logger';
 import { Application } from 'express';
 
-import UserServices, { LoginRequest } from '../users/services';
-import { RefreshTokenPayload } from './Auth.types';
-import { SocialConfig } from '../config';
+import UserServices, { LoginRequest } from '../../users/services';
+import { RefreshTokenPayload } from '../Auth.types';
+import { SocialConfig } from '../../config';
 
 const validateProfile = (profile: Profile): profile is Profile & Pick<Required<Profile>, 'emails'> => {
   if (!profile.emails || !profile.emails[0].value) {

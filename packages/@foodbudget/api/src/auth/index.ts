@@ -1,9 +1,9 @@
 import { Application } from 'express';
 import { SocialConfig } from '../config';
 import UserServices from '../users/services';
-import authLoader from './authLoader';
-import authRoutes from './authRoutes';
-import AuthServices from './AuthServices';
+import authLoader from './loaders/authLoader';
+import authRoutes from './routes/authRoutes';
+import AuthServices from './services/AuthServices';
 
 export interface AuthParams {
   app: Application;
@@ -22,5 +22,6 @@ const auth = ({
   authRoutes({ app, authServices });
 };
 
-export { default as AuthServices } from './AuthServices';
+export { default as AuthServices } from './services/AuthServices';
+
 export default auth;

@@ -1,15 +1,20 @@
 import { AppError } from '@foodbudget/errors';
 import addMilliseconds from 'date-fns/addMilliseconds';
 import { sign, verify } from 'jsonwebtoken';
-import { TokenConfig } from '../config';
+import { TokenConfig } from '../../config';
 import {
   AccessTokenPayload, RefreshToken, RefreshTokenPayload, Token,
-} from './Auth.types';
+} from '../Auth.types';
 
 const createToken = <P extends object>({ payload, secret, expireTimeInSeconds }: Token<P>): string => {
   const token = sign(payload, secret, { expiresIn: expireTimeInSeconds });
   return token;
 };
+
+export interface RenewedTokenResponse {
+  accessToken: string;
+  refreshToken: RefreshToken;
+}
 
 export default class AuthServices {
     private readonly tokenConfig: TokenConfig;
@@ -111,5 +116,27 @@ export default class AuthServices {
       const token = header.substring(7);
       const decodedToken = this.decodeAccessToken(token);
       return decodedToken;
+    }
+
+    renewTokens(refreshToken: string): RenewedTokenResponse {
+      const decodedRefreshToken = this.decodeRefreshToken(refreshToken);
+
+      if (decodedRefreshToken.userId === undefined || decodedRefreshToken.expireTimeInUtc === undefined) {
+        throw new AppError(
+          {
+            message: 'refresh token has been tampered with, redirecting to login page...',
+            isOperational: true,
+            httpStatus: 401,
+          },
+        );
+      }
+
+      const accessToken = this.createAccessToken(decodedRefreshToken.userId);
+      const renewedRefreshToken = this.createRefreshToken(decodedRefreshToken.userId);
+
+      return {
+        accessToken,
+        refreshToken: renewedRefreshToken,
+      };
     }
 }

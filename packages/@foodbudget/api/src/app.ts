@@ -34,9 +34,9 @@ const handleErrors = (app: Application) => {
 
 const app = express();
 
-server.applyMiddleware({ app, path: config.api.prefix });
-
 app.use(cookieParser());
+
+server.applyMiddleware({ app, path: config.api.prefix });
 
 handleHealthChecks(app);
 handleAuth({
