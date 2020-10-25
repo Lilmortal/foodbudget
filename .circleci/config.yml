@@ -10,7 +10,7 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
-            - v1-dependencies-transpiled-files
+            - v1-dependencies
       - run: yarn
       - save_cache:
           paths:
@@ -21,26 +21,6 @@ jobs:
             - packages/@foodbudget/jobs/node_modules
             # - packages/@foodbudget/logger/node_modules
           key: v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
-  transpile:
-    docker:
-      - image: circleci/node:14.11.0-browsers
-    steps:
-      - checkout
-      - create_concatenated_yarn_lock:
-          filename: combined-yarn-lock.txt
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
-            - v1-dependencies-transpiled-files
-      - run: yarn build
-      - save_cache:
-            paths:
-              - packages/@foodbudget/api/dist
-              - packages/@foodbudget/email/dist
-              - packages/@foodbudget/errors/dist
-              - packages/@foodbudget/jobs/dist
-              - packages/@foodbudget/logger/dist
-            key: v1-dependencies-transpiled-files
   lint:
     docker:
       - image: circleci/node:14.11.0-browsers
@@ -51,10 +31,11 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
-            - v1-dependencies-transpiled-files
+            - v1-dependencies
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
+      - run: yarn build
       - run: yarn lint
   unitTest:
     docker:
@@ -66,10 +47,11 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
-            - v1-dependencies-transpiled-files
+            - v1-dependencies
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
+      - run: yarn build
       - run: yarn test:unit
   integrationTest:
     docker:
@@ -81,10 +63,11 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
-            - v1-dependencies-transpiled-files
+            - v1-dependencies
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
+      - run: yarn build
       - run: yarn test:integration      
   release:
     docker:
@@ -96,7 +79,7 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
-            - v1-dependencies-transpiled-files
+            - v1-dependencies
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
@@ -121,18 +104,15 @@ workflows:
   verify:
     jobs:
       - build
-      - transpile:
-         requires:
-          - build
       - lint:
           requires:
-          - transpile
+          - build
       - unitTest:
           requires:
-          - transpile
+          - build
       - integrationTest:
           requires:
-          - transpile
+          - build
       - release:
           filters:
             branches:
