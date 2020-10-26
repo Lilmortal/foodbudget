@@ -1,11 +1,18 @@
 import { inputObjectType, objectType } from '@nexus/schema';
 
+export const priceField = objectType({
+  name: 'price',
+  definition(t) {
+    t.string('currency');
+    t.float('amount');
+  },
+});
+
 export const ingredientField = objectType({
   name: 'ingredient',
   definition(t) {
     t.string('name');
-    t.string('price_currency');
-    t.float('price_amount');
+    t.field('price', { type: priceField });
   },
 });
 

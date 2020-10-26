@@ -1,5 +1,5 @@
 import { enumType, inputObjectType, objectType } from '@nexus/schema';
-import { priceArg } from '../../ingredients/schemas/ingredientSchemaFields';
+import { priceArg, priceField } from '../../ingredients';
 
 export const cuisineType = enumType({
   name: 'cuisines',
@@ -64,14 +64,6 @@ export const adjectiveType = enumType({
 export const mealType = enumType({
   name: 'meals',
   members: ['BREAKFAST', 'LUNCH', 'DINNER'],
-});
-
-export const priceField = objectType({
-  name: 'price',
-  definition(t) {
-    t.string('currency');
-    t.float('amount');
-  },
 });
 
 export const recipeIngredientField = objectType({
