@@ -1,6 +1,6 @@
 {
   "name": "@foodbudget/jobs",
-  "version": "4.2.2",
+  "version": "4.2.3",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "author": "Jack Tan",
@@ -13,10 +13,10 @@
     "build": "rm -rf dist && tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@foodbudget/api": "^4.3.1",
-    "@foodbudget/email": "^4.2.1",
-    "@foodbudget/errors": "^3.1.1",
-    "@foodbudget/logger": "^2.2.1",
+    "@foodbudget/api": "^4.3.2",
+    "@foodbudget/email": "^4.2.2",
+    "@foodbudget/errors": "^3.1.2",
+    "@foodbudget/logger": "^2.2.2",
     "agenda": "^3.1.0",
     "dotenv": "^8.2.0",
     "find-config": "^1.0.0",

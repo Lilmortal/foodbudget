@@ -1,6 +1,6 @@
 {
   "name": "@foodbudget/api",
-  "version": "4.3.1",
+  "version": "4.3.2",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "author": "Jack Tan",
@@ -17,9 +17,9 @@
     "migrate:up": "prisma migrate up --experimental"
   },
   "dependencies": {
-    "@foodbudget/email": "^4.2.1",
-    "@foodbudget/errors": "^3.1.1",
-    "@foodbudget/logger": "^2.2.1",
+    "@foodbudget/email": "^4.2.2",
+    "@foodbudget/errors": "^3.1.2",
+    "@foodbudget/logger": "^2.2.2",
     "@nexus/schema": "^0.16.0",
     "@prisma/client": "^2.6.2",
     "apollo-cache-control": "^0.11.3",
