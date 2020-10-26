@@ -88,7 +88,8 @@ jobs:
       - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
       - run: npm get registry
       - run: npm whoami
-      - run: npm run release
+      - run: yarn build
+      - run: yarn release
       - run: git push --follow-tags origin master
 commands:
   create_concatenated_yarn_lock:
