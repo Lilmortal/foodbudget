@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.4.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@4.3.3...@foodbudget/api@4.4.0) (2020-10-26)
+
+
+### Features
+
+* moved mapper to repository, map toDto inside repository ([d721612](https://github.com/Lilmortal/foodbudget/commit/d72161247d739839b8e0f4d6824c785a5c94c585))
+
+
+
+
+
 ## [4.3.3](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@4.3.2...@foodbudget/api@4.3.3) (2020-10-26)
 
 **Note:** Version bump only for package @foodbudget/api
