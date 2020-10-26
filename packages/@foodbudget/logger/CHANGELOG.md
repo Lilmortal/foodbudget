@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/logger@2.2.0...@foodbudget/logger@2.2.1) (2020-10-26)
+
+
+### Reverts
+
+* Revert "chore: add release script to all packages" ([cd78946](https://github.com/Lilmortal/foodbudget/commit/cd789460dfde6ddfc73cddadb90f08ed02e52f72))
+
+
+
+
+
 # [2.2.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/logger@2.1.0...@foodbudget/logger@2.2.0) (2020-10-24)
 
 

@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.3.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@4.2.0...@foodbudget/api@4.3.0) (2020-10-26)
+
+
+### Bug Fixes
+
+* disable x-powered-by header ([8e16a5a](https://github.com/Lilmortal/foodbudget/commit/8e16a5a5efc3249bb6b5873ece3ceb7de1b2a517))
+
+
+### Features
+
+* add basic caching ([c0ec537](https://github.com/Lilmortal/foodbudget/commit/c0ec5378d38da5a327baee0ee4ca14cb96bcd873))
+
+
+### Reverts
+
+* Revert "chore: add release script to all packages" ([cd78946](https://github.com/Lilmortal/foodbudget/commit/cd789460dfde6ddfc73cddadb90f08ed02e52f72))
+
+
+
+
+
 # [4.2.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@4.1.0...@foodbudget/api@4.2.0) (2020-10-24)
 
 
