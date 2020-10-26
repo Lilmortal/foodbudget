@@ -29,6 +29,7 @@
     "@types/agenda": "^2.0.9",
     "@types/find-config": "^1.0.0",
     "@types/puppeteer": "^3.0.2",
+    "jest-mock-extended": "^1.0.10",
     "ts-node-dev": "^1.0.0-pre.62"
   }
 }

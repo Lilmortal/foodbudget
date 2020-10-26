@@ -1,15 +1,17 @@
 import { Recipe, ServiceManager } from '@foodbudget/api';
-import { AccessTokenPayload, RefreshTokenPayload } from '@foodbudget/api/src/auth/Auth.types';
 import { Mailer } from '@foodbudget/email';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { mockDeep, MockProxy } from 'jest-mock-extended';
 import config from '../config';
 import { RecipesScraper, ScrapedRecipe } from '../scraper/recipes';
 import JobRecipesScraper from './JobRecipesScraper';
 
 jest.mock('../scraper/recipes');
+jest.mock('@foodbudget/api');
 
 describe('job recipes scraper', () => {
   let recipe: Omit<Recipe, 'id'>;
-  let mockServiceManager: jest.Mock<ServiceManager, []>;
+  let mockServiceManager: MockProxy<ServiceManager>;
   let mockEmailer: jest.Mock<Mailer>;
   let mockRecipeScraper: jest.Mock<RecipesScraper<ScrapedRecipe>>;
   let mockRecipeScrapers: jest.Mock<RecipesScraper<ScrapedRecipe>>[] = [];
@@ -31,35 +33,7 @@ describe('job recipes scraper', () => {
       meals: [],
     };
 
-    // TODO: Extract this out
-    mockServiceManager = jest.fn<ServiceManager, []>(() => ({
-      ingredientServices: {
-        get: jest.fn(),
-        save: jest.fn(),
-      },
-      recipeServices: {
-        get: jest.fn(),
-        save: jest.fn(),
-      },
-      userServices: {
-        get: jest.fn(),
-        login: jest.fn(),
-        register: jest.fn(),
-        update: jest.fn(),
-        delete: jest.fn(),
-      },
-      authServices: {
-        refreshTokenKey: 'refresh-token',
-        isAccessToken: (token: unknown): token is AccessTokenPayload => false,
-        isRefreshToken: (token: unknown): token is RefreshTokenPayload => false,
-        createRefreshToken: jest.fn(),
-        decodeAccessToken: jest.fn(),
-        decodeRefreshToken: jest.fn(),
-        createAccessToken: jest.fn(),
-        extractAccessToken: jest.fn(),
-        renewTokens: jest.fn(),
-      },
-    }));
+    mockServiceManager = mockDeep<ServiceManager>();
 
     mockEmailer = jest.fn<Mailer, []>(() => ({
       send: jest.fn(),
@@ -84,7 +58,7 @@ describe('job recipes scraper', () => {
 
   it('should scrape and return the scraped recipe', async () => {
     const jobRecipesScraper = new JobRecipesScraper(
-      { serviceManager: mockServiceManager(), emailer: mockEmailer(), recipeScrapers },
+      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers },
     );
 
     const result = await jobRecipesScraper.scrape(config.scrapedRecipeElements);
@@ -93,7 +67,7 @@ describe('job recipes scraper', () => {
 
   it('should scrape and save the recipe', async () => {
     const jobRecipesScraper = new JobRecipesScraper(
-      { serviceManager: mockServiceManager(), emailer: mockEmailer(), recipeScrapers },
+      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers },
     );
 
     await jobRecipesScraper.start(config);
@@ -101,39 +75,12 @@ describe('job recipes scraper', () => {
   });
 
   it('should throw an Error if saving the recipe failed', async () => {
-    mockServiceManager.mockImplementationOnce(() => ({
-      ingredientServices: {
-        get: jest.fn(),
-        save: jest.fn(),
-      },
-      recipeServices: {
-        save: jest.fn(() => {
-          throw new Error();
-        }),
-        get: jest.fn(),
-      },
-      userServices: {
-        get: jest.fn(),
-        login: jest.fn(),
-        register: jest.fn(),
-        update: jest.fn(),
-        delete: jest.fn(),
-      },
-      authServices: {
-        refreshTokenKey: 'refresh-token',
-        isAccessToken: (token: unknown): token is AccessTokenPayload => false,
-        isRefreshToken: (token: unknown): token is RefreshTokenPayload => false,
-        createRefreshToken: jest.fn(),
-        decodeAccessToken: jest.fn(),
-        decodeRefreshToken: jest.fn(),
-        createAccessToken: jest.fn(),
-        extractAccessToken: jest.fn(),
-        renewTokens: jest.fn(),
-      },
-    }));
+    mockServiceManager.recipeServices.save.mockImplementation(() => {
+      throw new Error();
+    });
 
     const jobRecipesScraper = new JobRecipesScraper(
-      { serviceManager: mockServiceManager(), emailer: mockEmailer(), recipeScrapers },
+      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers },
     );
 
     await expect(jobRecipesScraper.start(config)).rejects.toThrowError();
@@ -141,7 +88,7 @@ describe('job recipes scraper', () => {
 
   it('should scrape and notify that a recipe has been scraped via email', async () => {
     const jobRecipesScraper = new JobRecipesScraper(
-      { serviceManager: mockServiceManager(), emailer: mockEmailer(), recipeScrapers },
+      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers },
     );
 
     await jobRecipesScraper.start(config);
@@ -157,7 +104,7 @@ describe('job recipes scraper', () => {
     }));
 
     const jobRecipesScraper = new JobRecipesScraper(
-      { serviceManager: mockServiceManager(), emailer: mockEmailer(), recipeScrapers },
+      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers },
     );
 
     await expect(jobRecipesScraper.start(config)).rejects.toThrowError();
