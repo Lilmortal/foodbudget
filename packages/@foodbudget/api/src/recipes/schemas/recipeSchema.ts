@@ -9,7 +9,6 @@ import {
   adjectiveType, allergyType, cuisineType, dietType, mealType, recipeField, recipeIngredientArg,
 } from './recipeSchemaFields';
 
-// eslint-disable-next-line import/prefer-default-export
 export const getRecipes = queryField('recipes', {
   type: recipeField,
   list: true,
@@ -49,6 +48,48 @@ export const getRecipes = queryField('recipes', {
     const result = await ctx.serviceManager.recipeServices.get(recipe);
 
     logger.info('get recipes response', result);
+    return result;
+  },
+});
+
+export const getRecipesById = queryField('recipesById', {
+  type: recipeField,
+  args: {
+    link: stringArg({ required: true }),
+  },
+  async resolve(_parent, args, ctx: Context, info) {
+    logger.info('incoming get recipes by link request', args);
+
+    info.cacheControl.setCacheHint({ maxAge: 86400, scope: CacheScope.Public });
+
+    const recipe: Partial<Recipe> = {
+      link: args.link,
+    };
+
+    const result = await ctx.serviceManager.recipeServices.get(recipe);
+
+    logger.info('get recipes by link response', result);
+    return result;
+  },
+});
+
+export const getRecipesByLink = queryField('recipesByLink', {
+  type: recipeField,
+  args: {
+    id: intArg({ required: true }),
+  },
+  async resolve(_parent, args, ctx: Context, info) {
+    logger.info('incoming get recipes by id request', args);
+
+    info.cacheControl.setCacheHint({ maxAge: 86400, scope: CacheScope.Public });
+
+    const recipe: Partial<Recipe> = {
+      id: args.id,
+    };
+
+    const result = await ctx.serviceManager.recipeServices.get(recipe);
+
+    logger.info('get recipes by id response', result);
     return result;
   },
 });

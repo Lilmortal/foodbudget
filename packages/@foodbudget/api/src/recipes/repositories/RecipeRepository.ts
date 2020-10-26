@@ -4,17 +4,18 @@ import { AppError } from '@foodbudget/errors';
 import IngredientServices from '../../ingredients/services';
 import { PartialBy } from '../../shared/types/PartialBy.types';
 import { Repository, SaveOptions } from '../../shared/types/Repository.types';
-import { Recipe, RecipeResponse } from '../Recipe.types';
+import { Recipe } from '../Recipe.types';
+import recipeMapper from './recipeMapper';
 
-export default class RecipeRepository implements Repository<Recipe, RecipeResponse> {
+export default class RecipeRepository implements Repository<Recipe> {
   constructor(private readonly prisma: PrismaClient, private readonly ingredientsService: IngredientServices) {
     this.prisma = prisma;
     this.ingredientsService = ingredientsService;
   }
 
-  get = async (recipe: Partial<Recipe>): Promise<RecipeResponse[] | undefined> => {
+  get = async (recipe: Partial<Recipe>): Promise<Recipe[] | undefined> => {
     logger.info('get recipe repository request', recipe);
-    const result = await this.prisma.recipes.findMany(
+    const results = await this.prisma.recipes.findMany(
       {
         where: {
           OR: [{
@@ -69,11 +70,11 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
       },
     );
 
-    logger.info('recipes found', result);
-    return result;
+    logger.info('recipes found', results);
+    return results.map((result) => recipeMapper.toDto(result));
   };
 
-  getOne = async (recipe: Partial<Recipe>): Promise<RecipeResponse | undefined> => {
+  getOne = async (recipe: Partial<Recipe>): Promise<Recipe | undefined> => {
     logger.info('get one ingredient repository request', recipe);
 
     const result = await this.prisma.recipes.findOne(
@@ -104,10 +105,10 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
     }
 
     logger.info('recipe found', result);
-    return result;
+    return recipeMapper.toDto(result);
   };
 
-  private readonly upsert = async (recipe: PartialBy<Recipe, 'id'>, override = false): Promise<RecipeResponse> => {
+  private readonly upsert = async (recipe: PartialBy<Recipe, 'id'>, override = false): Promise<Recipe> => {
     const overrideOrUpdate = (
       shouldUpdate: boolean, value: Record<string, unknown>,
     ) => (override ? value : shouldUpdate && value);
@@ -245,15 +246,15 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
 
     logger.info('upserted recipe', result);
 
-    return result;
+    return recipeMapper.toDto(result);
   };
 
-  async save(recipesDto: PartialBy<Recipe, 'id'>, options?: SaveOptions): Promise<RecipeResponse>;
+  async save(recipesDto: PartialBy<Recipe, 'id'>, options?: SaveOptions): Promise<Recipe>;
 
-  async save(recipesDto: PartialBy<Recipe, 'id'>[], options?: SaveOptions): Promise<RecipeResponse[]>;
+  async save(recipesDto: PartialBy<Recipe, 'id'>[], options?: SaveOptions): Promise<Recipe[]>;
 
   async save(recipesDto: PartialBy<Recipe, 'id'> | PartialBy<Recipe, 'id'>[], options?: SaveOptions):
-  Promise<RecipeResponse | RecipeResponse[]> {
+  Promise<Recipe | Recipe[]> {
     if (Array.isArray(recipesDto)) {
       // As of now, Prisma 2 does not support createMany. For now, given the low amount
       // of recipes being created per day, the number of Promises being created is fine.
@@ -267,11 +268,11 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
     return this.upsert(recipesDto, !!options?.override);
   }
 
-  async delete(ids: string): Promise<RecipeResponse>;
+  async delete(ids: string): Promise<Recipe>;
 
-  async delete(ids: string[]): Promise<RecipeResponse[]>;
+  async delete(ids: string[]): Promise<Recipe[]>;
 
-  async delete(ids: string | string[]): Promise<RecipeResponse | RecipeResponse[]> {
+  async delete(ids: string | string[]): Promise<Recipe | Recipe[]> {
     logger.info('delete ingredient repository request', ids);
 
     if (Array.isArray(ids)) {
@@ -280,7 +281,7 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
           throw new AppError({ message: 'Given recipe ID is not a number.', isOperational: true, httpStatus: 500 });
         }
 
-        return this.prisma.recipes.delete({
+        const result = await this.prisma.recipes.delete({
           where: {
             id: Number(id),
           },
@@ -299,6 +300,8 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
             },
           },
         });
+
+        return recipeMapper.toDto(result);
       }));
     }
 
@@ -327,6 +330,6 @@ export default class RecipeRepository implements Repository<Recipe, RecipeRespon
     });
 
     logger.info('deleted recipe', result);
-    return result;
+    return recipeMapper.toDto(result);
   }
 }
