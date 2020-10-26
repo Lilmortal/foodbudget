@@ -85,9 +85,10 @@ jobs:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: git config --global user.email "thefoodbudget@gmail.com"
       - run: git config --global user.name "Food Budget"
-      - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
-      - run: npm whoami
+      - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+      - run: npm get registry
       - run: npm login
+      - run: npm whoami
       - run: npm run release
       - run: git push --follow-tags origin master
 commands:
