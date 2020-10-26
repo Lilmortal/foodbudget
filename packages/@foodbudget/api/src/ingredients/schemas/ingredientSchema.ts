@@ -1,5 +1,6 @@
 import logger from '@foodbudget/logger';
 import { floatArg, queryField, stringArg } from '@nexus/schema';
+import { CacheScope } from 'apollo-cache-control';
 import { Context } from '../../context';
 import { Ingredient } from '../Ingredient.types';
 import { ingredientField } from './ingredientSchemaFields';
@@ -13,8 +14,9 @@ export const getIngredients = queryField('ingredients', {
     currency: stringArg(),
     amount: floatArg(),
   },
-  async resolve(_parent, args, ctx: Context) {
+  async resolve(_parent, args, ctx: Context, info) {
     logger.info('incoming get ingredient request', args);
+    info.cacheControl.setCacheHint({ maxAge: 86400, scope: CacheScope.Public });
 
     const ingredients: Partial<Ingredient> = {
       name: args.name,
