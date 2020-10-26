@@ -7,3 +7,6 @@ dist
 yarn-error.log
 .vscode
 tsconfig.tsbuildinfo
+# TODO: For now
+*.tfvars
+.terraform
