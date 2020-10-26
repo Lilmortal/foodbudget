@@ -1,18 +1,17 @@
 import logger from '@foodbudget/logger';
-import { floatArg, queryField, stringArg } from '@nexus/schema';
+import {
+  arg, floatArg, queryField, stringArg,
+} from '@nexus/schema';
 import { CacheScope } from 'apollo-cache-control';
 import { Context } from '../../context';
 import { Ingredient } from '../Ingredient.types';
-import { ingredientField } from './ingredientSchemaFields';
+import { currencyType, ingredientField } from './ingredientSchemaFields';
 
-// eslint-disable-next-line import/prefer-default-export
-export const getIngredients = queryField('ingredients', {
+export const ingredientsByName = queryField('ingredientsByName', {
   type: ingredientField,
   list: true,
   args: {
-    name: stringArg(),
-    currency: stringArg(),
-    amount: floatArg(),
+    name: stringArg({ required: true }),
   },
   async resolve(_parent, args, ctx: Context, info) {
     logger.info('incoming get ingredient request', args);
@@ -20,13 +19,31 @@ export const getIngredients = queryField('ingredients', {
 
     const ingredients: Partial<Ingredient> = {
       name: args.name,
-      price: {
-        currency: args.currency,
-        amount: args.amount,
-      },
     };
+
     const result = await ctx.serviceManager.ingredientServices.get(ingredients);
     logger.info('get ingredient response', result);
+    return result;
+  },
+});
+
+export const filterIngredientsByPrice = queryField('filterIngredientsByPrice', {
+  type: ingredientField,
+  list: true,
+  args: {
+    currency: arg({
+      type: currencyType,
+      required: true,
+    }),
+    minAmount: floatArg({ required: true }),
+    maxAmount: floatArg(),
+  },
+  async resolve(_parent, args, ctx: Context, info) {
+    logger.info('incoming filter ingredients by price request', args);
+    info.cacheControl.setCacheHint({ maxAge: 86400, scope: CacheScope.Public });
+
+    const result = await ctx.serviceManager.ingredientServices.filterByPrice(args.currency, args.minAmount, args.maxAmount);
+    logger.info('filtered ingredients by price response', result);
     return result;
   },
 });

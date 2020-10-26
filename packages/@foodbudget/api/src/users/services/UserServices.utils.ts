@@ -1,4 +1,3 @@
-import { users } from '@prisma/client';
 import argon2 from 'argon2';
 import { User } from '../User.types';
 import {
@@ -34,7 +33,7 @@ export const getUserEntity = (request: LoginRequest): Partial<User>|undefined =>
   return userEntity;
 };
 
-export const isRequestCredentialsValid = async (request: LoginRequest, user: users): Promise<boolean> => {
+export const isRequestCredentialsValid = async (request: LoginRequest, user: User): Promise<boolean> => {
   if (isAccountLoginRequest(request)) {
     if (!user.password || !await argon2.verify(user.password, request.password)) {
       return false;
@@ -45,5 +44,5 @@ export const isRequestCredentialsValid = async (request: LoginRequest, user: use
 };
 
 export const isRegisteringExistedAccountViaPassword = (
-  userDto: Partial<Omit<User, 'id'>> & Pick<User, 'email'>, userEntity: users,
-): boolean => (!!userEntity.google_id || !!userEntity.facebook_id) && userDto.password !== undefined;
+  userDto: Partial<Omit<User, 'id'>> & Pick<User, 'email'>, userEntity: User,
+): boolean => (!!userEntity.googleId || !!userEntity.facebookId) && userDto.password !== undefined;

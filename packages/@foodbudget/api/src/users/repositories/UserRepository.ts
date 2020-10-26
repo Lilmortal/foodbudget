@@ -1,21 +1,22 @@
 import logger from '@foodbudget/logger';
-import { PrismaClient, users } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { AppError } from '@foodbudget/errors';
 import { PartialBy } from '../../shared/types/PartialBy.types';
 import { Repository, SaveOptions } from '../../shared/types/Repository.types';
 import { User } from '../User.types';
+import userMapper from './userMapper';
 
-export default class UserRepository implements Repository<User, users> {
+export default class UserRepository implements Repository<User> {
   private readonly prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
     this.prisma = prisma;
   }
 
-  async get(user: Partial<User>): Promise<users[] | undefined> {
+  async get(user: Partial<User>): Promise<User[] | undefined> {
     logger.info('get users repository request', user);
 
-    const result = await this.prisma.users.findMany({
+    const results = await this.prisma.users.findMany({
       where: {
         id: user.id,
         email: user.email,
@@ -24,20 +25,20 @@ export default class UserRepository implements Repository<User, users> {
       },
     });
 
-    if (result.length > 1) {
+    if (results.length > 1) {
       throw new AppError({ message: 'Multiple users found.', isOperational: true, httpStatus: 500 });
     }
 
-    if (result === null) {
+    if (results === null) {
       logger.info('no user found');
       return undefined;
     }
 
-    logger.info('users retrieved', result);
-    return result;
+    logger.info('users retrieved', results);
+    return results.map((result) => userMapper.toDto(result));
   }
 
-  async getOne(user: Partial<User>): Promise<users | undefined> {
+  async getOne(user: Partial<User>): Promise<User | undefined> {
     logger.info('get one user repository request', user);
 
     const result = await this.prisma.users.findOne({
@@ -56,7 +57,7 @@ export default class UserRepository implements Repository<User, users> {
 
     logger.info('user retrieved', result);
 
-    return result;
+    return userMapper.toDto(result);
   }
 
   private readonly upsert = async (user: PartialBy<User, 'id'>, override = false) => {
@@ -89,23 +90,23 @@ export default class UserRepository implements Repository<User, users> {
     return result;
   };
 
-  async save(usersDto: PartialBy<User, 'id'>, options?: SaveOptions): Promise<users>;
+  async save(usersDto: PartialBy<User, 'id'>, options?: SaveOptions): Promise<User>;
 
-  async save(usersDto: PartialBy<User, 'id'>[], options?: SaveOptions): Promise<users[]>;
+  async save(usersDto: PartialBy<User, 'id'>[], options?: SaveOptions): Promise<User[]>;
 
-  async save(usersDto: PartialBy<User, 'id'> | PartialBy<User, 'id'>[], options?: SaveOptions): Promise<users | users[]> {
+  async save(usersDto: PartialBy<User, 'id'> | PartialBy<User, 'id'>[], options?: SaveOptions): Promise<User | User[]> {
     if (Array.isArray(usersDto)) {
-      return Promise.all(usersDto.map(async (user) => this.upsert(user, !!options?.override)));
+      return Promise.all(usersDto.map(async (user) => userMapper.toDto(await this.upsert(user, !!options?.override))));
     }
 
-    return this.upsert(usersDto);
+    return userMapper.toDto(await this.upsert(usersDto));
   }
 
-  async delete(ids: string): Promise<users>;
+  async delete(ids: string): Promise<User>;
 
-  async delete(ids: string[]): Promise<users[]>;
+  async delete(ids: string[]): Promise<User[]>;
 
-  async delete(ids: string | string[]): Promise<users | users[]> {
+  async delete(ids: string | string[]): Promise<User | User[]> {
     logger.info('delete user repository request', ids);
 
     if (Array.isArray(ids)) {
@@ -114,11 +115,11 @@ export default class UserRepository implements Repository<User, users> {
           throw new AppError({ message: 'Given user ID is not a number.', isOperational: true, httpStatus: 500 });
         }
 
-        return this.prisma.users.delete({
+        return userMapper.toDto(await this.prisma.users.delete({
           where: {
             id: Number(id),
           },
-        });
+        }));
       }));
     }
 
@@ -134,6 +135,6 @@ export default class UserRepository implements Repository<User, users> {
 
     logger.info('user deleted', result);
 
-    return result;
+    return userMapper.toDto(result);
   }
 }

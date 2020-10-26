@@ -1,19 +1,15 @@
 import { Repository } from '../../shared/types/Repository.types';
-import { Recipe, RecipeResponse } from '../Recipe.types';
-import recipeMapper from '../recipeMapper';
+import { Recipe } from '../Recipe.types';
 import { PartialBy } from '../../shared/types/PartialBy.types';
 
 export default class RecipeServices {
-  constructor(private readonly repository : Repository<Recipe, RecipeResponse>) {
+  constructor(private readonly repository : Repository<Recipe>) {
     this.repository = repository;
   }
 
   async get(recipeDto: Partial<Recipe>): Promise<Recipe[] | undefined> {
-    const recipeEntities = await this.repository.get(recipeDto);
-    if (recipeEntities && recipeEntities.length > 0) {
-      return Promise.all(recipeEntities.map((recipe) => recipeMapper.toDto(recipe)));
-    }
-    return undefined;
+    const recipes = await this.repository.get(recipeDto);
+    return recipes;
   }
 
   async save(recipesDto: PartialBy<Recipe, 'id'>): Promise<Recipe>;
@@ -24,14 +20,9 @@ export default class RecipeServices {
 
   async save(recipesDto: PartialBy<Recipe, 'id'> | PartialBy<Recipe, 'id'>[]): Promise<Recipe | Recipe[]> {
     if (Array.isArray(recipesDto)) {
-      return Promise.all(recipesDto.map(async (recipe) => {
-        const recipeEntity = await this.repository.save(recipe);
-        return recipeMapper.toDto(recipeEntity);
-      }));
+      return Promise.all(recipesDto.map(async (recipe) => this.repository.save(recipe)));
     }
 
-    const recipeEntity = await this.repository.save(recipesDto);
-
-    return recipeMapper.toDto(recipeEntity);
+    return this.repository.save(recipesDto);
   }
 }

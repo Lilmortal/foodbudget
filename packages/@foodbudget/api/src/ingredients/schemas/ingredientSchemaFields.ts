@@ -1,4 +1,9 @@
-import { inputObjectType, objectType } from '@nexus/schema';
+import { enumType, inputObjectType, objectType } from '@nexus/schema';
+
+export const currencyType = enumType({
+  name: 'currencies',
+  members: ['AUD', 'NZD'],
+});
 
 export const priceField = objectType({
   name: 'price',

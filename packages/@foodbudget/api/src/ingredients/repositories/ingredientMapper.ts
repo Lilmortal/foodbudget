@@ -1,6 +1,6 @@
 import { ingredients } from '@prisma/client';
-import Mapper from '../shared/types/Mapper.types';
-import { Ingredient } from './Ingredient.types';
+import Mapper from '../../shared/types/Mapper.types';
+import { Ingredient } from '../Ingredient.types';
 
 const ingredientMapper: Mapper<Ingredient, ingredients> = ({
   fromDto: (dto: Ingredient): ingredients => ({

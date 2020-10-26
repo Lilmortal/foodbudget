@@ -1,19 +1,27 @@
-import { ingredients } from '@prisma/client';
-import { Repository } from '../../shared/types/Repository.types';
-import { Ingredient } from '../Ingredient.types';
-import ingredientMapper from '../ingredientMapper';
+import { AppError } from '@foodbudget/errors';
+import { Currency, Ingredient } from '../Ingredient.types';
+import { FilterableIngredientRepository } from '../repositories/IngredientRepository';
 
 export default class IngredientServices {
-  constructor(private readonly repository: Repository<Ingredient, ingredients>) {
+  constructor(private readonly repository: FilterableIngredientRepository) {
     this.repository = repository;
   }
 
   async get(ingredientsDto: Partial<Ingredient>): Promise<Ingredient[] | undefined> {
-    const ingredientEntities = await this.repository.get(ingredientsDto);
-    if (ingredientEntities && ingredientEntities.length > 0) {
-      return Promise.all(ingredientEntities.map((ingredient) => ingredientMapper.toDto(ingredient)));
+    const ingredients = await this.repository.get(ingredientsDto);
+    return ingredients;
+  }
+
+  async filterByPrice(currency: Currency, minAmount: number, maxAmount?: number): Promise<Ingredient[] | undefined> {
+    if (maxAmount !== undefined && minAmount > maxAmount) {
+      throw new AppError({
+        message: 'minAmount must be less than or equal to maxAmount',
+        isOperational: true,
+      });
     }
-    return undefined;
+
+    const filteredIngredients = await this.repository.filterByPrice(currency, minAmount, maxAmount);
+    return filteredIngredients;
   }
 
   async save(ingredientsDto: Ingredient): Promise<Ingredient>;
@@ -24,13 +32,9 @@ export default class IngredientServices {
 
   async save(ingredientsDto: Ingredient | Ingredient[]): Promise<Ingredient | Ingredient[]> {
     if (Array.isArray(ingredientsDto)) {
-      return Promise.all(ingredientsDto.map(async (ingredient) => {
-        const ingredientEntity = await this.repository.save(ingredient);
-        return ingredientMapper.toDto(ingredientEntity);
-      }));
+      return Promise.all(ingredientsDto.map(async (ingredient) => this.repository.save(ingredient)));
     }
-    const ingredientEntity = await this.repository.save(ingredientsDto);
 
-    return ingredientMapper.toDto(ingredientEntity);
+    return this.repository.save(ingredientsDto);
   }
 }

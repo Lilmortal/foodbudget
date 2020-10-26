@@ -1,15 +1,13 @@
-import { users } from '@prisma/client';
 import argon2 from 'argon2';
 import { Repository } from '../../shared/types/Repository.types';
 import { User } from '../User.types';
-import userMapper from './userMapper';
 import { LoginRequest } from './UserServices.types';
 import {
   getUserEntity, isRegisteringExistedAccountViaPassword, isRequestCredentialsValid,
 } from './UserServices.utils';
 
 export default class UserServices {
-  constructor(private readonly repository: Repository<User, users>) {
+  constructor(private readonly repository: Repository<User>) {
     this.repository = repository;
   }
 
@@ -17,7 +15,7 @@ export default class UserServices {
     const user = await this.repository.getOne(userEntity);
 
     if (user) {
-      return userMapper.toDto(user);
+      return user;
     }
     return user;
   }
@@ -32,7 +30,7 @@ export default class UserServices {
     const user = await this.repository.getOne(userEntity);
 
     if (user && await isRequestCredentialsValid(request, user)) {
-      return userMapper.toDto(user);
+      return user;
     }
 
     return undefined;
@@ -58,7 +56,7 @@ export default class UserServices {
     };
 
     const createdUser = await this.repository.save(userEntity);
-    return userMapper.toDto(createdUser);
+    return createdUser;
   }
 
   async update(userDto: User): Promise<User> {
@@ -67,7 +65,7 @@ export default class UserServices {
       ...userDto.password && { password: await argon2.hash(userDto.password) },
     });
 
-    return userMapper.toDto(user);
+    return user;
   }
 
   async delete(id: string): Promise<User> {
@@ -76,6 +74,6 @@ export default class UserServices {
 
     const user = await this.repository.delete(id);
 
-    return userMapper.toDto(user);
+    return user;
   }
 }
