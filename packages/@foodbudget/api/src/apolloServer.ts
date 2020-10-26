@@ -7,6 +7,7 @@ import { AppError } from '@foodbudget/errors';
 import schema from './schema';
 import context from './context';
 import config from './config';
+import 'apollo-cache-control';
 
 const prettifyStackTrace = (stackTraces: string[]) => {
   // Remove the error message as we already printed it out.
@@ -61,6 +62,7 @@ const server = new ApolloServer({
 
     return new GraphQLError(`Internal server error: ${sessionId}`);
   },
+  cacheControl: true,
 });
 
 export default server;
