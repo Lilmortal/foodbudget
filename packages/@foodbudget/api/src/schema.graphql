@@ -78,8 +78,8 @@ type Mutation {
   deleteUser(id: Int!): String
   ingredients(amount: Float, currency: String, name: String!): ingredient
   login(email: String!, password: String!): String
-  recipes(adjectives: [adjectives], allergies: [allergies], cuisines: [cuisines], diets: [diets], id: Int, ingredients: [recipeIngredientArg], link: String, meals: [meals], name: String!, numSaved: Int, prepTime: String, servings: Int): recipe
   register(email: String!, password: String!): user
+  saveRecipe(adjectives: [adjectives], allergies: [allergies], cuisines: [cuisines], diets: [diets], id: Int, ingredients: [recipeIngredientArg], link: String, meals: [meals], name: String!, numSaved: Int, prepTime: String, servings: Int): recipe
 }
 
 type price {
@@ -94,8 +94,8 @@ input priceArg {
 
 type Query {
   filterIngredientsByPrice(currency: currencies!, maxAmount: Float, minAmount: Float!): [ingredient]
+  filterRecipes(adjectives: [adjectives], allergies: [allergies], cuisines: [cuisines], diets: [diets], ingredients: [recipeIngredientArg], meals: [meals]): [recipe]
   ingredientsByName(name: String!): [ingredient]
-  recipes(adjectives: [adjectives], allergies: [allergies], cuisines: [cuisines], diets: [diets], id: Int, ingredients: [recipeIngredientArg], link: String, meals: [meals], name: String, numSaved: Int, prepTime: String, servings: Int): [recipe]
   recipesById(link: String!): recipe
   recipesByLink(id: Int!): recipe
   renewToken: String
