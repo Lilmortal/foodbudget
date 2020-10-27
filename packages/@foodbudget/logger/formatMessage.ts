@@ -1,5 +1,3 @@
-import colors from 'colors/safe';
-
 const isSensitive = (key: string) => /.*password*/.test(key) || /.*email*/.test(key);
 
 const isObject = (info: unknown): info is Record<string, unknown> => typeof info === 'object' && info !== null;
@@ -35,10 +33,10 @@ const formatMessage = (info: Record<string, unknown>): string => {
       ...query,
     };
 
-    return `${info.message || ''}\n${colors.magenta(JSON.stringify(formattedMessage, null, 2))}`;
+    return `${info.message || ''}\n${JSON.stringify(formattedMessage, null, 2)}`;
   }
 
-  return `${info.message || ''}${query ? `\n${colors.magenta(JSON.stringify(query, null, 2))}` : ''}`;
+  return `${info.message || ''}${query ? `\n${JSON.stringify(query, null, 2)}` : ''}`;
 };
 
 export default formatMessage;
