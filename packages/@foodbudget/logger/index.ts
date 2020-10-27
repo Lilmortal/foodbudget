@@ -3,8 +3,8 @@ import config from './config';
 import formatMessage from './formatMessage';
 
 const loggerFormat = format.combine(
+  format.colorize({ all: true }),
   format((info) => ({ ...info, level: info.level.toUpperCase(), message: formatMessage(info) }))(),
-  format.colorize(),
   format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   format.align(),
   format.splat(),
@@ -14,7 +14,7 @@ const loggerFormat = format.combine(
 );
 
 const logger = createLogger({
-  level: 'info',
+  level: config.logLevel,
   silent: config.env === 'test',
   transports: [
     new transports.Console({

@@ -1,5 +1,6 @@
 import logger from '@foodbudget/logger';
 import { PrismaClient } from '@prisma/client';
+import performanceTest from '../../perf';
 import { Repository, SaveOptions } from '../../shared/types/Repository.types';
 import { Currency, Ingredient } from '../Ingredient.types';
 import ingredientMapper from './ingredientMapper';
@@ -17,6 +18,7 @@ export default class IngredientRepository implements FilterableIngredientReposit
 
   filterByPrice = async (currency: Currency, minAmount: number, maxAmount?: number): Promise<Ingredient[]> => {
     logger.info('filter ingredient by price repository request');
+    performanceTest.start('filter ingredient prices');
 
     const results = await this.prisma.ingredients.findMany(
       {
@@ -40,11 +42,14 @@ export default class IngredientRepository implements FilterableIngredientReposit
       },
     );
 
+    performanceTest.end('filter ingredient prices');
     return results.map((result) => ingredientMapper.toDto(result));
   };
 
   get = async (ingredient: Partial<Ingredient>): Promise<Ingredient[] | undefined> => {
     logger.info('get ingredient repository request', ingredient);
+    performanceTest.start('get ingredients');
+
     const results = await this.prisma.ingredients.findMany(
       {
         where: {
@@ -58,12 +63,15 @@ export default class IngredientRepository implements FilterableIngredientReposit
       },
     );
 
+    performanceTest.end('get ingredients');
     logger.info('ingredients found', results);
     return results.map((result) => ingredientMapper.toDto(result));
   };
 
   getOne = async (ingredient: Partial<Ingredient>): Promise<Ingredient | undefined> => {
     logger.info('get one ingredient repository request', ingredient);
+    performanceTest.start('get ingredient');
+
     const result = await this.prisma.ingredients.findOne(
       {
         where: {
@@ -77,6 +85,7 @@ export default class IngredientRepository implements FilterableIngredientReposit
       return undefined;
     }
 
+    performanceTest.end('get ingredient');
     logger.info('ingredient found', result);
     return ingredientMapper.toDto(result);
   };
@@ -121,14 +130,22 @@ export default class IngredientRepository implements FilterableIngredientReposit
       // If this becomes a bottleneck, we will have to use raw SQL under the hood.
 
       // See https://github.com/prisma/prisma-client-js/issues/332 for progress on this.
-      return Promise.all(
+      performanceTest.start('save ingredients');
+
+      const results = await Promise.all(
         ingredientsDto.map(async (ingredient) => {
-          const results = await this.upsert(ingredient, !!options?.override);
-          return ingredientMapper.toDto(results);
+          const upsertedResult = await this.upsert(ingredient, !!options?.override);
+          return ingredientMapper.toDto(upsertedResult);
         }),
       );
+
+      performanceTest.end('save ingredients');
+      return results;
     }
+
+    performanceTest.start('save ingredient');
     const results = await this.upsert(ingredientsDto, !!options?.override);
+    performanceTest.end('save ingredient');
     return ingredientMapper.toDto(results);
   }
 
@@ -139,7 +156,8 @@ export default class IngredientRepository implements FilterableIngredientReposit
   async delete(names: string | string[]): Promise<Ingredient | Ingredient[]> {
     logger.info('delete ingredient name repository request', name);
     if (Array.isArray(names)) {
-      return Promise.all(names.map(async (name) => {
+      performanceTest.start('delete ingredients');
+      const results = await Promise.all(names.map(async (name) => {
         const result = await this.prisma.ingredients.delete({
           where: {
             name,
@@ -147,14 +165,19 @@ export default class IngredientRepository implements FilterableIngredientReposit
         });
         return ingredientMapper.toDto(result);
       }));
+
+      performanceTest.end('delete ingredients');
+      return results;
     }
 
+    performanceTest.start('delete ingredient');
     const result = await this.prisma.ingredients.delete({
       where: {
         name: names,
       },
     });
 
+    performanceTest.end('delete ingredient');
     logger.info('deleted ingredient', result);
     return ingredientMapper.toDto(result);
   }

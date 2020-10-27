@@ -12,6 +12,7 @@
     "access": "public"
   },
   "dependencies": {
+    "colors": "^1.4.0",
     "dotenv": "^8.2.0",
     "find-config": "^1.0.0",
     "winston": "^3.3.3"

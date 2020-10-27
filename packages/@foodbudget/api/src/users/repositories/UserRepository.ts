@@ -5,6 +5,7 @@ import { PartialBy } from '../../shared/types/PartialBy.types';
 import { Repository, SaveOptions } from '../../shared/types/Repository.types';
 import { User } from '../User.types';
 import userMapper from './userMapper';
+import performanceTest from '../../perf';
 
 export default class UserRepository implements Repository<User> {
   private readonly prisma: PrismaClient;
@@ -15,6 +16,7 @@ export default class UserRepository implements Repository<User> {
 
   async get(user: Partial<User>): Promise<User[] | undefined> {
     logger.info('get users repository request', user);
+    performanceTest.start('get users');
 
     const results = await this.prisma.users.findMany({
       where: {
@@ -24,6 +26,8 @@ export default class UserRepository implements Repository<User> {
         facebook_id: user.facebookId,
       },
     });
+
+    performanceTest.end('get users');
 
     if (results.length > 1) {
       throw new AppError({ message: 'Multiple users found.', isOperational: true, httpStatus: 500 });
@@ -40,6 +44,7 @@ export default class UserRepository implements Repository<User> {
 
   async getOne(user: Partial<User>): Promise<User | undefined> {
     logger.info('get one user repository request', user);
+    performanceTest.start('get user');
 
     const result = await this.prisma.users.findOne({
       where: {
@@ -49,6 +54,8 @@ export default class UserRepository implements Repository<User> {
         facebook_id: user.facebookId,
       },
     });
+
+    performanceTest.start('get user');
 
     if (result === null) {
       logger.info('no user found');
@@ -96,10 +103,20 @@ export default class UserRepository implements Repository<User> {
 
   async save(usersDto: PartialBy<User, 'id'> | PartialBy<User, 'id'>[], options?: SaveOptions): Promise<User | User[]> {
     if (Array.isArray(usersDto)) {
-      return Promise.all(usersDto.map(async (user) => userMapper.toDto(await this.upsert(user, !!options?.override))));
+      performanceTest.start('save users');
+      const results = await Promise.all(
+        usersDto.map(async (user) => userMapper.toDto(await this.upsert(user, !!options?.override))),
+      );
+
+      performanceTest.end('save users');
+      return results;
     }
 
-    return userMapper.toDto(await this.upsert(usersDto));
+    performanceTest.start('save user');
+    const result = await userMapper.toDto(await this.upsert(usersDto));
+
+    performanceTest.end('save user');
+    return result;
   }
 
   async delete(ids: string): Promise<User>;
@@ -110,7 +127,8 @@ export default class UserRepository implements Repository<User> {
     logger.info('delete user repository request', ids);
 
     if (Array.isArray(ids)) {
-      return Promise.all(ids.map(async (id) => {
+      performanceTest.start('delete users');
+      const results = await Promise.all(ids.map(async (id) => {
         if (isNaN(Number(id))) {
           throw new AppError({ message: 'Given user ID is not a number.', isOperational: true, httpStatus: 500 });
         }
@@ -121,17 +139,22 @@ export default class UserRepository implements Repository<User> {
           },
         }));
       }));
+
+      performanceTest.end('delete users');
+      return results;
     }
 
     if (isNaN(Number(ids))) {
       throw new AppError({ message: 'Given user ID is not a number.', isOperational: true, httpStatus: 500 });
     }
 
+    performanceTest.start('delete user');
     const result = await this.prisma.users.delete({
       where: {
         id: Number(ids),
       },
     });
+    performanceTest.end('delete user');
 
     logger.info('user deleted', result);
 
