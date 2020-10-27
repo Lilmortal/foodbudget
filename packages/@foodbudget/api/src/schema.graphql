@@ -76,7 +76,7 @@ enum meals {
 
 type Mutation {
   deleteUser(id: Int!): String
-  ingredients(amount: Float, currency: String, name: String!): ingredient
+  ingredients(amount: Float, currency: currencies, name: String!): ingredient
   login(email: String!, password: String!): String
   register(email: String!, password: String!): user
   saveRecipe(adjectives: [adjectives], allergies: [allergies], cuisines: [cuisines], diets: [diets], id: Int, ingredients: [recipeIngredientArg], link: String, meals: [meals], name: String!, numSaved: Int, prepTime: String, servings: Int): recipe
