@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/logger@2.2.3...@foodbudget/logger@2.3.0) (2020-10-27)
+
+
+### Features
+
+* added log level config ([f9af045](https://github.com/Lilmortal/foodbudget/commit/f9af0451600c0bcb2bf08b080d152a7a52b2ecd9))
+* colorized logs ([140dc03](https://github.com/Lilmortal/foodbudget/commit/140dc0345303d4fa547b824fd27d38049430b079))
+
+
+
+
+
 ## [2.2.3](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/logger@2.2.2...@foodbudget/logger@2.2.3) (2020-10-26)
 
 **Note:** Version bump only for package @foodbudget/logger

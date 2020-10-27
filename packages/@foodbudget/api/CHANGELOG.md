@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.5.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@4.4.0...@foodbudget/api@4.5.0) (2020-10-27)
+
+
+### Features
+
+* added performance test, prisma studio. Remove pgadmin ([1dfa9f9](https://github.com/Lilmortal/foodbudget/commit/1dfa9f91ae01a2c36329276666fc2ec71c7ec56b))
+* colorized logs ([140dc03](https://github.com/Lilmortal/foodbudget/commit/140dc0345303d4fa547b824fd27d38049430b079))
+
+
+
+
+
 # [4.4.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@4.3.3...@foodbudget/api@4.4.0) (2020-10-26)
 
 
