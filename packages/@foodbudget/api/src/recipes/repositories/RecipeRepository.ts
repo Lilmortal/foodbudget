@@ -6,6 +6,7 @@ import { PartialBy } from '../../shared/types/PartialBy.types';
 import { Repository, SaveOptions } from '../../shared/types/Repository.types';
 import { Recipe } from '../Recipe.types';
 import recipeMapper from './recipeMapper';
+import performanceTest from '../../perf';
 
 export default class RecipeRepository implements Repository<Recipe> {
   constructor(private readonly prisma: PrismaClient, private readonly ingredientsService: IngredientServices) {
@@ -15,6 +16,7 @@ export default class RecipeRepository implements Repository<Recipe> {
 
   get = async (recipe: Partial<Recipe>): Promise<Recipe[] | undefined> => {
     logger.info('get recipe repository request', recipe);
+    performanceTest.start('get recipes');
     const results = await this.prisma.recipes.findMany(
       {
         where: {
@@ -70,12 +72,15 @@ export default class RecipeRepository implements Repository<Recipe> {
       },
     );
 
+    performanceTest.end('get recipes');
+
     logger.info('recipes found', results);
     return results.map((result) => recipeMapper.toDto(result));
   };
 
   getOne = async (recipe: Partial<Recipe>): Promise<Recipe | undefined> => {
     logger.info('get one ingredient repository request', recipe);
+    performanceTest.start('get one recipe');
 
     const result = await this.prisma.recipes.findOne(
       {
@@ -100,6 +105,7 @@ export default class RecipeRepository implements Repository<Recipe> {
       },
     );
 
+    performanceTest.end('get one recipe');
     if (result === null) {
       return undefined;
     }
@@ -256,16 +262,25 @@ export default class RecipeRepository implements Repository<Recipe> {
   async save(recipesDto: PartialBy<Recipe, 'id'> | PartialBy<Recipe, 'id'>[], options?: SaveOptions):
   Promise<Recipe | Recipe[]> {
     if (Array.isArray(recipesDto)) {
+      performanceTest.start('save recipes');
       // As of now, Prisma 2 does not support createMany. For now, given the low amount
       // of recipes being created per day, the number of Promises being created is fine.
       // If this becomes a bottleneck, we will have to use raw SQL under the hood.
 
       // See https://github.com/prisma/prisma-client-js/issues/332 for progress on this.
-      return Promise.all(
+      const results = await Promise.all(
         recipesDto.map(async (recipe) => this.upsert(recipe, !!options?.override)),
       );
+
+      performanceTest.end('save recipes');
+      return results;
     }
-    return this.upsert(recipesDto, !!options?.override);
+
+    performanceTest.start('save recipe');
+    const result = this.upsert(recipesDto, !!options?.override);
+
+    performanceTest.end('save recipe');
+    return result;
   }
 
   async delete(ids: string): Promise<Recipe>;
@@ -276,7 +291,8 @@ export default class RecipeRepository implements Repository<Recipe> {
     logger.info('delete ingredient repository request', ids);
 
     if (Array.isArray(ids)) {
-      return Promise.all(ids.map(async (id) => {
+      performanceTest.start('delete recipes');
+      const results = await Promise.all(ids.map(async (id) => {
         if (isNaN(Number(id))) {
           throw new AppError({ message: 'Given recipe ID is not a number.', isOperational: true, httpStatus: 500 });
         }
@@ -303,12 +319,16 @@ export default class RecipeRepository implements Repository<Recipe> {
 
         return recipeMapper.toDto(result);
       }));
+
+      performanceTest.end('delete recipes');
+      return results;
     }
 
     if (isNaN(Number(ids))) {
       throw new AppError({ message: 'Given recipe ID is not a number.', isOperational: true, httpStatus: 500 });
     }
 
+    performanceTest.start('delete recipe');
     const result = await this.prisma.recipes.delete({
       where: {
         id: Number(ids),
@@ -329,6 +349,7 @@ export default class RecipeRepository implements Repository<Recipe> {
       },
     });
 
+    performanceTest.end('delete recipe');
     logger.info('deleted recipe', result);
     return recipeMapper.toDto(result);
   }

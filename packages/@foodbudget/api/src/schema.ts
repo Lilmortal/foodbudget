@@ -30,7 +30,6 @@ const schema = makeSchema({
       fallbackValues: {
         Int: () => 0,
         String: () => '',
-        ID: ({ info }) => `${info.parentType.name}:N/A`,
         Boolean: () => false,
         Float: () => 0,
       },

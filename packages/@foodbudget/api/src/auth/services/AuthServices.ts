@@ -113,7 +113,7 @@ export default class AuthServices {
         throw new AppError({ message: 'Request header format is invalid.', isOperational: true, httpStatus: 401 });
       }
 
-      const token = header.substring(7);
+      const token = header.split(' ')[1];
       const decodedToken = this.decodeAccessToken(token);
       return decodedToken;
     }

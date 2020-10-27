@@ -4,6 +4,7 @@ import express, {
 import logger from '@foodbudget/logger';
 import cookieParser from 'cookie-parser';
 import { AppError, ErrorHandler } from '@foodbudget/errors';
+import { PerformanceObserver } from 'perf_hooks';
 import server from './apolloServer';
 import config from './config';
 import serviceManager from './serviceManager';
@@ -31,6 +32,13 @@ const handleErrors = (app: Application) => {
     next(err);
   });
 };
+
+const obs = new PerformanceObserver((list) => {
+  const entry = list.getEntries()[0];
+  logger.info(`Time for '${entry.name}': ${entry.duration}ms`);
+});
+
+obs.observe({ entryTypes: ['measure'], buffered: false });
 
 const app = express();
 

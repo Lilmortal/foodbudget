@@ -84,7 +84,7 @@ type Mutation {
 
 type price {
   amount: Float
-  currency: String @deprecated(reason: "hmm")
+  currency: String
 }
 
 input priceArg {
