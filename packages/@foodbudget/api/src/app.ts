@@ -5,6 +5,7 @@ import logger from '@foodbudget/logger';
 import cookieParser from 'cookie-parser';
 import { AppError, ErrorHandler } from '@foodbudget/errors';
 import { PerformanceObserver } from 'perf_hooks';
+import colors from 'colors/safe';
 import server from './apolloServer';
 import config from './config';
 import serviceManager from './serviceManager';
@@ -35,7 +36,7 @@ const handleErrors = (app: Application) => {
 
 const obs = new PerformanceObserver((list) => {
   const entry = list.getEntries()[0];
-  logger.info(`Time for '${entry.name}': ${entry.duration}ms`);
+  logger.info(colors.yellow(`Time for '${entry.name}': ${entry.duration}ms`));
 });
 
 obs.observe({ entryTypes: ['measure'], buffered: false });
@@ -58,4 +59,4 @@ handleAuth({
 handle404Routes(app);
 handleErrors(app);
 
-app.listen(config.api.port, () => logger.info(`App is now running at port ${config.api.port}`));
+app.listen(config.api.port, () => logger.info(colors.cyan(`App is now running at port ${config.api.port}`)));
