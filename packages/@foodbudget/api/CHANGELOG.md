@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.0.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@4.6.0...@foodbudget/api@5.0.0) (2020-10-28)
+
+
+### Features
+
+* ingredients scraped are now stored in DB ([acb8f41](https://github.com/Lilmortal/foodbudget/commit/acb8f4129150d11eb322028cb9a764e5c99bce49))
+
+
+### BREAKING CHANGES
+
+* Removed all migrations folder and start fresh anew
+
+
+
+
+
 # [4.6.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@4.5.0...@foodbudget/api@4.6.0) (2020-10-28)
 
 

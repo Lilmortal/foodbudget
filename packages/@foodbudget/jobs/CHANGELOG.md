@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.0.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/jobs@4.2.7...@foodbudget/jobs@5.0.0) (2020-10-28)
+
+
+### Features
+
+* ingredients scraped are now stored in DB ([acb8f41](https://github.com/Lilmortal/foodbudget/commit/acb8f4129150d11eb322028cb9a764e5c99bce49))
+
+
+### BREAKING CHANGES
+
+* Removed all migrations folder and start fresh anew
+
+
+
+
+
 ## [4.2.7](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/jobs@4.2.6...@foodbudget/jobs@4.2.7) (2020-10-28)
 
 **Note:** Version bump only for package @foodbudget/jobs
