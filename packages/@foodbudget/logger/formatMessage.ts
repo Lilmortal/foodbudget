@@ -36,7 +36,7 @@ const formatMessage = (info: Record<string, unknown>): string => {
     ...query && { query },
   };
 
-  if (sessionId || query) {
+  if ((sessionId || query) && info.level !== 'error') {
     return `${colors.yellow(`${message}`) || ''}${formattedMessage ? `\n${JSON.stringify(formattedMessage, null, 2)}` : ''}`;
   }
 

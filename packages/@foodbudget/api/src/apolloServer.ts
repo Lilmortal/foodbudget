@@ -21,7 +21,7 @@ const isPrismaError = (stackTraces: string[]) => stackTraces[1]?.startsWith('\x1
 
 const prettifyError = (err: Error): string => {
   const errorMessages = [];
-  if (err instanceof GraphQLError || err instanceof ApolloError) {
+  if (err instanceof GraphQLError || err instanceof ApolloError || err instanceof ValidationError) {
     errorMessages.push(printError(err));
 
     const stackTraces = err.extensions?.exception?.stacktrace as string[];

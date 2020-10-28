@@ -63,6 +63,9 @@ enum diets {
   VEGETARIAN_NO_MEAT_AND_EGGS
 }
 
+"""Verify email follows the format and lower case it"""
+scalar Email
+
 type ingredient {
   name: String
   price: price
@@ -77,8 +80,8 @@ enum meals {
 type Mutation {
   deleteUser(id: Int!): String
   ingredients(amount: Float, currency: currencies, name: String!): ingredient
-  login(email: String!, password: String!): String
-  register(email: String!, password: String!): user
+  login(email: Email!, password: String!): String
+  register(email: Email!, password: String!): user
   saveRecipe(adjectives: [adjectives], allergies: [allergies], cuisines: [cuisines], diets: [diets], id: Int, ingredients: [recipeIngredientArg], link: String, meals: [meals], name: String!, numSaved: Int, prepTime: String, servings: Int): recipe
 }
 
@@ -99,7 +102,7 @@ type Query {
   recipesById(link: String!): recipe
   recipesByLink(id: Int!): recipe
   renewToken: String
-  user(email: String, id: Int): user
+  user(email: Email, id: Int): user
 }
 
 type recipe {
