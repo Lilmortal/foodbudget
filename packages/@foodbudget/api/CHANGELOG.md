@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.6.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@4.5.0...@foodbudget/api@4.6.0) (2020-10-28)
+
+
+### Features
+
+* add email scalar ([fab50ae](https://github.com/Lilmortal/foodbudget/commit/fab50aeb4525503a913c65c8dd42db49de6364b4))
+* add query complexity, only enable introspection on dev ([ff1a9a5](https://github.com/Lilmortal/foodbudget/commit/ff1a9a5ce063bcb7f9a7cd921ad8c4a21c3f43b4))
+
+
+
+
+
 # [4.5.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@4.4.0...@foodbudget/api@4.5.0) (2020-10-27)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/logger@2.3.0...@foodbudget/logger@2.4.0) (2020-10-28)
+
+
+### Features
+
+* add email scalar ([fab50ae](https://github.com/Lilmortal/foodbudget/commit/fab50aeb4525503a913c65c8dd42db49de6364b4))
+
+
+
+
+
 # [2.3.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/logger@2.2.3...@foodbudget/logger@2.3.0) (2020-10-27)
 
 

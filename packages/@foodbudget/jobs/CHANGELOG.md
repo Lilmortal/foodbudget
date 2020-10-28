@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.7](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/jobs@4.2.6...@foodbudget/jobs@4.2.7) (2020-10-28)
+
+**Note:** Version bump only for package @foodbudget/jobs
+
+
+
+
+
 ## [4.2.6](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/jobs@4.2.5...@foodbudget/jobs@4.2.6) (2020-10-27)
 
 **Note:** Version bump only for package @foodbudget/jobs
