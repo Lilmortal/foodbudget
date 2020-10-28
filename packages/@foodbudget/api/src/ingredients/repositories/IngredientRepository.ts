@@ -100,13 +100,13 @@ export default class IngredientRepository implements FilterableIngredientReposit
     const result = await this.prisma.ingredients.upsert({
       create: {
         name: ingredient.name,
-        price_currency: ingredient.price.currency,
-        price_amount: ingredient.price.amount,
+        price_currency: ingredient.price?.currency,
+        price_amount: ingredient.price?.amount,
       },
       update: {
         ...overrideOrUpdate(!!ingredient.name, { name: ingredient.name }),
-        ...overrideOrUpdate(!!ingredient.price.currency, { price_currency: ingredient.price.currency }),
-        ...overrideOrUpdate(ingredient.price.amount !== undefined, { price_amount: ingredient.price.amount }),
+        ...overrideOrUpdate(!!ingredient.price?.currency, { price_currency: ingredient.price?.currency }),
+        ...overrideOrUpdate(ingredient.price?.amount !== undefined, { price_amount: ingredient.price?.amount }),
       },
       where: {
         name: ingredient.name,

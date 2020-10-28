@@ -47,13 +47,13 @@ describe('recipe scraper', () => {
     expect(() => onMapping(getValidRecipePageInfo({ name: ['5 mins'] }))).toThrowError();
   });
 
-  // it('should throw an Error if ingredients is an empty array', () => {
-  //   expect(() => onMapping(getValidRecipePageInfo({ ingredients: [] }))).toThrowError();
-  // });
+  it('should throw an Error if ingredients is an empty array', () => {
+    expect(() => onMapping(getValidRecipePageInfo({ ingredients: [] }))).toThrowError();
+  });
 
-  // it('should throw an Error if ingredients is not an array', () => {
-  //   expect(() => onMapping(getValidRecipePageInfo({ ingredients: '5 mins' }))).toThrowError();
-  // });
+  it('should throw an Error if ingredients is not an array', () => {
+    expect(() => onMapping(getValidRecipePageInfo({ ingredients: '5 mins' }))).toThrowError();
+  });
 
   it('should return a mapped recipe', () => {
     const mappedRecipe = onMapping(getValidRecipePageInfo());
@@ -62,7 +62,16 @@ describe('recipe scraper', () => {
       servings: 4,
       name: 'Recipe name',
       numSaved: 0,
-      ingredients: [],
+      ingredients: [{
+        amount: 0,
+        measurement: '',
+        name: '',
+        price: {
+          amount: 0,
+          currency: '',
+        },
+        text: '4 cups of water',
+      }],
       link: 'link',
       cuisines: [],
       diets: [],

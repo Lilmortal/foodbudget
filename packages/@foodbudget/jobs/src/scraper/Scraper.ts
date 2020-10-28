@@ -1,4 +1,5 @@
 import { AppError } from '@foodbudget/errors';
+import logger from '@foodbudget/logger';
 import {
   ScraperParams,
   ScrapedElements, OnScrape,
@@ -51,6 +52,7 @@ export default class Scraper<S, R> {
           throw err;
         }
 
+        logger.warn(`Reattempt tries left: ${retries}`, err);
         return this.scrape(scrapedElements, retries - 1);
       }
       throw new AppError({ message: err.message || err, isOperational: true });

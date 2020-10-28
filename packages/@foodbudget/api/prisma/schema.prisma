@@ -67,8 +67,8 @@ enum Meal {
 
 model ingredients {
   name               String               @id
-  price_currency     String
-  price_amount       Float
+  price_currency     String?
+  price_amount       Float?
   recipe_ingredients recipe_ingredients[]
   users              users?               @relation(fields: [usersId], references: [id])
   usersId            Int?
@@ -76,12 +76,14 @@ model ingredients {
 
 model recipe_ingredients {
   recipe_link     String
-  ingredient_name String
-  quantity        Float
-  ingredient      ingredients @relation(fields: [ingredient_name], references: [name])
-  recipes         recipes     @relation(fields: [recipe_link], references: [link])
+  ingredient_name String?
+  amount          Float?
+  measurement     String?
+  recipe_text     String
+  ingredient      ingredients? @relation(fields: [ingredient_name], references: [name])
+  recipes         recipes      @relation(fields: [recipe_link], references: [link])
 
-  @@id([recipe_link, ingredient_name])
+  @@id([recipe_link, recipe_text])
 }
 
 model recipes {

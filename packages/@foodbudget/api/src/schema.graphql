@@ -121,15 +121,19 @@ type recipe {
 }
 
 type recipeIngredient {
+  amount: Int
+  measurement: String
   name: String
   price: price
-  quantity: Int
+  text: String
 }
 
 input recipeIngredientArg {
+  amount: Int
+  measurement: String
   name: String
   price: priceArg
-  quantity: Int
+  text: String
 }
 
 type user {

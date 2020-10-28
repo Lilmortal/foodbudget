@@ -11,6 +11,8 @@ const colorLevel = (level: string) => {
       return colors.yellow(level);
     case '[INFO]':
       return colors.green(level);
+    case '[DEBUG]':
+      return colors.green(level);
     default:
       return level;
   }

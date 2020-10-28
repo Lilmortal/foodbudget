@@ -50,11 +50,12 @@ export default class JobRecipesScraper {
   }
 
   async start(config: Config): Promise<void> {
+    logger.info('Scraping recipes...');
     const scrapedRecipes = await this.scrape(config.scrapedRecipeElements);
 
     await Promise.all(scrapedRecipes.map(async (scrapedRecipe) => {
-      logger.info(scrapedRecipe);
-      logger.info('Successfully scraped recipes...');
+      logger.info('Successfully scraped recipe.');
+      logger.info(`Scraped recipe: ${JSON.stringify(scrapedRecipe, null, 2)}`);
 
       await this.save(scrapedRecipe);
 

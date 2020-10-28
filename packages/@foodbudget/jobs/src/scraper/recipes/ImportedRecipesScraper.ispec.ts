@@ -44,7 +44,26 @@ describe('imported recipes job scraper', () => {
       servings: 5,
       name: 'Big Mac',
       numSaved: 0,
-      ingredients: [],
+      ingredients: [{
+        amount: 0,
+        measurement: '',
+        name: '',
+        price: {
+          amount: 0,
+          currency: '',
+        },
+        text: 'Pig',
+      },
+      {
+        amount: 0,
+        measurement: '',
+        name: '',
+        price: {
+          amount: 0,
+          currency: '',
+        },
+        text: 'Lettuce',
+      }],
       cuisines: [],
       diets: [],
       allergies: [],

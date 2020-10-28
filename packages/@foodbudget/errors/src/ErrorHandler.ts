@@ -5,7 +5,7 @@ import AppError from './AppError';
 
 export default class ErrorHandler {
     static handleError = async (err: Error): Promise<void> => {
-      logger.error(err);
+      logger.error('error exception', err);
       if (config.env === 'PROD') {
         const emailer = await createEmailer();
         emailer.send({

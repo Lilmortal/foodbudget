@@ -9,8 +9,8 @@ jobs:
           filename: combined-yarn-lock.txt
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
-            - v1-dependencies
+            - v2-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v2-dependencies
       - run: yarn
       - save_cache:
           paths:
@@ -20,7 +20,7 @@ jobs:
             # - packages/@foodbudget/errors/node_modules
             - packages/@foodbudget/jobs/node_modules
             # - packages/@foodbudget/logger/node_modules
-          key: v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+          key: v2-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
   lint:
     docker:
       - image: circleci/node:14.11.0-browsers
@@ -30,8 +30,8 @@ jobs:
           filename: combined-yarn-lock.txt
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
-            - v1-dependencies
+            - v2-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v2-dependencies
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
@@ -46,8 +46,8 @@ jobs:
           filename: combined-yarn-lock.txt
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
-            - v1-dependencies
+            - v2-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v2-dependencies
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
@@ -62,8 +62,8 @@ jobs:
           filename: combined-yarn-lock.txt
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
-            - v1-dependencies
+            - v2-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v2-dependencies
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
@@ -78,8 +78,8 @@ jobs:
           filename: combined-yarn-lock.txt
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
-            - v1-dependencies
+            - v2-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v2-dependencies
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"

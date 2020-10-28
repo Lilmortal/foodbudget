@@ -51,8 +51,14 @@ export type Allergy = 'GLUTEN'
 
 export type Meal = 'BREAKFAST' | 'LUNCH' | 'DINNER';
 
-export interface RecipeIngredient extends Ingredient {
-    quantity: number;
+export interface Measurement {
+  amount?: number;
+  measurement?: string;
+}
+
+export interface RecipeIngredient extends Omit<Ingredient, 'name'>, Measurement {
+  text: string;
+  name?: string;
 }
 
 export interface Recipe {
@@ -71,18 +77,21 @@ export interface Recipe {
 }
 
 export interface IngredientResponse {
-  name: string;
+  name: string | null;
   // eslint-disable-next-line camelcase
-  price_currency: string;
+  price_currency: string | null;
   // eslint-disable-next-line camelcase
-  price_amount: number;
+  price_amount: number | null;
 }
 
 export interface RecipeIngredientResponse {
-  ingredient: IngredientResponse;
-  quantity: number;
+  ingredient: IngredientResponse | null;
+  amount: number | null;
+  measurement: string | null;
+  // eslint-disable-next-line camelcase
+  recipe_text: string;
 }
 
 export interface RecipeResponse extends recipes {
-    ingredients: RecipeIngredientResponse[];
+  ingredients: RecipeIngredientResponse[];
 }
