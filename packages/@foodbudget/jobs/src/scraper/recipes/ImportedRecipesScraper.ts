@@ -3,11 +3,10 @@ import RecipesScraper from './RecipesScraper';
 import { ScrapedRecipe, ScrapedRecipeHTMLElements } from './RecipesScraper.types';
 
 const scrapeRecipes = async (scrapeInfo: string): Promise<ScrapedRecipe> => {
-  // Unfortunately we have to move these functions inside this scope.
-  // Everything in here is serialized and passed on to puppeteer browser.
-  // If you move these functions out to the parent scope, you will see that puppeteer complains these functions
-  // are not defined.
-
+  // Unfortunately we have to move this function inside this scope.
+  // Everything in here is serialized and passed on to puppeteer browser, which is running
+  // in Chronium. Hence, if you move this function out, it will complain "document is not defined"
+  // because document does not exist on Node.
   const getDocumentNodeTexts = (HTMLElement: ScrapedHTMLElement) => {
     const nodeList: NodeListOf<HTMLElement> = document.querySelectorAll(
       HTMLElement.class,
@@ -49,6 +48,6 @@ const scrapeRecipes = async (scrapeInfo: string): Promise<ScrapedRecipe> => {
   };
 };
 
-const ImportedRecipesScraper = new RecipesScraper(scrapeRecipes);
+const importedRecipesScraper = new RecipesScraper(scrapeRecipes);
 
-export default ImportedRecipesScraper;
+export default importedRecipesScraper;

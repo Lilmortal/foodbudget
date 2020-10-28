@@ -16,11 +16,13 @@ const recipeMapper: Mapper<Recipe, RecipeResponse> = ({
     meals: dto.meals,
     ingredients: dto.ingredients.map((ingredient) => ({
       ingredient: {
-        name: ingredient.name,
-        price_currency: ingredient.price.currency,
-        price_amount: ingredient.price.amount,
+        name: ingredient.name || null,
+        price_currency: ingredient.price?.currency || null,
+        price_amount: ingredient.price?.amount || 0,
       },
-      quantity: ingredient.quantity,
+      amount: ingredient.amount || 0,
+      measurement: ingredient.measurement || null,
+      recipe_text: ingredient.text,
     })),
     usersId: null,
   }),
@@ -31,12 +33,14 @@ const recipeMapper: Mapper<Recipe, RecipeResponse> = ({
     prepTime: entity.prep_time,
     servings: entity.servings,
     numSaved: entity.num_saved,
-    ingredients: entity.ingredients.map((ingredient) => ({
-      quantity: ingredient.quantity,
-      name: ingredient.ingredient.name,
+    ingredients: entity.ingredients.map((entityIngredient) => ({
+      amount: entityIngredient.amount || 0,
+      measurement: entityIngredient.measurement || undefined,
+      text: entityIngredient.recipe_text,
+      name: entityIngredient.ingredient?.name || undefined,
       price: {
-        currency: ingredient.ingredient.price_currency,
-        amount: ingredient.ingredient.price_amount,
+        currency: entityIngredient.ingredient?.price_currency || '',
+        amount: entityIngredient.ingredient?.price_amount || 0,
       },
     })),
     cuisines: entity.cuisines,

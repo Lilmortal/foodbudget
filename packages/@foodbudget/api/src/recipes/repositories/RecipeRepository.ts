@@ -34,7 +34,7 @@ export default class RecipeRepository implements Repository<Recipe> {
             ...recipe.ingredients && {
               ingredients: {
                 some: {
-                  ingredient_name: { in: recipe.ingredients.map((ingredient) => ingredient.name) },
+                  ingredient_name: { in: recipe.ingredients.map((ingredient) => ingredient.name || '') },
                 },
               },
             },
@@ -65,7 +65,9 @@ export default class RecipeRepository implements Repository<Recipe> {
                   price_amount: true,
                 },
               },
-              quantity: true,
+              amount: true,
+              measurement: true,
+              recipe_text: true,
             },
           },
         },
@@ -98,7 +100,9 @@ export default class RecipeRepository implements Repository<Recipe> {
                   price_amount: true,
                 },
               },
-              quantity: true,
+              amount: true,
+              measurement: true,
+              recipe_text: true,
             },
           },
         },
@@ -122,10 +126,18 @@ export default class RecipeRepository implements Repository<Recipe> {
     logger.info('upsert ingredient repository request', recipe);
 
     if (recipe.ingredients) {
+      logger.info('verifying if ingredients exist in database...');
       await Promise.all(recipe.ingredients.map(async (ingredient) => {
+        if (!ingredient.name) {
+          logger.info('ingredient name is null, no need to do anything yet...');
+          return;
+        }
+
         const doesIngredientExist = await this.ingredientsService.get({ name: ingredient.name });
 
         if (!doesIngredientExist) {
+          logger.info('ingredient does not exist, attempting to save it...');
+
           await this.ingredientsService.save({
             name: ingredient.name,
             price: {
@@ -133,9 +145,13 @@ export default class RecipeRepository implements Repository<Recipe> {
               amount: ingredient.price?.amount || 0,
             },
           });
+
+          logger.info('ingredient saved.');
         }
       }));
     }
+
+    logger.info('saving recipes...');
 
     const result = await this.prisma.recipes.upsert({
       create: {
@@ -145,14 +161,18 @@ export default class RecipeRepository implements Repository<Recipe> {
         link: recipe.link,
         num_saved: 0,
         ingredients: {
-          create: recipe.ingredients ? recipe.ingredients.map((ingredient) => ({
-            quantity: ingredient.quantity,
-            ingredient: {
-              connect: {
-                name: ingredient.name,
+          create: recipe.ingredients.map((ingredient) => ({
+            amount: ingredient.amount,
+            measurement: ingredient.measurement,
+            recipe_text: ingredient.text,
+            ...!!ingredient.name && {
+              ingredient: {
+                connect: {
+                  name: ingredient.name,
+                },
               },
             },
-          })) : [],
+          })),
         },
         allergies: {
           set: recipe.allergies || [],
@@ -176,28 +196,36 @@ export default class RecipeRepository implements Repository<Recipe> {
         ...overrideOrUpdate(recipe.servings !== undefined, { servings: recipe.servings }),
         ...overrideOrUpdate(!!recipe.link, { link: recipe.link }),
         ...overrideOrUpdate(recipe.numSaved !== undefined, { num_saved: recipe.numSaved }),
-        ...overrideOrUpdate(recipe.ingredients?.length > 0, {
+        ...overrideOrUpdate(recipe.ingredients && Object.keys(recipe.ingredients).length > 0, {
           ingredients: {
             upsert: recipe.ingredients.map((ingredient) => ({
               create: {
-                quantity: ingredient.quantity,
-                ingredient: {
-                  connect: {
-                    name: ingredient.name,
+                amount: ingredient.amount,
+                measurement: ingredient.measurement,
+                recipe_text: ingredient.text,
+                ...ingredient.name && {
+                  ingredient: {
+                    connect: {
+                      name: ingredient.name,
+                    },
                   },
                 },
               },
               update: {
-                quantity: ingredient.quantity,
-                ingredient: {
-                  connect: {
-                    name: ingredient.name,
+                amount: ingredient.amount,
+                measurement: ingredient.measurement,
+                recipe_text: ingredient.text,
+                ...ingredient.name && {
+                  ingredient: {
+                    connect: {
+                      name: ingredient.name,
+                    },
                   },
                 },
               },
               where: {
-                recipe_link_ingredient_name: {
-                  ingredient_name: ingredient.name,
+                recipe_link_recipe_text: {
+                  recipe_text: ingredient.text,
                   recipe_link: recipe.link,
                 },
               },
@@ -244,7 +272,9 @@ export default class RecipeRepository implements Repository<Recipe> {
                 price_amount: true,
               },
             },
-            quantity: true,
+            amount: true,
+            measurement: true,
+            recipe_text: true,
           },
         },
       },
@@ -311,7 +341,9 @@ export default class RecipeRepository implements Repository<Recipe> {
                     price_amount: true,
                   },
                 },
-                quantity: true,
+                amount: true,
+                measurement: true,
+                recipe_text: true,
               },
             },
           },
@@ -343,7 +375,9 @@ export default class RecipeRepository implements Repository<Recipe> {
                 price_amount: true,
               },
             },
-            quantity: true,
+            amount: true,
+            measurement: true,
+            recipe_text: true,
           },
         },
       },

@@ -69,7 +69,9 @@ export const mealType = enumType({
 export const recipeIngredientField = objectType({
   name: 'recipeIngredient',
   definition(t) {
-    t.int('quantity');
+    t.int('amount');
+    t.string('measurement');
+    t.string('text');
     t.string('name');
     t.field('price', { type: priceField });
   },
@@ -96,7 +98,9 @@ export const recipeField = objectType({
 export const recipeIngredientArg = inputObjectType({
   name: 'recipeIngredientArg',
   definition(t) {
-    t.int('quantity');
+    t.int('amount');
+    t.string('measurement');
+    t.string('text');
     t.string('name');
     t.field('price', { type: priceArg });
   },

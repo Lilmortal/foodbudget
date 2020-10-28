@@ -5,7 +5,7 @@ export interface Money {
 
 export interface Ingredient {
     name: string;
-    price: Money;
+    price?: Money;
 }
 
 export type Currency = 'AUD' | 'NZD';
