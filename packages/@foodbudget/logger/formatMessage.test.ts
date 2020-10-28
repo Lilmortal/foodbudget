@@ -1,3 +1,4 @@
+import stripAnsi from 'strip-ansi';
 import formatMessage from './formatMessage';
 
 describe('formatMessage', () => {
@@ -6,7 +7,7 @@ describe('formatMessage', () => {
       message: 'message',
     };
 
-    const result = formatMessage(message);
+    const result = stripAnsi(formatMessage(message));
 
     expect(result).toEqual(`${message.message}`);
   });
@@ -23,15 +24,18 @@ describe('formatMessage', () => {
     };
 
     const formattedMessage = {
-      data: {
-        moreData: {
-          food: 'pork',
+      message: 'message',
+      query: {
+        data: {
+          moreData: {
+            food: 'pork',
+          },
         },
+        age: 43,
       },
-      age: 43,
     };
 
-    const result = formatMessage(message);
+    const result = stripAnsi(formatMessage(message));
 
     expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
   });
@@ -42,10 +46,11 @@ describe('formatMessage', () => {
     };
 
     const formattedMessage = {
-      user: 'test', password: '*****',
+      message: 'message',
+      query: { user: 'test', password: '*****' },
     };
 
-    const result = formatMessage(message);
+    const result = stripAnsi(formatMessage(message));
 
     expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
   });
@@ -62,15 +67,18 @@ describe('formatMessage', () => {
     };
 
     const formattedMessage = {
-      object: {
-        moreObject: {
-          password: '*****',
-          name: 'name',
+      message: 'message',
+      query: {
+        object: {
+          moreObject: {
+            password: '*****',
+            name: 'name',
+          },
         },
       },
     };
 
-    const result = formatMessage(message);
+    const result = stripAnsi(formatMessage(message));
 
     expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
   });
@@ -81,10 +89,12 @@ describe('formatMessage', () => {
     };
 
     const formattedMessage = {
-      sessionId: 'sessionId', user: 'test', password: '*****',
+      message: 'message',
+      sessionId: 'sessionId',
+      query: { user: 'test', password: '*****' },
     };
 
-    const result = formatMessage(message);
+    const result = stripAnsi(formatMessage(message));
 
     expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
   });
@@ -95,10 +105,11 @@ describe('formatMessage', () => {
     };
 
     const formattedMessage = {
+      message: 'message',
       sessionId: 'sessionId',
     };
 
-    const result = formatMessage(message);
+    const result = stripAnsi(formatMessage(message));
 
     expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
   });

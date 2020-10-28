@@ -6,21 +6,22 @@ import { Strategy as FacebookStrategy } from 'passport-facebook';
 import logger from '@foodbudget/logger';
 import { Application } from 'express';
 
+import { AppError } from '@foodbudget/errors';
 import UserServices, { LoginRequest } from '../../users/services';
 import { RefreshTokenPayload } from '../Auth.types';
 import { SocialConfig } from '../../config';
 
 const validateProfile = (profile: Profile): profile is Profile & Pick<Required<Profile>, 'emails'> => {
   if (!profile.emails || !profile.emails[0].value) {
-    throw new Error('emails could not be retrieved.');
+    throw new AppError({ message: 'emails could not be retrieved.', isOperational: true });
   }
 
   if (profile.emails.length > 1) {
-    throw new Error('multiple emails found.');
+    throw new AppError({ message: 'multiple emails found.', isOperational: true });
   }
 
   if (!profile.id) {
-    throw new Error('profile ID could not be retrieved.');
+    throw new AppError({ message: 'profile ID could not be retrieved.', isOperational: true });
   }
 
   return true;
@@ -49,10 +50,10 @@ const getSocialLoginRequest = (strategy: Strategy, id: string) => {
   return socialLoginRequest;
 };
 
-const handleTokenStrategy = (
+export const handleTokenStrategy = (
   userServices: Required<UserServices>,
   strategy: Strategy,
-) => async (accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) => {
+) => async (accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback): Promise<void> => {
   try {
     if (validateProfile(profile)) {
       const email = profile.emails[0].value;
@@ -66,7 +67,7 @@ const handleTokenStrategy = (
         user = await userServices.register({ ...socialLoginRequest, email });
 
         if (!user) {
-          throw new Error(`Attempting to register ${email} failed.`);
+          throw new AppError({ message: `Attempting to register ${email} failed.`, isOperational: true });
         }
       }
 
@@ -97,7 +98,7 @@ export interface AuthLoaderParams {
   userServices: Required<UserServices>;
 }
 
-const authLoader = ({
+const handleSocialAuth = ({
   app, googleConfig, facebookConfig, userServices,
 }: AuthLoaderParams): void => {
   passport.use(new GoogleTokenStrategy({
@@ -116,4 +117,4 @@ const authLoader = ({
   app.use(passport.initialize());
 };
 
-export default authLoader;
+export default handleSocialAuth;
