@@ -63,6 +63,9 @@ enum diets {
   VEGETARIAN_NO_MEAT_AND_EGGS
 }
 
+"""Verify email follows the format and lower case it"""
+scalar Email
+
 type ingredient {
   name: String
   price: price
@@ -76,10 +79,10 @@ enum meals {
 
 type Mutation {
   deleteUser(id: Int!): String
-  ingredients(amount: Float, currency: String, name: String!): ingredient
-  login(email: String!, password: String!): String
-  recipes(adjectives: [adjectives], allergies: [allergies], cuisines: [cuisines], diets: [diets], id: Int, ingredients: [recipeIngredientArg], link: String, meals: [meals], name: String!, numSaved: Int, prepTime: String, servings: Int): recipe
-  register(email: String!, password: String!): user
+  ingredients(amount: Float, currency: currencies, name: String!): ingredient
+  login(email: Email!, password: String!): String
+  register(email: Email!, password: String!): user
+  saveRecipe(adjectives: [adjectives], allergies: [allergies], cuisines: [cuisines], diets: [diets], id: Int, ingredients: [recipeIngredientArg], link: String, meals: [meals], name: String!, numSaved: Int, prepTime: String, servings: Int): recipe
 }
 
 type price {
@@ -94,12 +97,12 @@ input priceArg {
 
 type Query {
   filterIngredientsByPrice(currency: currencies!, maxAmount: Float, minAmount: Float!): [ingredient]
+  filterRecipes(adjectives: [adjectives], allergies: [allergies], cuisines: [cuisines], diets: [diets], ingredients: [recipeIngredientArg], meals: [meals]): [recipe]
   ingredientsByName(name: String!): [ingredient]
-  recipes(adjectives: [adjectives], allergies: [allergies], cuisines: [cuisines], diets: [diets], id: Int, ingredients: [recipeIngredientArg], link: String, meals: [meals], name: String, numSaved: Int, prepTime: String, servings: Int): [recipe]
   recipesById(link: String!): recipe
   recipesByLink(id: Int!): recipe
   renewToken: String
-  user(email: String, id: Int): user
+  user(email: Email, id: Int): user
 }
 
 type recipe {

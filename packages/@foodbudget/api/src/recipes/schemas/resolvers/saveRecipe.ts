@@ -8,7 +8,7 @@ import {
   adjectiveType, allergyType, cuisineType, dietType, mealType, recipeField, recipeIngredientArg,
 } from '../recipeSchemaFields';
 
-const saveRecipe = mutationField('recipes', {
+const saveRecipe = mutationField('saveRecipe', {
   type: recipeField,
   args: {
     id: intArg(),

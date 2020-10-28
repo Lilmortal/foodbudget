@@ -36,7 +36,7 @@ const handleErrors = (app: Application) => {
 
 const obs = new PerformanceObserver((list) => {
   const entry = list.getEntries()[0];
-  logger.info(colors.yellow(`Time for '${entry.name}': ${entry.duration}ms`));
+  logger.info(colors.green(`Time for '${entry.name}': ${entry.duration}ms`));
 });
 
 obs.observe({ entryTypes: ['measure'], buffered: false });

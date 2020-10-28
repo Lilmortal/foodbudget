@@ -1,11 +1,12 @@
-import { mutationField, stringArg } from '@nexus/schema';
+import { arg, mutationField, stringArg } from '@nexus/schema';
 import logger from '@foodbudget/logger';
 import { Context } from '../../../context';
+import emailArg from '../../../shared/scalar/emailArg';
 
 const login = mutationField('login', {
   type: 'String',
   args: {
-    email: stringArg({ required: true }),
+    email: arg({ type: emailArg, required: true }),
     password: stringArg({ required: true }),
   },
   async resolve(_parent, args, ctx: Context) {

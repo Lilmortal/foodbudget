@@ -1,9 +1,10 @@
 import logger from '@foodbudget/logger';
 import {
-  intArg, objectType, queryField, stringArg,
+  arg, intArg, objectType, queryField,
 } from '@nexus/schema';
 import { users } from '@prisma/client';
 import { Context } from '../../context';
+import emailArg from '../../shared/scalar/emailArg';
 
 export const userField = objectType({
   name: 'user',
@@ -17,7 +18,7 @@ const getUser = queryField('user', {
   type: userField,
   args: {
     id: intArg(),
-    email: stringArg(),
+    email: arg({ type: emailArg }),
   },
   async resolve(_parent, args, ctx: Context) {
     logger.info('incoming get user request', args);

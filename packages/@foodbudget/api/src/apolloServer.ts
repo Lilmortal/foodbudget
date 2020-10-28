@@ -4,6 +4,8 @@ import {
 import logger from '@foodbudget/logger';
 import { GraphQLError, printError } from 'graphql';
 import { AppError } from '@foodbudget/errors';
+import queryComplexity, { simpleEstimator } from 'graphql-query-complexity';
+import colors from 'colors/safe';
 import schema from './schema';
 import context from './context';
 import config from './config';
@@ -19,7 +21,7 @@ const isPrismaError = (stackTraces: string[]) => stackTraces[1]?.startsWith('\x1
 
 const prettifyError = (err: Error): string => {
   const errorMessages = [];
-  if (err instanceof GraphQLError || err instanceof ApolloError) {
+  if (err instanceof GraphQLError || err instanceof ApolloError || err instanceof ValidationError) {
     errorMessages.push(printError(err));
 
     const stackTraces = err.extensions?.exception?.stacktrace as string[];
@@ -50,6 +52,20 @@ const server = new ApolloServer({
   schema,
   context,
   debug: true,
+  validationRules: [
+    queryComplexity({
+      estimators: [
+        simpleEstimator({ defaultComplexity: 1 }),
+      ],
+      maximumComplexity: 100,
+      onComplete: (complexity: number) => {
+        if (complexity > 0) {
+          logger.info(colors.yellow(`Query Complexity: ${complexity}`));
+        }
+      },
+    }),
+  ],
+  introspection: config.env === 'development',
   formatError: (err: GraphQLError) => {
     const { sessionId } = logger.defaultMeta;
     logger.error(prettifyError(err));
