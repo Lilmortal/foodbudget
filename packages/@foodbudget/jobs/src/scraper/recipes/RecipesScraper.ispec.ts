@@ -12,7 +12,7 @@ describe('recipes job scraper', () => {
   });
 
   it('should scrape and return the mapped recipes given the onScrape function', async () => {
-    const onScrape: OnScrape<ScrapedRecipe> = async () => ({
+    const onScrape: OnScrape<ScrapedRecipe> = () => async () => ({
       prepTime: '4 mins',
       servings: '4',
       numSaved: '0',
@@ -80,7 +80,7 @@ describe('recipes job scraper', () => {
   });
 
   it('should throw an Error if prepTime is an empty string', async () => {
-    const onScrape: OnScrape<ScrapedRecipe> = async () => ({
+    const onScrape: OnScrape<ScrapedRecipe> = () => async () => ({
       prepTime: '',
       servings: '4',
       name: 'Big Mac',

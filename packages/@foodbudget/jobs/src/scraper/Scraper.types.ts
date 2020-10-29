@@ -1,3 +1,5 @@
+import puppeteer from 'puppeteer';
+
 export interface ScrapedHTMLElement {
   /**
    * The class name of the document node. e.g. ".class1 .class2"
@@ -29,7 +31,7 @@ export interface ScrapedElements {
   url: string;
 }
 
-export type OnScrape<S> = (scrapeInfo: string) => Promise<S>;
+export type OnScrape<S> = (page: puppeteer.Page) => (scrapeInfo: string) => Promise<S>;
 
 export interface ScraperParams<S, R> {
   /**

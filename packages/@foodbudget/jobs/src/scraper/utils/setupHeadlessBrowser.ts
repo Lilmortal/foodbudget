@@ -24,11 +24,7 @@ export default function setupHeadlessBrowser<E extends ScrapedElements, S>(
         const getScrapedResults = async (scrapedPageInfo: E): Promise<S> => {
           await page.goto(scrapedPageInfo.url);
 
-          // We pass the page info as a serialized JSON object into the puppeteer browser.
-          const scrapedResults: S | S[] = await page.evaluate(
-            onScrape,
-            JSON.stringify(scrapedPageInfo),
-          );
+          const scrapedResults = await onScrape(page)(JSON.stringify(scrapedPageInfo));
 
           return scrapedResults;
         };

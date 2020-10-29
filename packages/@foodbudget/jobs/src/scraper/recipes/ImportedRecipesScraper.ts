@@ -1,8 +1,9 @@
-import { ScrapedHTMLElement } from '../Scraper.types';
+import puppeteer from 'puppeteer';
+import { OnScrape, ScrapedHTMLElement } from '../Scraper.types';
 import RecipesScraper from './RecipesScraper';
 import { ScrapedRecipe, ScrapedRecipeHTMLElements } from './RecipesScraper.types';
 
-const scrapeRecipes = async (scrapeInfo: string): Promise<ScrapedRecipe> => {
+const scrapeRecipe = (scrapeInfo: string) => {
   // Unfortunately we have to move this function inside this scope.
   // Everything in here is serialized and passed on to puppeteer browser, which is running
   // in Chronium. Hence, if you move this function out, it will complain "document is not defined"
@@ -47,6 +48,10 @@ const scrapeRecipes = async (scrapeInfo: string): Promise<ScrapedRecipe> => {
     meals: [],
   };
 };
+
+const scrapeRecipes: OnScrape<ScrapedRecipe> = (
+  page: puppeteer.Page,
+) => async (scrapeInfo: string): Promise<ScrapedRecipe> => page.evaluate(scrapeRecipe, scrapeInfo);
 
 const importedRecipesScraper = new RecipesScraper(scrapeRecipes);
 

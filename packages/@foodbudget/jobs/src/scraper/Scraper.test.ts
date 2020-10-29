@@ -2,12 +2,13 @@ import { Recipe } from '@foodbudget/api';
 import scrapedRecipeElements from '../config/scrapedRecipesElements';
 import { ScrapedRecipe } from './recipes';
 import Scraper from './Scraper';
+import { OnScrape } from './Scraper.types';
 import setupHeadlessBrowser from './utils';
 
 jest.mock('./utils');
 
 describe('scraper', () => {
-  let mockOnScrape: jest.Mock<(scrapeInfo: string) => Promise<ScrapedRecipe>>;
+  let mockOnScrape: jest.Mock<OnScrape<ScrapedRecipe>>;
   let mockMapping: jest.Mock<(scrapedResult: ScrapedRecipe) => Omit<Recipe, 'id'>>;
   let scrapedRecipe: ScrapedRecipe;
   let recipe: Omit<Recipe, 'id'>;
@@ -19,11 +20,7 @@ describe('scraper', () => {
       servings: '4',
       numSaved: '0',
       name: 'Recipe name',
-      ingredients: [],
-      // ingredients: [
-      //   { name: 'pork', quantity: 1, price: { amount: 4, currency: 'NZD' } },
-      //   { name: 'mushroom', quantity: 2, price: { amount: 5, currency: 'AUD' } },
-      // ],
+      ingredients: ['pork', 'mushroom'],
       cuisines: [],
       diets: [],
       allergies: [],
@@ -37,11 +34,14 @@ describe('scraper', () => {
       servings: 4,
       numSaved: 0,
       name: 'Recipe name',
-      ingredients: [],
-      // ingredients: [
-      //   { name: 'pork', quantity: 1, price: { amount: 4, currency: 'NZD' } },
-      //   { name: 'mushroom', quantity: 2, price: { amount: 5, currency: 'AUD' } },
-      // ],
+      ingredients: [
+        {
+          text: 'pork', name: '', price: { amount: 0, currency: '' }, amount: 0, measurement: '',
+        },
+        {
+          text: 'mushroom', name: '', price: { amount: 0, currency: '' }, amount: 0, measurement: '',
+        },
+      ],
       cuisines: [],
       diets: [],
       allergies: [],
@@ -49,7 +49,7 @@ describe('scraper', () => {
       meals: [],
     };
 
-    mockOnScrape = jest.fn(() => async () => scrapedRecipe);
+    mockOnScrape = jest.fn(() => () => async () => scrapedRecipe);
     mockMapping = jest.fn(() => () => recipe);
   });
 

@@ -11,7 +11,7 @@ describe('scraper', () => {
   });
 
   it('should return the scraped result given the onScrape and onMapping function', async () => {
-    const onScrape: OnScrape<number> = async (info: string) => {
+    const onScrape: OnScrape<number> = () => async (info: string) => {
       const parsedInfo = JSON.parse(info);
       return Number(parsedInfo.num) * 2;
     };
@@ -26,7 +26,7 @@ describe('scraper', () => {
   });
 
   it('should throw an Error if the onScrape function failed', async () => {
-    const onScrape: OnScrape<number> = async () => {
+    const onScrape: OnScrape<number> = () => async () => {
       throw new Error();
     };
 
