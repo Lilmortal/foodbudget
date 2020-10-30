@@ -44,7 +44,13 @@ module.exports = {
     semi: 'off',
     '@typescript-eslint/semi': ['error'],
     '@typescript-eslint/ban-types': 'off',
-    'import/no-extraneous-dependencies': ['error',
-      { devDependencies: ['**/*.test.ts', '**/*.test.tsx', '**/*.stories.tsx'] }],
+    'import/no-extraneous-dependencies': [
+      'off',
+      {
+        devDependencies: ['**/*.test.ts', '**/*.test.tsx', '**/*.stories.tsx'],
+      },
+    ],
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': ['error'],
   },
 };

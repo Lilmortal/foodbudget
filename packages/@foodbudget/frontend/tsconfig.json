@@ -5,13 +5,19 @@
     "allowJs": true,
     "noEmit": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "react"
   },
   "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
     "./src/**/*"
   ],
   "exclude": [
     "**/*.test.*",
-    "**/*.ispec.*"
+    "**/*.ispec.*",
+    "node_modules", 
+    "**/*.cy.ts"
   ]
 }
