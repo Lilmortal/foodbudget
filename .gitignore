@@ -1,5 +1,4 @@
 pgdata
-pgadmin
 .DS_Store
 node_modules
 dist
@@ -10,3 +9,4 @@ tsconfig.tsbuildinfo
 # TODO: For now
 *.tfvars
 .terraform
+.next

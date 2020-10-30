@@ -1,5 +1,7 @@
 {
     "plugins": [
-      "relay"
-    ]
+      "relay",
+      "babel-plugin-react-require"
+    ],
+    "presets": ["next/babel"]
   }

@@ -44,5 +44,7 @@ module.exports = {
     semi: 'off',
     '@typescript-eslint/semi': ['error'],
     '@typescript-eslint/ban-types': 'off',
+    'import/no-extraneous-dependencies': ['error',
+      { devDependencies: ['**/*.test.ts', '**/*.test.tsx', '**/*.stories.tsx'] }],
   },
 };

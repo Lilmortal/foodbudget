@@ -1,6 +1,5 @@
 import { Recipe, ServiceManager } from '@foodbudget/api';
 import { Mailer } from '@foodbudget/email';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { mockDeep, MockProxy } from 'jest-mock-extended';
 import config from '../config';
 import { RecipesScraper, ScrapedRecipe } from '../scraper/recipes';
