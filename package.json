@@ -45,7 +45,7 @@
     "test:integration": "jest --testRegex .*/src/.*.ispec.ts",
     "check-types": "tsc --noemit",
     "test": "jest --watch",
-    "lint:ts": "eslint **/*.ts --fix && yarn check-types",
+    "lint:ts": "eslint '**/*.ts' --fix && yarn check-types",
     "lint": "run-p -c 'lint:*'",
     "release": "lerna publish --no-commit-hooks --yes"
   },
