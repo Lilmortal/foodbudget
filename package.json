@@ -35,7 +35,7 @@
     }
   },
   "scripts": {
-    "build": "dotenv -e .env -- lerna run build --stream",
+    "build": "dotenv -e .env -- lerna run build --stream --since master",
     "sb": "dotenv -e .env -- lerna run sb --stream --parallel",
     "start": "dotenv -e .env -- lerna run start --stream --parallel",
     "start:back": "dotenv -e .env -- lerna run start --ignore=@foodbudget/ui --stream --parallel",
