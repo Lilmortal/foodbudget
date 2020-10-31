@@ -1,7 +1,8 @@
 module.exports = {
+  name: 'ui',
+  displayName: 'ui',
   transform: {
-    '^.+\\.(ts|tsx)$': 'babel-jest',
-    // '*.(ts|tsx)$': 'babel-jest',
+    '^.+\\.(ts|tsx)$': ['babel-jest', { cwd: __dirname }],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
   modulePathIgnorePatterns: ['dist'],

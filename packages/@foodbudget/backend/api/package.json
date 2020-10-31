@@ -18,7 +18,8 @@
     "generate": "prisma generate",
     "setup": "yarn generate && yarn migrate:up",
     "migrate:save": "prisma migrate save --experimental",
-    "migrate:up": "prisma migrate up --experimental"
+    "migrate:up": "prisma migrate up --experimental",
+    "check-types": "tsc --noemit"
   },
   "dependencies": {
     "@foodbudget/email": "^4.2.6",

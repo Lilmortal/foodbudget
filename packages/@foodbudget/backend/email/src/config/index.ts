@@ -1,4 +1,4 @@
 export { default } from './config';
-export {
+export type {
   EmailConfig, Config,
 } from './config.types';

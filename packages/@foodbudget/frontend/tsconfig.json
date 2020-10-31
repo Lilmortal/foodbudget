@@ -2,17 +2,15 @@
   "extends": "../../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "allowJs": true,
-    "noEmit": true,
-    "isolatedModules": true,
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "jsx": "react"
+    "lib": ["dom", "dom.iterable", "es2020"],
+    "jsx": "preserve"
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "./src/**/*"
+    "./src/**/*",
+    "./pages/**/*"
   ],
   "exclude": [
     "**/*.test.*",
