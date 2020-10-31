@@ -102,7 +102,7 @@ commands:
       - run:
           name: Combine yarn.lock files to single file
           # command: npx lerna la -a | awk -F packages '{printf "\"packages%s/yarn.lock\" ", $2}' | xargs ls -d 2> /dev/null | xargs cat > << parameters.filename >>
-          command: echo packages/@foodbudget/api/yarn.lock | xargs cat > << parameters.filename >>
+          command: echo packages/@foodbudget/backend/api/yarn.lock | xargs cat > << parameters.filename >>
 workflows:
   version: 2
   verify:
