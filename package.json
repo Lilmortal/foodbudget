@@ -56,6 +56,7 @@
     "check-types": "lerna run check-types --stream --parallel",
     "lint:ts": "eslint '**/*.ts' --fix && yarn check-types",
     "lint": "run-p -c 'lint:*'",
+    "relay": "lerna run relay --stream",
     "release": "lerna publish --no-commit-hooks --yes"
   },
   "commitlint": {

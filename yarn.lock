@@ -3875,6 +3875,14 @@
     "@types/react" "*"
     "@types/reactcss" "*"
 
+"@types/react-relay@^7.0.16":
+  version "7.0.16"
+  resolved "https://registry.yarnpkg.com/@types/react-relay/-/react-relay-7.0.16.tgz#ee6bb834c3fa0c0ef73cca61245c522f043d02ab"
+  integrity sha512-oKXcJIHQrEuijmGXE7CkwIzNCauczfO8ts3gVy/2J2wbRLNO4TbAcIsC3WVCKkQUuWIg5ycUNPNwTl1/OkGHHg==
+  dependencies:
+    "@types/react" "*"
+    "@types/relay-runtime" "*"
+
 "@types/react-syntax-highlighter@11.0.4":
   version "11.0.4"
   resolved "https://registry.yarnpkg.com/@types/react-syntax-highlighter/-/react-syntax-highlighter-11.0.4.tgz#d86d17697db62f98046874f62fdb3e53a0bbc4cd"
@@ -3903,6 +3911,11 @@
   integrity sha512-d2gQQ0IL6hXLnoRfVYZukQNWHuVsE75DzFTLPUuyyEhJS8G2VvlE+qfQQ91SJjaMqlURRCNIsX7Jcsw6cEuJlA==
   dependencies:
     "@types/react" "*"
+
+"@types/relay-runtime@*", "@types/relay-runtime@^10.0.10":
+  version "10.0.10"
+  resolved "https://registry.yarnpkg.com/@types/relay-runtime/-/relay-runtime-10.0.10.tgz#b7c2ed282c62d7291cfb662b0e940ca4e193be4b"
+  integrity sha512-mVB6a63uzZ0PRu19A4WiGFUFww8u7cjTE6HHoKy94pUzRfQ/l3qsfjgJlzr7fA/HCM0I4spPpaUunDbp83N9uQ==
 
 "@types/serve-static@*":
   version "1.13.5"

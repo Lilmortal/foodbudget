@@ -8,6 +8,7 @@
   ],
   "exclude": [
     "**/*.test.*",
-    "**/*.ispec.*"
+    "**/*.ispec.*",
+    "./prisma/"
   ]
 }
