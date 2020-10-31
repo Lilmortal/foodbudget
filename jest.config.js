@@ -1,5 +1,3 @@
 module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  testPathIgnorePatterns: ['dist'],
+  projects: ['<rootDir>/packages/@foodbudget/backend', '<rootDir>/packages/@foodbudget/frontend'],
 };

@@ -14,6 +14,7 @@
     "@types/jest": "^26.0.14",
     "@typescript-eslint/eslint-plugin": "^4.3.0",
     "@typescript-eslint/parser": "^4.3.0",
+    "babel-jest": "^26.6.1",
     "commitlint": "^9.1.2",
     "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
@@ -30,23 +31,32 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "yarn lint && yarn test:unit"
+      "pre-commit": "yarn lint && yarn test:unit --coverage"
     }
   },
   "scripts": {
-    "build": "dotenv -e .env -- lerna run build --stream",
+    "build": "dotenv -e .env -- lerna run build --stream --since master",
+    "build:ci": "dotenv -e .env -- lerna run build --stream",
+    "sb": "dotenv -e .env -- lerna run sb --stream --parallel",
     "start": "dotenv -e .env -- lerna run start --stream --parallel",
-    "generate": "dotenv -e .env -- yarn workspace @foodbudget/api generate",
-    "start:studio": "dotenv -e .env -- yarn workspace @foodbudget/api start:studio",
-    "migrate:save": "dotenv -e .env -- yarn workspace @foodbudget/api migrate:save",
-    "migrate:up": "dotenv -e .env -- yarn workspace @foodbudget/api migrate:up",
+    "start:back": "dotenv -e .env -- lerna run start --ignore=@foodbudget/ui --stream --parallel",
+    "start:front": "dotenv -e .env -- lerna run start --scope=@foodbudget/ui --stream --parallel",
+    "generate": "dotenv -e .env -- yarn workspace @foodbudget/backend/api generate",
+    "start:studio": "dotenv -e .env -- yarn workspace @foodbudget/backend/api start:studio",
+    "migrate:save": "dotenv -e .env -- yarn workspace @foodbudget/backend/api migrate:save",
+    "migrate:up": "dotenv -e .env -- yarn workspace @foodbudget/backend/api migrate:up",
     "start:cron": "lerna run start:cron --stream --parallel",
-    "test:unit": "jest",
-    "test:integration": "jest --testRegex .*/src/.*.ispec.ts",
-    "check-types": "tsc --noemit",
-    "test": "jest --watch",
-    "lint:ts": "eslint **/*.ts --fix && yarn check-types",
+    "test": "jest --changedSince=master --watch",
+    "test:unit": "jest --changedSince=master",
+    "test:back": "jest --projects=packages/@foodbudget/backend --changedSince=master",
+    "test:front": "jest --projects=packages/@foodbudget/frontend --changedSince=master",
+    "test:back-int": "jest --projects=packages/@foodbudget/backend --testRegex .*/src/.*.ispec.ts --changedSince=master",
+    "test:front-int": "jest --projects=packages/@foodbudget/frontend --testRegex .*/src/.*.ispec.ts --changedSince=master",
+    "test:integration": "yarn test:back-int && yarn test:front-int",
+    "check-types": "lerna run check-types --stream --parallel",
+    "lint:ts": "eslint '**/*.ts' --fix && yarn check-types",
     "lint": "run-p -c 'lint:*'",
+    "relay": "lerna run relay --stream",
     "release": "lerna publish --no-commit-hooks --yes"
   },
   "commitlint": {

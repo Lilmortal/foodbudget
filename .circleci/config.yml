@@ -15,10 +15,11 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-            - packages/@foodbudget/api/node_modules
-            - packages/@foodbudget/email/node_modules
+            - packages/@foodbudget/backend/api/node_modules
+            - packages/@foodbudget/backend/email/node_modules
             # - packages/@foodbudget/errors/node_modules
-            - packages/@foodbudget/jobs/node_modules
+            - packages/@foodbudget/backend/jobs/node_modules
+            - packages/@foodbudget/frontend/node_modules
             # - packages/@foodbudget/logger/node_modules
           key: v2-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
   lint:
@@ -35,7 +36,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      - run: yarn build
+      - run: yarn build:ci
       - run: yarn lint
   unitTest:
     docker:
@@ -51,8 +52,8 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      - run: yarn build
-      - run: yarn test:unit
+      - run: yarn build:ci
+      - run: yarn test:unit --coverage
   integrationTest:
     docker:
       - image: circleci/node:14.11.0-browsers
@@ -67,8 +68,8 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      - run: yarn build
-      - run: yarn test:integration      
+      - run: yarn build:ci
+      - run: yarn test:integration --coverage  
   release:
     docker:
       - image: circleci/node:14.11.0-browsers
@@ -88,7 +89,7 @@ jobs:
       - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
       - run: npm get registry
       - run: npm whoami
-      - run: yarn build
+      - run: yarn build:ci
       - run: yarn release
       - run: git push --follow-tags origin master
 commands:
@@ -101,7 +102,7 @@ commands:
       - run:
           name: Combine yarn.lock files to single file
           # command: npx lerna la -a | awk -F packages '{printf "\"packages%s/yarn.lock\" ", $2}' | xargs ls -d 2> /dev/null | xargs cat > << parameters.filename >>
-          command: echo packages/@foodbudget/api/yarn.lock | xargs cat > << parameters.filename >>
+          command: echo packages/@foodbudget/backend/api/yarn.lock | xargs cat > << parameters.filename >>
 workflows:
   version: 2
   verify:

@@ -1,0 +1,60 @@
+{
+  "name": "@foodbudget/api",
+  "version": "5.0.0",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "author": "Jack Tan",
+  "license": "MIT",
+  "files": [
+    "/dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.json",
+    "start": "ts-node-dev --respawn src/app.ts",
+    "start:studio": "prisma studio",
+    "generate": "prisma generate",
+    "setup": "yarn generate && yarn migrate:up",
+    "migrate:save": "prisma migrate save --experimental",
+    "migrate:up": "prisma migrate up --experimental",
+    "check-types": "tsc --noemit"
+  },
+  "dependencies": {
+    "@foodbudget/email": "^4.2.6",
+    "@foodbudget/errors": "^4.0.0",
+    "@foodbudget/logger": "^3.0.0",
+    "@nexus/schema": "^0.16.0",
+    "@prisma/client": "^2.6.2",
+    "apollo-cache-control": "^0.11.3",
+    "apollo-server-express": "^2.18.1",
+    "argon2": "^0.27.0",
+    "colors": "^1.4.0",
+    "cookie-parser": "^1.4.5",
+    "date-fns": "^2.16.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "find-config": "^1.0.0",
+    "graphql": "^15.3.0",
+    "graphql-query-complexity": "^0.7.0",
+    "jsonwebtoken": "^8.5.1",
+    "passport": "^0.4.1",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth20": "^2.0.0",
+    "pg": "^8.4.0",
+    "uuid": "^8.3.1"
+  },
+  "devDependencies": {
+    "@prisma/cli": "^2.8.1",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/express": "^4.17.8",
+    "@types/find-config": "^1.0.0",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/passport": "^1.0.4",
+    "@types/passport-facebook": "^2.1.10",
+    "@types/passport-google-oauth20": "^2.0.4",
+    "@types/uuid": "^8.3.0",
+    "ts-node-dev": "^1.0.0-pre.62"
+  }
+}

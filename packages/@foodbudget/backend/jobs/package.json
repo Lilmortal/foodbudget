@@ -1,0 +1,36 @@
+{
+  "name": "@foodbudget/jobs",
+  "version": "5.0.0",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "author": "Jack Tan",
+  "license": "MIT",
+  "files": [
+    "/dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "start:cron": "ts-node-dev --respawn src/index.ts",
+    "build": "rm -rf dist && tsc -p tsconfig.json",
+    "check-types": "tsc --noemit"
+  },
+  "dependencies": {
+    "@foodbudget/api": "^5.0.0",
+    "@foodbudget/email": "^4.2.6",
+    "@foodbudget/errors": "^4.0.0",
+    "@foodbudget/logger": "^3.0.0",
+    "agenda": "^3.1.0",
+    "dotenv": "^8.2.0",
+    "find-config": "^1.0.0",
+    "puppeteer": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/agenda": "^2.0.9",
+    "@types/find-config": "^1.0.0",
+    "@types/puppeteer": "^3.0.2",
+    "jest-mock-extended": "^1.0.10",
+    "ts-node-dev": "^1.0.0-pre.62"
+  }
+}
