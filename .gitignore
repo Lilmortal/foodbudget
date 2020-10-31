@@ -10,3 +10,4 @@ tsconfig.tsbuildinfo
 *.tfvars
 .terraform
 .next
+coverage
