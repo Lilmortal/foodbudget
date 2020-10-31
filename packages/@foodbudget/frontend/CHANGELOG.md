@@ -1,0 +1,15 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# 1.1.0 (2020-10-31)
+
+
+### Features
+
+* added jest config to frontend ([4b2aacd](https://github.com/Lilmortal/foodbudget/commit/4b2aacdcad0ab260983b347f6ac27747abd3dae0))
+* added relay to newly created frontend project ([c11bb6f](https://github.com/Lilmortal/foodbudget/commit/c11bb6f9dd351f220a0f0902d5eaab9464733502))
+* init frontend project and storybook ([b663652](https://github.com/Lilmortal/foodbudget/commit/b663652e0af078340e97d33de50bd7d1c2469381))
+* jest use --project CLI to determine which tests to run ([75ac9e8](https://github.com/Lilmortal/foodbudget/commit/75ac9e89850f19688052635f0406e88ed83db24b))
+* support inline SVG ([ec45231](https://github.com/Lilmortal/foodbudget/commit/ec452314d2e6a62798f959ca68a4384f915f6df5))
