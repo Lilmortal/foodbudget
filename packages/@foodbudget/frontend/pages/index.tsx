@@ -24,28 +24,29 @@ const environment = new Environment({
   store: new Store(new RecordSource()),
 });
 
-const UserFragment = graphql`
-    fragment UserFragment on user {
-        email
-        nickname
-    }
-`;
+// const UserFragment = graphql`
+//     fragment UserFragment on user {
+//         email
+//         nickname
+//     }
+// `;
 
 const App: React.FC<{}> = () => (
-    <QueryRenderer
-    environment={environment}
-    query={UserFragment}
-    variables={{ email: 'jacktan165@gmail.com' }}
-    render={({ error, props }: any) => {
-      if (error) {
-        return <div>Error!</div>;
-      }
-      if (!props) {
-        return <div>Loading...</div>;
-      }
-      return <div>User ID: {props}</div>;
-    }}
-    />
+    // <QueryRenderer
+    // environment={environment}
+    // query={UserFragment}
+    // variables={{ email: 'jacktan165@gmail.com' }}
+    // render={({ error, props }: any) => {
+    //   if (error) {
+    //     return <div>Error!</div>;
+    //   }
+    //   if (!props) {
+    //     return <div>Loading...</div>;
+    //   }
+    //   return <div>User ID: {props}</div>;
+    // }}
+    // />
+    <div>test</div>
 );
 
 export default App;
