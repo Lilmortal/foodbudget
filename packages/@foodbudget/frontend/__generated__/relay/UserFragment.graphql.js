@@ -9,17 +9,17 @@
 /*::
 import type { ReaderFragment } from 'relay-runtime';
 import type { FragmentReference } from "relay-runtime";
-declare export opaque type uhhFragment$ref: FragmentReference;
-declare export opaque type uhhFragment$fragmentType: uhhFragment$ref;
-export type uhhFragment = {|
+declare export opaque type UserFragment$ref: FragmentReference;
+declare export opaque type UserFragment$fragmentType: UserFragment$ref;
+export type UserFragment = {|
   +email: ?string,
   +nickname: ?string,
-  +$refType: uhhFragment$ref,
+  +$refType: UserFragment$ref,
 |};
-export type uhhFragment$data = uhhFragment;
-export type uhhFragment$key = {
-  +$data?: uhhFragment$data,
-  +$fragmentRefs: uhhFragment$ref,
+export type UserFragment$data = UserFragment;
+export type UserFragment$key = {
+  +$data?: UserFragment$data,
+  +$fragmentRefs: UserFragment$ref,
   ...
 };
 */
@@ -29,7 +29,7 @@ const node/*: ReaderFragment*/ = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "uhhFragment",
+  "name": "UserFragment",
   "selections": [
     {
       "alias": null,
@@ -50,6 +50,6 @@ const node/*: ReaderFragment*/ = {
   "abstractKey": null
 };
 // prettier-ignore
-(node/*: any*/).hash = '1e6377bf3c87ac88d0a00b880e3549d0';
+(node/*: any*/).hash = '826c265e9cc5a35652a64d7c2ac36f34';
 
 module.exports = node;

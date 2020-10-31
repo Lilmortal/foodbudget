@@ -2,7 +2,6 @@ import { graphql, QueryRenderer } from 'react-relay';
 import {
   Environment, Network, RecordSource, Store,
 } from 'relay-runtime';
-import uhhFragment from '../src/uhh';
 
 function fetchQuery(
   operation: any,
