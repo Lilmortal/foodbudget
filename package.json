@@ -31,7 +31,7 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "yarn lint && yarn test:unit"
+      "pre-commit": "yarn lint && yarn test:unit --coverage --changedSince=master"
     }
   },
   "scripts": {
