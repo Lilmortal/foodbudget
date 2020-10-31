@@ -2,8 +2,13 @@
   "extends": "../../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "lib": ["dom", "dom.iterable", "es2020"],
-    "jsx": "preserve"
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es2020"
+    ],
+    "jsx": "preserve",
+    "noEmit": true
   },
   "include": [
     "next-env.d.ts",
@@ -15,7 +20,7 @@
   "exclude": [
     "**/*.test.*",
     "**/*.ispec.*",
-    "node_modules", 
+    "node_modules",
     "**/*.cy.ts"
   ]
 }
