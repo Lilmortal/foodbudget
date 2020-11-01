@@ -1,5 +1,6 @@
-dist/
-node_modules/
-pgdata/
-coverage/
-__generated__/
+**/dist/**
+**/node_modules/**
+**/pgdata/**
+**/coverage/**
+**/__generated__/**
+**/prisma/**
