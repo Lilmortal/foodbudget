@@ -35,7 +35,9 @@
     }
   },
   "scripts": {
-    "build": "dotenv -e .env -- lerna run build --stream --since master",
+    "build": "dotenv -e .env -- lerna run build --stream",
+    "build:back": "dotenv -e .env -- lerna run build --ignore=@foodbudget/ui --stream",
+    "build:front": "dotenv -e .env -- lerna run build --scope=@foodbudget/ui --stream",
     "build:ci": "dotenv -e .env -- lerna run build --stream",
     "sb": "dotenv -e .env -- lerna run sb --stream --parallel",
     "start": "dotenv -e .env -- lerna run start --stream --parallel",
@@ -53,7 +55,7 @@
     "test:back-int": "jest --projects=packages/@foodbudget/backend --testRegex .*/src/.*.ispec.ts --changedSince=master",
     "test:front-int": "jest --projects=packages/@foodbudget/frontend --testRegex .*/src/.*.ispec.ts --changedSince=master",
     "test:integration": "yarn test:back-int && yarn test:front-int",
-    "check-types": "lerna run check-types --stream --parallel",
+    "check-types": "lerna run check-types --stream --parallel --since master",
     "lint:ts": "eslint '**/*.ts' --fix && yarn check-types",
     "lint": "run-p -c 'lint:*'",
     "relay": "lerna run relay --stream",
