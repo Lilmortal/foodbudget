@@ -15,5 +15,14 @@
     "declarationMap": true,
     "allowJs": true,
     "isolatedModules": true,
-  }
+  },
+  "include": [
+    "packages/@foodbudget/**/*"
+  ],
+  "exclude": [
+    "**/*/coverage/*",
+    "**/*/dist/*",
+    "**/*.js",
+    "node_modules"
+  ]
 }
