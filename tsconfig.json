@@ -6,23 +6,15 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "removeComments": true,
-    "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "composite": true,
     "declarationMap": true,
     "allowJs": true,
-    "isolatedModules": true,
+    "isolatedModules": true
   },
-  "include": [
-    "packages/@foodbudget/**/*"
-  ],
-  "exclude": [
-    "**/*/coverage/*",
-    "**/*/dist/*",
-    "**/*.js",
-    "node_modules"
-  ]
+  "include": ["packages/@foodbudget/**/*"],
+  "exclude": ["**/*/coverage/*", "**/*/dist/*", "**/*.js", "node_modules"]
 }
