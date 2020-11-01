@@ -1,6 +1,6 @@
 {
   "name": "@foodbudget/errors",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Jack Tan",
@@ -12,7 +12,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@foodbudget/email": "^4.3.0",
+    "@foodbudget/email": "^4.3.1",
     "@foodbudget/logger": "^3.1.0",
     "dotenv": "^8.2.0",
     "find-config": "^1.0.0"
