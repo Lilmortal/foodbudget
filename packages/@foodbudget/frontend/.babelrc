@@ -1,8 +1,4 @@
 {
-    "plugins": [
-      "relay",
-      "babel-plugin-react-require",
-      "inline-react-svg"
-    ],
-    "presets": ["next/babel"]
-  }
+  "plugins": ["relay", "babel-plugin-react-require", "inline-react-svg"],
+  "presets": ["next/babel"]
+}
