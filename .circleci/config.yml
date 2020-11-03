@@ -36,7 +36,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      - run: yarn build
+      - run: yarn build:ci
       - run: yarn lint
   unitTest:
     docker:
@@ -52,7 +52,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      - run: yarn build
+      - run: yarn build:ci
       - run: yarn test:unit --coverage
   integrationTest:
     docker:
@@ -68,7 +68,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      - run: yarn build
+      - run: yarn build:ci
       - run: yarn test:integration --coverage  
   release:
     docker:
@@ -89,7 +89,7 @@ jobs:
       - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
       - run: npm get registry
       - run: npm whoami
-      - run: yarn build
+      - run: yarn build:ci
       - run: yarn release
       - run: git push --follow-tags origin master
 commands:
