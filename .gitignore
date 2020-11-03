@@ -11,3 +11,4 @@ tsconfig.tsbuildinfo
 .terraform
 .next
 coverage
+__generated__

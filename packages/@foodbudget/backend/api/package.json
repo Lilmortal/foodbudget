@@ -1,8 +1,8 @@
 {
   "name": "@foodbudget/api",
   "version": "5.1.1",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "author": "Jack Tan",
   "license": "MIT",
   "files": [
@@ -12,14 +12,15 @@
     "access": "public"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.json",
-    "start": "ts-node-dev --respawn src/app.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "ts-node-dev --respawn src/app.ts --dep",
     "start:studio": "prisma studio",
     "generate": "prisma generate",
     "setup": "yarn generate && yarn migrate:up",
     "migrate:save": "prisma migrate save --experimental",
     "migrate:up": "prisma migrate up --experimental",
-    "check-types": "tsc --noemit"
+    "check-types": "tsc --noemit",
+    "clean": "rimraf dist"
   },
   "dependencies": {
     "@foodbudget/email": "^4.3.1",
@@ -43,6 +44,7 @@
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.4.0",
+    "rimraf": "^3.0.2",
     "uuid": "^8.3.1"
   },
   "devDependencies": {

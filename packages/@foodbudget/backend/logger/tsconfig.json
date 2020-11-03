@@ -2,14 +2,8 @@
   "extends": "../../../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
+    "composite": true,
   },
-  "include": [
-    "index.ts",
-    "formatMessage.ts",
-    "./config/"
-  ],
-  "exclude": [
-    "**/*.test.*",
-    "**/*.ispec.*"
-  ]
+  "include": ["index.ts", "formatMessage.ts", "./config/"],
+  "exclude": ["**/*.test.*", "**/*.ispec.*"]
 }

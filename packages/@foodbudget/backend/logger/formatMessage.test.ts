@@ -7,7 +7,7 @@ describe('formatMessage', () => {
       message: 'message',
     };
 
-    const result = stripAnsi(formatMessage(message));
+    const result = stripAnsi(formatMessage(message, 'production'));
 
     expect(result).toEqual(`${message.message}`);
   });
@@ -35,7 +35,7 @@ describe('formatMessage', () => {
       },
     };
 
-    const result = stripAnsi(formatMessage(message));
+    const result = stripAnsi(formatMessage(message, 'production'));
 
     expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
   });
@@ -48,6 +48,21 @@ describe('formatMessage', () => {
     const formattedMessage = {
       message: 'message',
       query: { user: 'test', password: '*****' },
+    };
+
+    const result = stripAnsi(formatMessage(message, 'production'));
+
+    expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
+  });
+
+  it('should not mask info when env is not production', () => {
+    const message = {
+      message: 'message', user: 'test', password: 'password',
+    };
+
+    const formattedMessage = {
+      message: 'message',
+      query: { user: 'test', password: 'password' },
     };
 
     const result = stripAnsi(formatMessage(message));
@@ -78,7 +93,7 @@ describe('formatMessage', () => {
       },
     };
 
-    const result = stripAnsi(formatMessage(message));
+    const result = stripAnsi(formatMessage(message, 'production'));
 
     expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
   });
@@ -94,7 +109,7 @@ describe('formatMessage', () => {
       query: { user: 'test', password: '*****' },
     };
 
-    const result = stripAnsi(formatMessage(message));
+    const result = stripAnsi(formatMessage(message, 'production'));
 
     expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
   });
@@ -109,7 +124,7 @@ describe('formatMessage', () => {
       sessionId: 'sessionId',
     };
 
-    const result = stripAnsi(formatMessage(message));
+    const result = stripAnsi(formatMessage(message, 'production'));
 
     expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
   });

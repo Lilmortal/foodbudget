@@ -2,12 +2,9 @@
   "extends": "../../../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
+    "composite": true
   },
-  "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "**/*.test.*",
-    "**/*.ispec.*"
-  ]
+  "include": ["./src/**/*"],
+  "exclude": ["**/*.test.*", "**/*.ispec.*"],
+  "references": [{ "path": "../logger" }]
 }
