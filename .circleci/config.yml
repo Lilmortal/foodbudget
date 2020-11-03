@@ -142,5 +142,6 @@ workflows:
               only: master
           requires:
             - lint
-            - unitTest
-            - integrationTest
+            - frontEndUnitTest
+            - backEndUnitTest
+            - backEndIntegrationTest
