@@ -14,5 +14,14 @@
     "declarationMap": true,
     "allowJs": true,
     "isolatedModules": true
-  }
+  },
+  "references": [
+    { "path": "./packages/@foodbudget/backend/api" },
+    { "path": "./packages/@foodbudget/backend/email" },
+    { "path": "./packages/@foodbudget/backend/errors" },
+    { "path": "./packages/@foodbudget/backend/jobs" },
+    { "path": "./packages/@foodbudget/backend/logger" },
+    { "path": "./packages/@foodbudget/frontend" }
+  ],
+  "files": []
 }
