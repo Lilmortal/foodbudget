@@ -39,6 +39,7 @@
     "build:back": "dotenv -e .env -- lerna run build --ignore=@foodbudget/ui --stream",
     "build:front": "dotenv -e .env -- lerna run build --scope=@foodbudget/ui --stream",
     "build:ci": "dotenv -e .env -- lerna run build --stream",
+    "compile": "dotenv -e .env -- lerna run compile --scope=@foodbudget/ui --stream",
     "sb": "dotenv -e .env -- lerna run sb --stream --parallel",
     "start": "dotenv -e .env -- lerna run start --stream --parallel",
     "start:back": "dotenv -e .env -- lerna run start --ignore=@foodbudget/ui --stream --parallel",
