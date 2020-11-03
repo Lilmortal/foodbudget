@@ -1,7 +1,7 @@
 import { graphql } from 'react-relay';
 
 const query = graphql`
-  query userQuery($email: Email!) {
+  query UserQuery($email: Email!) {
     user(email: $email) {
       ...UserFragment_user
     }
