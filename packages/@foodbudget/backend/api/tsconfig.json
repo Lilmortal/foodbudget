@@ -2,13 +2,13 @@
   "extends": "../../../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
+    "composite": true
   },
-  "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "**/*.test.*",
-    "**/*.ispec.*",
-    "./prisma/"
+  "include": ["./src/**/*"],
+  "exclude": ["**/*.test.*", "**/*.ispec.*", "./prisma/"],
+  "references": [
+    { "path": "../email" },
+    { "path": "../errors" },
+    { "path": "../logger" }
   ]
 }
