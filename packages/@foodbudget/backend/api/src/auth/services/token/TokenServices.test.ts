@@ -144,7 +144,7 @@ describe('token services', () => {
 
     const userId = '4';
 
-    const refreshToken = tokenServices.createRefreshToken(userId);
+    const refreshToken = tokenServices.createRefreshToken(userId, 'development');
 
     expect(refreshToken).toEqual(
       {
@@ -166,7 +166,7 @@ describe('token services', () => {
 
     const userId = '4';
 
-    const refreshToken = tokenServices.createRefreshToken(userId);
+    const refreshToken = tokenServices.createRefreshToken(userId, 'development');
 
     const decodedRefreshToken = verify((refreshToken as RefreshToken).value, refreshSecret);
 
@@ -178,7 +178,7 @@ describe('token services', () => {
 
     const userId = '4';
 
-    const refreshToken = tokenServices.createRefreshToken(userId);
+    const refreshToken = tokenServices.createRefreshToken(userId, 'development');
 
     const decodedRefreshToken = verify((refreshToken as RefreshToken).value, refreshSecret);
 
@@ -190,7 +190,7 @@ describe('token services', () => {
 
     const userId = '4';
 
-    const refreshToken = tokenServices.createRefreshToken(userId);
+    const refreshToken = tokenServices.createRefreshToken(userId, 'development');
 
     expect((refreshToken as RefreshToken).options.secure).toEqual(false);
   });
@@ -232,7 +232,7 @@ describe('token services', () => {
       + 'MjAyMCAwMzoxNzoxNyBHTVQiLCJpYXQiOjE2MDQ0NTk3NjcsImV4cCI6MTYwNDQ1OTgzN30.yBcGa3qAfNGouaR0YuQVLuKXJhT'
       + 'FFMIdpXWJjSnz--U';
 
-    const results = tokenServices.renewTokens(refreshToken);
+    const results = tokenServices.renewTokens(refreshToken, 'development');
 
     expect(results).toEqual({
       accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0Iiwic2NvcGUiOltdLCJleHBpcmVUaW1l'

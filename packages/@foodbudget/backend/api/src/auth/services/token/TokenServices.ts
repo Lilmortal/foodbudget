@@ -92,7 +92,7 @@ export class TokenServices {
     return accessToken;
   }
 
-  createRefreshToken(userId: string, env?: EnvConfig): RefreshToken {
+  createRefreshToken(userId: string, env: EnvConfig): RefreshToken {
     const currentTime = Date.now();
     const expireTimeInMs = addMilliseconds(currentTime, this.tokenConfig.refresh.expireTimeInMs);
 
@@ -123,11 +123,11 @@ export class TokenServices {
     return decodedToken;
   }
 
-  renewTokens(refreshToken: string): RenewedTokenResponse {
+  renewTokens(refreshToken: string, env: EnvConfig): RenewedTokenResponse {
     const decodedRefreshToken = this.decodeRefreshToken(refreshToken);
 
     const accessToken = this.createAccessToken(decodedRefreshToken.userId);
-    const renewedRefreshToken = this.createRefreshToken(decodedRefreshToken.userId);
+    const renewedRefreshToken = this.createRefreshToken(decodedRefreshToken.userId, env);
 
     return {
       accessToken,

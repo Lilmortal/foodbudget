@@ -16,7 +16,9 @@ export const login = mutationField('login', {
     // const envConfig = ctx.serviceManager.
     if (user) {
       logger.info('user has logged in.');
-      const refreshToken = ctx.serviceManager.tokenServices.createRefreshToken(user.id.toString());
+
+      const envConfig = ctx.config.env;
+      const refreshToken = ctx.serviceManager.tokenServices.createRefreshToken(user.id.toString(), envConfig);
       const accessToken = ctx.serviceManager.tokenServices.createAccessToken(user.id.toString());
 
       ctx.res.cookie(refreshToken.name, refreshToken.value, refreshToken.options);

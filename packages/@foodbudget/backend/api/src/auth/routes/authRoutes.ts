@@ -3,6 +3,7 @@ import express, { Request, Response, Router } from 'express';
 
 import { AppError } from '@foodbudget/errors';
 import { AuthServices, TokenServices } from '../services';
+import { EnvConfig } from '../../config';
 
 const router = express.Router();
 
@@ -35,12 +36,15 @@ interface SocialLoginData {
 const isSocialLoginData = (user: Express.User): user is SocialLoginData => !!(user as SocialLoginData).email
 && !!(user as SocialLoginData).id && !!(user as SocialLoginData).strategy;
 
-const handleTokenVerification = (tokenServices: Required<TokenServices>, authServices: Required<AuthServices>) => async (
+const handleTokenVerification = (
+  tokenServices: Required<TokenServices>, authServices: Required<AuthServices>, env: EnvConfig,
+) => async (
   req: Request, res: Response,
 ) => {
   if (req.user && isSocialLoginData(req.user)) {
     await authServices.login(getSocialLoginRequest(req.user.strategy, req.user.id, req.user.email));
-    const refreshToken = tokenServices.createRefreshToken(req.user.id);
+
+    const refreshToken = tokenServices.createRefreshToken(req.user.id, env);
     res.cookie(refreshToken.name, refreshToken.value, refreshToken.options);
     res.redirect('http://localhost:8080/graphql');
   } else {
@@ -51,16 +55,19 @@ const handleTokenVerification = (tokenServices: Required<TokenServices>, authSer
 export interface AuthRoutesInjection {
   tokenServices: Required<TokenServices>;
   authServices: Required<AuthServices>;
+  env: EnvConfig;
 }
 
-export const authRoutes = ({ tokenServices, authServices }: AuthRoutesInjection): Router => {
+export const authRoutes = ({ tokenServices, authServices, env }: AuthRoutesInjection): Router => {
   router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
   router.get('/google/verify', passport.authenticate('google',
-    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification(tokenServices, authServices));
+    { failureRedirect: 'http://localhost:8080/login?fail=true' }),
+  handleTokenVerification(tokenServices, authServices, env));
 
   router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
   router.get('/facebook/verify', passport.authenticate('facebook',
-    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification(tokenServices, authServices));
+    { failureRedirect: 'http://localhost:8080/login?fail=true' }),
+  handleTokenVerification(tokenServices, authServices, env));
 
   return router;
 };

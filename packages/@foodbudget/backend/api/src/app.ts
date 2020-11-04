@@ -44,7 +44,8 @@ app.get('/healthcheck', (_req, res) => {
 
 app.use(socialTokenStrategyHandler({ googleConfig: config.google, facebookConfig: config.facebook }));
 app.use(passport.initialize());
-app.use('/v1/auth', authRoutes({ tokenServices: serviceManager.tokenServices, authServices: serviceManager.authServices }));
+app.use('/v1/auth', authRoutes({
+  tokenServices: serviceManager.tokenServices, authServices: serviceManager.authServices, env: config.env }));
 
 app.use(pageNotFoundHandler);
 app.use(errorHandler);

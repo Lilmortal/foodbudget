@@ -1,6 +1,7 @@
 import logger from '@foodbudget/logger';
 import { Request, Response } from 'express';
 import { v4 } from 'uuid';
+import { config, Config } from './config';
 import { serviceManager, ServiceManager } from './serviceManager';
 
 interface ContextParams {
@@ -12,6 +13,7 @@ export interface Context extends ContextParams {
     serviceManager: ServiceManager;
     userId: string | undefined;
     scope: string[] | undefined;
+    config: Config
 }
 
 export const context = ({ req, res }: ContextParams): Context => {
@@ -30,6 +32,6 @@ export const context = ({ req, res }: ContextParams): Context => {
   }
 
   return {
-    serviceManager, req, res, userId, scope,
+    serviceManager, req, res, userId, scope, config,
   };
 };

@@ -23,7 +23,8 @@ export const renewToken = queryField('renewToken', {
       );
     }
 
-    const { accessToken, refreshToken: renewedRefreshToken } = await tokenServices.renewTokens(refreshToken);
+    const envConfig = ctx.config.env;
+    const { accessToken, refreshToken: renewedRefreshToken } = await tokenServices.renewTokens(refreshToken, envConfig);
 
     ctx.res.cookie(renewedRefreshToken.name, renewedRefreshToken.value, renewedRefreshToken.options);
 
