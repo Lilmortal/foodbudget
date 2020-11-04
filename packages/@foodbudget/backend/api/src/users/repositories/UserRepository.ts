@@ -1,13 +1,11 @@
 import logger from '@foodbudget/logger';
 import { PrismaClient } from '@prisma/client';
 import { AppError } from '@foodbudget/errors';
-import { PartialBy } from '../../shared/types/PartialBy.types';
-import { Repository, SaveOptions } from '../../shared/types/Repository.types';
 import { User } from '../User.types';
-import userMapper from './userMapper';
-import performanceTest from '../../perf';
+import { userMapper } from './userMapper';
+import { performanceTest } from '../../perf';
 
-export default class UserRepository implements Repository<User> {
+export class UserRepository implements Repository<User> {
   private readonly prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {

@@ -4,7 +4,7 @@ import {
 } from '@nexus/schema';
 import { users } from '@prisma/client';
 import { Context } from '../../context';
-import emailArg from '../../shared/scalar/emailArg';
+import { emailArg } from '../../shared/scalar/emailArg';
 
 export const userField = objectType({
   name: 'user',
@@ -14,7 +14,7 @@ export const userField = objectType({
   },
 });
 
-const getUser = queryField('user', {
+export const getUser = queryField('user', {
   type: userField,
   args: {
     id: intArg(),
@@ -33,5 +33,3 @@ const getUser = queryField('user', {
     return result;
   },
 });
-
-export default getUser;

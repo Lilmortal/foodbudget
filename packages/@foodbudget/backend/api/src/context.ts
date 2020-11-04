@@ -1,7 +1,7 @@
 import logger from '@foodbudget/logger';
 import { Request, Response } from 'express';
 import { v4 } from 'uuid';
-import serviceManager, { ServiceManager } from './serviceManager';
+import { serviceManager, ServiceManager } from './serviceManager';
 
 interface ContextParams {
     req: Request;
@@ -14,7 +14,7 @@ export interface Context extends ContextParams {
     scope: string[] | undefined;
 }
 
-const context = ({ req, res }: ContextParams): Context => {
+export const context = ({ req, res }: ContextParams): Context => {
   const header = req.headers.authorization;
   let userId: string | undefined;
   let scope: string[] | undefined;
@@ -24,7 +24,7 @@ const context = ({ req, res }: ContextParams): Context => {
   logger.defaultMeta = { sessionId };
 
   if (header) {
-    const token = serviceManager.authServices.extractAccessToken(header);
+    const token = serviceManager.tokenServices.extractAccessToken(header);
     userId = token.userId;
     scope = token.scope;
   }
@@ -33,5 +33,3 @@ const context = ({ req, res }: ContextParams): Context => {
     serviceManager, req, res, userId, scope,
   };
 };
-
-export default context;

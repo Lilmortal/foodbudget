@@ -1,4 +1,4 @@
-export { default } from './config';
+export { config } from './config';
 export type {
-  Config, ApiConfig, TokenConfig, SocialConfig,
+  Config, ApiConfig, TokenConfig, SocialConfig, EnvConfig,
 } from './config.types';

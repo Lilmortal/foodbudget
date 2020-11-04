@@ -1,31 +1,66 @@
 import passport from 'passport';
-import { Application, Request, Response } from 'express';
+import express, { Request, Response, Router } from 'express';
 
-import AuthServices from '../services/AuthServices';
+import { AppError } from '@foodbudget/errors';
+import { AuthServices, TokenServices } from '../services';
 
-const handleTokenVerification = (authServices: Required<AuthServices>) => (req: Request, res: Response) => {
-  if (req.user && authServices.isRefreshToken(req.user)) {
-    const refreshToken = authServices.createRefreshToken(req.user.userId);
-    res.cookie(refreshToken.name, refreshToken.value, { httpOnly: true });
+const router = express.Router();
+
+export type Strategy = 'google' | 'facebook';
+
+const getSocialLoginRequest = (strategy: Strategy, id: string, email: string) => {
+  if (strategy === 'google') {
+    return {
+      googleId: id,
+      email,
+    };
+  }
+
+  if (strategy === 'facebook') {
+    return {
+      facebookId: id,
+      email,
+    };
+  }
+
+  throw new AppError({ message: 'not a valid strategy.', isOperational: true });
+};
+
+interface SocialLoginData {
+  email: string;
+  id: string;
+  strategy: Strategy
+}
+
+const isSocialLoginData = (user: Express.User): user is SocialLoginData => !!(user as SocialLoginData).email
+&& !!(user as SocialLoginData).id && !!(user as SocialLoginData).strategy;
+
+const handleTokenVerification = (tokenServices: Required<TokenServices>, authServices: Required<AuthServices>) => async (
+  req: Request, res: Response,
+) => {
+  if (req.user && isSocialLoginData(req.user)) {
+    await authServices.login(getSocialLoginRequest(req.user.strategy, req.user.id, req.user.email));
+    const refreshToken = tokenServices.createRefreshToken(req.user.id);
+    res.cookie(refreshToken.name, refreshToken.value, refreshToken.options);
     res.redirect('http://localhost:8080/graphql');
   } else {
     res.redirect('http://locahost:8080/login?failureMessage=User ID is not found.');
   }
 };
 
-export interface AuthRoutesParams {
-  app: Application;
+export interface AuthRoutesInjection {
+  tokenServices: Required<TokenServices>;
   authServices: Required<AuthServices>;
 }
 
-const authRoutes = ({ app, authServices }: AuthRoutesParams): void => {
-  app.get('/v1/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-  app.get('/v1/auth/google/verify', passport.authenticate('google',
-    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification(authServices));
+export const authRoutes = ({ tokenServices, authServices }: AuthRoutesInjection): Router => {
+  router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+  router.get('/google/verify', passport.authenticate('google',
+    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification(tokenServices, authServices));
 
-  app.get('/v1/auth/facebook', passport.authenticate('facebook', { scope: ['email'] }));
-  app.get('/v1/auth/facebook/verify', passport.authenticate('facebook',
-    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification(authServices));
+  router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
+  router.get('/facebook/verify', passport.authenticate('facebook',
+    { failureRedirect: 'http://localhost:8080/login?fail=true' }), handleTokenVerification(tokenServices, authServices));
+
+  return router;
 };
-
-export default authRoutes;

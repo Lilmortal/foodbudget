@@ -1,14 +1,12 @@
 import logger from '@foodbudget/logger';
 import { PrismaClient } from '@prisma/client';
 import { AppError } from '@foodbudget/errors';
-import IngredientServices from '../../ingredients/services';
-import { PartialBy } from '../../shared/types/PartialBy.types';
-import { Repository, SaveOptions } from '../../shared/types/Repository.types';
+import { IngredientServices } from '../../ingredients/services';
 import { Recipe } from '../Recipe.types';
-import recipeMapper from './recipeMapper';
-import performanceTest from '../../perf';
+import { recipeMapper } from './recipeMapper';
+import { performanceTest } from '../../perf';
 
-export default class RecipeRepository implements Repository<Recipe> {
+export class RecipeRepository implements Repository<Recipe> {
   constructor(private readonly prisma: PrismaClient, private readonly ingredientsService: IngredientServices) {
     this.prisma = prisma;
     this.ingredientsService = ingredientsService;

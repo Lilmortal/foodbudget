@@ -9,28 +9,26 @@ export const renewToken = queryField('renewToken', {
   async resolve(_parent, args, ctx: Context) {
     logger.info('renewing tokens...');
 
-    const { authServices } = ctx.serviceManager;
+    const { tokenServices } = ctx.serviceManager;
 
-    const refreshToken = ctx.req.cookies[authServices.refreshTokenKey];
+    const refreshToken = ctx.req.cookies[tokenServices.refreshTokenKey];
 
     if (!refreshToken) {
       throw new AppError(
         {
-          message: 'refresh token either expired or does not exist. Redirecting to login page...',
+          message: 'refresh token either expired or does not exist.',
           isOperational: true,
           httpStatus: 401,
         },
       );
     }
 
-    const { accessToken, refreshToken: renewedRefreshToken } = await authServices.renewTokens(refreshToken);
+    const { accessToken, refreshToken: renewedRefreshToken } = await tokenServices.renewTokens(refreshToken);
 
     ctx.res.cookie(renewedRefreshToken.name, renewedRefreshToken.value, renewedRefreshToken.options);
 
-    // TODO: Somewhere headers are already sent?
-    ctx.res.status(200).send({
-      accessToken,
-    });
     logger.info('tokens renewed.');
+
+    return accessToken;
   },
 });

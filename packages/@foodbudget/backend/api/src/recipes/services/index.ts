@@ -1,1 +1,1 @@
-export { default } from './RecipeServices';
+export { RecipeServices } from './RecipeServices';

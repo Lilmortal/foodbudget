@@ -1,8 +1,4 @@
-export interface SaveOptions {
-  override?: false;
-}
-
-export interface Repository<D> {
+declare interface Repository<D> {
   get(obj: Partial<D>): Promise<D[] | undefined>;
   getOne(obj: Partial<D>): Promise<D | undefined>;
 

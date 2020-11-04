@@ -1,2 +1,1 @@
-export { default } from './userSchema';
-export * from './resolvers';
+export { userField, getUser } from './userSchema';

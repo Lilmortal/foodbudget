@@ -66,7 +66,7 @@ ${errors.map((error) => `* ${error}`).join('\n').trim()}`,
   return true;
 };
 
-const config: Config = {
+export const config: Config = {
   api: {
     prefix: '/graphql',
     port: 8080,
@@ -95,5 +95,3 @@ const config: Config = {
 if (!validate(config)) {
   process.exit(1);
 }
-
-export default config;

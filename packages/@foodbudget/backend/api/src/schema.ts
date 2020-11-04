@@ -8,7 +8,7 @@ import * as usersSchema from './users/schemas';
 import * as ingredientsSchema from './ingredients/schemas';
 import * as authSchema from './auth/schemas';
 
-const schema = makeSchema({
+export const schema = makeSchema({
   types: {
     ...recipesSchema,
     ...usersSchema,
@@ -36,5 +36,3 @@ const schema = makeSchema({
     }),
   ],
 });
-
-export default schema;

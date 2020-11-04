@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { AuthServices } from '../auth';
-import config from '../config';
+import { TokenServices } from '../auth/services/token/TokenServices';
+import { config } from '../config';
 import { IngredientRepository, IngredientServices } from '../ingredients';
 import { RecipeRepository, RecipeServices } from '../recipes';
 import { UserRepository, UserServices } from '../users';
@@ -17,13 +18,13 @@ const ingredientServices = new IngredientServices(ingredientRepository);
 const recipeRepository = new RecipeRepository(prisma, ingredientServices);
 const recipeServices = new RecipeServices(recipeRepository);
 
-const authServices = new AuthServices(config.token);
+const authServices = new AuthServices({ repository: userRepository });
+const tokenServices = new TokenServices({ tokenConfig: config.token });
 
-const serviceManager: ServiceManager = {
+export const serviceManager: ServiceManager = {
   recipeServices,
   userServices,
   ingredientServices,
   authServices,
+  tokenServices,
 };
-
-export default serviceManager;

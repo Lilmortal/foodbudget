@@ -1,1 +1,1 @@
-export { default } from './IngredientServices';
+export { IngredientServices } from './IngredientServices';

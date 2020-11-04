@@ -1,1 +1,1 @@
-export { default } from './performanceTest';
+export { performanceTest } from './performanceTest';

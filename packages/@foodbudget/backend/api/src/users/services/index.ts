@@ -1,2 +1,1 @@
-export { default } from './UserServices';
-export type { LoginRequest } from './UserServices.types';
+export { UserServices } from './UserServices';

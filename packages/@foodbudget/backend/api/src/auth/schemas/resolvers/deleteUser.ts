@@ -2,7 +2,7 @@ import { intArg, mutationField } from '@nexus/schema';
 import logger from '@foodbudget/logger';
 import { Context } from '../../../context';
 
-const deleteUser = mutationField('deleteUser', {
+export const deleteUser = mutationField('deleteUser', {
   type: 'String',
   args: {
     id: intArg({ required: true }),
@@ -21,5 +21,3 @@ const deleteUser = mutationField('deleteUser', {
     return false;
   },
 });
-
-export default deleteUser;
