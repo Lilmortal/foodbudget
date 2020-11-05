@@ -4,6 +4,9 @@ import { AppError } from '@foodbudget/errors';
 import { User } from '../User.types';
 import { userMapper } from './userMapper';
 import { performanceTest } from '../../perf';
+import { Repository } from '../../types/Repository';
+import { PartialBy } from '../../types/PartialBy';
+import { SaveOptions } from '../../types/SaveOptions';
 
 export class UserRepository implements Repository<User> {
   private readonly prisma: PrismaClient;

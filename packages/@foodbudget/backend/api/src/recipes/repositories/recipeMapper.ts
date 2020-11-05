@@ -1,3 +1,4 @@
+import { Mapper } from '../../types/Mapper';
 import { Recipe, RecipeResponse } from '../Recipe.types';
 
 export const recipeMapper: Mapper<Recipe, RecipeResponse> = ({

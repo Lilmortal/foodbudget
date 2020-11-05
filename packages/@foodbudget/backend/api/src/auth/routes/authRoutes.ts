@@ -36,11 +36,11 @@ interface SocialLoginData {
 const isSocialLoginData = (user: Express.User): user is SocialLoginData => !!(user as SocialLoginData).email
 && !!(user as SocialLoginData).id && !!(user as SocialLoginData).strategy;
 
-const handleTokenVerification = (
+export const handleTokenVerification = (
   tokenServices: Required<TokenServices>, authServices: Required<AuthServices>, env: EnvConfig,
 ) => async (
   req: Request, res: Response,
-) => {
+): Promise<void> => {
   if (req.user && isSocialLoginData(req.user)) {
     await authServices.login(getSocialLoginRequest(req.user.strategy, req.user.id, req.user.email));
 

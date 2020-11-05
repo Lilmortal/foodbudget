@@ -1,1 +1,2 @@
-export * from './authSchema';
+export * from './queries';
+export * from './resolvers';

@@ -1,6 +1,8 @@
 import logger from '@foodbudget/logger';
 import { PrismaClient } from '@prisma/client';
 import { performanceTest } from '../../perf';
+import { Repository } from '../../types/Repository';
+import { SaveOptions } from '../../types/SaveOptions';
 import { Currency, Ingredient } from '../Ingredient.types';
 import { ingredientMapper } from './ingredientMapper';
 

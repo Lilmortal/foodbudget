@@ -5,6 +5,9 @@ import { IngredientServices } from '../../ingredients/services';
 import { Recipe } from '../Recipe.types';
 import { recipeMapper } from './recipeMapper';
 import { performanceTest } from '../../perf';
+import { Repository } from '../../types/Repository';
+import { PartialBy } from '../../types/PartialBy';
+import { SaveOptions } from '../../types/SaveOptions';
 
 export class RecipeRepository implements Repository<Recipe> {
   constructor(private readonly prisma: PrismaClient, private readonly ingredientsService: IngredientServices) {

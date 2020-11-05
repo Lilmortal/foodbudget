@@ -1,4 +1,5 @@
 import { ingredients } from '@prisma/client';
+import { Mapper } from '../../types/Mapper';
 import { Ingredient } from '../Ingredient.types';
 
 export const ingredientMapper: Mapper<Ingredient, ingredients> = ({

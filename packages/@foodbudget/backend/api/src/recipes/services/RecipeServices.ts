@@ -1,3 +1,5 @@
+import { PartialBy } from '../../types/PartialBy';
+import { Repository } from '../../types/Repository';
 import { Recipe } from '../Recipe.types';
 
 export class RecipeServices {

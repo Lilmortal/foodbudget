@@ -10,7 +10,7 @@ import { Strategy } from '../routes';
 import { SocialConfig } from '../../config';
 
 const isProfileValid = (profile: Profile): profile is Profile & Pick<Required<Profile>, 'emails'> => {
-  if (!profile.emails || !profile.emails[0].value) {
+  if (!profile.emails || !Array.isArray(profile.emails) || !profile.emails[0].value) {
     throw new AppError({ message: 'emails could not be retrieved.', isOperational: true });
   }
 

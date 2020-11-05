@@ -1,5 +1,6 @@
 import { AppError } from '@foodbudget/errors';
 import argon2 from 'argon2';
+import { Repository } from '../../../types/Repository';
 import { User } from '../../../users';
 import { AccountLoginRequest, FacebookLoginRequest, GoogleLoginRequest, LoginRequest } from './Auth.types';
 
@@ -24,23 +25,21 @@ export class AuthServices {
     : request is AccountLoginRequest => (request as AccountLoginRequest).email !== undefined
     && (request as AccountLoginRequest).password !== undefined;
 
-  private getUserEntity = (request: LoginRequest): Partial<User> | undefined => {
-    let userEntity: Partial<User> | undefined;
-
+  private getUserEntity = (request: LoginRequest): Partial<User> => {
     if (this.isGoogleLoginRequest(request)) {
-      userEntity = {
+      return {
         googleId: request.googleId,
       };
-    } else if (this.isFacebookLoginRequest(request)) {
-      userEntity = {
+    } if (this.isFacebookLoginRequest(request)) {
+      return {
         facebookId: request.facebookId,
       };
-    } else if (this.isAccountLoginRequest(request)) {
-      userEntity = {
+    } if (this.isAccountLoginRequest(request)) {
+      return {
         email: request.email,
       };
     }
-    return userEntity;
+    throw new AppError({ message: 'login request is not valid.', isOperational: true });
   };
 
   private isRequestCredentialsValid = async (request: LoginRequest, user: User): Promise<boolean> => {
@@ -63,10 +62,6 @@ export class AuthServices {
 
   async login(request: LoginRequest): Promise<User | undefined> {
     const userEntity = this.getUserEntity(request);
-
-    if (!userEntity) {
-      return undefined;
-    }
 
     const user = await this.repository.getOne(userEntity);
 

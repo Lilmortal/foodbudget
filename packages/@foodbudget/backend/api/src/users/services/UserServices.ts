@@ -1,4 +1,5 @@
 import argon2 from 'argon2';
+import { Repository } from '../../types/Repository';
 import { User } from '../User.types';
 
 export class UserServices {

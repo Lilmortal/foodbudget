@@ -1,3 +1,0 @@
-interface SaveOptions {
-    override?: false;
-  }

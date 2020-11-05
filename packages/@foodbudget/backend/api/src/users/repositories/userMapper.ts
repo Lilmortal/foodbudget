@@ -1,4 +1,5 @@
 import { users } from '@prisma/client';
+import { Mapper } from '../../types/Mapper';
 import { User } from '../User.types';
 
 export const userMapper: Mapper<User, users> = ({
