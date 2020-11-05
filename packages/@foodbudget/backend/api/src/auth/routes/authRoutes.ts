@@ -45,10 +45,11 @@ export const handleTokenVerification = (
     await authServices.login(getSocialLoginRequest(req.user.strategy, req.user.id, req.user.email));
 
     const refreshToken = tokenServices.createRefreshToken(req.user.id, env);
+
     res.cookie(refreshToken.name, refreshToken.value, refreshToken.options);
-    res.redirect('http://localhost:8080/graphql');
+    // res.redirect('http://localhost:8080/graphql');
   } else {
-    res.redirect('http://locahost:8080/login?failureMessage=User ID is not found.');
+    // res.redirect('http://locahost:8080/login?failureMessage=User ID is not found.');
   }
 };
 

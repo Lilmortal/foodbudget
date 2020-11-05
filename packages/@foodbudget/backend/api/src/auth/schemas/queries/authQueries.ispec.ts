@@ -26,7 +26,7 @@ const tokenServices = new TokenServices(
   },
 );
 
-describe('auth schema', () => {
+describe('auth queries', () => {
   beforeEach(() => {
     jest.spyOn(global.Date, 'now').mockImplementation(() => 1604459767905);
   });
@@ -83,6 +83,9 @@ describe('auth schema', () => {
         },
         res: {
           cookie: mockCookieRes,
+        },
+        config: {
+          env: 'development',
         },
       },
     });

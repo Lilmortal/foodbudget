@@ -32,6 +32,7 @@ export const schema = makeSchema({
         String: () => '',
         Boolean: () => false,
         Float: () => 0,
+        Email: () => 'N/A',
       },
     }),
   ],
