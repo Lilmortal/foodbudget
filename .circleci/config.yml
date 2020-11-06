@@ -53,7 +53,7 @@ jobs:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: yarn setup:ui
-      - run: yarn test:ui --coverage
+      - run: yarn test:ui-ci
   backEndUnitTest:
     docker:
       - image: circleci/node:14.11.0-browsers
@@ -69,7 +69,7 @@ jobs:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: yarn setup:server
-      - run: yarn test:server --coverage
+      - run: yarn test:server-ci
   backEndIntegrationTest:
     docker:
       - image: circleci/node:14.11.0-browsers
@@ -85,7 +85,7 @@ jobs:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: yarn setup:server
-      - run: yarn int:server --coverage  
+      - run: yarn int:server-ci
   release:
     docker:
       - image: circleci/node:14.11.0-browsers
