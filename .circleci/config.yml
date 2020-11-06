@@ -84,7 +84,9 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
+      - run: ls
       - run: docker-compose up -d 
+      - run: ./wait-for-db -m postgres -c postgresql://user:pass@foodbudget-db:5432/foodbudget -t 1000000
       - run: yarn setup:server
       - run: yarn ci:server-int
   release:
