@@ -2,7 +2,7 @@ import { AppError } from '@foodbudget/errors';
 import { Currency, Ingredient } from '../Ingredient.types';
 import { FilterableIngredientRepository } from '../repositories/IngredientRepository';
 
-export default class IngredientServices {
+export class IngredientServices {
   constructor(private readonly repository: FilterableIngredientRepository) {
     this.repository = repository;
   }

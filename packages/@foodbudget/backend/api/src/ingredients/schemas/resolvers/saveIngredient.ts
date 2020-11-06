@@ -4,9 +4,9 @@ import {
 import logger from '@foodbudget/logger';
 import { Context } from '../../../context';
 import { Ingredient } from '../../Ingredient.types';
-import { currencyType, ingredientField } from '../ingredientSchemaFields';
+import { currencyType, ingredientField } from '../ingredientFields';
 
-const saveIngredient = mutationField('ingredients', {
+export const saveIngredient = mutationField('ingredients', {
   type: ingredientField,
   args: {
     name: stringArg({ required: true }),
@@ -30,5 +30,3 @@ const saveIngredient = mutationField('ingredients', {
     return result;
   },
 });
-
-export default saveIngredient;

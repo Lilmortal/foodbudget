@@ -1,0 +1,1 @@
+export { socialTokenStrategyHandler } from './socialTokenStrategyHandler';

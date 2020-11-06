@@ -53,5 +53,8 @@ module.exports = {
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': ['error'],
     'object-curly-newline': 'off',
+    // eslint-disable-next-line max-len
+    // https://medium.com/@rauschma/note-that-default-exporting-objects-is-usually-an-anti-pattern-if-you-want-to-export-the-cf674423ac38
+    'import/prefer-default-export': 'off',
   },
 };

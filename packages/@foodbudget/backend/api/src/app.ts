@@ -1,37 +1,27 @@
-import express, {
-  Application, Request, Response, NextFunction,
-} from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import logger from '@foodbudget/logger';
 import cookieParser from 'cookie-parser';
 import { AppError, ErrorHandler } from '@foodbudget/errors';
 import { PerformanceObserver } from 'perf_hooks';
 import colors from 'colors/safe';
-import server from './apolloServer';
-import config from './config';
-import serviceManager from './serviceManager';
-import handleAuth from './auth';
+import passport from 'passport';
+import { server } from './apolloServer';
+import { config } from './config';
+import { serviceManager } from './serviceManager';
+import { authRoutes, socialTokenStrategyHandler } from './auth';
 
-const handleHealthChecks = (app: Application) => {
-  app.get('/healthcheck', (_req, res) => {
-    res.status(200).send('Application is working perfectly!');
-  });
+const pageNotFoundHandler = () => {
+  throw new AppError({ message: 'Page not found', isOperational: true, httpStatus: 404 });
 };
 
-const handle404Routes = (app: Application) => {
-  app.use(() => {
-    throw new AppError({ message: 'Page not found', isOperational: true, httpStatus: 404 });
-  });
-};
-
-const handleErrors = (app: Application) => {
+const errorHandler = async (
   // eslint-disable-next-line consistent-return
-  app.use(async (err: unknown, _req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
-    if (err instanceof AppError && ErrorHandler.isOperational(err)) {
-      return res.status(err.httpStatus || 500).json({ error: err.message });
-    }
+  err: unknown, _req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+  if (err instanceof AppError && ErrorHandler.isOperational(err)) {
+    return res.status(err.httpStatus || 500).json({ error: err.message });
+  }
 
-    next(err);
-  });
+  next(err);
 };
 
 const obs = new PerformanceObserver((list) => {
@@ -48,15 +38,16 @@ app.disable('x-powered-by');
 
 server.applyMiddleware({ app, path: config.api.prefix });
 
-handleHealthChecks(app);
-handleAuth({
-  app,
-  googleConfig: config.google,
-  facebookConfig: config.facebook,
-  userServices: serviceManager.userServices,
-  authServices: serviceManager.authServices,
+app.get('/healthcheck', (_req, res) => {
+  res.status(200).send('Application is working perfectly!');
 });
-handle404Routes(app);
-handleErrors(app);
+
+app.use(socialTokenStrategyHandler({ googleConfig: config.google, facebookConfig: config.facebook }));
+app.use(passport.initialize());
+app.use('/v1/auth', authRoutes({
+  tokenServices: serviceManager.tokenServices, authServices: serviceManager.authServices, env: config.env }));
+
+app.use(pageNotFoundHandler);
+app.use(errorHandler);
 
 app.listen(config.api.port, () => logger.info(colors.cyan(`App is now running at port ${config.api.port}`)));

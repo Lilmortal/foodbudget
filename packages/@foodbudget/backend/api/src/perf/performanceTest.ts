@@ -1,6 +1,6 @@
 import { performance } from 'perf_hooks';
 
-const performanceTest = {
+export const performanceTest = {
   start: (name: string): void => {
     performance.mark(`${name}start`);
   },
@@ -9,5 +9,3 @@ const performanceTest = {
     performance.measure(name, `${name}start`, `${name}end`);
   },
 };
-
-export default performanceTest;

@@ -6,9 +6,9 @@ import { Context } from '../../../context';
 import { Recipe } from '../../Recipe.types';
 import {
   adjectiveType, allergyType, cuisineType, dietType, mealType, recipeField, recipeIngredientArg,
-} from '../recipeSchemaFields';
+} from '../recipeFields';
 
-const saveRecipe = mutationField('saveRecipe', {
+export const saveRecipe = mutationField('saveRecipe', {
   type: recipeField,
   args: {
     id: intArg(),
@@ -51,5 +51,3 @@ const saveRecipe = mutationField('saveRecipe', {
     return result;
   },
 });
-
-export default saveRecipe;

@@ -35,6 +35,20 @@ const validate = (config: Config) => {
   if (!isLogLevel(config.logLevel)) {
     errors.push('LOG_LEVEL is invalid.');
   }
+
+  if (errors.length > 0) {
+    console.error(
+      `
+There are errors attempting to retrieve environment variables. 
+Please add them in the .env file if you forget to add them in.
+      
+${errors.map((error) => `* ${error}`).join('\n').trim()}`,
+    );
+
+    return false;
+  }
+
+  return true;
 };
 
 const config: Config = {
@@ -42,6 +56,8 @@ const config: Config = {
   logLevel: (process.env.LOG_LEVEL as LogLevel) || 'info',
 };
 
-validate(config);
+if (!validate(config)) {
+  process.exit(1);
+}
 
 export default config;

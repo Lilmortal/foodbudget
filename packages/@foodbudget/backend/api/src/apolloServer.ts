@@ -6,9 +6,9 @@ import { GraphQLError, printError } from 'graphql';
 import { AppError } from '@foodbudget/errors';
 import queryComplexity, { simpleEstimator } from 'graphql-query-complexity';
 import colors from 'colors/safe';
-import schema from './schema';
-import context from './context';
-import config from './config';
+import { schema } from './schema';
+import { context } from './context';
+import { config } from './config';
 import 'apollo-cache-control';
 
 const prettifyStackTrace = (stackTraces: string[]) => {
@@ -48,7 +48,7 @@ const removeStackTraceOnProd = (err: Error) => {
   }
 };
 
-const server = new ApolloServer({
+export const server = new ApolloServer({
   schema,
   context,
   debug: true,
@@ -80,5 +80,3 @@ const server = new ApolloServer({
   },
   cacheControl: true,
 });
-
-export default server;

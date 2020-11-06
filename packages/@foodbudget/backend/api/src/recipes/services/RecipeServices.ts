@@ -1,8 +1,8 @@
-import { Repository } from '../../shared/types/Repository.types';
+import { PartialBy } from '../../types/PartialBy';
+import { Repository } from '../../types/Repository';
 import { Recipe } from '../Recipe.types';
-import { PartialBy } from '../../shared/types/PartialBy.types';
 
-export default class RecipeServices {
+export class RecipeServices {
   constructor(private readonly repository : Repository<Recipe>) {
     this.repository = repository;
   }

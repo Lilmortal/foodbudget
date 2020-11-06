@@ -4,7 +4,7 @@ import { Kind } from 'graphql';
 
 const EMAIL_REG = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-const emailArg = scalarType({
+export const emailArg = scalarType({
   name: 'Email',
   asNexusMethod: 'email',
   description: 'Verify email follows the format and lower case it',
@@ -30,5 +30,3 @@ const emailArg = scalarType({
     throw new AppError({ message: 'Email is not in a valid format.', isOperational: true });
   },
 });
-
-export default emailArg;

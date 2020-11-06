@@ -1,15 +1,16 @@
 import logger from '@foodbudget/logger';
 import { PrismaClient } from '@prisma/client';
-import performanceTest from '../../perf';
-import { Repository, SaveOptions } from '../../shared/types/Repository.types';
+import { performanceTest } from '../../perf';
+import { Repository } from '../../types/Repository';
+import { SaveOptions } from '../../types/SaveOptions';
 import { Currency, Ingredient } from '../Ingredient.types';
-import ingredientMapper from './ingredientMapper';
+import { ingredientMapper } from './ingredientMapper';
 
 export interface FilterableIngredientRepository extends Repository<Ingredient> {
   filterByPrice(currency: Currency, minAmount: number, maxAmount?: number): Promise<Ingredient[]>;
 }
 
-export default class IngredientRepository implements FilterableIngredientRepository {
+export class IngredientRepository implements FilterableIngredientRepository {
   private readonly prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {

@@ -1,3 +1,3 @@
-export { default as UserRepository } from './repositories';
-export { default as UserServices } from './services';
+export { UserRepository } from './repositories';
+export { UserServices } from './services';
 export type { User } from './User.types';

@@ -47,6 +47,10 @@ const validate = (config: Config) => {
     errors.push('REFRESH_TOKEN_SECRET is missing.');
   }
 
+  if (!config.db.testUrl) {
+    errors.push('TEST_DATABASE_URL is missing.');
+  }
+
   if (!isEnvValid(config.env)) {
     errors.push('NODE_ENV is invalid.');
   }
@@ -66,7 +70,7 @@ ${errors.map((error) => `* ${error}`).join('\n').trim()}`,
   return true;
 };
 
-const config: Config = {
+export const config: Config = {
   api: {
     prefix: '/graphql',
     port: 8080,
@@ -89,11 +93,12 @@ const config: Config = {
       expireTimeInMs: Number(process.env.REFRESH_TOKEN_EXPIRE_TIME_IN_MS) || 0,
     },
   },
+  db: {
+    testUrl: process.env.TEST_DATABASE_URL || '',
+  },
   env: (process.env.NODE_ENV as EnvConfig) || 'development',
 };
 
 if (!validate(config)) {
   process.exit(1);
 }
-
-export default config;

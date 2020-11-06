@@ -4,6 +4,7 @@
   "main": "index.js",
   "author": "Food Budget",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "start": "next dev",
     "build": "next build",

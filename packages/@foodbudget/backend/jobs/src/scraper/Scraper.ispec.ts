@@ -3,7 +3,7 @@ import { OnScrape } from './Scraper.types';
 
 describe('scraper', () => {
   beforeEach(() => {
-    jest.setTimeout(30000);
+    jest.setTimeout(300000);
   });
 
   afterEach(() => {

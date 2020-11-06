@@ -1,2 +1,4 @@
-export { default } from './userSchema';
-export * from './resolvers';
+import * as queries from './queries';
+
+export const schemas = { ...queries };
+export { userField } from './userFields';

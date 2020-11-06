@@ -1,4 +1,4 @@
 export type { Money, Ingredient } from './Ingredient.types';
-export { ingredientField, priceArg, priceField } from './schemas/ingredientSchemaFields';
-export { default as IngredientRepository } from './repositories';
-export { default as IngredientServices } from './services';
+export { ingredientField, priceArg, priceField } from './schemas/ingredientFields';
+export { IngredientRepository } from './repositories';
+export { IngredientServices } from './services';

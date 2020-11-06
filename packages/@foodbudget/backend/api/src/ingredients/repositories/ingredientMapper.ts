@@ -1,8 +1,8 @@
 import { ingredients } from '@prisma/client';
-import Mapper from '../../shared/types/Mapper.types';
+import { Mapper } from '../../types/Mapper';
 import { Ingredient } from '../Ingredient.types';
 
-const ingredientMapper: Mapper<Ingredient, ingredients> = ({
+export const ingredientMapper: Mapper<Ingredient, ingredients> = ({
   fromDto: (dto: Ingredient): ingredients => ({
     name: dto.name,
     price_currency: dto.price?.currency || null,
@@ -19,5 +19,3 @@ const ingredientMapper: Mapper<Ingredient, ingredients> = ({
     },
   }),
 });
-
-export default ingredientMapper;

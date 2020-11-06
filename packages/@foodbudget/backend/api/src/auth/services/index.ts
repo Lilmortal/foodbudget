@@ -1,1 +1,2 @@
-export { default } from './AuthServices';
+export { AuthServices } from './auth';
+export { TokenServices } from './token';

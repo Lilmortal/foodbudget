@@ -1,8 +1,8 @@
 import { users } from '@prisma/client';
-import Mapper from '../../shared/types/Mapper.types';
+import { Mapper } from '../../types/Mapper';
 import { User } from '../User.types';
 
-const userMapper: Mapper<User, users> = ({
+export const userMapper: Mapper<User, users> = ({
   fromDto: (dto: User): users => ({
     id: dto.id,
     google_id: dto.googleId || null,
@@ -24,5 +24,3 @@ const userMapper: Mapper<User, users> = ({
     diets: entity.diets,
   }),
 });
-
-export default userMapper;

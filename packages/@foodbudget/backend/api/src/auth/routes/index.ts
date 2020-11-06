@@ -1,1 +1,2 @@
-export { default } from './authRoutes';
+export { authRoutes } from './authRoutes';
+export type { Strategy } from './authRoutes';
