@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.2.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/jobs@5.1.2...@foodbudget/jobs@5.2.0) (2020-11-06)
+
+
+### Features
+
+* migrate login/register to authServices, disallow default exports ([c6bf421](https://github.com/Lilmortal/foodbudget/commit/c6bf4215909a7bd12e753c56cb4b51eaaf9f5453))
+
+
+
+
+
 ## [5.1.2](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/jobs@5.1.1...@foodbudget/jobs@5.1.2) (2020-11-03)
 
 **Note:** Version bump only for package @foodbudget/jobs
