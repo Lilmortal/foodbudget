@@ -50,7 +50,7 @@
     "test:server": "jest --projects=packages/@foodbudget/backend --changedSince=master",
     "test:ui": "jest --projects=packages/@foodbudget/frontend --changedSince=master",
     "int:server": "jest --projects=packages/@foodbudget/backend --testRegex .*/src/.*.ispec.ts --changedSince=master",
-    "int:ui": "jest --projects=packages/@foodbudget/frontend --testRegex .*/src/.*.ispec.ts --changedSince=master",
+    "int:ui": "jest --projects=packages/@foodbudget/frontend --testRegex .*/src/.*.ispec.ts --changedSince=master --silent",
     "int": "run-p -c 'int:*'",
     "lint:check-types": "lerna run check-types --stream --parallel",
     "lint:ts": "eslint '**/*.ts' --fix",

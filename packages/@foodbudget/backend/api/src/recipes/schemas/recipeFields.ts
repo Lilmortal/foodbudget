@@ -2,7 +2,7 @@ import { enumType, inputObjectType, objectType } from '@nexus/schema';
 import { priceArg, priceField } from '../../ingredients';
 
 export const cuisineType = enumType({
-  name: 'cuisines',
+  name: 'Cuisine',
   members: ['AMERICAN',
     'ITALIAN',
     'ASIAN',
@@ -31,7 +31,7 @@ export const cuisineType = enumType({
 });
 
 export const dietType = enumType({
-  name: 'diets',
+  name: 'Diet',
   members: ['KETOGENIC',
     'VEGETARIAN_NO_MEAT_AND_EGGS',
     'VEGETARIAN_NO_MEAT_AND_DAIRY',
@@ -43,7 +43,7 @@ export const dietType = enumType({
 });
 
 export const allergyType = enumType({
-  name: 'allergies',
+  name: 'Allergy',
   members: ['GLUTEN',
     'PEANUT',
     'SEAFOOD',
@@ -57,12 +57,12 @@ export const allergyType = enumType({
 });
 
 export const adjectiveType = enumType({
-  name: 'adjectives',
+  name: 'Adjective',
   members: ['ROMANTIC'],
 });
 
 export const mealType = enumType({
-  name: 'meals',
+  name: 'Meal',
   members: ['BREAKFAST', 'LUNCH', 'DINNER'],
 });
 

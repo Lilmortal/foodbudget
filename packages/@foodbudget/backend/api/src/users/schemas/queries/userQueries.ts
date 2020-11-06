@@ -1,18 +1,9 @@
 import logger from '@foodbudget/logger';
-import {
-  arg, intArg, objectType, queryField,
-} from '@nexus/schema';
+import { arg, intArg, queryField } from '@nexus/schema';
 import { users } from '@prisma/client';
-import { Context } from '../../context';
-import { emailArg } from '../../shared/scalar/emailArg';
-
-export const userField = objectType({
-  name: 'user',
-  definition(t) {
-    t.string('email', { description: 'user email.' });
-    t.string('nickname', { description: 'user name that will be shown to others.' });
-  },
-});
+import { Context } from '../../../context';
+import { emailArg } from '../../../shared/scalar/emailArg';
+import { userField } from '../userFields';
 
 export const getUser = queryField('user', {
   type: userField,

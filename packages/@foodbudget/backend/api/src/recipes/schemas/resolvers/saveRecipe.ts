@@ -6,7 +6,7 @@ import { Context } from '../../../context';
 import { Recipe } from '../../Recipe.types';
 import {
   adjectiveType, allergyType, cuisineType, dietType, mealType, recipeField, recipeIngredientArg,
-} from '../recipeSchemaFields';
+} from '../recipeFields';
 
 export const saveRecipe = mutationField('saveRecipe', {
   type: recipeField,

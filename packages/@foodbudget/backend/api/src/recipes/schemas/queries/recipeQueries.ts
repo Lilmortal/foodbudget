@@ -3,11 +3,11 @@ import {
 } from '@nexus/schema';
 import logger from '@foodbudget/logger';
 import { CacheScope } from 'apollo-cache-control';
-import { Context } from '../../context';
-import { Recipe } from '../Recipe.types';
+import { Context } from '../../../context';
+import { Recipe } from '../../Recipe.types';
 import {
   adjectiveType, allergyType, cuisineType, dietType, mealType, recipeField, recipeIngredientArg,
-} from './recipeSchemaFields';
+} from '../recipeFields';
 
 export const filterRecipes = queryField('filterRecipes', {
   type: recipeField,

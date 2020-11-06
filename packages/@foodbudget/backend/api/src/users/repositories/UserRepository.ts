@@ -120,39 +120,29 @@ export class UserRepository implements Repository<User> {
     return result;
   }
 
-  async delete(ids: string): Promise<User>;
+  async delete(emails: string): Promise<User>;
 
-  async delete(ids: string[]): Promise<User[]>;
+  async delete(emails: string[]): Promise<User[]>;
 
-  async delete(ids: string | string[]): Promise<User | User[]> {
-    logger.info('delete user repository request', ids);
+  async delete(emails: string | string[]): Promise<User | User[]> {
+    logger.info('delete user repository request', emails);
 
-    if (Array.isArray(ids)) {
+    if (Array.isArray(emails)) {
       performanceTest.start('delete users');
-      const results = await Promise.all(ids.map(async (id) => {
-        if (isNaN(Number(id))) {
-          throw new AppError({ message: 'Given user ID is not a number.', isOperational: true, httpStatus: 500 });
-        }
-
-        return userMapper.toDto(await this.prisma.users.delete({
-          where: {
-            id: Number(id),
-          },
-        }));
-      }));
+      const results = await Promise.all(emails.map(async (email) => userMapper.toDto(await this.prisma.users.delete({
+        where: {
+          email,
+        },
+      }))));
 
       performanceTest.end('delete users');
       return results;
     }
 
-    if (isNaN(Number(ids))) {
-      throw new AppError({ message: 'Given user ID is not a number.', isOperational: true, httpStatus: 500 });
-    }
-
     performanceTest.start('delete user');
     const result = await this.prisma.users.delete({
       where: {
-        id: Number(ids),
+        email: emails,
       },
     });
     performanceTest.end('delete user');

@@ -3,10 +3,10 @@ import {
 } from '@nexus/schema';
 import path from 'path';
 import logger from '@foodbudget/logger';
-import * as recipesSchema from './recipes/schemas';
-import * as usersSchema from './users/schemas';
-import * as ingredientsSchema from './ingredients/schemas';
-import * as authSchema from './auth/schemas';
+import { schemas as recipesSchema } from './recipes/schemas';
+import { schemas as usersSchema } from './users/schemas';
+import { schemas as ingredientsSchema } from './ingredients/schemas';
+import { schemas as authSchema } from './auth/schemas';
 
 export const schema = makeSchema({
   types: {

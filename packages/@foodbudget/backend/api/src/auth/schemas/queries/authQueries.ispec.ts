@@ -1,11 +1,9 @@
-import { createTestClient } from 'apollo-server-testing';
-import { ApolloServer, gql } from 'apollo-server-express';
+import { gql } from 'apollo-server-express';
 import { sign } from 'jsonwebtoken';
 import { CookieOptions } from 'express';
 import { GraphQLError } from 'graphql';
-import { schema } from '../../../schema';
-import { serviceManager } from '../../../serviceManager';
 import { TokenServices } from '../../services';
+import { createTestApolloServer } from '../../../utils/test';
 
 const mockAccessSecret = 'access key';
 const mockRefreshSecret = 'secret key';
@@ -36,11 +34,9 @@ describe('auth queries', () => {
   });
 
   it('should throw an error if refresh token does not exist', async () => {
-    const server = new ApolloServer({
-      schema,
+    const { query } = createTestApolloServer(undefined, {
       context: {
         serviceManager: {
-          ...serviceManager,
           tokenServices,
         },
         req: {
@@ -51,14 +47,11 @@ describe('auth queries', () => {
       },
     });
 
-    const { query } = createTestClient(server);
-
-    const res = await query({ query:
-      gql`
-        query {
-          renewToken
-        }
-      `,
+    const res = await query({ query: gql`
+      query {
+        renewToken
+      }
+    `,
     });
 
     expect(res.data).toEqual({ renewToken: null });
@@ -69,11 +62,9 @@ describe('auth queries', () => {
     const mockCookieRes = jest.fn((name: string, value: string, option: CookieOptions) => ({ name, value, option }));
     const refreshToken = sign({ userId: '4', expireTimeInUtc: expireTimeInMs }, mockRefreshSecret);
 
-    const server = new ApolloServer({
-      schema,
+    const { query } = createTestApolloServer(undefined, {
       context: {
         serviceManager: {
-          ...serviceManager,
           tokenServices,
         },
         req: {
@@ -84,20 +75,14 @@ describe('auth queries', () => {
         res: {
           cookie: mockCookieRes,
         },
-        config: {
-          env: 'development',
-        },
       },
     });
 
-    const { query } = createTestClient(server);
-
-    const res = await query({ query:
-      gql`
-        query {
-          renewToken
-        }
-      `,
+    const res = await query({ query: gql`
+      query {
+        renewToken
+      }
+    `,
     });
 
     expect(res.errors).toEqual(undefined);

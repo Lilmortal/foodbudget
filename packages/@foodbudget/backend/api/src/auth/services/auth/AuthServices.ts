@@ -52,9 +52,9 @@ export class AuthServices {
     return true;
   };
 
-  private isRegisteringExistedAccountViaPassword = (
-    userDto: Partial<Omit<User, 'id'>> & Pick<User, 'email'>, userEntity: User,
-  ): boolean => (!!userEntity.googleId || !!userEntity.facebookId) && userDto.password !== undefined;
+  private isRegisteringAnExistingAccountWithPassword = (
+    userDto: Partial<User> | undefined, userEntity: User | undefined,
+  ) => userDto?.password && userEntity?.password;
 
   async login(request: FacebookLoginRequest | GoogleLoginRequest): Promise<User>;
 
@@ -92,7 +92,7 @@ export class AuthServices {
   async register(userDto: Partial<Omit<User, 'id'>> & Pick<User, 'email'>): Promise<User | undefined> {
     const user = await this.repository.getOne({ email: userDto.email });
 
-    if (user && this.isRegisteringExistedAccountViaPassword(userDto, user)) {
+    if (this.isRegisteringAnExistingAccountWithPassword(userDto, user)) {
       return undefined;
     }
 

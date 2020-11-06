@@ -47,6 +47,10 @@ const validate = (config: Config) => {
     errors.push('REFRESH_TOKEN_SECRET is missing.');
   }
 
+  if (!config.db.testUrl) {
+    errors.push('TEST_DATABASE_URL is missing.');
+  }
+
   if (!isEnvValid(config.env)) {
     errors.push('NODE_ENV is invalid.');
   }
@@ -88,6 +92,9 @@ export const config: Config = {
       secret: process.env.REFRESH_TOKEN_SECRET || '',
       expireTimeInMs: Number(process.env.REFRESH_TOKEN_EXPIRE_TIME_IN_MS) || 0,
     },
+  },
+  db: {
+    testUrl: process.env.TEST_DATABASE_URL || '',
   },
   env: (process.env.NODE_ENV as EnvConfig) || 'development',
 };

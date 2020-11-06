@@ -3,9 +3,9 @@ import {
   arg, floatArg, queryField, stringArg,
 } from '@nexus/schema';
 import { CacheScope } from 'apollo-cache-control';
-import { Context } from '../../context';
-import { Ingredient } from '../Ingredient.types';
-import { currencyType, ingredientField } from './ingredientSchemaFields';
+import { Context } from '../../../context';
+import { Ingredient } from '../../Ingredient.types';
+import { currencyType, ingredientField } from '../ingredientFields';
 
 export const ingredientsByName = queryField('ingredientsByName', {
   type: ingredientField,

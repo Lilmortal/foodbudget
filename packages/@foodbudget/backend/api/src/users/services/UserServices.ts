@@ -10,9 +10,6 @@ export class UserServices {
   async get(userEntity: Pick<Partial<User>, 'id' | 'email'>): Promise<User | undefined> {
     const user = await this.repository.getOne(userEntity);
 
-    if (user) {
-      return user;
-    }
     return user;
   }
 
@@ -25,11 +22,11 @@ export class UserServices {
     return user;
   }
 
-  async delete(id: string): Promise<User> {
+  async delete(email: string): Promise<User> {
     // @TODO: Send a one off cron job to delete the user in 5 days.
     // But for now, delete the user straight away.
 
-    const user = await this.repository.delete(id);
+    const user = await this.repository.delete(email);
 
     return user;
   }

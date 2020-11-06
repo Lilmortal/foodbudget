@@ -13,7 +13,6 @@ export const login = mutationField('login', {
     logger.info('login request', args);
     const user = await ctx.serviceManager.authServices.login({ email: args.email, password: args.password });
 
-    // const envConfig = ctx.serviceManager.
     if (user) {
       logger.info('user has logged in.');
 

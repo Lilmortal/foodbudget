@@ -1,1 +1,4 @@
-export { userField, getUser } from './userSchema';
+import * as queries from './queries';
+
+export const schemas = { ...queries };
+export { userField } from './userFields';

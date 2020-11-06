@@ -18,10 +18,15 @@ export interface TokenConfig {
   refresh: TokenContentConfig;
 }
 
+export interface DbConfig {
+  testUrl: string;
+}
+
 export type EnvConfig = 'production' | 'development' | 'test';
 
 export interface Config {
   api: ApiConfig;
+  db: DbConfig;
   google: SocialConfig;
   facebook: SocialConfig;
   token: TokenConfig;

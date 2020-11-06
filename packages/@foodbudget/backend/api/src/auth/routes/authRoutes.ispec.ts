@@ -1,8 +1,12 @@
-import { CookieOptions } from 'express';
+import { CookieOptions, Request, Response } from 'express';
+
+import { PrismaClient } from '@prisma/client';
+import findUp from 'find-up';
 import { handleTokenVerification } from './authRoutes';
-import { serviceManager } from '../../serviceManager';
-import { TokenServices } from '../services';
+import { AuthServices, TokenServices } from '../services';
 import { TokenConfig } from '../../config';
+import { UserRepository } from '../../users';
+import { createTestDatabase, tearDownTestDatabase } from '../../utils/test';
 
 const mockTokenConfig: TokenConfig = {
   access: {
@@ -17,13 +21,13 @@ const mockTokenConfig: TokenConfig = {
 
 const mockTokenServices = new TokenServices({ tokenConfig: mockTokenConfig });
 
-const getTokenHandleFn = handleTokenVerification(mockTokenServices, serviceManager.authServices, 'development');
-
 describe('auth routes', () => {
   let mockReq: jest.Mock;
   let mockRes: jest.Mock;
+  let prismaClient: PrismaClient;
+  let handleToken: (req: Request, res: Response) => Promise<void>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockReq = jest.fn(() => ({
       user: {
         id: '1',
@@ -37,16 +41,29 @@ describe('auth routes', () => {
     }));
 
     jest.spyOn(global.Date, 'now').mockImplementation(() => 1604459767905);
+
+    const nodeModulesPath = await findUp('node_modules', { type: 'directory' });
+
+    if (!nodeModulesPath) {
+      throw new Error('could not find the closest node_modules.');
+    }
+
+    prismaClient = createTestDatabase(nodeModulesPath);
+    const authRepository = new UserRepository(prismaClient);
+    const mockAuthServices = new AuthServices({ repository: authRepository });
+    handleToken = handleTokenVerification(mockTokenServices, mockAuthServices, 'development');
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     jest.clearAllMocks();
+
+    await tearDownTestDatabase(prismaClient);
   });
 
   // TODO: Handle failure scenario
 
   it('should set the refresh tokens after logging in', async () => {
-    await getTokenHandleFn(mockReq(), mockRes());
+    await handleToken(mockReq(), mockRes());
 
     expect(mockRes.mock.results[0].value.cookie.mock.calls).toEqual([['refresh-token',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZXhwaXJlVGltZUluVXRjIjoiV2VkLCAwNCBOb3YgMjAyM'

@@ -1,7 +1,7 @@
 import { enumType, inputObjectType, objectType } from '@nexus/schema';
 
 export const currencyType = enumType({
-  name: 'currencies',
+  name: 'Currency',
   members: ['AUD', 'NZD'],
 });
 
