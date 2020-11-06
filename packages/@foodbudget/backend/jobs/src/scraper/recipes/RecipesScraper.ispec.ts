@@ -4,7 +4,7 @@ import { ScrapedRecipe, ScrapedRecipeHTMLElements } from './RecipesScraper.types
 
 describe('recipes job scraper', () => {
   beforeEach(() => {
-    jest.setTimeout(30000);
+    jest.setTimeout(300000);
   });
 
   afterEach(() => {
