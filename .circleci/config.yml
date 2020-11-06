@@ -86,7 +86,16 @@ jobs:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - setup_remote_docker
       - run: docker-compose up -d
-      # - run: ./wait-for-db -m postgres -c postgresql://user:pass@foodbudget-db:5432/foodbudget -t 1000000
+      - run:
+          name: Waiting for Postgres to be ready
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z localhost 5432 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for Postgress && exit 1
       - run: yarn setup:server
       - run: yarn ci:server-int
   release:
