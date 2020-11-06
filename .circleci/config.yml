@@ -73,7 +73,7 @@ jobs:
   backEndIntegrationTest:
     docker:
       - image: circleci/node:14.11.0-browsers
-      - image: circleci/postgres:12.4-alpine
+      - image: circleci/postgres:10.6-alpine
         auth:
           username: $DOCKERHUB_USER
           password: $DOCKERHUB_PASSWORD
