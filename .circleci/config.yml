@@ -74,6 +74,9 @@ jobs:
     docker:
       - image: circleci/node:14.11.0-browsers
       - image: circleci/postgres:12.4-alpine
+        auth:
+          username: $DOCKERHUB_USER
+          password: $DOCKERHUB_PASSWORD
         environment:
           POSTGRES_USER: user
           POSTGRES_PASSWORD: pass
