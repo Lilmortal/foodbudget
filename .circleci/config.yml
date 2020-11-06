@@ -53,7 +53,7 @@ jobs:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: yarn setup:ui
-      - run: yarn test:ui-ci
+      - run: yarn co:ui-test
   backEndUnitTest:
     docker:
       - image: circleci/node:14.11.0-browsers
@@ -69,7 +69,7 @@ jobs:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: yarn setup:server
-      - run: yarn test:server-ci
+      - run: yarn ci:server-test
   backEndIntegrationTest:
     docker:
       - image: circleci/node:14.11.0-browsers
@@ -84,8 +84,9 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
+      - run: docker-compose up -d 
       - run: yarn setup:server
-      - run: yarn int:server-ci
+      - run: yarn ci:server-int
   release:
     docker:
       - image: circleci/node:14.11.0-browsers
