@@ -80,7 +80,7 @@ jobs:
         environment:
           POSTGRES_USER: user
           POSTGRES_PASSWORD: pass
-          POSTGRES_DB: foodbudget
+          POSTGRES_DB: test
     steps:
       - checkout
       - create_concatenated_yarn_lock:
@@ -93,6 +93,16 @@ jobs:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: yarn setup:server
+      - run:
+          name: Waiting for Postgres to be ready
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z localhost 5432 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for Postgres && exit 1
       - run: yarn ci:server-int
   release:
     docker:
