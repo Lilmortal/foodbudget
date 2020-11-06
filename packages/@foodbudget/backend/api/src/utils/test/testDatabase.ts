@@ -9,6 +9,7 @@ const schema = `test_${nanoid()}`;
 const databaseUrl = `${config.db.testUrl}?schema=${schema}`;
 
 export const createTestDatabase = (nodeModulesPath: string): PrismaClient => {
+  // TODO: Verify path is valid
   const prismaBinary = join(nodeModulesPath, '.bin', 'prisma');
 
   process.env.DATABASE_URL = databaseUrl;
