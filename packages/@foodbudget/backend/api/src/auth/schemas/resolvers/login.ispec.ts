@@ -6,6 +6,7 @@ import argon2 from 'argon2';
 import { UserRepository } from '../../../users';
 import { createTestApolloServer, createTestDatabase, tearDownTestDatabase } from '../../../utils/test';
 import { AuthServices } from '../../services';
+import { config } from '../../../config';
 
 describe('login', () => {
   let prismaClient: PrismaClient;
@@ -71,7 +72,7 @@ describe('login', () => {
 
     expect(mockCookieRes.mock.results[0].value).toEqual(
       { name: 'refresh-token',
-        option: { expires: new Date('2020-11-11T03:16:07.905Z'), httpOnly: true, secure: false },
+        option: { expires: new Date('2020-11-11T03:16:07.905Z'), httpOnly: true, secure: config.env === 'production' },
         value: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZXhwaXJlVGltZUluVXRjIjoiV2VkLCAx'
         + 'MSBOb3YgMjAyMCAwMzoxNjowNyBHTVQiLCJpYXQiOjE2MDQ0NTk3NjcsImV4cCI6MTYwNTA2NDU2N30.29-UDOAvNRMZxK'
         + '9m6HpIMo-fIPfcBJVGtjgu1AuBz1g' },

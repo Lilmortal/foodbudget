@@ -4,6 +4,7 @@ import { CookieOptions } from 'express';
 import { GraphQLError } from 'graphql';
 import { TokenServices } from '../../services';
 import { createTestApolloServer } from '../../../utils/test';
+import { config } from '../../../config';
 
 const mockAccessSecret = 'access key';
 const mockRefreshSecret = 'secret key';
@@ -94,7 +95,7 @@ describe('auth queries', () => {
 
     expect(mockCookieRes.mock.results[0].value).toEqual(
       { name: 'refresh-token',
-        option: { expires: new Date('2020-11-04T04:39:27.905Z'), httpOnly: true, secure: false },
+        option: { expires: new Date('2020-11-04T04:39:27.905Z'), httpOnly: true, secure: config.env === 'production' },
         value: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0IiwiZXhwaXJlVGltZUluVXRjIjoiV2VkLCAwNCBOb3Yg'
         + 'MjAyMCAwNDozOToyNyBHTVQiLCJpYXQiOjE2MDQ0NTk3NjcsImV4cCI6MTYwNDQ2NDc2N30.8ch3-OEvwWAQxTvp_asMkMyejtAT8NJ'
         + '1U41-mINI_N0' },
