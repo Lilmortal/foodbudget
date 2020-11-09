@@ -1,0 +1,1 @@
+export { initEnvironment } from './environment';

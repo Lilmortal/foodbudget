@@ -1,7 +1,7 @@
 import { arg, mutationField, stringArg } from '@nexus/schema';
 import logger from '@foodbudget/logger';
 import { Context } from '../../../context';
-import { emailArg } from '../../../shared/scalar/emailArg';
+import { emailArg } from '../../../scalar/emailArg';
 import { userField } from '../../../users/schemas';
 
 export const register = mutationField('register', {

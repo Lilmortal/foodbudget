@@ -2829,6 +2829,14 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
+"@restart/hooks@^0.3.1":
+  version "0.3.25"
+  resolved "https://registry.yarnpkg.com/@restart/hooks/-/hooks-0.3.25.tgz#11004139ad1c70d2f5965a8939dcb5aeb96aa652"
+  integrity sha512-m2v3N5pxTsIiSH74/sb1yW8D9RxkJidGW+5Mfwn/lHb2QzhZNlaU1su7abSyT9EGf0xS/0waLjrf7/XxQHUk7w==
+  dependencies:
+    lodash "^4.17.15"
+    lodash-es "^4.17.15"
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.1.tgz#e7df00f98a203324f6dc7cc606cad9d4a8ab2217"
@@ -13709,15 +13717,16 @@ react-refresh@0.8.3:
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
 
-react-relay@^10.0.1:
-  version "10.0.1"
-  resolved "https://registry.yarnpkg.com/react-relay/-/react-relay-10.0.1.tgz#7b7bf7dd9752165ab99ae0302db4b3e56c143970"
-  integrity sha512-zgafqWphSGFPSJ/h23zPpFGZ4tzKyj8eQPLTeZEwdbtmqAFsAIjPS0zSCo2DcsaeylEgSrQDShttpKYyEUtRAg==
+react-relay@^0.0.0-experimental-183bdd28:
+  version "0.0.0-experimental-183bdd28"
+  resolved "https://registry.yarnpkg.com/react-relay/-/react-relay-0.0.0-experimental-183bdd28.tgz#1a007f724ba292237c20646e0b84ca346c10e1c9"
+  integrity sha512-GITLeYbG+WnXwjudQL0TQMGnn9x1dzowgbk4O6feVflX1q+/M4KJsMb47ls2i0Pn9Rny4JAABIeNxRQgWk8Mmw==
   dependencies:
     "@babel/runtime" "^7.0.0"
     fbjs "^1.0.0"
     nullthrows "^1.1.1"
     relay-runtime "10.0.1"
+    scheduler "^0.19.1"
 
 react-sizeme@^2.5.2, react-sizeme@^2.6.7:
   version "2.6.12"
@@ -14062,6 +14071,14 @@ relay-config@^10.0.1:
   integrity sha512-4QjBscsKV1h41kSYWSOpFNQEpzEbRfD9g2QzrYeRfPwjZsXRgvLm6cMBOgk/lVL2aOFe2vqiEiMiGkd7U2AUgw==
   dependencies:
     cosmiconfig "^5.0.5"
+
+relay-hooks@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/relay-hooks/-/relay-hooks-3.7.0.tgz#4ed95494c5bfb82142507d1dc66d856288bc7e2e"
+  integrity sha512-tZnS2rjeOvWpMAKIGS0w09InX//yigtyNg2ic43aAAZaLnjnp6iCJyn7HXwPx3SO/5tCymjgF/hMBicipZJnTw==
+  dependencies:
+    "@restart/hooks" "^0.3.1"
+    fbjs "^1.0.0"
 
 relay-runtime@10.0.1:
   version "10.0.1"

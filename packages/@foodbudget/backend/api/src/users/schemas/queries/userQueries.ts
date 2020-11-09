@@ -2,7 +2,7 @@ import logger from '@foodbudget/logger';
 import { arg, intArg, queryField } from '@nexus/schema';
 import { users } from '@prisma/client';
 import { Context } from '../../../context';
-import { emailArg } from '../../../shared/scalar/emailArg';
+import { emailArg } from '../../../scalar/emailArg';
 import { userField } from '../userFields';
 
 export const getUser = queryField('user', {

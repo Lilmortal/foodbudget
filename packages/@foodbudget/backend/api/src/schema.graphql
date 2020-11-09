@@ -2,11 +2,11 @@
 ### Do not make changes to this file directly
 
 
-enum adjectives {
+enum Adjective {
   ROMANTIC
 }
 
-enum allergies {
+enum Allergy {
   DIARY
   EGG
   GLUTEN
@@ -19,7 +19,7 @@ enum allergies {
   WHEAT
 }
 
-enum cuisines {
+enum Cuisine {
   AMERICAN
   ASIAN
   BARBEQUE
@@ -47,12 +47,12 @@ enum cuisines {
   THAI
 }
 
-enum currencies {
+enum Currency {
   AUD
   NZD
 }
 
-enum diets {
+enum Diet {
   KETOGENIC
   LOW_FOODMAP
   PALEO
@@ -71,7 +71,7 @@ type ingredient {
   price: price
 }
 
-enum meals {
+enum Meal {
   BREAKFAST
   DINNER
   LUNCH
@@ -79,10 +79,10 @@ enum meals {
 
 type Mutation {
   deleteUser(email: Email): user
-  ingredients(amount: Float, currency: currencies, name: String!): ingredient
+  ingredients(amount: Float, currency: Currency, name: String!): ingredient
   login(email: Email!, password: String!): String
   register(email: Email!, password: String!): user
-  saveRecipe(adjectives: [adjectives], allergies: [allergies], cuisines: [cuisines], diets: [diets], id: Int, ingredients: [recipeIngredientArg], link: String, meals: [meals], name: String!, numSaved: Int, prepTime: String, servings: Int): recipe
+  saveRecipe(adjectives: [Adjective], allergies: [Allergy], cuisines: [Cuisine], diets: [Diet], id: Int, ingredients: [recipeIngredientArg], link: String, meals: [Meal], name: String!, numSaved: Int, prepTime: String, servings: Int): recipe
 }
 
 type price {
@@ -96,8 +96,8 @@ input priceArg {
 }
 
 type Query {
-  filterIngredientsByPrice(currency: currencies!, maxAmount: Float, minAmount: Float!): [ingredient]
-  filterRecipes(adjectives: [adjectives], allergies: [allergies], cuisines: [cuisines], diets: [diets], ingredients: [recipeIngredientArg], meals: [meals]): [recipe]
+  filterIngredientsByPrice(currency: Currency!, maxAmount: Float, minAmount: Float!): [ingredient]
+  filterRecipes(adjectives: [Adjective], allergies: [Allergy], cuisines: [Cuisine], diets: [Diet], ingredients: [recipeIngredientArg], meals: [Meal]): [recipe]
   ingredientsByName(name: String!): [ingredient]
   recipesById(link: String!): recipe
   recipesByLink(id: Int!): recipe

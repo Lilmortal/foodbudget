@@ -21,7 +21,8 @@
     "autoprefixer": "^10.0.1",
     "find-config": "^1.0.0",
     "next": "^10.0.0",
-    "react-relay": "^10.0.1"
+    "react-relay": "^0.0.0-experimental-183bdd28",
+    "relay-hooks": "^3.7.0"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^6.0.27",

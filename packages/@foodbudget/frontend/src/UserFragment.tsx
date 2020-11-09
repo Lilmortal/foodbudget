@@ -1,5 +1,5 @@
 import { createFragmentContainer, graphql } from 'react-relay';
-import { UserFragment_user } from './__generated__/UserFragment_user.graphql';
+import { UserFragment_user } from '../pages/__generated__/UserFragment_user.graphql';
 
 interface UserType {
   user: UserFragment_user;
