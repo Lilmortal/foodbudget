@@ -1,6 +1,6 @@
 module.exports = {
   src: './src',
-  schema: './schema.graphql',
+  schema: '../backend/api/src/schema.graphql',
   extensions: ['ts', 'tsx'],
   customScalars: {
     Email: 'String',

@@ -21,7 +21,7 @@ export class UserRepository implements Repository<User> {
 
     const results = await this.prisma.users.findMany({
       where: {
-        id: user.id,
+        id: user.id ? parseInt(user.id, 10) : undefined,
         email: user.email,
         google_id: user.googleId,
         facebook_id: user.facebookId,
@@ -49,7 +49,7 @@ export class UserRepository implements Repository<User> {
 
     const result = await this.prisma.users.findOne({
       where: {
-        id: user.id,
+        id: user.id ? parseInt(user.id, 10) : undefined,
         email: user.email,
         google_id: user.googleId,
         facebook_id: user.facebookId,
@@ -88,7 +88,7 @@ export class UserRepository implements Repository<User> {
         ...overrideOrUpdate(!!user.facebookId, { facebook_id: user.facebookId }),
       },
       where: {
-        id: user.id,
+        id: user.id ? parseInt(user.id, 10) : undefined,
         email: user.email,
       },
     });

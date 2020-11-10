@@ -78,11 +78,16 @@ enum Meal {
 }
 
 type Mutation {
-  deleteUser(email: Email): user
+  deleteUser(email: Email): User
   ingredients(amount: Float, currency: Currency, name: String!): ingredient
   login(email: Email!, password: String!): String
-  register(email: Email!, password: String!): user
+  register(email: Email!, password: String!): User
   saveRecipe(adjectives: [Adjective], allergies: [Allergy], cuisines: [Cuisine], diets: [Diet], id: Int, ingredients: [recipeIngredientArg], link: String, meals: [Meal], name: String!, numSaved: Int, prepTime: String, servings: Int): recipe
+}
+
+interface Node {
+  """GUID for a resource"""
+  id: ID
 }
 
 type price {
@@ -99,10 +104,11 @@ type Query {
   filterIngredientsByPrice(currency: Currency!, maxAmount: Float, minAmount: Float!): [ingredient]
   filterRecipes(adjectives: [Adjective], allergies: [Allergy], cuisines: [Cuisine], diets: [Diet], ingredients: [recipeIngredientArg], meals: [Meal]): [recipe]
   ingredientsByName(name: String!): [ingredient]
+  node(id: ID!): Node
   recipesById(link: String!): recipe
   recipesByLink(id: Int!): recipe
   renewToken: String
-  user(email: Email, id: Int): user
+  User(id: ID!): User
 }
 
 type recipe {
@@ -136,9 +142,12 @@ input recipeIngredientArg {
   text: String
 }
 
-type user {
+type User implements Node {
   """user email."""
   email: String
+
+  """GUID for a resource"""
+  id: ID
 
   """user name that will be shown to others."""
   nickname: String

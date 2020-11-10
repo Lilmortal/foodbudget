@@ -1,22 +1,22 @@
 import logger from '@foodbudget/logger';
-import { arg, intArg, queryField } from '@nexus/schema';
-import { users } from '@prisma/client';
+import { idArg, queryField } from '@nexus/schema';
 import { Context } from '../../../context';
 import { emailArg } from '../../../scalar/emailArg';
+import { User } from '../../User.types';
 import { userField } from '../userFields';
 
-export const getUser = queryField('user', {
+export const getUser = queryField('User', {
   type: userField,
   args: {
-    id: intArg(),
-    email: arg({ type: emailArg }),
+    id: idArg({ required: true }),
+    // email: arg({ type: emailArg }),
   },
   async resolve(_parent, args, ctx: Context) {
     logger.info('incoming get user request', args);
 
-    const userDto: Partial<users> = {
+    const userDto: Partial<User> = {
       id: args.id,
-      email: args.email,
+      // email: args.email,
     };
     const result = await ctx.serviceManager.userServices.get(userDto);
 
