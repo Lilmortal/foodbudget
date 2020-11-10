@@ -108,7 +108,7 @@ type Query {
   recipesById(link: String!): recipe
   recipesByLink(id: Int!): recipe
   renewToken: String
-  User(id: ID!): User
+  User(email: String): User
 }
 
 type recipe {

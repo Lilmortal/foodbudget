@@ -1,15 +1,10 @@
-import { useState } from 'react';
 import { fetchQuery, graphql } from 'react-relay';
-import { useFragment, useRelayEnvironment } from 'react-relay/hooks';
-import { useQuery, useRefetchable } from 'relay-hooks';
+import { useFragment } from 'react-relay/hooks';
 import { initEnvironment } from './lib/environment';
-import { UserFragment_user, UserFragment_user$key } from './__generated__/UserFragment_user.graphql';
-import { UserQuery, UserQueryResponse } from './__generated__/UserQuery.graphql';
-// import { UserRefetchQuery } from './__generated__/UserRefetchQuery.graphql';
 
 const query = graphql`
-  query UserQuery($id: ID!) {
-    node(id: $id) {
+  query UserQuery($email: String) {
+    User(email: $email) {
       ... on User {
         ...UserFragment_user
       }
@@ -18,8 +13,7 @@ const query = graphql`
 `;
 
 const userFragment = graphql`
-  fragment UserFragment_user on User
-  @refetchable(queryName: "UserRefetchQuery") {
+  fragment UserFragment_user on User {
     email
     nickname
   }
@@ -27,35 +21,22 @@ const userFragment = graphql`
 
 const Test: React.FC<{
   node: any,
-  setId: any
-}> = ({ node, setId }) => {
-  // I think useState is not the way to handle Relay store!
-  // here, "node" is `const { props } = useQuery(query, { id }, { fetchPolicy: 'store-or-network' });` from
-  // the App component below.
-  // useRefetchable needs "node", or else it will complain. But "node" is hard coded to whatever the variable
-  // `id` is. This whole thing is so confusing!
-  // My ideal plan is to use `refetch` to update my result, not useState.
-  const [result, refetch] = useRefetchable(userFragment, node);
+}> = ({ node }) => {
+  const result = useFragment(userFragment, node);
 
-  const environment = useRelayEnvironment();
-  console.log(result, environment.getStore().getSource().toJSON());
   return (
     <>
-      <button onClick={() => setId('24')}>Refetch</button>
-      <button onClick={() => setId('23')}>Refetchmhmmm</button>
       {result && (<div>{result.email} {result.nickname}</div>)}
    </>
   );
 };
 
-const App: React.FC<{}> = () => {
-  const [id, setId] = useState<string>('23');
-  // fetchPolicy defaults to store-or-network, but I just added it in to emphasise it.
-  const { props } = useQuery(query, { id }, { fetchPolicy: 'store-or-network' });
+const App: React.FC<{}> = ({ user }: any) => {
+  const node = user.User;
 
   return (
     <>
-      {props?.node && <Test node={props.node} setId={setId} />}
+      {node && <Test node={node} />}
     </>
   );
 };
@@ -65,12 +46,11 @@ export default App;
 export const getStaticProps = async () => {
   const environment = initEnvironment();
 
-  // Fetch the result of id 23 and 24 and save it in the store before sending it to the client.
-  await fetchQuery(environment, query, { id: 23 });
-  await fetchQuery(environment, query, { id: 24 });
+  const user = await fetchQuery(environment, query, { email: 'jacktan165@gmail.com' });
 
   return {
     props: {
+      user,
       data: environment.getStore().getSource().toJSON(),
     },
   };
