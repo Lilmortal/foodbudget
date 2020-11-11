@@ -1,26 +1,9 @@
 import { AppError } from '@foodbudget/errors';
+import { Edge, PageInfo, Pagination } from '../../types/pagination';
 import { Currency, Ingredient } from '../Ingredient.types';
 import { FilterableIngredientRepository } from '../repositories/IngredientRepository';
 
-interface PageInfo {
-  hasPreviousPage: boolean;
-  hasNextPage: boolean;
-  startCursor: string | undefined;
-  endCursor: string | undefined;
-}
-
-interface Edge<T> {
-  node: T;
-  cursor: string;
-}
-
-interface Pagination {
-  pageInfo: PageInfo;
-  edges: Edge<Ingredient>[];
-  totalCount: number;
-}
-
-export interface PaginateParams {
+interface PaginateParams {
   first?: number;
   last?: number;
   cursor?: string;
@@ -36,12 +19,16 @@ export class IngredientServices {
     return ingredients;
   }
 
-  async paginate({ first, last, cursor }: PaginateParams): Promise<Pagination | undefined> {
+  async paginate({ first, last, cursor }: PaginateParams): Promise<Pagination<Ingredient> | undefined> {
     const beforePos = first || 0;
-    const beforeIngredients = await this.repository.paginate(-Math.abs(beforePos) - 1, cursor || '');
+    const beforeIngredients = await this.repository.paginate(
+      -Math.abs(beforePos) - 1, Buffer.from(cursor || '', 'base64').toString('ascii'),
+    );
 
     const afterPos = last || 0;
-    const afterIngredients = await this.repository.paginate(Math.abs(afterPos) + 1, cursor || '');
+    const afterIngredients = await this.repository.paginate(
+      Math.abs(afterPos) + 1, Buffer.from(cursor || '', 'base64').toString('ascii'),
+    );
 
     const hasPreviousPage = beforeIngredients ? beforeIngredients.length > beforePos : false;
     const hasNextPage = afterIngredients ? afterIngredients.length > afterPos : false;
@@ -59,29 +46,29 @@ export class IngredientServices {
     if (beforeIngredients && beforeIngredients.length > 0) {
       edges = edges.concat(beforeIngredients.map((ingredient) => ({
         node: { ...ingredient },
-        cursor: ingredient.name,
+        cursor: Buffer.from(ingredient.name).toString('base64'),
       })));
     }
 
     if (afterIngredients && afterIngredients.length > 0) {
       edges = edges.concat(afterIngredients.map((ingredient) => ({
         node: { ...ingredient },
-        cursor: ingredient.name,
+        cursor: Buffer.from(ingredient.name).toString('base64'),
       })));
     }
 
     let startCursor = '';
     if (beforeIngredients && beforeIngredients.length > 0) {
-      startCursor = beforeIngredients[0].name;
+      startCursor = Buffer.from(beforeIngredients[0].name).toString('base64');
     } else if (afterIngredients && afterIngredients.length > 0) {
-      startCursor = afterIngredients[0].name;
+      startCursor = Buffer.from(afterIngredients[0].name).toString('base64');
     }
 
     let endCursor = '';
     if (afterIngredients && afterIngredients.length > 0) {
-      endCursor = afterIngredients[afterIngredients.length - 1].name;
+      endCursor = Buffer.from(afterIngredients[afterIngredients.length - 1].name).toString('base64');
     } else if (beforeIngredients && beforeIngredients.length > 0) {
-      endCursor = beforeIngredients[beforeIngredients.length - 1].name;
+      endCursor = Buffer.from(beforeIngredients[beforeIngredients.length - 1].name).toString('base64');
     }
 
     const pageInfo: PageInfo = {

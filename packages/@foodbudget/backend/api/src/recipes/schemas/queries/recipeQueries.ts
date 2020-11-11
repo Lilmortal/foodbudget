@@ -1,12 +1,10 @@
-import {
-  arg, intArg, queryField, stringArg,
-} from '@nexus/schema';
+import { arg, intArg, queryField, stringArg } from '@nexus/schema';
 import logger from '@foodbudget/logger';
 import { CacheScope } from 'apollo-cache-control';
 import { Context } from '../../../context';
 import { Recipe } from '../../Recipe.types';
 import {
-  adjectiveType, allergyType, cuisineType, dietType, mealType, recipeField, recipeIngredientArg,
+  adjectiveType, allergyType, cuisineType, dietType, mealType, recipeConnection, recipeField, recipeIngredientArg,
 } from '../recipeFields';
 
 export const filterRecipes = queryField('filterRecipes', {
@@ -78,6 +76,26 @@ export const getRecipesByLink = queryField('recipesByLink', {
     const result = await ctx.serviceManager.recipeServices.get(recipe);
 
     logger.info('get recipes by id response', result);
+    return result;
+  },
+});
+
+export const recipesPagination = queryField('recipes', {
+  type: recipeConnection,
+  nullable: true,
+  args: {
+    first: intArg(),
+    last: intArg(),
+    cursor: stringArg(),
+  },
+  resolve: async (_parent, args, ctx: Context) => {
+    logger.info('incoming get recipes pagination request', args);
+
+    const result = ctx.serviceManager.recipeServices.paginate({
+      first: args.first, last: args.last, cursor: args.cursor,
+    });
+
+    logger.info('recipes pagination response', result);
     return result;
   },
 });

@@ -2,7 +2,7 @@ import { mutationField } from '@nexus/schema';
 import logger from '@foodbudget/logger';
 import { Context } from '../../../context';
 import { userField } from '../../../users/schemas';
-import { emailArg } from '../../../scalar/emailArg';
+import { emailArg } from '../../../shared/scalar/emailArg';
 
 export const deleteUser = mutationField('deleteUser', {
   type: userField,

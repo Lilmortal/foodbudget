@@ -4,8 +4,6 @@ export interface Repository<D> {
   get(obj: Partial<D>): Promise<D[] | undefined>;
   getOne(obj: Partial<D>): Promise<D | undefined>;
 
-  paginate(take: number, cursor: string, skip?: boolean): Promise<D[] | undefined>;
-
   // TODO: Dont save immediately, think about Unit of work
   // How to handle 3 save operations and roll all of them back
   save(obj: Partial<D>, options?: SaveOptions): Promise<D>;

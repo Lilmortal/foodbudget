@@ -1,11 +1,11 @@
 import logger from '@foodbudget/logger';
 import {
-  arg, floatArg, intArg, objectType, queryField, stringArg,
+  arg, floatArg, intArg, queryField, stringArg,
 } from '@nexus/schema';
 import { CacheScope } from 'apollo-cache-control';
 import { Context } from '../../../context';
 import { Ingredient } from '../../Ingredient.types';
-import { currencyType, ingredientField } from '../ingredientFields';
+import { currencyType, ingredientConnection, ingredientField } from '../ingredientFields';
 
 export const ingredientsByName = queryField('ingredientsByName', {
   type: ingredientField,
@@ -45,33 +45,6 @@ export const filterIngredientsByPrice = queryField('filterIngredientsByPrice', {
     const result = await ctx.serviceManager.ingredientServices.filterByPrice(args.currency, args.minAmount, args.maxAmount);
     logger.info('filtered ingredients by price response', result);
     return result;
-  },
-});
-
-export const PageInfo = objectType({
-  name: 'PageInfo',
-  definition(t) {
-    t.string('startCursor', { nullable: true });
-    t.string('endCursor', { nullable: true });
-    t.boolean('hasPreviousPage');
-    t.boolean('hasNextPage');
-  },
-});
-
-export const ingredientEdge = objectType({
-  name: 'ingredientEdge',
-  definition(t) {
-    t.string('cursor');
-    t.field('node', { type: ingredientField });
-  },
-});
-
-export const ingredientConnection = objectType({
-  name: 'ingredientConnection',
-  definition(t) {
-    t.int('total_count');
-    t.list.field('edges', { type: ingredientEdge });
-    t.field('pageInfo', { type: PageInfo });
   },
 });
 

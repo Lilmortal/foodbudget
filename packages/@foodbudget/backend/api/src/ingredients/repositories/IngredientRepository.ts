@@ -1,12 +1,12 @@
 import logger from '@foodbudget/logger';
 import { PrismaClient } from '@prisma/client';
 import { performanceTest } from '../../perf';
-import { Repository } from '../../types/Repository';
+import { PaginationRepository } from '../../types/pagination/PaginationRepository';
 import { SaveOptions } from '../../types/SaveOptions';
 import { Currency, Ingredient } from '../Ingredient.types';
 import { ingredientMapper } from './ingredientMapper';
 
-export interface FilterableIngredientRepository extends Repository<Ingredient> {
+export interface FilterableIngredientRepository extends PaginationRepository<Ingredient> {
   filterByPrice(currency: Currency, minAmount: number, maxAmount?: number): Promise<Ingredient[]>;
 }
 
@@ -88,9 +88,11 @@ export class IngredientRepository implements FilterableIngredientRepository {
         include: {
           recipe_ingredients: true,
         },
-        ...cursor && { cursor: {
-          name: cursor,
-        } },
+        ...cursor && {
+          cursor: {
+            name: cursor,
+          },
+        },
         take,
         skip,
       },

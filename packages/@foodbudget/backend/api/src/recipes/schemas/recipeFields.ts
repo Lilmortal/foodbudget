@@ -1,5 +1,6 @@
 import { enumType, inputObjectType, objectType } from '@nexus/schema';
 import { priceArg, priceField } from '../../ingredients';
+import { pageInfo } from '../../shared/field/pageInfo';
 
 export const cuisineType = enumType({
   name: 'Cuisine',
@@ -103,5 +104,22 @@ export const recipeIngredientArg = inputObjectType({
     t.string('text');
     t.string('name');
     t.field('price', { type: priceArg });
+  },
+});
+
+export const recipeEdge = objectType({
+  name: 'recipeEdge',
+  definition(t) {
+    t.string('cursor');
+    t.field('node', { type: recipeField });
+  },
+});
+
+export const recipeConnection = objectType({
+  name: 'recipeConnection',
+  definition(t) {
+    t.int('total_count');
+    t.list.field('edges', { type: recipeEdge });
+    t.field('pageInfo', { type: pageInfo });
   },
 });

@@ -5,19 +5,27 @@ import { IngredientServices } from '../../ingredients/services';
 import { Recipe } from '../Recipe.types';
 import { recipeMapper } from './recipeMapper';
 import { performanceTest } from '../../perf';
-import { Repository } from '../../types/Repository';
 import { PartialBy } from '../../types/PartialBy';
 import { SaveOptions } from '../../types/SaveOptions';
+import { PaginationRepository } from '../../types/pagination/PaginationRepository';
 
-export class RecipeRepository implements Repository<Recipe> {
+export class RecipeRepository implements PaginationRepository<Recipe> {
   constructor(private readonly prisma: PrismaClient, private readonly ingredientsService: IngredientServices) {
     this.prisma = prisma;
     this.ingredientsService = ingredientsService;
   }
 
-  paginate = async (take: number, cursor: string): Promise<Recipe[] | undefined> => {
+  paginate = async (take: number, cursor: string, shouldSkip?: boolean): Promise<Recipe[] | undefined> => {
     logger.info('get recipe repository paginate request', { take, cursor });
     performanceTest.start('get paginate recipes');
+
+    let skip = 0;
+    if (shouldSkip !== undefined) {
+      skip = shouldSkip ? 1 : 0;
+    } else {
+      skip = cursor ? 1 : 0;
+    }
+
     const results = await this.prisma.recipes.findMany(
       {
         include: {
@@ -36,16 +44,19 @@ export class RecipeRepository implements Repository<Recipe> {
             },
           },
         },
-        cursor: {
-          id: parseInt(cursor, 10),
+        ...cursor && {
+          cursor: {
+            id: parseInt(cursor, 10),
+          },
         },
         take,
+        skip,
       },
     );
 
     performanceTest.end('get paginate recipes');
 
-    logger.info('recipes found', results);
+    logger.info('recipe pagination results', results);
     return results.map((result) => recipeMapper.toDto(result));
   };
 

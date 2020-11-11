@@ -124,6 +124,7 @@ type Query {
   ingredients(cursor: String, first: Int, last: Int): ingredientConnection
   ingredientsByName(name: String!): [ingredient]
   node(id: ID!): Node
+  recipes(cursor: String, first: Int, last: Int): recipeConnection
   recipesById(link: String!): recipe
   recipesByLink(id: Int!): recipe
   renewToken: String
@@ -143,6 +144,17 @@ type recipe {
   numSaved: Int
   prepTime: String
   servings: Int
+}
+
+type recipeConnection {
+  edges: [recipeEdge]
+  pageInfo: PageInfo
+  total_count: Int
+}
+
+type recipeEdge {
+  cursor: String
+  node: recipe
 }
 
 type recipeIngredient {
