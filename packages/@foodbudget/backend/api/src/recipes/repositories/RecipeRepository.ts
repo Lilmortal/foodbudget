@@ -49,7 +49,7 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
             id: parseInt(cursor, 10),
           },
         },
-        take,
+        take: !cursor && take < 0 ? 0 : take,
         skip,
       },
     );
@@ -207,7 +207,7 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
         link: recipe.link,
         num_saved: 0,
         ingredients: {
-          create: recipe.ingredients.map((ingredient) => ({
+          create: recipe.ingredients && recipe.ingredients.map((ingredient) => ({
             amount: ingredient.amount,
             measurement: ingredient.measurement,
             recipe_text: ingredient.text,
@@ -244,7 +244,7 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
         ...overrideOrUpdate(recipe.numSaved !== undefined, { num_saved: recipe.numSaved }),
         ...overrideOrUpdate(recipe.ingredients && Object.keys(recipe.ingredients).length > 0, {
           ingredients: {
-            upsert: recipe.ingredients.map((ingredient) => ({
+            upsert: recipe.ingredients && recipe.ingredients.map((ingredient) => ({
               create: {
                 amount: ingredient.amount,
                 measurement: ingredient.measurement,

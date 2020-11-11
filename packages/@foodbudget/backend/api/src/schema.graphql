@@ -74,7 +74,7 @@ type ingredient {
 type ingredientConnection {
   edges: [ingredientEdge]
   pageInfo: PageInfo
-  total_count: Int
+  totalCount: Int
 }
 
 type ingredientEdge {
@@ -93,7 +93,7 @@ type Mutation {
   ingredients(amount: Float, currency: Currency, name: String!): ingredient
   login(email: Email!, password: String!): String
   register(email: Email!, password: String!): User
-  saveRecipe(adjectives: [Adjective], allergies: [Allergy], cuisines: [Cuisine], diets: [Diet], id: Int, ingredients: [recipeIngredientArg], link: String, meals: [Meal], name: String!, numSaved: Int, prepTime: String, servings: Int): recipe
+  saveRecipe(adjectives: [Adjective], allergies: [Allergy], cuisines: [Cuisine], diets: [Diet], ingredients: [recipeIngredientArg], link: String, meals: [Meal], name: String!, numSaved: Int, prepTime: String, servings: Int): recipe
 }
 
 interface Node {
@@ -149,7 +149,7 @@ type recipe {
 type recipeConnection {
   edges: [recipeEdge]
   pageInfo: PageInfo
-  total_count: Int
+  totalCount: Int
 }
 
 type recipeEdge {

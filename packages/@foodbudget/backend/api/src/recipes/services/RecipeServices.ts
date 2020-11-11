@@ -32,7 +32,6 @@ export class RecipeServices {
 
     const hasPreviousPage = beforeRecipes ? beforeRecipes.length > beforePos : false;
 
-    console.log(beforeRecipes, beforeRecipes?.length, beforePos);
     const hasNextPage = afterRecipes ? afterRecipes.length > afterPos : false;
 
     if (hasPreviousPage) {

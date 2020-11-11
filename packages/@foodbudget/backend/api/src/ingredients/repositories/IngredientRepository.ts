@@ -93,7 +93,7 @@ export class IngredientRepository implements FilterableIngredientRepository {
             name: cursor,
           },
         },
-        take,
+        take: !cursor && take < 0 ? 0 : take,
         skip,
       },
     );

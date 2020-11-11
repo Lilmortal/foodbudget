@@ -11,7 +11,6 @@ import {
 export const saveRecipe = mutationField('saveRecipe', {
   type: recipeField,
   args: {
-    id: intArg(),
     name: stringArg({ required: true }),
     link: stringArg(),
     prepTime: stringArg(),
@@ -30,8 +29,7 @@ export const saveRecipe = mutationField('saveRecipe', {
     // }
     logger.info('save recipe request', args);
 
-    const recipe: Recipe = {
-      id: args.id,
+    const recipe: Omit<Recipe, 'id'> = {
       name: args.name,
       link: args.link,
       prepTime: args.prepTime,

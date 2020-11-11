@@ -31,7 +31,7 @@ describe('job recipes scraper', () => {
       meals: [],
     };
 
-    mockServiceManager = mockDeep<ServiceManager>();
+    mockServiceManager = mockDeep();
 
     mockEmailer = jest.fn<Mailer, []>(() => ({
       send: jest.fn(),
