@@ -15,6 +15,40 @@ export class RecipeRepository implements Repository<Recipe> {
     this.ingredientsService = ingredientsService;
   }
 
+  paginate = async (take: number, cursor: string): Promise<Recipe[] | undefined> => {
+    logger.info('get recipe repository paginate request', { take, cursor });
+    performanceTest.start('get paginate recipes');
+    const results = await this.prisma.recipes.findMany(
+      {
+        include: {
+          ingredients: {
+            select: {
+              ingredient: {
+                select: {
+                  name: true,
+                  price_currency: true,
+                  price_amount: true,
+                },
+              },
+              amount: true,
+              measurement: true,
+              recipe_text: true,
+            },
+          },
+        },
+        cursor: {
+          id: parseInt(cursor, 10),
+        },
+        take,
+      },
+    );
+
+    performanceTest.end('get paginate recipes');
+
+    logger.info('recipes found', results);
+    return results.map((result) => recipeMapper.toDto(result));
+  };
+
   get = async (recipe: Partial<Recipe>): Promise<Recipe[] | undefined> => {
     logger.info('get recipe repository request', recipe);
     performanceTest.start('get recipes');

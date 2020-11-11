@@ -61,11 +61,43 @@ export class IngredientRepository implements FilterableIngredientRepository {
         include: {
           recipe_ingredients: true,
         },
+        cursor: {
+          name: ingredient.name,
+        },
       },
     );
 
     performanceTest.end('get ingredients');
     logger.info('ingredients found', results);
+    return results.map((result) => ingredientMapper.toDto(result));
+  };
+
+  paginate = async (take: number, cursor: string, shouldSkip?: boolean): Promise<Ingredient[] | undefined> => {
+    logger.info('get ingredient repository paginate request', { take, cursor });
+    performanceTest.start('get paginate ingredients');
+
+    let skip = 0;
+    if (shouldSkip !== undefined) {
+      skip = shouldSkip ? 1 : 0;
+    } else {
+      skip = cursor ? 1 : 0;
+    }
+
+    const results = await this.prisma.ingredients.findMany(
+      {
+        include: {
+          recipe_ingredients: true,
+        },
+        ...cursor && { cursor: {
+          name: cursor,
+        } },
+        take,
+        skip,
+      },
+    );
+
+    performanceTest.end('get paginate ingredients');
+    logger.info('paginate ingredients found', results);
     return results.map((result) => ingredientMapper.toDto(result));
   };
 

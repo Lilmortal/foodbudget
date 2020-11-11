@@ -2,6 +2,30 @@ import { AppError } from '@foodbudget/errors';
 import { Currency, Ingredient } from '../Ingredient.types';
 import { FilterableIngredientRepository } from '../repositories/IngredientRepository';
 
+interface PageInfo {
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+  startCursor: string | undefined;
+  endCursor: string | undefined;
+}
+
+interface Edge<T> {
+  node: T;
+  cursor: string;
+}
+
+interface Pagination {
+  pageInfo: PageInfo;
+  edges: Edge<Ingredient>[];
+  totalCount: number;
+}
+
+export interface PaginateParams {
+  first?: number;
+  last?: number;
+  cursor?: string;
+}
+
 export class IngredientServices {
   constructor(private readonly repository: FilterableIngredientRepository) {
     this.repository = repository;
@@ -10,6 +34,66 @@ export class IngredientServices {
   async get(ingredientsDto: Partial<Ingredient>): Promise<Ingredient[] | undefined> {
     const ingredients = await this.repository.get(ingredientsDto);
     return ingredients;
+  }
+
+  async paginate({ first, last, cursor }: PaginateParams): Promise<Pagination | undefined> {
+    const beforePos = first || 0;
+    const beforeIngredients = await this.repository.paginate(-Math.abs(beforePos) - 1, cursor || '');
+
+    const afterPos = last || 0;
+    const afterIngredients = await this.repository.paginate(Math.abs(afterPos) + 1, cursor || '');
+
+    const hasPreviousPage = beforeIngredients ? beforeIngredients.length > beforePos : false;
+    const hasNextPage = afterIngredients ? afterIngredients.length > afterPos : false;
+
+    if (hasPreviousPage) {
+      beforeIngredients?.shift();
+    }
+
+    if (hasNextPage) {
+      afterIngredients?.pop();
+    }
+
+    let edges: Edge<Ingredient>[] = [];
+
+    if (beforeIngredients && beforeIngredients.length > 0) {
+      edges = edges.concat(beforeIngredients.map((ingredient) => ({
+        node: { ...ingredient },
+        cursor: ingredient.name,
+      })));
+    }
+
+    if (afterIngredients && afterIngredients.length > 0) {
+      edges = edges.concat(afterIngredients.map((ingredient) => ({
+        node: { ...ingredient },
+        cursor: ingredient.name,
+      })));
+    }
+
+    let startCursor = '';
+    if (beforeIngredients && beforeIngredients.length > 0) {
+      startCursor = beforeIngredients[0].name;
+    } else if (afterIngredients && afterIngredients.length > 0) {
+      startCursor = afterIngredients[0].name;
+    }
+
+    let endCursor = '';
+    if (afterIngredients && afterIngredients.length > 0) {
+      endCursor = afterIngredients[afterIngredients.length - 1].name;
+    } else if (beforeIngredients && beforeIngredients.length > 0) {
+      endCursor = beforeIngredients[beforeIngredients.length - 1].name;
+    }
+
+    const pageInfo: PageInfo = {
+      hasPreviousPage,
+      hasNextPage,
+      startCursor,
+      endCursor,
+    };
+
+    const totalCount = edges ? edges.length : 0;
+
+    return { pageInfo, edges, totalCount };
   }
 
   async filterByPrice(currency: Currency, minAmount: number, maxAmount?: number): Promise<Ingredient[] | undefined> {

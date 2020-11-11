@@ -15,6 +15,8 @@ export class UserRepository implements Repository<User> {
     this.prisma = prisma;
   }
 
+  paginate = async (take: number, cursor: string, skip?: boolean): Promise<User[] | undefined> => undefined;
+
   async get(user: Partial<User>): Promise<User[] | undefined> {
     logger.info('get users repository request', user);
     performanceTest.start('get users');

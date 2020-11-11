@@ -71,6 +71,17 @@ type ingredient {
   price: price
 }
 
+type ingredientConnection {
+  edges: [ingredientEdge]
+  pageInfo: PageInfo
+  total_count: Int
+}
+
+type ingredientEdge {
+  cursor: String
+  node: ingredient
+}
+
 enum Meal {
   BREAKFAST
   DINNER
@@ -90,6 +101,13 @@ interface Node {
   id: ID
 }
 
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean
+  hasPreviousPage: Boolean
+  startCursor: String
+}
+
 type price {
   amount: Float
   currency: String
@@ -103,6 +121,7 @@ input priceArg {
 type Query {
   filterIngredientsByPrice(currency: Currency!, maxAmount: Float, minAmount: Float!): [ingredient]
   filterRecipes(adjectives: [Adjective], allergies: [Allergy], cuisines: [Cuisine], diets: [Diet], ingredients: [recipeIngredientArg], meals: [Meal]): [recipe]
+  ingredients(cursor: String, first: Int, last: Int): ingredientConnection
   ingredientsByName(name: String!): [ingredient]
   node(id: ID!): Node
   recipesById(link: String!): recipe

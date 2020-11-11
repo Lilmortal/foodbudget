@@ -1,5 +1,5 @@
 import {
-  fieldAuthorizePlugin, makeSchema, nullabilityGuardPlugin, queryComplexityPlugin,
+  makeSchema, nullabilityGuardPlugin, queryComplexityPlugin,
   interfaceType,
   queryField,
   idArg } from '@nexus/schema';
@@ -47,7 +47,6 @@ export const schema = makeSchema({
   },
   plugins: [
     queryComplexityPlugin(),
-    fieldAuthorizePlugin(),
     nullabilityGuardPlugin({
       onGuarded({ info }) {
         logger.error(
@@ -55,6 +54,7 @@ export const schema = makeSchema({
         );
       },
       fallbackValues: {
+        ID: () => 'N/A',
         Int: () => 0,
         String: () => '',
         Boolean: () => false,
