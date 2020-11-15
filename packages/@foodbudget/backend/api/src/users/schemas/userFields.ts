@@ -5,6 +5,6 @@ export const userField = objectType({
   definition(t) {
     t.string('email', { description: 'user email.' });
     t.string('nickname', { description: 'user name that will be shown to others.' });
-    t.implements('Node');
+    // t.implements('Node');
   },
 });

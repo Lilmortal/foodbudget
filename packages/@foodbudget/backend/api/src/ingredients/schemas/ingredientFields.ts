@@ -19,6 +19,7 @@ export const ingredientField = objectType({
   definition(t) {
     t.string('name');
     t.field('price', { type: priceField });
+    t.implements('Node');
   },
 });
 
@@ -41,7 +42,7 @@ export const ingredientEdge = objectType({
 export const ingredientConnection = objectType({
   name: 'ingredientConnection',
   definition(t) {
-    t.int('totalCount');
+    t.int('count');
     t.list.field('edges', { type: ingredientEdge });
     t.field('pageInfo', { type: pageInfo });
   },

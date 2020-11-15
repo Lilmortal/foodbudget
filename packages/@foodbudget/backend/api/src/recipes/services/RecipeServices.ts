@@ -79,9 +79,9 @@ export class RecipeServices {
       endCursor,
     };
 
-    const totalCount = edges ? edges.length : 0;
+    const count = edges ? edges.length : 0;
 
-    return { pageInfo, edges, totalCount };
+    return { pageInfo, edges, count };
   }
 
   async save(recipesDto: PartialBy<Recipe, 'id'>): Promise<Recipe>;

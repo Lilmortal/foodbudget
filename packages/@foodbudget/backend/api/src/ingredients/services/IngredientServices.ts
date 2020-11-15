@@ -4,9 +4,8 @@ import { Currency, Ingredient } from '../Ingredient.types';
 import { FilterableIngredientRepository } from '../repositories/IngredientRepository';
 
 interface PaginateParams {
-  first?: number;
-  last?: number;
-  cursor?: string;
+  pos: number;
+  cursor: string;
 }
 
 export class IngredientServices {
@@ -19,56 +18,41 @@ export class IngredientServices {
     return ingredients;
   }
 
-  async paginate({ first, last, cursor }: PaginateParams): Promise<Pagination<Ingredient> | undefined> {
-    const beforePos = first || 0;
+  async paginateBefore({ pos, cursor }: PaginateParams): Promise<Pagination<Ingredient> | undefined> {
+    if (pos === 0) {
+      throw new AppError({ message: 'Position cannot be 0.', isOperational: true });
+    }
+
     const beforeIngredients = await this.repository.paginate(
-      -Math.abs(beforePos) - 1, Buffer.from(cursor || '', 'base64').toString('ascii'),
+      -Math.abs(pos) - 1, Buffer.from(cursor || '', 'base64').toString('ascii'),
     );
 
-    const afterPos = last || 0;
     const afterIngredients = await this.repository.paginate(
-      Math.abs(afterPos) + 1, Buffer.from(cursor || '', 'base64').toString('ascii'),
+      1, Buffer.from(cursor || '', 'base64').toString('ascii'),
     );
 
-    const hasPreviousPage = beforeIngredients ? beforeIngredients.length > beforePos : false;
-    const hasNextPage = afterIngredients ? afterIngredients.length > afterPos : false;
+    const hasPreviousPage = beforeIngredients ? beforeIngredients.length > pos : false;
+    const hasNextPage = afterIngredients ? afterIngredients.length > pos : false;
 
     if (hasPreviousPage) {
       beforeIngredients?.shift();
     }
 
-    if (hasNextPage) {
-      afterIngredients?.pop();
-    }
-
     let edges: Edge<Ingredient>[] = [];
+    let startCursor: string | null = null;
+    let endCursor: string | null = null;
+    let count = 0;
 
     if (beforeIngredients && beforeIngredients.length > 0) {
       edges = edges.concat(beforeIngredients.map((ingredient) => ({
         node: { ...ingredient },
         cursor: Buffer.from(ingredient.name).toString('base64'),
       })));
-    }
 
-    if (afterIngredients && afterIngredients.length > 0) {
-      edges = edges.concat(afterIngredients.map((ingredient) => ({
-        node: { ...ingredient },
-        cursor: Buffer.from(ingredient.name).toString('base64'),
-      })));
-    }
+      startCursor = Buffer.from(edges[0].cursor).toString('base64');
+      endCursor = Buffer.from(edges[edges.length - 1].cursor).toString('base64');
 
-    let startCursor = '';
-    if (beforeIngredients && beforeIngredients.length > 0) {
-      startCursor = Buffer.from(beforeIngredients[0].name).toString('base64');
-    } else if (afterIngredients && afterIngredients.length > 0) {
-      startCursor = Buffer.from(afterIngredients[0].name).toString('base64');
-    }
-
-    let endCursor = '';
-    if (afterIngredients && afterIngredients.length > 0) {
-      endCursor = Buffer.from(afterIngredients[afterIngredients.length - 1].name).toString('base64');
-    } else if (beforeIngredients && beforeIngredients.length > 0) {
-      endCursor = Buffer.from(beforeIngredients[beforeIngredients.length - 1].name).toString('base64');
+      count = edges.length;
     }
 
     const pageInfo: PageInfo = {
@@ -78,9 +62,54 @@ export class IngredientServices {
       endCursor,
     };
 
-    const totalCount = edges ? edges.length : 0;
+    return { pageInfo, edges, count };
+  }
 
-    return { pageInfo, edges, totalCount };
+  async paginateAfter({ pos, cursor }: PaginateParams): Promise<Pagination<Ingredient> | undefined> {
+    if (pos === 0) {
+      throw new AppError({ message: 'Position cannot be 0.', isOperational: true });
+    }
+
+    const beforeIngredients = await this.repository.paginate(
+      -1, Buffer.from(cursor || '', 'base64').toString('ascii'),
+    );
+
+    const afterIngredients = await this.repository.paginate(
+      pos + 1, Buffer.from(cursor || '', 'base64').toString('ascii'),
+    );
+
+    const hasPreviousPage = beforeIngredients ? beforeIngredients.length > pos : false;
+    const hasNextPage = afterIngredients ? afterIngredients.length > pos : false;
+
+    if (hasNextPage) {
+      afterIngredients?.shift();
+    }
+
+    let edges: Edge<Ingredient>[] = [];
+    let startCursor: string | null = null;
+    let endCursor: string | null = null;
+    let count = 0;
+
+    if (afterIngredients && afterIngredients.length > 0) {
+      edges = edges.concat(afterIngredients.map((ingredient) => ({
+        node: { ...ingredient },
+        cursor: Buffer.from(ingredient.name).toString('base64'),
+      })));
+
+      startCursor = Buffer.from(edges[0].cursor).toString('base64');
+      endCursor = Buffer.from(edges[edges.length - 1].cursor).toString('base64');
+
+      count = edges.length;
+    }
+
+    const pageInfo: PageInfo = {
+      hasPreviousPage,
+      hasNextPage,
+      startCursor,
+      endCursor,
+    };
+
+    return { pageInfo, edges, count };
   }
 
   async filterByPrice(currency: Currency, minAmount: number, maxAmount?: number): Promise<Ingredient[] | undefined> {

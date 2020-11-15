@@ -1,6 +1,7 @@
+import { AppError } from '@foodbudget/errors';
 import logger from '@foodbudget/logger';
 import {
-  arg, floatArg, intArg, queryField, stringArg,
+  arg, floatArg, idArg, intArg, objectType, queryField, stringArg,
 } from '@nexus/schema';
 import { CacheScope } from 'apollo-cache-control';
 import { Context } from '../../../context';
@@ -48,18 +49,46 @@ export const filterIngredientsByPrice = queryField('filterIngredientsByPrice', {
   },
 });
 
-export const ingredientsPagination = queryField('ingredients', {
-  type: ingredientConnection,
-  nullable: true,
-  args: {
-    first: intArg(),
-    last: intArg(),
-    cursor: stringArg(),
+export const ingredientsPagination = objectType({
+  name: 'pagination',
+  definition(t) {
+    t.field('paginate', {
+      type: ingredientConnection,
+      args: {
+        first: intArg(),
+        last: intArg(),
+        before: idArg(),
+        after: idArg(),
+      },
+      resolve: async (_parent, args, ctx: Context) => {
+        if (args.before && !args.first) {
+          throw new AppError({ message: 'need `first`.', isOperational: true });
+        }
+
+        if (args.after && !args.last) {
+          throw new AppError({ message: 'need `last`.', isOperational: true });
+        }
+
+        if (args.first) {
+          return ctx.serviceManager.ingredientServices.paginateBefore({
+            pos: args.first, cursor: args.before,
+          });
+        }
+
+        if (args.last) {
+          return ctx.serviceManager.ingredientServices.paginateAfter({
+            pos: args.last, cursor: args.after,
+          });
+        }
+
+        return null;
+      } });
+
+    t.implements('Node');
   },
-  resolve: async (_parent, args, ctx: Context) => {
-    const result = ctx.serviceManager.ingredientServices.paginate({
-      first: args.first, last: args.last, cursor: args.cursor,
-    });
-    return result;
-  },
+});
+
+export const ingredientsQueries = queryField('ingredients', {
+  type: ingredientsPagination,
+  resolve: async () => ({ paginate: true }),
 });

@@ -1,1 +1,1 @@
-export { default, getStaticProps } from '../src/User';
+export { default, getStaticProps } from '../src/Ingredient';
