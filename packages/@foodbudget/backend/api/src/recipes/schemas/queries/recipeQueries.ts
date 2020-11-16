@@ -1,6 +1,7 @@
-import { arg, intArg, queryField, stringArg } from '@nexus/schema';
+import { arg, idArg, intArg, queryField, stringArg } from '@nexus/schema';
 import logger from '@foodbudget/logger';
 import { CacheScope } from 'apollo-cache-control';
+import { AppError } from '@foodbudget/errors';
 import { Context } from '../../../context';
 import { Recipe } from '../../Recipe.types';
 import {
@@ -86,14 +87,44 @@ export const recipesPagination = queryField('recipes', {
   args: {
     first: intArg(),
     last: intArg(),
-    cursor: stringArg(),
+    before: idArg(),
+    after: idArg(),
   },
   resolve: async (_parent, args, ctx: Context) => {
     logger.info('incoming get recipes pagination request', args);
 
-    const result = ctx.serviceManager.recipeServices.paginate({
-      first: args.first, last: args.last, cursor: args.cursor,
-    });
+    if (args.first != null && args.last != null) {
+      throw new AppError({ message: 'must specify first or last, but not both', isOperational: true });
+    }
+
+    if (args.before != null && args.first == null) {
+      throw new AppError({ message: "need 'first' when 'before' is specified.", isOperational: true });
+    }
+
+    if (args.after != null && args.last == null) {
+      throw new AppError({ message: "need 'last' when 'after' is specified.", isOperational: true });
+    }
+
+    if (args.first != null && args.first <= 0) {
+      throw new AppError({ message: "'first' must be greater than 0.", isOperational: true });
+    }
+
+    if (args.last != null && args.last <= 0) {
+      throw new AppError({ message: "'last' must be greater than 0.", isOperational: true });
+    }
+
+    let result = null;
+    if (args.first != null) {
+      result = await ctx.serviceManager.recipeServices.paginateBefore({
+        pos: args.first, cursor: args.before,
+      });
+    }
+
+    if (args.last != null) {
+      result = await ctx.serviceManager.recipeServices.paginateAfter({
+        pos: args.last, cursor: args.after,
+      });
+    }
 
     logger.info('recipes pagination response', result);
     return result;

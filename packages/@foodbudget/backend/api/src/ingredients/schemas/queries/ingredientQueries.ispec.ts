@@ -21,8 +21,8 @@ const createIngredient = async (mutate: ((mutation: any) => Promise<any>), varia
 const queryIngredientsPagination = async (query: any, variables: object) => {
   const response = await query({
     query: gql`
-      query ingredients($first: Int, $last: Int, $cursor: String) {
-        ingredients(first: $first, last: $last, cursor: $cursor) {
+      query ingredients($first: Int, $last: Int, $before: ID, $after: ID) {
+        ingredients(first: $first, last: $last, before: $before, after: $after) {
           totalCount
           edges {
             cursor
@@ -124,7 +124,7 @@ describe('ingredient queries', () => {
         await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
         await createIngredient(mutate, { name: 'ingredient3', currency: 'NZD', amount: 40.2 });
 
-        const response = await queryIngredientsPagination(query, { last: 1, cursor: 'aW5ncmVkaWVudDE=' });
+        const response = await queryIngredientsPagination(query, { last: 1, after: 'aW5ncmVkaWVudDE=' });
 
         expect(response.data?.ingredients).toEqual({
           edges: [
@@ -145,14 +145,14 @@ describe('ingredient queries', () => {
         });
       });
 
-      it('should retrieve all the ingredients to the end of the list', async () => {
+      it('should retrieve all the ingredients to the end of the list given a large last value', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
         await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
         await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
         await createIngredient(mutate, { name: 'ingredient3', currency: 'NZD', amount: 40.2 });
 
-        const response = await queryIngredientsPagination(query, { last: 9999, cursor: 'aW5ncmVkaWVudDI=' });
+        const response = await queryIngredientsPagination(query, { last: 9999, after: 'aW5ncmVkaWVudDI=' });
 
         expect(response.data?.ingredients).toEqual({
           edges: [
@@ -179,15 +179,15 @@ describe('ingredient queries', () => {
         await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
         await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
 
-        const response = await queryIngredientsPagination(query, { last: 9999, cursor: 'aW5ncmVkaWVudDI=' });
+        const response = await queryIngredientsPagination(query, { last: 9999, after: 'aW5ncmVkaWVudDI=' });
 
         expect(response.data?.ingredients).toEqual({
           edges: [],
           pageInfo: {
-            endCursor: '',
+            endCursor: null,
             hasNextPage: false,
             hasPreviousPage: true,
-            startCursor: '',
+            startCursor: null,
           },
           totalCount: 0,
         });
@@ -195,7 +195,7 @@ describe('ingredient queries', () => {
     });
 
     describe('first ingredients', () => {
-      it('should not return any ingredient and attempting to get one previous ingredient without a cursor', async () => {
+      it('should return the last ingredient in the list without a cursor', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
         await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
@@ -205,14 +205,21 @@ describe('ingredient queries', () => {
         const response = await queryIngredientsPagination(query, { first: 1 });
 
         expect(response.data?.ingredients).toEqual({
-          edges: [],
+          edges: [
+            {
+              cursor: 'aW5ncmVkaWVudDM=',
+              node: {
+                name: 'ingredient3',
+              },
+            },
+          ],
           pageInfo: {
-            endCursor: '',
-            hasNextPage: true,
-            hasPreviousPage: false,
-            startCursor: '',
+            endCursor: 'aW5ncmVkaWVudDM=',
+            hasNextPage: false,
+            hasPreviousPage: true,
+            startCursor: 'aW5ncmVkaWVudDM=',
           },
-          totalCount: 0,
+          totalCount: 1,
         });
       });
 
@@ -223,7 +230,7 @@ describe('ingredient queries', () => {
         await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
         await createIngredient(mutate, { name: 'ingredient3', currency: 'NZD', amount: 40.2 });
 
-        const response = await queryIngredientsPagination(query, { first: 1, cursor: 'aW5ncmVkaWVudDM=' });
+        const response = await queryIngredientsPagination(query, { first: 1, before: 'aW5ncmVkaWVudDM=' });
 
         expect(response.data?.ingredients).toEqual({
           edges: [
@@ -251,7 +258,7 @@ describe('ingredient queries', () => {
         await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
         await createIngredient(mutate, { name: 'ingredient3', currency: 'NZD', amount: 40.2 });
 
-        const response = await queryIngredientsPagination(query, { first: 9999, cursor: 'aW5ncmVkaWVudDM=' });
+        const response = await queryIngredientsPagination(query, { first: 9999, before: 'aW5ncmVkaWVudDM=' });
 
         expect(response.data?.ingredients).toEqual({
           edges: [
@@ -284,149 +291,17 @@ describe('ingredient queries', () => {
         await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
         await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
 
-        const response = await queryIngredientsPagination(query, { first: 9999, cursor: 'aW5ncmVkaWVudDE=' });
+        const response = await queryIngredientsPagination(query, { first: 9999, before: 'aW5ncmVkaWVudDE=' });
 
         expect(response.data?.ingredients).toEqual({
           edges: [],
           pageInfo: {
-            endCursor: '',
+            endCursor: null,
             hasNextPage: true,
             hasPreviousPage: false,
-            startCursor: '',
+            startCursor: null,
           },
           totalCount: 0,
-        });
-      });
-    });
-
-    describe('first and last ingredients', () => {
-      it('should retrieve one ingredient before the cursor and two ingredients after', async () => {
-        const { query, mutate } = createTestApolloServer(prismaClient);
-
-        await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient3', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient4', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient5', currency: 'NZD', amount: 40.2 });
-
-        const response = await queryIngredientsPagination(query, { first: 1, last: 2, cursor: 'aW5ncmVkaWVudDM=' });
-
-        expect(response.data?.ingredients).toEqual({
-          edges: [
-            {
-              cursor: 'aW5ncmVkaWVudDI=',
-              node: {
-                name: 'ingredient2',
-              },
-            },
-            {
-              cursor: 'aW5ncmVkaWVudDQ=',
-              node: {
-                name: 'ingredient4',
-              },
-            },
-            {
-              cursor: 'aW5ncmVkaWVudDU=',
-              node: {
-                name: 'ingredient5',
-              },
-            },
-          ],
-          pageInfo: {
-            endCursor: 'aW5ncmVkaWVudDU=',
-            hasNextPage: false,
-            hasPreviousPage: true,
-            startCursor: 'aW5ncmVkaWVudDI=',
-          },
-          totalCount: 3,
-        });
-      });
-
-      it('should retrieve all the ingredients except the cursor', async () => {
-        const { query, mutate } = createTestApolloServer(prismaClient);
-
-        await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient3', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient4', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient5', currency: 'NZD', amount: 40.2 });
-
-        const response = await queryIngredientsPagination(query, { first: 999, last: 999, cursor: 'aW5ncmVkaWVudDM=' });
-
-        expect(response.data?.ingredients).toEqual({
-          edges: [
-            {
-              cursor: 'aW5ncmVkaWVudDE=',
-              node: {
-                name: 'ingredient1',
-              },
-            },
-            {
-              cursor: 'aW5ncmVkaWVudDI=',
-              node: {
-                name: 'ingredient2',
-              },
-            },
-            {
-              cursor: 'aW5ncmVkaWVudDQ=',
-              node: {
-                name: 'ingredient4',
-              },
-            },
-            {
-              cursor: 'aW5ncmVkaWVudDU=',
-              node: {
-                name: 'ingredient5',
-              },
-            },
-          ],
-          pageInfo: {
-            endCursor: 'aW5ncmVkaWVudDU=',
-            hasNextPage: false,
-            hasPreviousPage: false,
-            startCursor: 'aW5ncmVkaWVudDE=',
-          },
-          totalCount: 4,
-        });
-      });
-
-      it('should retrieve all the ingredients without a cursor', async () => {
-        const { query, mutate } = createTestApolloServer(prismaClient);
-
-        await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient3', currency: 'NZD', amount: 40.2 });
-
-        const response = await queryIngredientsPagination(query, { first: 999, last: 999 });
-
-        expect(response.data?.ingredients).toEqual({
-          edges: [
-            {
-              cursor: 'aW5ncmVkaWVudDE=',
-              node: {
-                name: 'ingredient1',
-              },
-            },
-            {
-              cursor: 'aW5ncmVkaWVudDI=',
-              node: {
-                name: 'ingredient2',
-              },
-            },
-            {
-              cursor: 'aW5ncmVkaWVudDM=',
-              node: {
-                name: 'ingredient3',
-              },
-            },
-          ],
-          pageInfo: {
-            endCursor: 'aW5ncmVkaWVudDM=',
-            hasNextPage: false,
-            hasPreviousPage: false,
-            startCursor: 'aW5ncmVkaWVudDE=',
-          },
-          totalCount: 3,
         });
       });
     });

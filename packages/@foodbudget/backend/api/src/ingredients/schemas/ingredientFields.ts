@@ -42,7 +42,7 @@ export const ingredientEdge = objectType({
 export const ingredientConnection = objectType({
   name: 'ingredientConnection',
   definition(t) {
-    t.int('count');
+    t.int('totalCount');
     t.list.field('edges', { type: ingredientEdge });
     t.field('pageInfo', { type: pageInfo });
   },

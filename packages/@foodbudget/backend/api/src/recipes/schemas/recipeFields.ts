@@ -118,7 +118,7 @@ export const recipeEdge = objectType({
 export const recipeConnection = objectType({
   name: 'recipeConnection',
   definition(t) {
-    t.int('count');
+    t.int('totalCount');
     t.list.field('edges', { type: recipeEdge });
     t.field('pageInfo', { type: pageInfo });
   },

@@ -21,8 +21,8 @@ const createRecipe = async (mutate: ((mutation: any) => Promise<any>), variables
 const queryRecipePagination = async (query: any, variables: object) => {
   const response = await query({
     query: gql`
-      query recipes($first: Int, $last: Int, $cursor: String) {
-        recipes(first: $first, last: $last, cursor: $cursor) {
+      query recipes($first: Int, $last: Int, $before: ID, $after: ID) {
+        recipes(first: $first, last: $last, before: $before, after: $after) {
           totalCount
           edges {
             cursor
@@ -76,23 +76,23 @@ describe('recipe queries', () => {
         expect(response.data?.recipes).toEqual({
           edges: [
             {
-              cursor: 'MQ==',
+              cursor: 'cmVjaXBlTGluazE=',
               node: {
                 name: 'recipe1',
               },
             },
             {
-              cursor: 'Mg==',
+              cursor: 'cmVjaXBlTGluazI=',
               node: {
                 name: 'recipe2',
               },
             },
           ],
           pageInfo: {
-            endCursor: 'Mg==',
+            endCursor: 'cmVjaXBlTGluazI=',
             hasNextPage: true,
             hasPreviousPage: false,
-            startCursor: 'MQ==',
+            startCursor: 'cmVjaXBlTGluazE=',
           },
           totalCount: 2,
         });
@@ -105,50 +105,50 @@ describe('recipe queries', () => {
         await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
         await createRecipe(mutate, { name: 'recipe3', link: 'recipeLink3', prepTime: '2 mins', servings: 2 });
 
-        const response = await queryRecipePagination(query, { last: 1, cursor: 'MQ==' });
+        const response = await queryRecipePagination(query, { last: 1, after: 'cmVjaXBlTGluazE=' });
 
         expect(response.data?.recipes).toEqual({
           edges: [
             {
-              cursor: 'Mg==',
+              cursor: 'cmVjaXBlTGluazI=',
               node: {
                 name: 'recipe2',
               },
             },
           ],
           pageInfo: {
-            endCursor: 'Mg==',
+            endCursor: 'cmVjaXBlTGluazI=',
             hasNextPage: true,
             hasPreviousPage: false,
-            startCursor: 'Mg==',
+            startCursor: 'cmVjaXBlTGluazI=',
           },
           totalCount: 1,
         });
       });
 
-      it('should retrieve all the recipes to the end of the list', async () => {
+      it('should retrieve all the recipes to the end of the list given a large last value', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
         await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
         await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
         await createRecipe(mutate, { name: 'recipe3', link: 'recipeLink3', prepTime: '2 mins', servings: 2 });
 
-        const response = await queryRecipePagination(query, { last: 9999, cursor: 'Mg==' });
+        const response = await queryRecipePagination(query, { last: 9999, after: 'cmVjaXBlTGluazI=' });
 
         expect(response.data?.recipes).toEqual({
           edges: [
             {
-              cursor: 'Mw==',
+              cursor: 'cmVjaXBlTGluazM=',
               node: {
                 name: 'recipe3',
               },
             },
           ],
           pageInfo: {
-            endCursor: 'Mw==',
+            endCursor: 'cmVjaXBlTGluazM=',
             hasNextPage: false,
             hasPreviousPage: true,
-            startCursor: 'Mw==',
+            startCursor: 'cmVjaXBlTGluazM=',
           },
           totalCount: 1,
         });
@@ -160,15 +160,15 @@ describe('recipe queries', () => {
         await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
         await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
 
-        const response = await queryRecipePagination(query, { last: 9999, cursor: 'Mg==' });
+        const response = await queryRecipePagination(query, { last: 9999, after: 'cmVjaXBlTGluazI=' });
 
         expect(response.data?.recipes).toEqual({
           edges: [],
           pageInfo: {
-            endCursor: '',
+            endCursor: null,
             hasNextPage: false,
             hasPreviousPage: true,
-            startCursor: '',
+            startCursor: null,
           },
           totalCount: 0,
         });
@@ -176,7 +176,7 @@ describe('recipe queries', () => {
     });
 
     describe('first recipes', () => {
-      it('should not return any ingredient and attempting to get one previous ingredient without a cursor', async () => {
+      it('should return the last ingredient in the list without a cursor', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
         await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
@@ -186,14 +186,21 @@ describe('recipe queries', () => {
         const response = await queryRecipePagination(query, { first: 1 });
 
         expect(response.data?.recipes).toEqual({
-          edges: [],
+          edges: [
+            {
+              cursor: 'cmVjaXBlTGluazM=',
+              node: {
+                name: 'recipe3',
+              },
+            },
+          ],
           pageInfo: {
-            endCursor: '',
-            hasNextPage: true,
-            hasPreviousPage: false,
-            startCursor: '',
+            endCursor: 'cmVjaXBlTGluazM=',
+            hasNextPage: false,
+            hasPreviousPage: true,
+            startCursor: 'cmVjaXBlTGluazM=',
           },
-          totalCount: 0,
+          totalCount: 1,
         });
       });
 
@@ -204,22 +211,22 @@ describe('recipe queries', () => {
         await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
         await createRecipe(mutate, { name: 'recipe3', link: 'recipeLink3', prepTime: '2 mins', servings: 2 });
 
-        const response = await queryRecipePagination(query, { first: 1, cursor: 'Mw==' });
+        const response = await queryRecipePagination(query, { first: 1, before: 'cmVjaXBlTGluazM=' });
 
         expect(response.data?.recipes).toEqual({
           edges: [
             {
-              cursor: 'Mg==',
+              cursor: 'cmVjaXBlTGluazI=',
               node: {
                 name: 'recipe2',
               },
             },
           ],
           pageInfo: {
-            endCursor: 'Mg==',
+            endCursor: 'cmVjaXBlTGluazI=',
             hasNextPage: false,
             hasPreviousPage: true,
-            startCursor: 'Mg==',
+            startCursor: 'cmVjaXBlTGluazI=',
           },
           totalCount: 1,
         });
@@ -232,28 +239,28 @@ describe('recipe queries', () => {
         await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
         await createRecipe(mutate, { name: 'recipe3', link: 'recipeLink3', prepTime: '2 mins', servings: 2 });
 
-        const response = await queryRecipePagination(query, { first: 9999, cursor: 'Mw==' });
+        const response = await queryRecipePagination(query, { first: 9999, before: 'cmVjaXBlTGluazM=' });
 
         expect(response.data?.recipes).toEqual({
           edges: [
             {
-              cursor: 'MQ==',
+              cursor: 'cmVjaXBlTGluazE=',
               node: {
                 name: 'recipe1',
               },
             },
             {
-              cursor: 'Mg==',
+              cursor: 'cmVjaXBlTGluazI=',
               node: {
                 name: 'recipe2',
               },
             },
           ],
           pageInfo: {
-            endCursor: 'Mg==',
+            endCursor: 'cmVjaXBlTGluazI=',
             hasNextPage: false,
             hasPreviousPage: false,
-            startCursor: 'MQ==',
+            startCursor: 'cmVjaXBlTGluazE=',
           },
           totalCount: 2,
         });
@@ -265,149 +272,17 @@ describe('recipe queries', () => {
         await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
         await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
 
-        const response = await queryRecipePagination(query, { first: 9999, cursor: 'MQ==' });
+        const response = await queryRecipePagination(query, { first: 9999, before: 'cmVjaXBlTGluazE=' });
 
         expect(response.data?.recipes).toEqual({
           edges: [],
           pageInfo: {
-            endCursor: '',
+            endCursor: null,
             hasNextPage: true,
             hasPreviousPage: false,
-            startCursor: '',
+            startCursor: null,
           },
           totalCount: 0,
-        });
-      });
-    });
-
-    describe('first and last recipes', () => {
-      it('should retrieve one ingredient before the cursor and two recipes after', async () => {
-        const { query, mutate } = createTestApolloServer(prismaClient);
-
-        await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe3', link: 'recipeLink3', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe4', link: 'recipeLink4', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe5', link: 'recipeLink5', prepTime: '2 mins', servings: 2 });
-
-        const response = await queryRecipePagination(query, { first: 1, last: 2, cursor: 'Mw==' });
-
-        expect(response.data?.recipes).toEqual({
-          edges: [
-            {
-              cursor: 'Mg==',
-              node: {
-                name: 'recipe2',
-              },
-            },
-            {
-              cursor: 'NA==',
-              node: {
-                name: 'recipe4',
-              },
-            },
-            {
-              cursor: 'NQ==',
-              node: {
-                name: 'recipe5',
-              },
-            },
-          ],
-          pageInfo: {
-            endCursor: 'NQ==',
-            hasNextPage: false,
-            hasPreviousPage: true,
-            startCursor: 'Mg==',
-          },
-          totalCount: 3,
-        });
-      });
-
-      it('should retrieve all the recipes except the cursor', async () => {
-        const { query, mutate } = createTestApolloServer(prismaClient);
-
-        await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe3', link: 'recipeLink3', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe4', link: 'recipeLink4', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe5', link: 'recipeLink5', prepTime: '2 mins', servings: 2 });
-
-        const response = await queryRecipePagination(query, { first: 999, last: 999, cursor: 'Mw==' });
-
-        expect(response.data?.recipes).toEqual({
-          edges: [
-            {
-              cursor: 'MQ==',
-              node: {
-                name: 'recipe1',
-              },
-            },
-            {
-              cursor: 'Mg==',
-              node: {
-                name: 'recipe2',
-              },
-            },
-            {
-              cursor: 'NA==',
-              node: {
-                name: 'recipe4',
-              },
-            },
-            {
-              cursor: 'NQ==',
-              node: {
-                name: 'recipe5',
-              },
-            },
-          ],
-          pageInfo: {
-            endCursor: 'NQ==',
-            hasNextPage: false,
-            hasPreviousPage: false,
-            startCursor: 'MQ==',
-          },
-          totalCount: 4,
-        });
-      });
-
-      it('should retrieve all the recipes without a cursor', async () => {
-        const { query, mutate } = createTestApolloServer(prismaClient);
-
-        await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe3', link: 'recipeLink3', prepTime: '2 mins', servings: 2 });
-
-        const response = await queryRecipePagination(query, { first: 999, last: 999 });
-
-        expect(response.data?.recipes).toEqual({
-          edges: [
-            {
-              cursor: 'MQ==',
-              node: {
-                name: 'recipe1',
-              },
-            },
-            {
-              cursor: 'Mg==',
-              node: {
-                name: 'recipe2',
-              },
-            },
-            {
-              cursor: 'Mw==',
-              node: {
-                name: 'recipe3',
-              },
-            },
-          ],
-          pageInfo: {
-            endCursor: 'Mw==',
-            hasNextPage: false,
-            hasPreviousPage: false,
-            startCursor: 'MQ==',
-          },
-          totalCount: 3,
         });
       });
     });

@@ -4,8 +4,7 @@ import { PartialBy } from '../../types/PartialBy';
 import { Recipe } from '../Recipe.types';
 
 interface PaginateParams {
-  first?: number;
-  last?: number;
+  pos: number;
   cursor?: string;
 }
 
@@ -19,57 +18,39 @@ export class RecipeServices {
     return recipes;
   }
 
-  async paginate({ first, last, cursor }: PaginateParams): Promise<Pagination<Recipe> | undefined> {
-    const beforePos = first || 0;
+  async paginateBefore({ pos, cursor }: PaginateParams): Promise<Pagination<Recipe> | undefined> {
     const beforeRecipes = await this.repository.paginate(
-      -Math.abs(beforePos) - 2, Buffer.from(cursor || '', 'base64').toString('ascii'),
+      -Math.abs(pos) - 1,
+      cursor && Buffer.from(cursor, 'base64').toString('ascii'),
     );
 
-    const afterPos = last || 0;
     const afterRecipes = await this.repository.paginate(
-      Math.abs(afterPos) + 1, Buffer.from(cursor || '', 'base64').toString('ascii'),
+      1,
+      cursor && Buffer.from(cursor, 'base64').toString('ascii'),
     );
 
-    const hasPreviousPage = beforeRecipes ? beforeRecipes.length > beforePos : false;
+    const hasPreviousPage = beforeRecipes ? beforeRecipes.length > pos : false;
+    const hasNextPage = cursor && afterRecipes ? afterRecipes.length > 0 : false;
 
-    const hasNextPage = afterRecipes ? afterRecipes.length > afterPos : false;
-
-    if (hasPreviousPage) {
+    if (hasPreviousPage && pos !== 0) {
       beforeRecipes?.shift();
     }
 
-    if (hasNextPage) {
-      afterRecipes?.pop();
-    }
-
     let edges: Edge<Recipe>[] = [];
+    let startCursor: string | null = null;
+    let endCursor: string | null = null;
+    let totalCount = 0;
 
     if (beforeRecipes && beforeRecipes.length > 0) {
       edges = edges.concat(beforeRecipes.map((recipe) => ({
         node: { ...recipe },
-        cursor: Buffer.from(`${recipe.id}`).toString('base64'),
+        cursor: Buffer.from(recipe.link).toString('base64'),
       })));
-    }
 
-    if (afterRecipes && afterRecipes.length > 0) {
-      edges = edges.concat(afterRecipes.map((recipe) => ({
-        node: { ...recipe },
-        cursor: Buffer.from(`${recipe.id}`).toString('base64'),
-      })));
-    }
+      startCursor = edges[0].cursor;
+      endCursor = edges[edges.length - 1].cursor;
 
-    let startCursor = '';
-    if (beforeRecipes && beforeRecipes.length > 0) {
-      startCursor = Buffer.from(`${beforeRecipes[0].id}`).toString('base64');
-    } else if (afterRecipes && afterRecipes.length > 0) {
-      startCursor = Buffer.from(`${afterRecipes[0].id}`).toString('base64');
-    }
-
-    let endCursor = '';
-    if (afterRecipes && afterRecipes.length > 0) {
-      endCursor = Buffer.from(`${afterRecipes[afterRecipes.length - 1].id}`).toString('base64');
-    } else if (beforeRecipes && beforeRecipes.length > 0) {
-      endCursor = Buffer.from(`${beforeRecipes[beforeRecipes.length - 1].id}`).toString('base64');
+      totalCount = edges.length;
     }
 
     const pageInfo: PageInfo = {
@@ -79,9 +60,52 @@ export class RecipeServices {
       endCursor,
     };
 
-    const count = edges ? edges.length : 0;
+    return { pageInfo, edges, totalCount };
+  }
 
-    return { pageInfo, edges, count };
+  async paginateAfter({ pos, cursor }: PaginateParams): Promise<Pagination<Recipe> | undefined> {
+    const beforeRecipes = await this.repository.paginate(
+      -1,
+      cursor && Buffer.from(cursor, 'base64').toString('ascii'),
+    );
+
+    const afterRecipes = await this.repository.paginate(
+      pos + 1,
+      cursor && Buffer.from(cursor, 'base64').toString('ascii'),
+    );
+
+    const hasPreviousPage = cursor && beforeRecipes ? beforeRecipes.length > 0 : false;
+    const hasNextPage = afterRecipes ? afterRecipes.length > pos : false;
+
+    if (hasNextPage && pos !== 0) {
+      afterRecipes?.pop();
+    }
+
+    let edges: Edge<Recipe>[] = [];
+    let startCursor: string | null = null;
+    let endCursor: string | null = null;
+    let totalCount = 0;
+
+    if (afterRecipes && afterRecipes.length > 0) {
+      edges = edges.concat(afterRecipes.map((recipe) => ({
+        node: { ...recipe },
+        cursor: Buffer.from(recipe.link).toString('base64'),
+      })));
+
+      startCursor = edges[0].cursor;
+      endCursor = edges[edges.length - 1].cursor;
+
+      totalCount = edges.length;
+    }
+
+    const pageInfo: PageInfo = {
+      hasPreviousPage,
+      hasNextPage,
+      startCursor,
+      endCursor,
+    };
+
+    return { pageInfo, edges, totalCount };
   }
 
   async save(recipesDto: PartialBy<Recipe, 'id'>): Promise<Recipe>;

@@ -56,26 +56,42 @@ export const ingredientsQueries = queryField('ingredients', {
     after: idArg(),
   },
   resolve: async (_parent, args, ctx: Context) => {
-    if (args.before !== undefined && args.first === undefined) {
-      throw new AppError({ message: 'need `first`.', isOperational: true });
+    logger.info('incoming get ingredients pagination request', args);
+
+    if (args.first != null && args.last != null) {
+      throw new AppError({ message: 'must specify first or last, but not both', isOperational: true });
     }
 
-    if (args.after !== undefined && args.last === undefined) {
-      throw new AppError({ message: 'need `last`.', isOperational: true });
+    if (args.before != null && args.first == null) {
+      throw new AppError({ message: "need 'first' when 'before' is specified.", isOperational: true });
     }
 
-    if (args.first !== undefined) {
-      return ctx.serviceManager.ingredientServices.paginateBefore({
+    if (args.after != null && args.last == null) {
+      throw new AppError({ message: "need 'last' when 'after' is specified.", isOperational: true });
+    }
+
+    if (args.first != null && args.first <= 0) {
+      throw new AppError({ message: "'first' must be greater than 0.", isOperational: true });
+    }
+
+    if (args.last != null && args.last <= 0) {
+      throw new AppError({ message: "'last' must be greater than 0.", isOperational: true });
+    }
+
+    let result = null;
+    if (args.first != null) {
+      result = await ctx.serviceManager.ingredientServices.paginateBefore({
         pos: args.first, cursor: args.before,
       });
     }
 
-    if (args.last !== undefined) {
-      return ctx.serviceManager.ingredientServices.paginateAfter({
+    if (args.last != null) {
+      result = await ctx.serviceManager.ingredientServices.paginateAfter({
         pos: args.last, cursor: args.after,
       });
     }
 
-    return null;
+    logger.info('ingredients pagination response', result);
+    return result;
   },
 });

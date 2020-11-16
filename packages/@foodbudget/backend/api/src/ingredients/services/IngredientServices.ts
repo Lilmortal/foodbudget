@@ -19,29 +19,27 @@ export class IngredientServices {
   }
 
   async paginateBefore({ pos, cursor }: PaginateParams): Promise<Pagination<Ingredient> | undefined> {
-    if (pos === 0) {
-      throw new AppError({ message: 'Position cannot be 0.', isOperational: true });
-    }
-
     const beforeIngredients = await this.repository.paginate(
-      -Math.abs(pos) - 1, Buffer.from(cursor || '', 'base64').toString('ascii'),
+      -Math.abs(pos) - 1,
+      cursor && Buffer.from(cursor, 'base64').toString('ascii'),
     );
 
     const afterIngredients = await this.repository.paginate(
-      1, Buffer.from(cursor || '', 'base64').toString('ascii'),
+      1,
+      cursor && Buffer.from(cursor, 'base64').toString('ascii'),
     );
 
     const hasPreviousPage = beforeIngredients ? beforeIngredients.length > pos : false;
-    const hasNextPage = afterIngredients ? afterIngredients.length > pos : false;
+    const hasNextPage = cursor && afterIngredients ? afterIngredients.length > 0 : false;
 
-    if (hasPreviousPage) {
+    if (hasPreviousPage && pos !== 0) {
       beforeIngredients?.shift();
     }
 
     let edges: Edge<Ingredient>[] = [];
     let startCursor: string | null = null;
     let endCursor: string | null = null;
-    let count = 0;
+    let totalCount = 0;
 
     if (beforeIngredients && beforeIngredients.length > 0) {
       edges = edges.concat(beforeIngredients.map((ingredient) => ({
@@ -49,10 +47,10 @@ export class IngredientServices {
         cursor: Buffer.from(ingredient.name).toString('base64'),
       })));
 
-      startCursor = Buffer.from(edges[0].cursor).toString('base64');
-      endCursor = Buffer.from(edges[edges.length - 1].cursor).toString('base64');
+      startCursor = edges[0].cursor;
+      endCursor = edges[edges.length - 1].cursor;
 
-      count = edges.length;
+      totalCount = edges.length;
     }
 
     const pageInfo: PageInfo = {
@@ -62,24 +60,21 @@ export class IngredientServices {
       endCursor,
     };
 
-    return { pageInfo, edges, count };
+    return { pageInfo, edges, totalCount };
   }
 
   async paginateAfter({ pos, cursor }: PaginateParams): Promise<Pagination<Ingredient> | undefined> {
-    // if (pos === 0) {
-    //   throw new AppError({ message: 'Position cannot be 0.', isOperational: true });
-    // }
-
-    console.log(pos);
     const beforeIngredients = await this.repository.paginate(
-      -1, Buffer.from(cursor || '', 'base64').toString('ascii'),
+      -1,
+      cursor && Buffer.from(cursor, 'base64').toString('ascii'),
     );
 
     const afterIngredients = await this.repository.paginate(
-      pos + 1, Buffer.from(cursor || '', 'base64').toString('ascii'),
+      pos + 1,
+      cursor && Buffer.from(cursor, 'base64').toString('ascii'),
     );
 
-    const hasPreviousPage = beforeIngredients ? beforeIngredients.length > pos : false;
+    const hasPreviousPage = cursor && beforeIngredients ? beforeIngredients.length > 0 : false;
     const hasNextPage = afterIngredients ? afterIngredients.length > pos : false;
 
     if (hasNextPage && pos !== 0) {
@@ -89,7 +84,7 @@ export class IngredientServices {
     let edges: Edge<Ingredient>[] = [];
     let startCursor: string | null = null;
     let endCursor: string | null = null;
-    let count = 0;
+    let totalCount = 0;
 
     if (afterIngredients && afterIngredients.length > 0) {
       edges = edges.concat(afterIngredients.map((ingredient) => ({
@@ -100,7 +95,7 @@ export class IngredientServices {
       startCursor = edges[0].cursor;
       endCursor = edges[edges.length - 1].cursor;
 
-      count = edges.length;
+      totalCount = edges.length;
     }
 
     const pageInfo: PageInfo = {
@@ -110,7 +105,7 @@ export class IngredientServices {
       endCursor,
     };
 
-    return { pageInfo, edges, count };
+    return { pageInfo, edges, totalCount };
   }
 
   async filterByPrice(currency: Currency, minAmount: number, maxAmount?: number): Promise<Ingredient[] | undefined> {

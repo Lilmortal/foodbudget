@@ -60,7 +60,7 @@ describe('ingredient services', () => {
         });
       });
 
-      it('should retrieve one ingredient when at the end of the page', async () => {
+      it('should retrieve one ingredient when at the end of the page given a large pos value', async () => {
         mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(undefined)));
         mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
           [
@@ -70,7 +70,7 @@ describe('ingredient services', () => {
           ],
         )));
 
-        const result = await ingredientServices.paginateAfter({ pos: 1, cursor: 'aW5ncmVkaWVudDM=' });
+        const result = await ingredientServices.paginateAfter({ pos: 9999, cursor: 'aW5ncmVkaWVudDM=' });
 
         expect(result).toEqual({
           pageInfo: {
@@ -136,7 +136,7 @@ describe('ingredient services', () => {
         });
       });
 
-      it('should retrieve one ingredient when at the start of the page', async () => {
+      it('should retrieve one ingredient when at the start of the page give a large pos value', async () => {
         mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
           [
             {
@@ -146,7 +146,7 @@ describe('ingredient services', () => {
         )));
         mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(undefined)));
 
-        const result = await ingredientServices.paginateBefore({ pos: 1, cursor: 'aW5ncmVkaWVudDM=' });
+        const result = await ingredientServices.paginateBefore({ pos: 9999, cursor: 'aW5ncmVkaWVudDM=' });
 
         expect(result).toEqual({
           pageInfo: {

@@ -72,16 +72,9 @@ export class IngredientRepository implements FilterableIngredientRepository {
     return results.map((result) => ingredientMapper.toDto(result));
   };
 
-  paginate = async (take: number, cursor: string, shouldSkip?: boolean): Promise<Ingredient[] | undefined> => {
+  paginate = async (take: number, cursor: string, skip?: number): Promise<Ingredient[] | undefined> => {
     logger.info('get ingredient repository paginate request', { take, cursor });
     performanceTest.start('get paginate ingredients');
-
-    let skip = 0;
-    if (shouldSkip !== undefined) {
-      skip = shouldSkip ? 1 : 0;
-    } else {
-      skip = cursor ? 1 : 0;
-    }
 
     const results = await this.prisma.ingredients.findMany(
       {
@@ -93,8 +86,8 @@ export class IngredientRepository implements FilterableIngredientRepository {
             name: cursor,
           },
         },
-        take: !cursor && take < 0 ? 0 : take,
-        skip,
+        take,
+        skip: skip ?? cursor ? 1 : 0,
       },
     );
 

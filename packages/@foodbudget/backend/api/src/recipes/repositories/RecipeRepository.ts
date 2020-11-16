@@ -15,16 +15,9 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
     this.ingredientsService = ingredientsService;
   }
 
-  paginate = async (take: number, cursor: string, shouldSkip?: boolean): Promise<Recipe[] | undefined> => {
+  paginate = async (take: number, cursor?: string, skip?: number): Promise<Recipe[] | undefined> => {
     logger.info('get recipe repository paginate request', { take, cursor });
     performanceTest.start('get paginate recipes');
-
-    let skip = 0;
-    if (shouldSkip !== undefined) {
-      skip = shouldSkip ? 1 : 0;
-    } else {
-      skip = cursor ? 1 : 0;
-    }
 
     const results = await this.prisma.recipes.findMany(
       {
@@ -46,11 +39,11 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
         },
         ...cursor && {
           cursor: {
-            id: parseInt(cursor, 10),
+            link: cursor,
           },
         },
-        take: !cursor && take < 0 ? 0 : take,
-        skip,
+        take,
+        skip: skip ?? cursor ? 1 : 0,
       },
     );
 
@@ -237,6 +230,7 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
         },
       },
       update: {
+        // TODO: Put this in function
         ...overrideOrUpdate(!!recipe.name, { name: recipe.name }),
         ...overrideOrUpdate(!!recipe.prepTime, { prep_time: recipe.prepTime }),
         ...overrideOrUpdate(recipe.servings !== undefined, { servings: recipe.servings }),

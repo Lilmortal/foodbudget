@@ -74,9 +74,9 @@ type ingredient implements Node {
 }
 
 type ingredientConnection {
-  count: Int
   edges: [ingredientEdge]
   pageInfo: PageInfo
+  totalCount: Int
 }
 
 type ingredientEdge {
@@ -126,7 +126,7 @@ type Query {
   ingredients(after: ID, before: ID, first: Int, last: Int): ingredientConnection
   ingredientsByName(name: String!): [ingredient]
   node(id: ID!): Node
-  recipes(cursor: String, first: Int, last: Int): recipeConnection
+  recipes(after: ID, before: ID, first: Int, last: Int): recipeConnection
   recipesById(link: String!): recipe
   recipesByLink(id: Int!): recipe
   renewToken: String
@@ -149,9 +149,9 @@ type recipe {
 }
 
 type recipeConnection {
-  count: Int
   edges: [recipeEdge]
   pageInfo: PageInfo
+  totalCount: Int
 }
 
 type recipeEdge {
