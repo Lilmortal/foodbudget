@@ -55,6 +55,8 @@ jobs:
       - run: yarn
       - run: yarn setup:ui
       - run: yarn ci:ui-test
+      - store_artifacts:
+          path: /bin/build
   backEndUnitTest:
     docker:
       - image: circleci/node:14.11.0-browsers
