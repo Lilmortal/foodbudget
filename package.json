@@ -59,9 +59,8 @@
     "lint:check-types": "lerna run check-types --stream --parallel",
     "lint:ts": "eslint '**/*.ts' --fix",
     "lint": "run-p -c 'lint:*'",
-    "compile:ui": "yarn workspace @foodbudget/ui compile",
     "setup:server": "lerna run build --ignore=@foodbudget/ui --stream",
-    "setup:ui": "yarn compile:ui",
+    "setup:ui": "yarn build:ui",
     "setup": "run-p 'setup:*'",
     "clean": "lerna run clean --stream --parallel",
     "release": "lerna publish --no-commit-hooks --yes"

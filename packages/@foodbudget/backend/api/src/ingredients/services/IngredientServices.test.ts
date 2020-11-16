@@ -33,7 +33,7 @@ describe('ingredient services', () => {
           ],
         )));
 
-        const result = await ingredientServices.paginate({ first: 0, last: 2 });
+        const result = await ingredientServices.paginateAfter({ pos: 2 });
 
         expect(result).toEqual({
           pageInfo: {
@@ -70,7 +70,7 @@ describe('ingredient services', () => {
           ],
         )));
 
-        const result = await ingredientServices.paginate({ first: 0, last: 1, cursor: 'aW5ncmVkaWVudDM=' });
+        const result = await ingredientServices.paginateAfter({ pos: 1, cursor: 'aW5ncmVkaWVudDM=' });
 
         expect(result).toEqual({
           pageInfo: {
@@ -109,7 +109,7 @@ describe('ingredient services', () => {
         )));
         mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(undefined)));
 
-        const result = await ingredientServices.paginate({ first: 2, last: 0 });
+        const result = await ingredientServices.paginateBefore({ pos: 2 });
 
         expect(result).toEqual({
           pageInfo: {
@@ -146,7 +146,7 @@ describe('ingredient services', () => {
         )));
         mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(undefined)));
 
-        const result = await ingredientServices.paginate({ first: 1, last: 0, cursor: 'aW5ncmVkaWVudDM=' });
+        const result = await ingredientServices.paginateBefore({ pos: 1, cursor: 'aW5ncmVkaWVudDM=' });
 
         expect(result).toEqual({
           pageInfo: {
@@ -164,124 +164,6 @@ describe('ingredient services', () => {
             },
           ],
           totalCount: 1,
-        });
-      });
-    });
-
-    describe('previous and after ingredients', () => {
-      it('should retrieve one ingredient before and two ingredients after the cursor', async () => {
-        mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
-          [
-            {
-              name: 'ingredient1',
-            },
-            {
-              name: 'ingredient2',
-            },
-          ],
-        )));
-        mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
-          [
-            {
-              name: 'ingredient4',
-            },
-            {
-              name: 'ingredient5',
-            },
-          ],
-        )));
-
-        const result = await ingredientServices.paginate({ first: 1, last: 2 });
-
-        expect(result).toEqual({
-          pageInfo: {
-            hasPreviousPage: true,
-            hasNextPage: false,
-            startCursor: 'aW5ncmVkaWVudDI=',
-            endCursor: 'aW5ncmVkaWVudDU=',
-          },
-          edges: [
-            {
-              cursor: 'aW5ncmVkaWVudDI=',
-              node: {
-                name: 'ingredient2',
-              },
-            },
-            {
-              cursor: 'aW5ncmVkaWVudDQ=',
-              node: {
-                name: 'ingredient4',
-              },
-            },
-            {
-              cursor: 'aW5ncmVkaWVudDU=',
-              node: {
-                name: 'ingredient5',
-              },
-            },
-          ],
-          totalCount: 3,
-        });
-      });
-
-      it('should retrieve all ingredients', async () => {
-        mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
-          [
-            {
-              name: 'ingredient1',
-            },
-            {
-              name: 'ingredient2',
-            },
-          ],
-        )));
-        mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
-          [
-            {
-              name: 'ingredient4',
-            },
-            {
-              name: 'ingredient5',
-            },
-          ],
-        )));
-
-        const result = await ingredientServices.paginate({ first: 9999, last: 9999 });
-
-        expect(result).toEqual({
-          pageInfo: {
-            hasPreviousPage: false,
-            hasNextPage: false,
-            startCursor: 'aW5ncmVkaWVudDE=',
-            endCursor: 'aW5ncmVkaWVudDU=',
-          },
-          edges: [
-            {
-              cursor: 'aW5ncmVkaWVudDE=',
-              node: {
-                name: 'ingredient1',
-              },
-            },
-            {
-              cursor: 'aW5ncmVkaWVudDI=',
-              node: {
-                name: 'ingredient2',
-              },
-            },
-            {
-              cursor: 'aW5ncmVkaWVudDQ=',
-              node: {
-                name: 'ingredient4',
-              },
-            },
-            {
-              cursor: 'aW5ncmVkaWVudDU=',
-              node: {
-                name: 'ingredient5',
-              },
-            },
-          ],
-          totalCount: 4,
         });
       });
     });

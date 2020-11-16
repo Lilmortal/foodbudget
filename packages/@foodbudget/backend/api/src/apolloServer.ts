@@ -52,19 +52,19 @@ export const server = new ApolloServer({
   schema,
   context,
   debug: true,
-  // validationRules: [
-  //   queryComplexity({
-  //     estimators: [
-  //       simpleEstimator({ defaultComplexity: 1 }),
-  //     ],
-  //     maximumComplexity: 10000,
-  //     onComplete: (complexity: number) => {
-  //       if (complexity > 0) {
-  //         logger.info(colors.yellow(`Query Complexity: ${complexity}`));
-  //       }
-  //     },
-  //   }),
-  // ],
+  validationRules: [
+    queryComplexity({
+      estimators: [
+        simpleEstimator({ defaultComplexity: 1 }),
+      ],
+      maximumComplexity: 10000,
+      onComplete: (complexity: number) => {
+        if (complexity > 0) {
+          logger.info(colors.yellow(`Query Complexity: ${complexity}`));
+        }
+      },
+    }),
+  ],
   introspection: config.env === 'development',
   formatError: (err: GraphQLError) => {
     const { sessionId } = logger.defaultMeta;

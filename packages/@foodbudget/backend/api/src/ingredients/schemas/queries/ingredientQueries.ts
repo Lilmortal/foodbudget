@@ -1,8 +1,6 @@
 import { AppError } from '@foodbudget/errors';
 import logger from '@foodbudget/logger';
-import {
-  arg, floatArg, idArg, intArg, objectType, queryField, stringArg,
-} from '@nexus/schema';
+import { arg, floatArg, idArg, intArg, queryField, stringArg } from '@nexus/schema';
 import { CacheScope } from 'apollo-cache-control';
 import { Context } from '../../../context';
 import { Ingredient } from '../../Ingredient.types';
@@ -49,46 +47,35 @@ export const filterIngredientsByPrice = queryField('filterIngredientsByPrice', {
   },
 });
 
-export const ingredientsPagination = objectType({
-  name: 'pagination',
-  definition(t) {
-    t.field('paginate', {
-      type: ingredientConnection,
-      args: {
-        first: intArg(),
-        last: intArg(),
-        before: idArg(),
-        after: idArg(),
-      },
-      resolve: async (_parent, args, ctx: Context) => {
-        if (args.before && !args.first) {
-          throw new AppError({ message: 'need `first`.', isOperational: true });
-        }
-
-        if (args.after && !args.last) {
-          throw new AppError({ message: 'need `last`.', isOperational: true });
-        }
-
-        if (args.first) {
-          return ctx.serviceManager.ingredientServices.paginateBefore({
-            pos: args.first, cursor: args.before,
-          });
-        }
-
-        if (args.last) {
-          return ctx.serviceManager.ingredientServices.paginateAfter({
-            pos: args.last, cursor: args.after,
-          });
-        }
-
-        return null;
-      } });
-
-    t.implements('Node');
-  },
-});
-
 export const ingredientsQueries = queryField('ingredients', {
-  type: ingredientsPagination,
-  resolve: async () => ({ paginate: true }),
+  type: ingredientConnection,
+  args: {
+    first: intArg(),
+    last: intArg(),
+    before: idArg(),
+    after: idArg(),
+  },
+  resolve: async (_parent, args, ctx: Context) => {
+    if (args.before !== undefined && args.first === undefined) {
+      throw new AppError({ message: 'need `first`.', isOperational: true });
+    }
+
+    if (args.after !== undefined && args.last === undefined) {
+      throw new AppError({ message: 'need `last`.', isOperational: true });
+    }
+
+    if (args.first !== undefined) {
+      return ctx.serviceManager.ingredientServices.paginateBefore({
+        pos: args.first, cursor: args.before,
+      });
+    }
+
+    if (args.last !== undefined) {
+      return ctx.serviceManager.ingredientServices.paginateAfter({
+        pos: args.last, cursor: args.after,
+      });
+    }
+
+    return null;
+  },
 });

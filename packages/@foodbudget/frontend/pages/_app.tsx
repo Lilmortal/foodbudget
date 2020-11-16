@@ -1,11 +1,15 @@
 import { AppProps } from 'next/app';
-import { RelayEnvironmentProvider } from 'relay-hooks';
-import { initEnvironment } from '../src/lib/environment';
+import { ApolloProvider } from '@apollo/client';
+import { useApolloClient } from '../src/lib/client';
 
-const App: React.FC<AppProps> = ({ Component, pageProps }) => (
-  <RelayEnvironmentProvider environment={initEnvironment(pageProps.data)}>
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+  const client = useApolloClient(pageProps.initialApolloState);
+
+  return (
+  <ApolloProvider client={client}>
     <Component {...pageProps} />
-  </RelayEnvironmentProvider>
-);
+  </ApolloProvider>
+  );
+};
 
 export default App;

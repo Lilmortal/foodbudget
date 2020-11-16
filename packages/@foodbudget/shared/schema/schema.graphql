@@ -110,12 +110,6 @@ type PageInfo {
   startCursor: String
 }
 
-type pagination implements Node {
-  """GUID for a resource"""
-  id: ID
-  paginate(after: ID, before: ID, first: Int, last: Int): ingredientConnection
-}
-
 type price {
   amount: Float
   currency: String
@@ -129,7 +123,7 @@ input priceArg {
 type Query {
   filterIngredientsByPrice(currency: Currency!, maxAmount: Float, minAmount: Float!): [ingredient]
   filterRecipes(adjectives: [Adjective], allergies: [Allergy], cuisines: [Cuisine], diets: [Diet], ingredients: [recipeIngredientArg], meals: [Meal]): [recipe]
-  ingredients: pagination
+  ingredients(after: ID, before: ID, first: Int, last: Int): ingredientConnection
   ingredientsByName(name: String!): [ingredient]
   node(id: ID!): Node
   recipes(cursor: String, first: Int, last: Int): recipeConnection

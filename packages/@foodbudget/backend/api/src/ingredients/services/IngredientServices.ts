@@ -5,7 +5,7 @@ import { FilterableIngredientRepository } from '../repositories/IngredientReposi
 
 interface PaginateParams {
   pos: number;
-  cursor: string;
+  cursor?: string;
 }
 
 export class IngredientServices {
@@ -66,10 +66,11 @@ export class IngredientServices {
   }
 
   async paginateAfter({ pos, cursor }: PaginateParams): Promise<Pagination<Ingredient> | undefined> {
-    if (pos === 0) {
-      throw new AppError({ message: 'Position cannot be 0.', isOperational: true });
-    }
+    // if (pos === 0) {
+    //   throw new AppError({ message: 'Position cannot be 0.', isOperational: true });
+    // }
 
+    console.log(pos);
     const beforeIngredients = await this.repository.paginate(
       -1, Buffer.from(cursor || '', 'base64').toString('ascii'),
     );
@@ -81,8 +82,8 @@ export class IngredientServices {
     const hasPreviousPage = beforeIngredients ? beforeIngredients.length > pos : false;
     const hasNextPage = afterIngredients ? afterIngredients.length > pos : false;
 
-    if (hasNextPage) {
-      afterIngredients?.shift();
+    if (hasNextPage && pos !== 0) {
+      afterIngredients?.pop();
     }
 
     let edges: Edge<Ingredient>[] = [];
@@ -96,8 +97,8 @@ export class IngredientServices {
         cursor: Buffer.from(ingredient.name).toString('base64'),
       })));
 
-      startCursor = Buffer.from(edges[0].cursor).toString('base64');
-      endCursor = Buffer.from(edges[edges.length - 1].cursor).toString('base64');
+      startCursor = edges[0].cursor;
+      endCursor = edges[edges.length - 1].cursor;
 
       count = edges.length;
     }

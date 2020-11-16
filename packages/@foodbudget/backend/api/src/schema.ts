@@ -17,7 +17,8 @@ export const schema = makeSchema({
     ...authSchema,
   },
   outputs: {
-    schema: path.join(__dirname, './schema.graphql'),
+    // TODO: Fix hard coded path
+    schema: path.join(__dirname, '../../../shared/schema/schema.graphql'),
   },
   plugins: [
     queryComplexityPlugin(),
