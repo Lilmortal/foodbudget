@@ -5,11 +5,11 @@ jobs:
       - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
-      - create_concatenated_yarn_lock:
-          filename: combined-yarn-lock.txt
+      - create_concatenated_package_json:
+          filename: combined-package-json.txt
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-package-json.txt" }}
             - v1-dependencies
       - run: yarn
       - save_cache:
@@ -21,17 +21,17 @@ jobs:
             - packages/@foodbudget/backend/jobs/node_modules
             - packages/@foodbudget/frontend/node_modules
             # - packages/@foodbudget/logger/node_modules
-          key: v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+          key: v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-package-json.txt" }}
   lint:
     docker:
       - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
-      - create_concatenated_yarn_lock:
-          filename: combined-yarn-lock.txt
+      - create_concatenated_package_json:
+          filename: combined-package-json.txt
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-package-json.txt" }}
             - v1-dependencies
       - add_ssh_keys:
           fingerprints:
@@ -43,11 +43,11 @@ jobs:
       - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
-      - create_concatenated_yarn_lock:
-          filename: combined-yarn-lock.txt
+      - create_concatenated_package_json:
+          filename: combined-package-json.txt
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-package-json.txt" }}
             - v1-dependencies
       - add_ssh_keys:
           fingerprints:
@@ -59,11 +59,11 @@ jobs:
       - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
-      - create_concatenated_yarn_lock:
-          filename: combined-yarn-lock.txt
+      - create_concatenated_package_json:
+          filename: combined-package-json.txt
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-package-json.txt" }}
             - v1-dependencies
       - add_ssh_keys:
           fingerprints:
@@ -83,11 +83,11 @@ jobs:
           POSTGRES_DB: test
     steps:
       - checkout
-      - create_concatenated_yarn_lock:
-          filename: combined-yarn-lock.txt
+      - create_concatenated_package_json:
+          filename: combined-package-json.txt
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-package-json.txt" }}
             - v1-dependencies
       - add_ssh_keys:
           fingerprints:
@@ -109,11 +109,11 @@ jobs:
       - image: circleci/node:14.11.0-browsers
     steps:
       - checkout
-      - create_concatenated_yarn_lock:
-          filename: combined-yarn-lock.txt
+      - create_concatenated_package_json:
+          filename: combined-package-json.txt
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-package-json.txt" }}
             - v1-dependencies
       - add_ssh_keys:
           fingerprints:
@@ -127,15 +127,15 @@ jobs:
       - run: yarn release
       - run: git push --follow-tags origin master
 commands:
-  create_concatenated_yarn_lock:
-    description: "Concatenate all yarn.lock files recognized by lerna.js into single file. File is used as checksum source for part of caching key."
+  create_concatenated_package_json:
+    description: "Concatenate all package.json files recognized by lerna.js into single file. File is used as checksum source for part of caching key."
     parameters:
       filename:
         type: string
     steps:
       - run:
-          name: Combine yarn.lock files to single file
-          command: npx lerna la -a | awk -F packages '{printf "\"packages%s/yarn.lock\" ", $2}' | xargs ls -d 2> /dev/null | xargs cat > << parameters.filename >>
+          name: Combine package.json files to single file
+          command: npx lerna la -a | awk -F packages '{printf "\"packages%s/package.json\" ", $2}' | xargs ls -d 2> /dev/null | xargs cat > << parameters.filename >>
           # command: echo packages/@foodbudget/backend/api/yarn.lock | xargs cat > << parameters.filename >>
 workflows:
   version: 2
