@@ -52,7 +52,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      - run: yarn
+      - run: mkdir /bin/build;
       - run: yarn setup:ui
       - run: yarn ci:ui-test
       - store_artifacts:
