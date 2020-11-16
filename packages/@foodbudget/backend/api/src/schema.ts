@@ -5,12 +5,9 @@ import { schemas as recipesSchema } from './recipes/schemas';
 import { schemas as usersSchema } from './users/schemas';
 import { schemas as ingredientsSchema } from './ingredients/schemas';
 import { schemas as authSchema } from './auth/schemas';
-import { nodeInterface, nodeQuery } from './shared/field/node';
 
 export const schema = makeSchema({
   types: {
-    nodeInterface,
-    nodeQuery,
     ...recipesSchema,
     ...usersSchema,
     ...ingredientsSchema,
