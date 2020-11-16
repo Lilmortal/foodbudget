@@ -36,7 +36,7 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "build:ui": "yarn workspace @foodbudget/ui build",
+    "build:ui": "yarn workspace @foodbudget/ui build:schema",
     "sb": "yarn workspace @foodbudget/ui sb",
     "start": "dotenv -e .env -- lerna run start --stream --parallel",
     "start:server": "dotenv -e .env -- yarn workspace @foodbudget/api start",
