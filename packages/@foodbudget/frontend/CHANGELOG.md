@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/ui@1.1.3...@foodbudget/ui@1.2.0) (2020-11-17)
+
+
+### Features
+
+* migrate relay to apollo client, added shared schema folder ([afed021](https://github.com/Lilmortal/foodbudget/commit/afed021262c69e8cf77d998394445047a038f77a))
+
+
+
+
+
 ## [1.1.3](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/ui@1.1.2...@foodbudget/ui@1.1.3) (2020-11-06)
 
 **Note:** Version bump only for package @foodbudget/ui
