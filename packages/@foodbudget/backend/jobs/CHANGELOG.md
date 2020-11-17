@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.3.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/jobs@5.2.1...@foodbudget/jobs@5.3.0) (2020-11-17)
+
+
+### Features
+
+* supports looping through recipe pages to scrape ([56ba0dc](https://github.com/Lilmortal/foodbudget/commit/56ba0dc83144b8a22d0d69d9a61fd41858ef298d))
+
+
+
+
+
 ## [5.2.1](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/jobs@5.2.0...@foodbudget/jobs@5.2.1) (2020-11-17)
 
 **Note:** Version bump only for package @foodbudget/jobs
