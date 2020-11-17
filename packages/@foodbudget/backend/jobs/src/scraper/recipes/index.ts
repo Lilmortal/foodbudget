@@ -1,2 +1,2 @@
-export { default as RecipesScraper } from './RecipesScraper';
-export type { ScrapedRecipeHTMLElements, ScrapedRecipe } from './RecipesScraper.types';
+export { recipesScraper } from './recipesScraper';
+export type { ScrapedRecipeHTMLElements, ScrapedRecipe, RecipesScraper } from './RecipesScraper.types';

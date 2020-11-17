@@ -37,7 +37,7 @@ export interface ScraperParams<S, R> {
   /**
    * Scraping function that will be triggered inside the headless browser.
    */
-  onScrape: OnScrape<S>;
+  onScrape: OnScrape<S[]>;
 
   /**
    * Validate function that will be used to validate the scraped result.

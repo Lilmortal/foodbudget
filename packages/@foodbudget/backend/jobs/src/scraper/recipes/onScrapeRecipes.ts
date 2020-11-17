@@ -1,6 +1,5 @@
 import puppeteer from 'puppeteer';
 import { OnScrape, ScrapedHTMLElement } from '../Scraper.types';
-import RecipesScraper from './RecipesScraper';
 import { ScrapedRecipe, ScrapedRecipeHTMLElements } from './RecipesScraper.types';
 
 const scrapeRecipe = (scrapeInfo: string) => {
@@ -49,10 +48,47 @@ const scrapeRecipe = (scrapeInfo: string) => {
   };
 };
 
-const scrapeRecipes: OnScrape<ScrapedRecipe> = (
+const updateScrapeInfoLink = (scrapeInfo: string, link: string) => {
+  const parsedScrapedInfo: ScrapedRecipeHTMLElements = JSON.parse(scrapeInfo);
+
+  return JSON.stringify({ ...parsedScrapedInfo, url: link });
+};
+
+const scrapeHomePage = (scrapeInfo: string): string[] => {
+  const parsedScrapedInfo: ScrapedRecipeHTMLElements = JSON.parse(scrapeInfo);
+  const recipeItems = parsedScrapedInfo.recipeItemHtmlElement;
+
+  if (!recipeItems) {
+    return [parsedScrapedInfo.url];
+  }
+
+  const recipeNodes: NodeListOf<HTMLAnchorElement> = document.querySelectorAll(recipeItems.class);
+
+  return Array.from(recipeNodes).map((node) => node.href);
+};
+
+/**
+ * Loop through the recipe items, and return a list of scraped recipes.
+ * @param page Puppeteer page used for automation.
+ */
+export const onScrapeRecipes: OnScrape<ScrapedRecipe[]> = (
   page: puppeteer.Page,
-) => async (scrapeInfo: string): Promise<ScrapedRecipe> => page.evaluate(scrapeRecipe, scrapeInfo);
+) => async (scrapeInfo: string): Promise<ScrapedRecipe[]> => {
+  const links = await page.evaluate(scrapeHomePage, scrapeInfo);
 
-const importedRecipesScraper = new RecipesScraper(scrapeRecipes);
+  const scrapedRecipes: ScrapedRecipe[] = [];
+  for (let i = 0; i < links.length; i += 1) {
+    const link = links[i];
 
-export default importedRecipesScraper;
+    // eslint-disable-next-line no-await-in-loop
+    await page.goto(link);
+
+    const updatedScrapeInfo = updateScrapeInfoLink(scrapeInfo, link);
+    // eslint-disable-next-line no-await-in-loop
+    const scrapedRecipe = await page.evaluate(scrapeRecipe, updatedScrapeInfo);
+
+    scrapedRecipes.push(scrapedRecipe);
+  }
+
+  return scrapedRecipes;
+};

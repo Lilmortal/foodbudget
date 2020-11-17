@@ -1,54 +1,47 @@
-import { OnScrape } from '../Scraper.types';
-import RecipesScraper from './RecipesScraper';
-import { ScrapedRecipe, ScrapedRecipeHTMLElements } from './RecipesScraper.types';
+import path from 'path';
+import { recipesScraper } from './recipesScraper';
+import { ScrapedRecipeHTMLElements } from './RecipesScraper.types';
 
-describe('recipes job scraper', () => {
-  beforeEach(() => {
-    jest.setTimeout(300000);
-  });
+describe('imported recipes job scraper', () => {
+  const scrapedRecipeFilePath = `file:${path.join(
+    __dirname,
+    '__mocks__/mockRecipeWebsite.html',
+  )}`;
 
-  afterEach(() => {
-    jest.setTimeout(5000);
-  });
-
-  it('should scrape and return the mapped recipes given the onScrape function', async () => {
-    const onScrape: OnScrape<ScrapedRecipe> = () => async () => ({
-      prepTime: '4 mins',
-      servings: '4',
-      numSaved: '0',
-      name: 'Big Mac',
-      ingredients: ['4 cups of water', '2 pigs'],
-      link: 'http://fakewebsite.com',
-      cuisines: [],
-      diets: [],
-      allergies: [],
-      adjectives: [],
-      meals: [],
-    });
-
-    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements = {
-      url: 'http://fakewebsite.com',
+  it('should scrape a mock website and return the mapped recipes', async () => {
+    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements[] = [{
+      url: scrapedRecipeFilePath,
       prepTimeHtmlElement: {
         class: '.prepTime',
+        index: 0,
       },
       servingsHtmlElement: {
         class: '.servings',
+        index: 0,
+        substring: {
+          start: 12,
+          end: 13,
+        },
       },
       recipeNameHtmlElement: {
         class: '.recipeName',
+        index: 1,
+        substring: {
+          start: 13,
+          end: 20,
+        },
       },
       ingredientsHtmlElement: {
         class: '.ingredients',
       },
-    };
+    }];
 
-    const recipesScraper = new RecipesScraper(onScrape);
     const results = await recipesScraper.scrape(scrapedWebsiteInfo);
 
-    expect(results).toEqual({
-      link: 'http://fakewebsite.com',
+    expect(results).toEqual([{
+      link: scrapedRecipeFilePath,
       prepTime: '4 mins',
-      servings: 4,
+      servings: 5,
       name: 'Big Mac',
       numSaved: 0,
       ingredients: [{
@@ -59,7 +52,7 @@ describe('recipes job scraper', () => {
           amount: 0,
           currency: '',
         },
-        text: '4 cups of water',
+        text: 'Pig',
       },
       {
         amount: 0,
@@ -69,38 +62,25 @@ describe('recipes job scraper', () => {
           amount: 0,
           currency: '',
         },
-        text: '2 pigs',
+        text: 'Lettuce',
       }],
       cuisines: [],
       diets: [],
       allergies: [],
       adjectives: [],
       meals: [],
-    });
+    }]);
   });
 
-  it('should throw an Error if prepTime is an empty string', async () => {
-    const onScrape: OnScrape<ScrapedRecipe> = () => async () => ({
-      prepTime: '',
-      servings: '4',
-      name: 'Big Mac',
-      numSaved: '0',
-      ingredients: [],
-      link: 'http://fakewebsite.com',
-      cuisines: [],
-      diets: [],
-      allergies: [],
-      adjectives: [],
-      meals: [],
-    });
-
-    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements = {
-      url: 'http://fakewebsite.com',
+  it('should throw an Error if attempting to scrape an invalid document selector', async () => {
+    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements[] = [{
+      url: scrapedRecipeFilePath,
       prepTimeHtmlElement: {
-        class: '.prepTime',
+        class: '.invalidClass',
       },
       servingsHtmlElement: {
         class: '.servings',
+
       },
       recipeNameHtmlElement: {
         class: '.recipeName',
@@ -108,9 +88,7 @@ describe('recipes job scraper', () => {
       ingredientsHtmlElement: {
         class: '.ingredients',
       },
-    };
-
-    const recipesScraper = new RecipesScraper(onScrape);
+    }];
 
     await expect(recipesScraper.scrape(scrapedWebsiteInfo)).rejects.toThrowError();
   });

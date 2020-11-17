@@ -4,14 +4,14 @@ import config from './config';
 
 import CronJob from './cron';
 import JobRecipesScraper from './jobs/JobRecipesScraper';
-import ImportedRecipesScraper from './scraper/recipes/ImportedRecipesScraper';
+import { recipesScraper } from './scraper/recipes';
 
 (async () => {
   const mailer = await createEmailer();
   const recipesJob = new JobRecipesScraper({
     serviceManager,
     emailer: mailer,
-    recipeScrapers: [ImportedRecipesScraper],
+    recipeScrapers: [recipesScraper],
   });
 
   const cron = new CronJob(config.cron.url);

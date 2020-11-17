@@ -8,13 +8,13 @@ import setupHeadlessBrowser from './utils';
 jest.mock('./utils');
 
 describe('scraper', () => {
-  let mockOnScrape: jest.Mock<OnScrape<ScrapedRecipe>>;
+  let mockOnScrape: jest.Mock<OnScrape<ScrapedRecipe[]>>;
   let mockMapping: jest.Mock<(scrapedResult: ScrapedRecipe) => Omit<Recipe, 'id'>>;
-  let scrapedRecipe: ScrapedRecipe;
+  let scrapedRecipe: ScrapedRecipe[];
   let recipe: Omit<Recipe, 'id'>;
 
   beforeEach(() => {
-    scrapedRecipe = {
+    scrapedRecipe = [{
       link: 'link',
       prepTime: '4 mins',
       servings: '4',
@@ -26,7 +26,7 @@ describe('scraper', () => {
       allergies: [],
       adjectives: [],
       meals: [],
-    };
+    }];
 
     recipe = {
       link: 'link',
@@ -58,15 +58,6 @@ describe('scraper', () => {
     jest.resetAllMocks();
   });
 
-  it('should scrape and return the mapped recipe', async () => {
-    (setupHeadlessBrowser as jest.Mock).mockImplementation(() => ({
-      scrape: async () => scrapedRecipe,
-    }));
-    const scraper = new Scraper<ScrapedRecipe, Omit<Recipe, 'id'>>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
-
-    await expect(scraper.scrape(scrapedRecipeElements)).resolves.toEqual(recipe);
-  });
-
   it('should scrape and return an array of mapped recipes', async () => {
     (setupHeadlessBrowser as jest.Mock).mockImplementation(() => ({
       scrape: async () => [scrapedRecipe],
@@ -92,13 +83,13 @@ describe('scraper', () => {
     throwAnErrorWhenAttemptingToScrape(retries);
 
     (setupHeadlessBrowser as jest.Mock).mockImplementation(() => ({
-      scrape: async () => scrapedRecipe,
+      scrape: async () => [scrapedRecipe],
     }));
 
     const scraper = new Scraper<ScrapedRecipe, Omit<Recipe, 'id'>>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
     const spiedScrape = jest.spyOn(scraper, 'scrape');
 
-    await expect(scraper.scrape(scrapedRecipeElements, retries)).resolves.toEqual(recipe);
+    await expect(scraper.scrape(scrapedRecipeElements, retries)).resolves.toEqual([recipe]);
 
     expect(spiedScrape).toBeCalledTimes(retries + 1);
   });

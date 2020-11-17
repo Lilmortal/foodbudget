@@ -7,7 +7,7 @@ import {
 import setupHeadlessBrowser from './utils';
 
 export default class Scraper<S, R> {
-  private readonly onScrape: OnScrape<S>;
+  private readonly onScrape: OnScrape<S[]>;
 
   private readonly onMapping: (scrapedResult: S) => R;
 
@@ -17,34 +17,15 @@ export default class Scraper<S, R> {
   }
 
   async scrape<E extends ScrapedElements>(
-    scrapedElements: E,
-    retries?: number
-  ): Promise<R>;
-
-  async scrape<E extends ScrapedElements>(
     scrapedElements: E[],
-    retries?: number
-  ): Promise<R[]>;
-
-  async scrape<E extends ScrapedElements>(
-    scrapedElements: E | E[],
-    retries?: number
-  ): Promise<R | R[]>;
-
-  async scrape<E extends ScrapedElements>(
-    scrapedElements: E | E[],
     retries = 3,
-  ): Promise<R | R[]> {
+  ): Promise<R[]> {
     try {
       const headlessBrowser = setupHeadlessBrowser<E, S>(this.onScrape);
 
       const scrapedResults = await headlessBrowser.scrape(scrapedElements);
 
-      if (Array.isArray(scrapedResults)) {
-        return Promise.all(scrapedResults.map((result) => this.onMapping(result)));
-      }
-
-      return this.onMapping(scrapedResults);
+      return Promise.all(scrapedResults.map((result) => this.onMapping(result)));
     } catch (err) {
       // @TODO: Find where puppeteer.errors.TimeoutError is.
       if (err instanceof Error) {

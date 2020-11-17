@@ -1,7 +1,6 @@
 import { ServiceManager } from '@foodbudget/api';
 import { Mailer } from '@foodbudget/email';
-import RecipesScraper from '../scraper/recipes/RecipesScraper';
-import { ScrapedRecipe } from '../scraper/recipes/RecipesScraper.types';
+import { RecipesScraper } from '../scraper/recipes';
 
 export interface JobScraperParams {
     /**
@@ -17,5 +16,5 @@ export interface JobScraperParams {
     /**
      * A list of recipe scrapers that will be used to scrape the items.
      */
-    recipeScrapers: RecipesScraper<ScrapedRecipe>[];
+    recipeScrapers: RecipesScraper[];
 }

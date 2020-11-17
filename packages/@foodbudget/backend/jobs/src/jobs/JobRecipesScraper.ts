@@ -4,8 +4,10 @@ import logger from '@foodbudget/logger';
 import { Config } from '../config';
 import { RecipesScraper, ScrapedRecipeHTMLElements } from '../scraper/recipes';
 import { JobScraperParams } from './JobScraper.types';
-import { ScrapedRecipe } from '../scraper/recipes/RecipesScraper.types';
 
+/**
+ * A job to handle scraping, saving, and notifying users about the newly scraped recipes.
+ */
 export default class JobRecipesScraper {
   interval = '1000 seconds';
 
@@ -15,7 +17,7 @@ export default class JobRecipesScraper {
 
   readonly emailer: Mailer;
 
-  private readonly recipeScrapers: RecipesScraper<ScrapedRecipe>[];
+  private readonly recipeScrapers: RecipesScraper[];
 
   constructor({ serviceManager, emailer, recipeScrapers }: JobScraperParams) {
     this.serviceManager = serviceManager;
@@ -23,9 +25,11 @@ export default class JobRecipesScraper {
     this.recipeScrapers = recipeScrapers;
   }
 
-  async scrape(scrapedElements: ScrapedRecipeHTMLElements | ScrapedRecipeHTMLElements[]):
-  Promise<(Omit<Recipe, 'id'> | Omit<Recipe, 'id'>[])[]> {
-    return Promise.all(this.recipeScrapers.map(async (scraper) => scraper.scrape(scrapedElements)));
+  async scrape(scrapedElements: ScrapedRecipeHTMLElements[]):
+  Promise<Omit<Recipe, 'id'>[]> {
+    const result = await Promise.all(this.recipeScrapers.map(async (scraper) => scraper.scrape(scrapedElements)));
+
+    return result.flat();
   }
 
   async save(recipes: Omit<Recipe, 'id'> | Omit<Recipe, 'id'>[]): Promise<void> {
