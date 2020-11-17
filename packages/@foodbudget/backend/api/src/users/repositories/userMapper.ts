@@ -4,7 +4,7 @@ import { User } from '../User.types';
 
 export const userMapper: Mapper<User, users> = ({
   fromDto: (dto: User): users => ({
-    id: dto.id,
+    id: parseInt(dto.id, 10),
     google_id: dto.googleId || null,
     facebook_id: dto.facebookId || null,
     email: dto.email,
@@ -14,7 +14,7 @@ export const userMapper: Mapper<User, users> = ({
     diets: dto.diets || [],
   }),
   toDto: (entity: users): User => ({
-    id: entity.id,
+    id: entity.id.toString(),
     googleId: entity.google_id || undefined,
     facebookId: entity.facebook_id || undefined,
     email: entity.email,

@@ -5,6 +5,7 @@ import { AppError, ErrorHandler } from '@foodbudget/errors';
 import { PerformanceObserver } from 'perf_hooks';
 import colors from 'colors/safe';
 import passport from 'passport';
+import cors from 'cors';
 import { server } from './apolloServer';
 import { config } from './config';
 import { serviceManager } from './serviceManager';
@@ -36,7 +37,13 @@ const app = express();
 app.use(cookieParser());
 app.disable('x-powered-by');
 
-server.applyMiddleware({ app, path: config.api.prefix });
+app.use(cors({
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200,
+  credentials: true,
+}));
+
+server.applyMiddleware({ app, path: config.api.prefix, cors: false });
 
 app.get('/healthcheck', (_req, res) => {
   res.status(200).send('Application is working perfectly!');

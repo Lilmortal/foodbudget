@@ -1,6 +1,4 @@
-import {
-  fieldAuthorizePlugin, makeSchema, nullabilityGuardPlugin, queryComplexityPlugin,
-} from '@nexus/schema';
+import { makeSchema, nullabilityGuardPlugin, queryComplexityPlugin } from '@nexus/schema';
 import path from 'path';
 import logger from '@foodbudget/logger';
 import { schemas as recipesSchema } from './recipes/schemas';
@@ -16,11 +14,11 @@ export const schema = makeSchema({
     ...authSchema,
   },
   outputs: {
-    schema: path.join(__dirname, './schema.graphql'),
+    // TODO: Fix hard coded path
+    schema: path.join(__dirname, '../../../shared/schema/schema.graphql'),
   },
   plugins: [
     queryComplexityPlugin(),
-    fieldAuthorizePlugin(),
     nullabilityGuardPlugin({
       onGuarded({ info }) {
         logger.error(
@@ -28,6 +26,7 @@ export const schema = makeSchema({
         );
       },
       fallbackValues: {
+        ID: () => 'N/A',
         Int: () => 0,
         String: () => '',
         Boolean: () => false,

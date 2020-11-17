@@ -1,12 +1,12 @@
 import logger from '@foodbudget/logger';
 import { PrismaClient } from '@prisma/client';
 import { performanceTest } from '../../perf';
-import { Repository } from '../../types/Repository';
+import { PaginationRepository } from '../../types/pagination/PaginationRepository';
 import { SaveOptions } from '../../types/SaveOptions';
 import { Currency, Ingredient } from '../Ingredient.types';
 import { ingredientMapper } from './ingredientMapper';
 
-export interface FilterableIngredientRepository extends Repository<Ingredient> {
+export interface FilterableIngredientRepository extends PaginationRepository<Ingredient> {
   filterByPrice(currency: Currency, minAmount: number, maxAmount?: number): Promise<Ingredient[]>;
 }
 
@@ -61,11 +61,38 @@ export class IngredientRepository implements FilterableIngredientRepository {
         include: {
           recipe_ingredients: true,
         },
+        cursor: {
+          name: ingredient.name,
+        },
       },
     );
 
     performanceTest.end('get ingredients');
     logger.info('ingredients found', results);
+    return results.map((result) => ingredientMapper.toDto(result));
+  };
+
+  paginate = async (take: number, cursor: string, skip?: number): Promise<Ingredient[] | undefined> => {
+    logger.info('get ingredient repository paginate request', { take, cursor });
+    performanceTest.start('get paginate ingredients');
+
+    const results = await this.prisma.ingredients.findMany(
+      {
+        include: {
+          recipe_ingredients: true,
+        },
+        ...cursor && {
+          cursor: {
+            name: cursor,
+          },
+        },
+        take,
+        skip: skip ?? cursor ? 1 : 0,
+      },
+    );
+
+    performanceTest.end('get paginate ingredients');
+    logger.info('paginate ingredients found', results);
     return results.map((result) => ingredientMapper.toDto(result));
   };
 

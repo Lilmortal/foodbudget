@@ -19,8 +19,9 @@ const prettifyStackTrace = (stackTraces: string[]) => {
 
 const isPrismaError = (stackTraces: string[]) => stackTraces[1]?.startsWith('\x1B[31mInvalid \x1B[1m');
 
-const prettifyError = (err: Error): string => {
+const prettifyError = (err: Error, sessionId: string): string => {
   const errorMessages = [];
+  errorMessages.push(JSON.stringify({ sessionId, error: err.message }));
   if (err instanceof GraphQLError || err instanceof ApolloError || err instanceof ValidationError) {
     errorMessages.push(printError(err));
 
@@ -57,7 +58,7 @@ export const server = new ApolloServer({
       estimators: [
         simpleEstimator({ defaultComplexity: 1 }),
       ],
-      maximumComplexity: 100,
+      maximumComplexity: 10000,
       onComplete: (complexity: number) => {
         if (complexity > 0) {
           logger.info(colors.yellow(`Query Complexity: ${complexity}`));
@@ -68,7 +69,7 @@ export const server = new ApolloServer({
   introspection: config.env === 'development',
   formatError: (err: GraphQLError) => {
     const { sessionId } = logger.defaultMeta;
-    logger.error(prettifyError(err));
+    logger.error(prettifyError(err, sessionId));
 
     removeStackTraceOnProd(err);
 

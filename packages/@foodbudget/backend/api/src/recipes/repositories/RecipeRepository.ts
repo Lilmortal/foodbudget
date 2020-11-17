@@ -5,15 +5,53 @@ import { IngredientServices } from '../../ingredients/services';
 import { Recipe } from '../Recipe.types';
 import { recipeMapper } from './recipeMapper';
 import { performanceTest } from '../../perf';
-import { Repository } from '../../types/Repository';
 import { PartialBy } from '../../types/PartialBy';
 import { SaveOptions } from '../../types/SaveOptions';
+import { PaginationRepository } from '../../types/pagination/PaginationRepository';
 
-export class RecipeRepository implements Repository<Recipe> {
+export class RecipeRepository implements PaginationRepository<Recipe> {
   constructor(private readonly prisma: PrismaClient, private readonly ingredientsService: IngredientServices) {
     this.prisma = prisma;
     this.ingredientsService = ingredientsService;
   }
+
+  paginate = async (take: number, cursor?: string, skip?: number): Promise<Recipe[] | undefined> => {
+    logger.info('get recipe repository paginate request', { take, cursor });
+    performanceTest.start('get paginate recipes');
+
+    const results = await this.prisma.recipes.findMany(
+      {
+        include: {
+          ingredients: {
+            select: {
+              ingredient: {
+                select: {
+                  name: true,
+                  price_currency: true,
+                  price_amount: true,
+                },
+              },
+              amount: true,
+              measurement: true,
+              recipe_text: true,
+            },
+          },
+        },
+        ...cursor && {
+          cursor: {
+            link: cursor,
+          },
+        },
+        take,
+        skip: skip ?? cursor ? 1 : 0,
+      },
+    );
+
+    performanceTest.end('get paginate recipes');
+
+    logger.info('recipe pagination results', results);
+    return results.map((result) => recipeMapper.toDto(result));
+  };
 
   get = async (recipe: Partial<Recipe>): Promise<Recipe[] | undefined> => {
     logger.info('get recipe repository request', recipe);
@@ -162,7 +200,7 @@ export class RecipeRepository implements Repository<Recipe> {
         link: recipe.link,
         num_saved: 0,
         ingredients: {
-          create: recipe.ingredients.map((ingredient) => ({
+          create: recipe.ingredients && recipe.ingredients.map((ingredient) => ({
             amount: ingredient.amount,
             measurement: ingredient.measurement,
             recipe_text: ingredient.text,
@@ -192,6 +230,7 @@ export class RecipeRepository implements Repository<Recipe> {
         },
       },
       update: {
+        // TODO: Put this in function
         ...overrideOrUpdate(!!recipe.name, { name: recipe.name }),
         ...overrideOrUpdate(!!recipe.prepTime, { prep_time: recipe.prepTime }),
         ...overrideOrUpdate(recipe.servings !== undefined, { servings: recipe.servings }),
@@ -199,7 +238,7 @@ export class RecipeRepository implements Repository<Recipe> {
         ...overrideOrUpdate(recipe.numSaved !== undefined, { num_saved: recipe.numSaved }),
         ...overrideOrUpdate(recipe.ingredients && Object.keys(recipe.ingredients).length > 0, {
           ingredients: {
-            upsert: recipe.ingredients.map((ingredient) => ({
+            upsert: recipe.ingredients && recipe.ingredients.map((ingredient) => ({
               create: {
                 amount: ingredient.amount,
                 measurement: ingredient.measurement,

@@ -1,7 +1,7 @@
 import { Allergy, Diet } from '../recipes';
 
 export interface User {
-    id: number;
+    id: string;
     googleId?: string;
     facebookId?: string;
     email: string;

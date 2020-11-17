@@ -36,7 +36,7 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "build:ui": "yarn workspace @foodbudget/ui build",
+    "build:ui": "yarn workspace @foodbudget/ui build:schema",
     "sb": "yarn workspace @foodbudget/ui sb",
     "start": "dotenv -e .env -- lerna run start --stream --parallel",
     "start:server": "dotenv -e .env -- yarn workspace @foodbudget/api start",
@@ -59,9 +59,8 @@
     "lint:check-types": "lerna run check-types --stream --parallel",
     "lint:ts": "eslint '**/*.ts' --fix",
     "lint": "run-p -c 'lint:*'",
-    "compile:ui": "yarn workspace @foodbudget/ui compile",
     "setup:server": "lerna run build --ignore=@foodbudget/ui --stream",
-    "setup:ui": "yarn compile:ui",
+    "setup:ui": "yarn build:ui",
     "setup": "run-p 'setup:*'",
     "clean": "lerna run clean --stream --parallel",
     "release": "lerna publish --no-commit-hooks --yes"

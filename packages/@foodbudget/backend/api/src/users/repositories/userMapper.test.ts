@@ -5,7 +5,7 @@ import { userMapper } from './userMapper';
 describe('user mapper', () => {
   it('should map user dto to entity', () => {
     const dto: User = {
-      id: 1,
+      id: '1',
       googleId: '2',
       facebookId: '3',
       email: 'email',
@@ -44,7 +44,7 @@ describe('user mapper', () => {
     const dto = userMapper.toDto(entity);
 
     expect(dto).toEqual({
-      id: 1,
+      id: '1',
       googleId: '2',
       facebookId: '3',
       email: 'email',
