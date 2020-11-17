@@ -2,22 +2,21 @@ import { Recipe, ServiceManager } from '@foodbudget/api';
 import { Mailer } from '@foodbudget/email';
 import { mockDeep, MockProxy } from 'jest-mock-extended';
 import config from '../config';
-import { RecipesScraper, ScrapedRecipe } from '../scraper/recipes';
+import { RecipesScraper } from '../scraper/recipes';
 import JobRecipesScraper from './JobRecipesScraper';
 
 jest.mock('../scraper/recipes');
 jest.mock('@foodbudget/api');
 
 describe('job recipes scraper', () => {
-  let recipe: Omit<Recipe, 'id'>;
+  let recipe: Omit<Recipe, 'id'>[];
   let mockServiceManager: MockProxy<ServiceManager>;
   let mockEmailer: jest.Mock<Mailer>;
-  let mockRecipeScraper: jest.Mock<RecipesScraper<ScrapedRecipe>>;
-  let mockRecipeScrapers: jest.Mock<RecipesScraper<ScrapedRecipe>>[] = [];
-  let recipeScrapers: RecipesScraper<ScrapedRecipe>[] = [];
+  let mockRecipeScraper: MockProxy<RecipesScraper> & RecipesScraper;
+  let mockRecipeScrapers: RecipesScraper[] = [];
 
   beforeEach(() => {
-    recipe = {
+    recipe = [{
       link: 'recipe link',
       name: 'recipe name',
       prepTime: '4 mins',
@@ -29,7 +28,7 @@ describe('job recipes scraper', () => {
       allergies: [],
       adjectives: [],
       meals: [],
-    };
+    }];
 
     mockServiceManager = mockDeep();
 
@@ -38,13 +37,10 @@ describe('job recipes scraper', () => {
       verify: jest.fn(),
     }));
 
-    mockRecipeScraper = jest.fn((RecipesScraper as jest.Mock).mockImplementation(() => ({
-      scrape: async () => recipe,
-    })));
+    mockRecipeScraper = mockDeep<RecipesScraper>();
+    mockRecipeScraper.scrape.mockResolvedValueOnce(recipe);
 
     mockRecipeScrapers.push(mockRecipeScraper);
-
-    recipeScrapers = mockRecipeScrapers.map((mockScraper) => mockScraper());
   });
 
   afterEach(() => {
@@ -56,16 +52,16 @@ describe('job recipes scraper', () => {
 
   it('should scrape and return the scraped recipe', async () => {
     const jobRecipesScraper = new JobRecipesScraper(
-      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers },
+      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers: mockRecipeScrapers },
     );
 
     const result = await jobRecipesScraper.scrape(config.scrapedRecipeElements);
-    expect(result).toEqual([recipe]);
+    expect(result).toEqual(recipe);
   });
 
   it('should scrape and save the recipe', async () => {
     const jobRecipesScraper = new JobRecipesScraper(
-      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers },
+      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers: mockRecipeScrapers },
     );
 
     await jobRecipesScraper.start(config);
@@ -78,7 +74,7 @@ describe('job recipes scraper', () => {
     });
 
     const jobRecipesScraper = new JobRecipesScraper(
-      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers },
+      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers: mockRecipeScrapers },
     );
 
     await expect(jobRecipesScraper.start(config)).rejects.toThrowError();
@@ -86,7 +82,7 @@ describe('job recipes scraper', () => {
 
   it('should scrape and notify that a recipe has been scraped via email', async () => {
     const jobRecipesScraper = new JobRecipesScraper(
-      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers },
+      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers: mockRecipeScrapers },
     );
 
     await jobRecipesScraper.start(config);
@@ -102,7 +98,7 @@ describe('job recipes scraper', () => {
     }));
 
     const jobRecipesScraper = new JobRecipesScraper(
-      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers },
+      { serviceManager: mockServiceManager, emailer: mockEmailer(), recipeScrapers: mockRecipeScrapers },
     );
 
     await expect(jobRecipesScraper.start(config)).rejects.toThrowError();

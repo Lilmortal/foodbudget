@@ -3,6 +3,9 @@ import Agenda from 'agenda';
 import { Config } from '../config';
 import { Job } from './CronJob.types';
 
+/**
+ * Add jobs to all be runned when you call 'start()'.
+ */
 export default class CronJob {
   private readonly agendaDatabaseUrl: string;
 
@@ -43,8 +46,6 @@ export default class CronJob {
       this.instance.define(job.definition, async () => job.start(config));
 
       this.jobs.push(async () => this.instance.every(job.interval, job.definition));
-
-      // this.jobs.push(async () => job.start(config));
 
       logger.info(`"${job.definition}" has been added to the job scheduler queue...`);
     };

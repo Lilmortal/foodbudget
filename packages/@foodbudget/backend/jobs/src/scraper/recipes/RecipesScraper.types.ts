@@ -1,12 +1,12 @@
 import { Recipe } from '@foodbudget/api';
+import Scraper from '../Scraper';
 import { ScrapedElements, ScrapedHTMLElement } from '../Scraper.types';
 
 export interface ScrapedRecipeHTMLElements extends ScrapedElements {
-  // TODO: Update comments
   /**
-   * Recipe lists to loop through.
+   * Recipe items to loop through to scrape.
    */
-  itemHtmlElement?: ScrapedHTMLElement;
+  recipeItemHtmlElement?: ScrapedHTMLElement;
   /**
    * The element for prep time.
    */
@@ -26,3 +26,5 @@ export interface ScrapedRecipeHTMLElements extends ScrapedElements {
 }
 
 export type ScrapedRecipe = Record<keyof Omit<Recipe, 'id'>, string | string[]>;
+
+export type RecipesScraper = Scraper<ScrapedRecipe, Omit<Recipe, 'id'>>;

@@ -4,8 +4,10 @@ import logger from '@foodbudget/logger';
 import { Config } from '../config';
 import { RecipesScraper, ScrapedRecipeHTMLElements } from '../scraper/recipes';
 import { JobScraperParams } from './JobScraper.types';
-import { ScrapedRecipe } from '../scraper/recipes/RecipesScraper.types';
 
+/**
+ * A job to handle scraping, saving, and notifying users about the newly scraped recipes.
+ */
 export default class JobRecipesScraper {
   interval = '1000 seconds';
 
@@ -15,7 +17,7 @@ export default class JobRecipesScraper {
 
   readonly emailer: Mailer;
 
-  private readonly recipeScrapers: RecipesScraper<ScrapedRecipe>[];
+  private readonly recipeScrapers: RecipesScraper[];
 
   constructor({ serviceManager, emailer, recipeScrapers }: JobScraperParams) {
     this.serviceManager = serviceManager;

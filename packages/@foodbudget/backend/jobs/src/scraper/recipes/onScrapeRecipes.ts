@@ -1,6 +1,5 @@
 import puppeteer from 'puppeteer';
 import { OnScrape, ScrapedHTMLElement } from '../Scraper.types';
-import RecipesScraper from './RecipesScraper';
 import { ScrapedRecipe, ScrapedRecipeHTMLElements } from './RecipesScraper.types';
 
 const scrapeRecipe = (scrapeInfo: string) => {
@@ -57,18 +56,22 @@ const updateScrapeInfoLink = (scrapeInfo: string, link: string) => {
 
 const scrapeHomePage = (scrapeInfo: string): string[] => {
   const parsedScrapedInfo: ScrapedRecipeHTMLElements = JSON.parse(scrapeInfo);
-  const items = parsedScrapedInfo.itemHtmlElement;
+  const recipeItems = parsedScrapedInfo.recipeItemHtmlElement;
 
-  if (!items) {
+  if (!recipeItems) {
     return [parsedScrapedInfo.url];
   }
 
-  const nodeList: NodeListOf<HTMLAnchorElement> = document.querySelectorAll(items.class);
+  const recipeNodes: NodeListOf<HTMLAnchorElement> = document.querySelectorAll(recipeItems.class);
 
-  return Array.from(nodeList).map((node) => node.href);
+  return Array.from(recipeNodes).map((node) => node.href);
 };
 
-const scrapeRecipes: OnScrape<ScrapedRecipe[]> = (
+/**
+ * Loop through the recipe items, and return a list of scraped recipes.
+ * @param page Puppeteer page used for automation.
+ */
+export const onScrapeRecipes: OnScrape<ScrapedRecipe[]> = (
   page: puppeteer.Page,
 ) => async (scrapeInfo: string): Promise<ScrapedRecipe[]> => {
   const links = await page.evaluate(scrapeHomePage, scrapeInfo);
@@ -89,7 +92,3 @@ const scrapeRecipes: OnScrape<ScrapedRecipe[]> = (
 
   return scrapedRecipes;
 };
-
-const importedRecipesScraper = new RecipesScraper(scrapeRecipes);
-
-export default importedRecipesScraper;
