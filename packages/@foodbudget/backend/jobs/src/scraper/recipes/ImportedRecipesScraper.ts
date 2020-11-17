@@ -49,9 +49,46 @@ const scrapeRecipe = (scrapeInfo: string) => {
   };
 };
 
-const scrapeRecipes: OnScrape<ScrapedRecipe> = (
+const updateScrapeInfoLink = (scrapeInfo: string, link: string) => {
+  const parsedScrapedInfo: ScrapedRecipeHTMLElements = JSON.parse(scrapeInfo);
+
+  return JSON.stringify({ ...parsedScrapedInfo, url: link });
+};
+
+const scrapeHomePage = (scrapeInfo: string): string[] => {
+  const parsedScrapedInfo: ScrapedRecipeHTMLElements = JSON.parse(scrapeInfo);
+  const items = parsedScrapedInfo.itemHtmlElement;
+
+  if (!items) {
+    return [parsedScrapedInfo.url];
+  }
+
+  const nodeList: NodeListOf<HTMLAnchorElement> = document.querySelectorAll(items.class);
+
+  return Array.from(nodeList).map((node) => node.href);
+};
+
+const scrapeRecipes: OnScrape<ScrapedRecipe[]> = (
   page: puppeteer.Page,
-) => async (scrapeInfo: string): Promise<ScrapedRecipe> => page.evaluate(scrapeRecipe, scrapeInfo);
+) => async (scrapeInfo: string): Promise<ScrapedRecipe[]> => {
+  const links = await page.evaluate(scrapeHomePage, scrapeInfo);
+
+  const scrapedRecipes: ScrapedRecipe[] = [];
+  for (let i = 0; i < links.length; i += 1) {
+    const link = links[i];
+
+    // eslint-disable-next-line no-await-in-loop
+    await page.goto(link);
+
+    const updatedScrapeInfo = updateScrapeInfoLink(scrapeInfo, link);
+    // eslint-disable-next-line no-await-in-loop
+    const scrapedRecipe = await page.evaluate(scrapeRecipe, updatedScrapeInfo);
+
+    scrapedRecipes.push(scrapedRecipe);
+  }
+
+  return scrapedRecipes;
+};
 
 const importedRecipesScraper = new RecipesScraper(scrapeRecipes);
 

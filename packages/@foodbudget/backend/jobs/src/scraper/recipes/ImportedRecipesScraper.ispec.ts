@@ -9,7 +9,7 @@ describe('imported recipes job scraper', () => {
   )}`;
 
   it('should scrape a mock website and return the mapped recipes', async () => {
-    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements = {
+    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements[] = [{
       url: scrapedRecipeFilePath,
       prepTimeHtmlElement: {
         class: '.prepTime',
@@ -34,11 +34,11 @@ describe('imported recipes job scraper', () => {
       ingredientsHtmlElement: {
         class: '.ingredients',
       },
-    };
+    }];
 
     const results = await ImportedRecipesScraper.scrape(scrapedWebsiteInfo);
 
-    expect(results).toEqual({
+    expect(results).toEqual([{
       link: scrapedRecipeFilePath,
       prepTime: '4 mins',
       servings: 5,
@@ -69,11 +69,11 @@ describe('imported recipes job scraper', () => {
       allergies: [],
       adjectives: [],
       meals: [],
-    });
+    }]);
   });
 
   it('should throw an Error if attempting to scrape an invalid document selector', async () => {
-    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements = {
+    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements[] = [{
       url: scrapedRecipeFilePath,
       prepTimeHtmlElement: {
         class: '.invalidClass',
@@ -88,7 +88,7 @@ describe('imported recipes job scraper', () => {
       ingredientsHtmlElement: {
         class: '.ingredients',
       },
-    };
+    }];
 
     await expect(ImportedRecipesScraper.scrape(scrapedWebsiteInfo)).rejects.toThrowError();
   });

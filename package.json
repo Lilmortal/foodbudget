@@ -45,7 +45,7 @@
     "start:studio": "dotenv -e .env -- yarn workspace @foodbudget/api start:studio",
     "migrate:save": "dotenv -e .env -- yarn workspace @foodbudget/api migrate:save",
     "migrate:up": "dotenv -e .env -- yarn workspace @foodbudget/api migrate:up",
-    "start:cron": "dotenv -e .env -- yarn workspace @foodbudget/jobs start",
+    "start:cron": "dotenv -e .env -- yarn workspace @foodbudget/jobs start:cron",
     "test": "jest --changedSince=master",
     "test:server": "jest --projects=packages/@foodbudget/backend --changedSince=master",
     "ci:server-test": "jest --projects=packages/@foodbudget/backend",

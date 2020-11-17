@@ -12,7 +12,7 @@ describe('recipes job scraper', () => {
   });
 
   it('should scrape and return the mapped recipes given the onScrape function', async () => {
-    const onScrape: OnScrape<ScrapedRecipe> = () => async () => ({
+    const onScrape: OnScrape<ScrapedRecipe[]> = () => async () => ([{
       prepTime: '4 mins',
       servings: '4',
       numSaved: '0',
@@ -24,9 +24,9 @@ describe('recipes job scraper', () => {
       allergies: [],
       adjectives: [],
       meals: [],
-    });
+    }]);
 
-    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements = {
+    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements[] = [{
       url: 'http://fakewebsite.com',
       prepTimeHtmlElement: {
         class: '.prepTime',
@@ -40,12 +40,12 @@ describe('recipes job scraper', () => {
       ingredientsHtmlElement: {
         class: '.ingredients',
       },
-    };
+    }];
 
     const recipesScraper = new RecipesScraper(onScrape);
     const results = await recipesScraper.scrape(scrapedWebsiteInfo);
 
-    expect(results).toEqual({
+    expect(results).toEqual([{
       link: 'http://fakewebsite.com',
       prepTime: '4 mins',
       servings: 4,
@@ -76,11 +76,11 @@ describe('recipes job scraper', () => {
       allergies: [],
       adjectives: [],
       meals: [],
-    });
+    }]);
   });
 
   it('should throw an Error if prepTime is an empty string', async () => {
-    const onScrape: OnScrape<ScrapedRecipe> = () => async () => ({
+    const onScrape: OnScrape<ScrapedRecipe[]> = () => async () => ([{
       prepTime: '',
       servings: '4',
       name: 'Big Mac',
@@ -92,9 +92,9 @@ describe('recipes job scraper', () => {
       allergies: [],
       adjectives: [],
       meals: [],
-    });
+    }]);
 
-    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements = {
+    const scrapedWebsiteInfo: ScrapedRecipeHTMLElements[] = [{
       url: 'http://fakewebsite.com',
       prepTimeHtmlElement: {
         class: '.prepTime',
@@ -108,7 +108,7 @@ describe('recipes job scraper', () => {
       ingredientsHtmlElement: {
         class: '.ingredients',
       },
-    };
+    }];
 
     const recipesScraper = new RecipesScraper(onScrape);
 

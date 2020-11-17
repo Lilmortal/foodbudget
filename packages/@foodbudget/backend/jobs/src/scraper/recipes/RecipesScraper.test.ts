@@ -19,26 +19,6 @@ const getValidRecipePageInfo = (
 });
 
 describe('recipe scraper', () => {
-  it('should throw an Error if prepTime is an empty string', () => {
-    expect(() => onMapping(getValidRecipePageInfo({ prepTime: '' }))).toThrowError();
-  });
-
-  it('should throw an Error if prepTime is an array', () => {
-    expect(() => onMapping(getValidRecipePageInfo({ prepTime: ['5 mins'] }))).toThrowError();
-  });
-
-  it('should throw an Error if servings is an empty string', () => {
-    expect(() => onMapping(getValidRecipePageInfo({ servings: '' }))).toThrowError();
-  });
-
-  it('should throw an Error if servings is an array', () => {
-    expect(() => onMapping(getValidRecipePageInfo({ servings: ['4'] }))).toThrowError();
-  });
-
-  it('should throw an Error if servings is an invalid number', () => {
-    expect(() => onMapping(getValidRecipePageInfo({ servings: '4g' }))).toThrowError();
-  });
-
   it('should throw an Error if name is an empty string', () => {
     expect(() => onMapping(getValidRecipePageInfo({ name: '' }))).toThrowError();
   });
