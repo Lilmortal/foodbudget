@@ -19,7 +19,6 @@ export const ingredientField = objectType({
   definition(t) {
     t.string('name');
     t.field('price', { type: priceField });
-    t.implements('Node');
   },
 });
 
