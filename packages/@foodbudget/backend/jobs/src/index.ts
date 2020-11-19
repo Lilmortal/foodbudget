@@ -1,9 +1,9 @@
 import createEmailer from '@foodbudget/email';
 import { serviceManager } from '@foodbudget/api';
-import config from './config';
+import { config } from './config';
 
-import CronJob from './cron';
-import JobRecipesScraper from './jobs/JobRecipesScraper';
+import { CronJob } from './cron';
+import { JobRecipesScraper } from './jobs';
 import { recipesScraper } from './scraper/recipes';
 
 (async () => {
@@ -14,7 +14,7 @@ import { recipesScraper } from './scraper/recipes';
     recipeScrapers: [recipesScraper],
   });
 
-  const cron = new CronJob(config.cron.url);
+  const cron = new CronJob();
 
   cron.createJobs([recipesJob], config);
   await cron.start();

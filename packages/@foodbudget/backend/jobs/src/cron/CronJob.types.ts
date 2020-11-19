@@ -2,9 +2,9 @@ import { Config } from '../config';
 
 export interface Job {
   /**
-   * the time period between each job runs.
+   * the time period between each job runs in cron format.
    */
-  readonly interval: number | string;
+  readonly interval: string;
   /**
    * a function that will be executed per interval.
    */

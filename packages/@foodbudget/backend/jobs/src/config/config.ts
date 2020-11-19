@@ -43,7 +43,7 @@ const validate = (config: Config) => {
   return true;
 };
 
-const config: Config = {
+export const config: Config = {
   cron: {
     url: process.env.CRON_URL || '',
   },
@@ -60,5 +60,3 @@ const config: Config = {
 if (!validate(config)) {
   process.exit();
 }
-
-export default config;

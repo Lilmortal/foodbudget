@@ -4,14 +4,15 @@ import logger from '@foodbudget/logger';
 import { Config } from '../config';
 import { RecipesScraper, ScrapedRecipeHTMLElements } from '../scraper/recipes';
 import { JobScraperParams } from './JobScraper.types';
+import { Job } from '../cron';
 
 /**
  * A job to handle scraping, saving, and notifying users about the newly scraped recipes.
  */
-export default class JobRecipesScraper {
-  interval = '1000 seconds';
+export class JobRecipesScraper implements Job {
+  interval = '* * * * * Sat';
 
-  definition = 'Job recipes';
+  definition = 'recipes scraper';
 
   readonly serviceManager: ServiceManager;
 

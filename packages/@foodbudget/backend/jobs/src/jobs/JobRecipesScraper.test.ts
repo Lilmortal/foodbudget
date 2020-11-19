@@ -1,9 +1,9 @@
 import { Recipe, ServiceManager } from '@foodbudget/api';
 import { Mailer } from '@foodbudget/email';
 import { mockDeep, MockProxy } from 'jest-mock-extended';
-import config from '../config';
+import { config } from '../config';
 import { RecipesScraper } from '../scraper/recipes';
-import JobRecipesScraper from './JobRecipesScraper';
+import { JobRecipesScraper } from './JobRecipesScraper';
 
 jest.mock('../scraper/recipes');
 jest.mock('@foodbudget/api');
