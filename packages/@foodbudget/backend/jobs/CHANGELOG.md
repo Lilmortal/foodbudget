@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.4.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/jobs@5.3.0...@foodbudget/jobs@5.4.0) (2020-11-19)
+
+
+### Features
+
+* replace agenda with node-cron ([578b268](https://github.com/Lilmortal/foodbudget/commit/578b2681fb644c8630c54fb67f858fb496a49a5d))
+
+
+
+
+
 # [5.3.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/jobs@5.2.1...@foodbudget/jobs@5.3.0) (2020-11-17)
 
 
