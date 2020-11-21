@@ -1,7 +1,7 @@
 // Route table dictates how subnets can talk to different IP addresses. If you want to expose a subnet to the internet, point
 // that subnet to the internet gateway, which will be the proxy point handling both internal and external traffic.
 resource "aws_route_table" "public" {
-    vpc_id = aws_vpc.default.id
+    vpc_id = aws_vpc.this.id
 
     route {
         // 10.0.1.0/24 send to internet gateway
@@ -22,22 +22,12 @@ resource "aws_route_table" "public" {
 
 // A portion of VPC with its own CIDR blocks.
 resource "aws_subnet" "public" {
-    vpc_id = aws_vpc.default.id
-    cidr_block = "10.0.6.0/24"
+    vpc_id = aws_vpc.this.id
+    cidr_block = "10.10.0.0/24"
     availability_zone = "ap-southeast-2a"
 
     tags = {
         Name = "Foodbudget subnet A"
-    }
-}
-
-resource "aws_subnet" "public-B" {
-    vpc_id = aws_vpc.default.id
-    cidr_block = "10.0.24.0/24"
-    availability_zone = "ap-southeast-2b"
-
-    tags = {
-        Name = "Foodbudget subnet B"
     }
 }
 
@@ -51,20 +41,12 @@ resource "aws_route_table_association" "public" {
 // internet gateway and NAT are mainly for the subnets.
 resource "aws_security_group" "public" {
   name        = "allow_web_trafic"
-  vpc_id      = aws_vpc.default.id
+  vpc_id      = aws_vpc.this.id
 
   ingress {
-    description = "Accept all HTTP traffic"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "Accept all HTTPS traffic"
-    from_port   = 443
-    to_port     = 443
+    description = "Accept from port 8080"
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -72,7 +54,6 @@ resource "aws_security_group" "public" {
   egress {
     from_port   = 0
     to_port     = 0
-    // -1 means any protocol
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }

@@ -126,6 +126,8 @@ jobs:
       - run: yarn setup
       - run: yarn release
       - run: git push --follow-tags origin master
+      # - run: push docker to ecr
+      # - run: terraform
 commands:
   create_concatenated_yarn_lock:
     description: "Concatenate all yarn.lock files recognized by lerna.js into single file. File is used as checksum source for part of caching key."
