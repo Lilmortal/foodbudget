@@ -12,3 +12,5 @@ tsconfig.tsbuildinfo
 .next
 coverage
 __generated__
+*.tfstate
+*.tfstate.backup
