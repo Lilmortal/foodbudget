@@ -1,7 +1,7 @@
-variable "aws-access-key" {
+variable "aws_access_key" {
     type = string
 }
 
-variable "aws-secret-key" {
+variable "aws_secret_key" {
     type = string
 }

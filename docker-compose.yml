@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  foodbudget-db:
+  db:
     container_name: foodbudget-db
     image: postgres:12.4
     restart: always
@@ -13,18 +13,16 @@ services:
       - ./pgdata:/var/lib/postgresql/data
     ports:
       - 5432:5432
+  foodbudget_api:
+    image: foodbudget_api:1.0.0
+    env_file:
+      - .env
+    # depends_on:
+    #   - foodbudget-db
+    ports:
+      - 8080:8080
     build:
       context: .
-      dockerfile: Dockerfile
-  # web:
-  #   env_file:
-  #     - .env
-  #   depends_on:
-  #     - foodbudget-db
-  #   ports:
-  #     - 8080:8080
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - ./:/src/app
+      dockerfile: ./packages/@foodbudget/backend/api/Dockerfile
+    # volumes:
+    #   - ./:/src/app

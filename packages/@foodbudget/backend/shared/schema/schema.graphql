@@ -72,9 +72,9 @@ type ingredient {
 }
 
 type ingredientConnection {
+  count: Int
   edges: [ingredientEdge]
   pageInfo: PageInfo
-  totalCount: Int
 }
 
 type ingredientEdge {
@@ -94,6 +94,11 @@ type Mutation {
   login(email: Email!, password: String!): String
   register(email: Email!, password: String!): User
   saveRecipe(adjectives: [Adjective], allergies: [Allergy], cuisines: [Cuisine], diets: [Diet], ingredients: [recipeIngredientArg], link: String, meals: [Meal], name: String!, numSaved: Int, prepTime: String, servings: Int): recipe
+}
+
+interface Node {
+  """GUID for a resource"""
+  id: ID
 }
 
 type PageInfo {
@@ -118,7 +123,8 @@ type Query {
   filterRecipes(adjectives: [Adjective], allergies: [Allergy], cuisines: [Cuisine], diets: [Diet], ingredients: [recipeIngredientArg], meals: [Meal]): [recipe]
   ingredients(after: ID, before: ID, first: Int, last: Int): ingredientConnection
   ingredientsByName(name: String!): [ingredient]
-  recipes(after: ID, before: ID, first: Int, last: Int): recipeConnection
+  node(id: ID!): Node
+  recipes(cursor: String, first: Int, last: Int): recipeConnection
   recipesById(link: String!): recipe
   recipesByLink(id: Int!): recipe
   renewToken: String
@@ -141,9 +147,9 @@ type recipe {
 }
 
 type recipeConnection {
+  count: Int
   edges: [recipeEdge]
   pageInfo: PageInfo
-  totalCount: Int
 }
 
 type recipeEdge {

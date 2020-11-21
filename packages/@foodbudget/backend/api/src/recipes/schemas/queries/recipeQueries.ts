@@ -68,6 +68,7 @@ export const getRecipesByLink = queryField('recipesByLink', {
   async resolve(_parent, args, ctx: Context, info) {
     logger.info('incoming get recipes by id request', args);
 
+    // TODO: Think...
     info.cacheControl.setCacheHint({ maxAge: 86400, scope: CacheScope.Public });
 
     const recipe: Partial<Recipe> = {
