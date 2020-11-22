@@ -1,7 +1,7 @@
 resource "aws_vpc" "foodbudget_vpc" {
-  cidr_block = "10.10.0.0/16"
+  cidr_block = var.vpc_cidr_block
   tags = {
-    Name = "foodbudget-vpc"
+    Name = format("%s-vpc", var.project)
   }
 }
 
@@ -9,6 +9,6 @@ resource "aws_vpc" "foodbudget_vpc" {
 resource "aws_internet_gateway" "foodbudget_igw" {
   vpc_id = aws_vpc.foodbudget_vpc.id
   tags = {
-    Name = "foodbudget-igw"
+    Name = format("%s-igw", var.project)
   }
 }

@@ -6,7 +6,7 @@ resource "aws_route_table" "public" {
   route {
     // 10.0.1.0/24 send to internet gateway
     // 0.0.0.0/0 send all Ipv4 traffic
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.cidr_block_allow_all
     gateway_id = aws_internet_gateway.foodbudget_igw.id
   }
 
@@ -16,15 +16,15 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name = "foodbudget-public-rt"
+    Name = format("%s-public-rt", var.project)
   }
 }
 
 // A portion of VPC with its own CIDR blocks.
 resource "aws_subnet" "public" {
   vpc_id = aws_vpc.foodbudget_vpc.id
-  cidr_block = "10.10.0.0/24"
-  availability_zone = "ap-southeast-2a"
+  cidr_block = var.public_subnet_cidr_block
+  availability_zone = var.availability_zone_a
 
   tags = {
     Name = "PublicSubnetA"
@@ -40,7 +40,7 @@ resource "aws_route_table_association" "public" {
 // Security group handles incoming (ingress) and outcoming (egress) traffic from/to EC2 instances, whereas
 // internet gateway and NAT are mainly for the subnets.
 resource "aws_security_group" "public" {
-  name = "foodbudget-ec2-sg"
+  name = format("%s-ec2-sg", var.project)
   vpc_id = aws_vpc.foodbudget_vpc.id
 
   ingress {
@@ -49,7 +49,8 @@ resource "aws_security_group" "public" {
     to_port = 8080
     protocol = "tcp"
     cidr_blocks = [
-      "0.0.0.0/0"]
+      var.cidr_block_allow_all
+    ]
   }
 
   ingress {
@@ -58,7 +59,7 @@ resource "aws_security_group" "public" {
     to_port = 22
     protocol = "tcp"
     cidr_blocks = [
-      "0.0.0.0/0"
+      var.cidr_block_allow_all
     ]
   }
 
@@ -67,10 +68,11 @@ resource "aws_security_group" "public" {
     to_port = 0
     protocol = "-1"
     cidr_blocks = [
-      "0.0.0.0/0"]
+      var.cidr_block_allow_all
+    ]
   }
 
   tags = {
-    Name = "foodbudget-ec2-sg"
+    Name = format("%s-ec2-sg", var.project)
   }
 }

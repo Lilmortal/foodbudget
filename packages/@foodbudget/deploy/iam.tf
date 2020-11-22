@@ -20,7 +20,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "backend_ec2_policy" {
-  name = "foodbudget-ec2-policy"
+  name = format("%s-ec2-policy", var.project)
   role = aws_iam_role.backend_ec2_instance_role.id
 
   policy = <<EOF
