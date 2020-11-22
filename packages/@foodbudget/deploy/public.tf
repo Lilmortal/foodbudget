@@ -6,12 +6,12 @@ resource "aws_route_table" "public" {
   route {
     // 10.0.1.0/24 send to internet gateway
     // 0.0.0.0/0 send all Ipv4 traffic
-    cidr_block = var.cidr_block_allow_all
+    cidr_block = var.cidr_block_allow_all_ipv4
     gateway_id = aws_internet_gateway.foodbudget_igw.id
   }
 
   route {
-    ipv6_cidr_block = "::/0"
+    ipv6_cidr_block = var.cidr_block_allow_all_ipv6
     gateway_id = aws_internet_gateway.foodbudget_igw.id
   }
 
@@ -49,7 +49,7 @@ resource "aws_security_group" "public" {
     to_port = 8080
     protocol = "tcp"
     cidr_blocks = [
-      var.cidr_block_allow_all
+      var.cidr_block_allow_all_ipv4
     ]
   }
 
@@ -59,7 +59,7 @@ resource "aws_security_group" "public" {
     to_port = 22
     protocol = "tcp"
     cidr_blocks = [
-      var.cidr_block_allow_all
+      var.cidr_block_allow_all_ipv4
     ]
   }
 
@@ -68,7 +68,7 @@ resource "aws_security_group" "public" {
     to_port = 0
     protocol = "-1"
     cidr_blocks = [
-      var.cidr_block_allow_all
+      var.cidr_block_allow_all_ipv4
     ]
   }
 

@@ -23,9 +23,14 @@ variable "public_subnet_cidr_block" {
   default = "10.10.0.0/24"
 }
 
-variable "cidr_block_allow_all" {
+variable "cidr_block_allow_all_ipv4" {
   type = string
   default = "0.0.0.0/0"
+}
+
+variable "cidr_block_allow_all_ipv6" {
+  type = string
+  default = "::/0"
 }
 
 variable "backend_ec2_ami" {
