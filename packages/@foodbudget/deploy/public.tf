@@ -12,53 +12,65 @@ resource "aws_route_table" "public" {
 
   route {
     ipv6_cidr_block = "::/0"
-    gateway_id      = aws_internet_gateway.foodbudget_igw.id
+    gateway_id = aws_internet_gateway.foodbudget_igw.id
   }
 
   tags = {
-    Name = "Foodbudget Route Table"
+    Name = "foodbudget-public-rt"
   }
 }
 
 // A portion of VPC with its own CIDR blocks.
 resource "aws_subnet" "public" {
-  vpc_id            = aws_vpc.foodbudget_vpc.id
-  cidr_block        = "10.10.0.0/24"
+  vpc_id = aws_vpc.foodbudget_vpc.id
+  cidr_block = "10.10.0.0/24"
   availability_zone = "ap-southeast-2a"
 
   tags = {
-    Name = "Foodbudget subnet A"
+    Name = "PublicSubnetA"
   }
 }
 
 // Link subnet to route table
 resource "aws_route_table_association" "public" {
-  subnet_id      = aws_subnet.public.id
+  subnet_id = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }
 
 // Security group handles incoming (ingress) and outcoming (egress) traffic from/to EC2 instances, whereas
 // internet gateway and NAT are mainly for the subnets.
 resource "aws_security_group" "public" {
-  name   = "allow_web_trafic"
+  name = "foodbudget-ec2-sg"
   vpc_id = aws_vpc.foodbudget_vpc.id
 
   ingress {
-    description = "Accept from port 8080"
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    description = "Default foodbudget API port 8080"
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    cidr_blocks = [
+      "0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "SSH access for all"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = [
+      "0.0.0.0/0"]
   }
 
   tags = {
-    Name = "allow_web"
+    Name = "foodbudget-ec2-sg"
   }
 }
