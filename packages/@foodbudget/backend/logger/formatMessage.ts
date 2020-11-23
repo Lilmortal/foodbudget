@@ -33,8 +33,8 @@ const formatMessage = (info: Record<string, unknown>, env?: Env): string => {
 
   const formattedMessage = {
     message: stripAnsi(`${message}`),
-    ...sessionId && { sessionId },
-    ...query && { query },
+    ...!!sessionId && { sessionId },
+    ...!!query && { query },
   };
 
   if ((sessionId || query) && info.level !== 'error') {
