@@ -6,59 +6,73 @@ resource "aws_route_table" "public" {
   route {
     // 10.0.1.0/24 send to internet gateway
     // 0.0.0.0/0 send all Ipv4 traffic
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.cidr_block_allow_all_ipv4
     gateway_id = aws_internet_gateway.foodbudget_igw.id
   }
 
   route {
-    ipv6_cidr_block = "::/0"
-    gateway_id      = aws_internet_gateway.foodbudget_igw.id
+    ipv6_cidr_block = var.cidr_block_allow_all_ipv6
+    gateway_id = aws_internet_gateway.foodbudget_igw.id
   }
 
   tags = {
-    Name = "Foodbudget Route Table"
+    Name = format("%s-public-rt", var.project)
   }
 }
 
 // A portion of VPC with its own CIDR blocks.
 resource "aws_subnet" "public" {
-  vpc_id            = aws_vpc.foodbudget_vpc.id
-  cidr_block        = "10.10.0.0/24"
-  availability_zone = "ap-southeast-2a"
+  vpc_id = aws_vpc.foodbudget_vpc.id
+  cidr_block = var.public_subnet_cidr_block
+  availability_zone = var.availability_zone_a
 
   tags = {
-    Name = "Foodbudget subnet A"
+    Name = "PublicSubnetA"
   }
 }
 
 // Link subnet to route table
 resource "aws_route_table_association" "public" {
-  subnet_id      = aws_subnet.public.id
+  subnet_id = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }
 
 // Security group handles incoming (ingress) and outcoming (egress) traffic from/to EC2 instances, whereas
 // internet gateway and NAT are mainly for the subnets.
 resource "aws_security_group" "public" {
-  name   = "allow_web_trafic"
+  name = format("%s-ec2-sg", var.project)
   vpc_id = aws_vpc.foodbudget_vpc.id
 
   ingress {
-    description = "Accept from port 8080"
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    description = "Default foodbudget API port 8080"
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    cidr_blocks = [
+      var.cidr_block_allow_all_ipv4
+    ]
+  }
+
+  ingress {
+    description = "SSH access for all"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = [
+      var.cidr_block_allow_all_ipv4
+    ]
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = [
+      var.cidr_block_allow_all_ipv4
+    ]
   }
 
   tags = {
-    Name = "allow_web"
+    Name = format("%s-ec2-sg", var.project)
   }
 }
