@@ -77,7 +77,7 @@ jobs:
       - run: yarn ci:server-test
   backEndIntegrationTest:
     docker:
-      - image: circleci/node:14.11.0
+      - image: circleci/node:14.11.0-browsers
       - image: circleci/postgres:10.6-alpine
         auth:
           username: $DOCKERHUB_USER
