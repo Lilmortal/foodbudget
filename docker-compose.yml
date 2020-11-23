@@ -17,6 +17,8 @@ services:
   foodbudget-api:
     image: foodbudget-api:latest
     container_name: foodbudget-api
+    env_file:
+      - .env
     ports:
       - 8080:8080
     build:
