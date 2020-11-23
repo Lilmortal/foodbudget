@@ -1,14 +1,13 @@
 version: 2.1
 
 orbs:
-  # aws-ecr: circleci/aws-ecr@6.14.0
   aws-ecs: circleci/aws-ecs@01.4.0
   aws-cli: circleci/aws-cli@1.3.1
 
 jobs:
   build:
     docker:
-      - image: circleci/node:14.11.0-browsers
+      - image: circleci/node:14.11.0
     steps:
       - checkout
       - create_concatenated_yarn_lock:
@@ -30,7 +29,7 @@ jobs:
           key: v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
   lint:
     docker:
-      - image: circleci/node:14.11.0-browsers
+      - image: circleci/node:14.11.0
     steps:
       - checkout
       - create_concatenated_yarn_lock:
@@ -62,7 +61,7 @@ jobs:
       - run: yarn ci:ui-test
   backEndUnitTest:
     docker:
-      - image: circleci/node:14.11.0-browsers
+      - image: circleci/node:14.11.0
     steps:
       - checkout
       - create_concatenated_yarn_lock:
@@ -78,7 +77,7 @@ jobs:
       - run: yarn ci:server-test
   backEndIntegrationTest:
     docker:
-      - image: circleci/node:14.11.0-browsers
+      - image: circleci/node:14.11.0
       - image: circleci/postgres:10.6-alpine
         auth:
           username: $DOCKERHUB_USER
@@ -112,7 +111,7 @@ jobs:
       - run: yarn ci:server-int
   release:
     docker:
-      - image: circleci/node:14.11.0-browsers
+      - image: circleci/node:14.11.0
     steps:
       - checkout
       - create_concatenated_yarn_lock:
@@ -132,34 +131,21 @@ jobs:
       - run: yarn setup
       - run: yarn release
       - run: git push --follow-tags origin master
-  aws-deploy:
+  aws-api-deploy:
     docker:
-      - image: circleci/node:14.11.0-browsers
+      - image: circleci/node:14.11.0
         user: root
     steps:
       - checkout
-      # - create_concatenated_yarn_lock:
-      #     filename: combined-yarn-lock.txt
-      # - restore_cache:
-      #     keys:
-      #       - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
-      #       - v1-dependencies
-      # - add_ssh_keys:
-      #     fingerprints:
-      #       - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      # - aws-ecr/build-and-push-image:
-      #     account-url: AWS_ECR_ACCOUNT_URL
-      #     aws-access-key-id: AWS_ACCESS_KEY
-      #     aws-secret-access-key: AWS_SECRET_KEY
-      #     create-repo: true
-      #     no-output-timeout: 20m
-      #     path: ./packages/@foodbudget/backend/api
-      #     # profile-name: myProfileName
-      #     region: AWS_REGION
-      #     repo: foodbudget-repository
-      #     setup-remote-docker: true
-      #     remote-docker-layer-caching: true
-      #     skip-when-tags-exist: false
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-secret-access-key: AWS_SECRET_KEY
+          aws-region: AWS_REGION
+          skip-install-check: true
+        # This is to prevent Dockerfile throwing an error about missing .env file. 
+      - run: touch .env
       - run: docker-compose build foodbudget-api
       - run: aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com
       - run: docker tag foodbudget-api:latest 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-api:latest
@@ -189,16 +175,16 @@ workflows:
       - build
       - lint:
           requires:
-          - build
+            - build
       - frontEndUnitTest:
           requires:
-          - build
+            - build
       - backEndUnitTest:
           requires:
-          - build
+            - build
       - backEndIntegrationTest:
           requires:
-          - build
+            - build
       - release:
           filters:
             branches:
@@ -208,7 +194,7 @@ workflows:
             - frontEndUnitTest
             - backEndUnitTest
             - backEndIntegrationTest
-      - aws-deploy:
+      - aws-api-deploy:
           filters:
             branches:
               only: master
