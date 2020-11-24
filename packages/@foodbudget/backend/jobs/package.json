@@ -15,7 +15,7 @@
     "start:cron": "ts-node-dev --respawn src/index.ts",
     "build": "tsc -p tsconfig.json",
     "check-types": "tsc --noemit",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist && rimraf node_modules"
   },
   "dependencies": {
     "@foodbudget/api": "^5.3.1",
@@ -25,14 +25,14 @@
     "dotenv": "^8.2.0",
     "find-config": "^1.0.0",
     "node-cron": "^2.0.3",
-    "puppeteer": "^5.3.0",
-    "rimraf": "^3.0.2"
+    "puppeteer": "^5.3.0"
   },
   "devDependencies": {
     "@types/find-config": "^1.0.0",
     "@types/node-cron": "^2.0.3",
     "@types/puppeteer": "^3.0.2",
     "jest-mock-extended": "^1.0.10",
+    "rimraf": "^3.0.2",
     "ts-node-dev": "^1.0.0-pre.62"
   }
 }

@@ -6,9 +6,9 @@
   "author": "Jack Tan <jacktan165@gmail.com>",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "packages/**/*"
-  ],
+  "workspaces": {
+    "packages": ["packages/**/*"]
+  },
   "devDependencies": {
     "@commitlint/config-conventional": "^9.1.2",
     "@types/jest": "^26.0.14",
@@ -24,6 +24,7 @@
     "lerna": "^3.22.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
+    "rimraf": "^3.0.2",
     "standard-version": "^9.0.0",
     "ts-jest": "^26.4.1",
     "typescript": "^4.0.2"
@@ -62,10 +63,12 @@
     "lint:check-types": "lerna run check-types --stream --parallel",
     "lint:ts": "eslint '**/*.ts' --fix",
     "lint": "run-p -c 'lint:*'",
-    "setup:server": "lerna run build --ignore=@foodbudget/ui --stream",
+    "setup:server": "yarn generate && lerna run build --ignore=@foodbudget/ui --stream",
     "setup:ui": "yarn build:ui",
     "setup": "run-p 'setup:*'",
-    "clean": "lerna run clean --stream --parallel",
+    "clean:modules": "lerna run clean --stream --parallel",
+    "clean:root": "rimraf node_modules",
+    "clean": "run-p 'clean:*", 
     "release": "lerna publish --no-commit-hooks --yes"
   },
   "commitlint": {
