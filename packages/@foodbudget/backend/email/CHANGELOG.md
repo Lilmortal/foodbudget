@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.3.4](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/email@4.3.3...@foodbudget/email@4.3.4) (2020-11-23)
+
+**Note:** Version bump only for package @foodbudget/email
+
+
+
+
+
 ## [4.3.3](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/email@4.3.2...@foodbudget/email@4.3.3) (2020-11-06)
 
 **Note:** Version bump only for package @foodbudget/email

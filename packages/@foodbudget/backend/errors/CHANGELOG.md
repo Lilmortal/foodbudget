@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.1.4](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/errors@4.1.3...@foodbudget/errors@4.1.4) (2020-11-23)
+
+**Note:** Version bump only for package @foodbudget/errors
+
+
+
+
+
 ## [4.1.3](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/errors@4.1.2...@foodbudget/errors@4.1.3) (2020-11-06)
 
 **Note:** Version bump only for package @foodbudget/errors
