@@ -20,11 +20,12 @@
   "devDependencies": {
     "@types/find-config": "^1.0.0",
     "@types/nodemailer": "^6.4.0",
+    "rimraf": "^3.0.2",
     "ts-node-dev": "^1.0.0-pre.62"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "check-types": "tsc --noemit",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist && rimraf node_modules"
   }
 }

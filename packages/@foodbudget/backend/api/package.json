@@ -20,10 +20,9 @@
     "migrate:save": "prisma migrate save --experimental",
     "migrate:up": "prisma migrate up --experimental",
     "check-types": "tsc --noemit",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist && rimraf node_modules"
   },
   "dependencies": {
-    "@foodbudget/email": "^4.3.3",
     "@foodbudget/errors": "^4.1.3",
     "@foodbudget/logger": "^3.1.2",
     "@nexus/schema": "^0.16.0",

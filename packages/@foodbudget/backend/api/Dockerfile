@@ -22,12 +22,13 @@ COPY --from=BUILD_IMAGE /src/app/packages/@foodbudget/backend/api/ /src/app/
 COPY --from=BUILD_IMAGE /src/app/.env /src/app/.env
 RUN yarn --production
 
-# TODO: At the moment, it is picking up @foodbudget from npm repository instead of locally.
-# RUN ls ./node_modules/@foodbudget/logger/
+COPY --from=BUILD_IMAGE /src/app/packages/@foodbudget/backend/logger/node_modules/ /src/app/node_modules/@foodbudget/logger/node_modules/
+COPY --from=BUILD_IMAGE /src/app/packages/@foodbudget/backend/logger/dist/ /src/app/node_modules/@foodbudget/logger/dist/
+COPY --from=BUILD_IMAGE /src/app/packages/@foodbudget/backend/logger/package.json /src/app/node_modules/@foodbudget/logger/package.json
 
-# COPY --from=BUILD_DIST /src/app/node_modules/@foodbudget/ /src/app/node_modules/@foodbudget/
-
-# RUN ls ./node_modules/@foodbudget/logger/
+COPY --from=BUILD_IMAGE /src/app/packages/@foodbudget/backend/errors/node_modules/ /src/app/node_modules/@foodbudget/errors/node_modules/
+COPY --from=BUILD_IMAGE /src/app/packages/@foodbudget/backend/errors/dist/ /src/app/node_modules/@foodbudget/errors/dist/
+COPY --from=BUILD_IMAGE /src/app/packages/@foodbudget/backend/errors/package.json /src/app/node_modules/@foodbudget/errors/package.json
 
 FROM node:14.10.1-alpine
 
