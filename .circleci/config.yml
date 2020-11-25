@@ -23,10 +23,8 @@ jobs:
             - node_modules
             - packages/@foodbudget/backend/api/node_modules
             - packages/@foodbudget/backend/email/node_modules
-            # - packages/@foodbudget/errors/node_modules
             - packages/@foodbudget/backend/jobs/node_modules
             - packages/@foodbudget/frontend/node_modules
-            # - packages/@foodbudget/logger/node_modules
           key: v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
   lint:
     docker:
@@ -132,6 +130,27 @@ jobs:
       - run: yarn setup
       - run: yarn release
       - run: git push --follow-tags origin master
+  aws-job-deploy:
+    docker:
+      - image: circleci/node:14.11.0
+        user: root
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - swissknife/trigger_pipeline_if_modified:
+          pattern: ^(packages/@foodbudget/backend/jobs).*
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-secret-access-key: AWS_SECRET_KEY
+          aws-region: AWS_REGION
+          skip-install-check: true
+      - run: chmod 755 ./packages/@foodbudget/deploy/scripts/create_env_file.sh
+      - run: ./packages/@foodbudget/deploy/scripts/create_env_file.sh
+      - run: docker-compose build foodbudget-jobs
+      - run: aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com
+      - run: docker tag foodbudget-jobs:latest 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-jobs:latest
+      - run: docker push 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-jobs:latest
   aws-api-deploy:
     docker:
       - image: circleci/node:14.11.0

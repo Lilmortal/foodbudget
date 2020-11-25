@@ -7,7 +7,15 @@ export default function setupHeadlessBrowser<E extends ScrapedElements, S>(
 ): { scrape: (scrapedElements: E[]) => Promise<S[]> } {
   return {
     scrape: async (scrapedElements: E[]): Promise<S[]> => {
-      const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+      const browser = await puppeteer.launch({
+        headless: true,
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--headless',
+          '--disable-dev-shm-usage',
+        ],
+      });
 
       try {
         const page = await browser.newPage();
@@ -15,7 +23,9 @@ export default function setupHeadlessBrowser<E extends ScrapedElements, S>(
         const getScrapedResults = async (scrapedPageInfo: E): Promise<S[]> => {
           await page.goto(scrapedPageInfo.url);
 
-          const scrapedResults = await onScrape(page)(JSON.stringify(scrapedPageInfo));
+          const scrapedResults = await onScrape(page)(
+            JSON.stringify(scrapedPageInfo),
+          );
 
           return scrapedResults;
         };
@@ -24,7 +34,9 @@ export default function setupHeadlessBrowser<E extends ScrapedElements, S>(
         page.on('console', (msg) => logger.info(msg.text()));
 
         const scrapedResults = await Promise.all(
-          scrapedElements.map(async (scrapedElement) => getScrapedResults(scrapedElement)),
+          scrapedElements.map(async (scrapedElement) =>
+            getScrapedResults(scrapedElement),
+          ),
         );
 
         return scrapedResults.flat();
