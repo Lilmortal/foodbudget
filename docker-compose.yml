@@ -1,6 +1,6 @@
-version: "3.8"
+version: '3.8'
 services:
-  db:
+  foodbudget-db:
     container_name: foodbudget-db
     image: postgres:12.4
     restart: always
@@ -24,3 +24,12 @@ services:
     build:
       context: .
       dockerfile: ./packages/@foodbudget/backend/api/Dockerfile
+
+  foodbudget-jobs:
+    image: foodbudget-jobs:latest
+    container_name: foodbudget-jobs
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./packages/@foodbudget/backend/jobs/Dockerfile

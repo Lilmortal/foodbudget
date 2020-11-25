@@ -14,10 +14,6 @@ if (!process.env.CI) {
 const validate = (config: Config) => {
   const errors = [];
 
-  if (!config.cron.url) {
-    errors.push('CRON_URL is missing.');
-  }
-
   if (!config.email.sender) {
     errors.push('EMAIL_SENDER is missing.');
   }
@@ -44,9 +40,6 @@ const validate = (config: Config) => {
 };
 
 export const config: Config = {
-  cron: {
-    url: process.env.CRON_URL || '',
-  },
   scrapedRecipeElements: [...scrapedRecipeElements],
   headlessBrowser: {
     retries: 3,
