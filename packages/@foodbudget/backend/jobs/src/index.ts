@@ -7,10 +7,10 @@ import { JobRecipesScraper } from './jobs';
 import { recipesScraper } from './scraper/recipes';
 
 (async () => {
-  const mailer = await createEmailer();
+  // const mailer = await createEmailer();
   const recipesJob = new JobRecipesScraper({
     serviceManager,
-    emailer: mailer,
+    // emailer: mailer,
     recipeScrapers: [recipesScraper],
   });
 

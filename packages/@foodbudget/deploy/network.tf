@@ -5,7 +5,6 @@ resource "aws_vpc" "foodbudget_vpc" {
   }
 }
 
-// Internet gateway is to allow to send traffic out to the internet
 resource "aws_internet_gateway" "foodbudget_igw" {
   vpc_id = aws_vpc.foodbudget_vpc.id
   tags = {

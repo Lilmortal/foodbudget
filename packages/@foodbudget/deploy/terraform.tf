@@ -1,6 +1,7 @@
 terraform {
   required_version = "~> 0.12"
-  # Setup backend for terraform, do not change it if you do know what it is.
+  # Set terraform state, do not change it if you do not know what it is.
+  # Prevents state conflicts.
   backend "s3" {
     bucket         = "foodbudget-terraform-remote-state-storage-s3bucket"
     dynamodb_table = "foodbudget-terraform-state-lock-dynamo"
