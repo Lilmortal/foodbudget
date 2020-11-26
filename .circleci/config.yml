@@ -178,6 +178,7 @@ jobs:
       - image: hashicorp/terraform:light
     steps:
       - checkout
+      - run: (cd packages/@foodbudget/deploy && terraform init)
       - run: (cd packages/@foodbudget/deploy && terraform taint aws_instance.backend_ec2)
       - run: (cd packages/@foodbudget/deploy && terraform apply -auto-approve)
 commands:
