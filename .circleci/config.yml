@@ -280,7 +280,7 @@ workflows:
             - lint
             - backend_unit_test
             - backend_integration_test
-      - rerun-ec2:
+      - rerun_ec2:
           filters:
             branches:
               only: master
@@ -316,7 +316,7 @@ workflows:
             - lint
             - backend_unit_test
             - backend_integration_test
-      - rerun-ec2:
+      - rerun_ec2:
           filters:
             branches:
               only: master
