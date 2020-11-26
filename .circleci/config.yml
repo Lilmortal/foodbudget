@@ -39,7 +39,7 @@ jobs:
             - v1-dependencies
       - add_ssh_keys:
           fingerprints:
-            - '27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b'
+            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: yarn setup
       - run: yarn lint
   frontEndUnitTest:
@@ -55,7 +55,7 @@ jobs:
             - v1-dependencies
       - add_ssh_keys:
           fingerprints:
-            - '27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b'
+            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: yarn setup:ui
       - run: yarn ci:ui-test
   backEndUnitTest:
@@ -71,7 +71,7 @@ jobs:
             - v1-dependencies
       - add_ssh_keys:
           fingerprints:
-            - '27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b'
+            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: yarn setup:server
       - run: yarn ci:server-test
   backEndIntegrationTest:
@@ -95,7 +95,7 @@ jobs:
             - v1-dependencies
       - add_ssh_keys:
           fingerprints:
-            - '27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b'
+            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: yarn setup:server
       - run:
           name: Waiting for Postgres to be ready
@@ -121,7 +121,7 @@ jobs:
             - v1-dependencies
       - add_ssh_keys:
           fingerprints:
-            - '27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b'
+            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
       - run: git config --global user.email "thefoodbudget@gmail.com"
       - run: git config --global user.name "Food Budget"
       - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
@@ -130,7 +130,7 @@ jobs:
       - run: yarn setup
       - run: yarn release
       - run: git push --follow-tags origin master
-  aws-job-deploy:
+  jobs-deploy:
     docker:
       - image: circleci/node:14.11.0
         user: root
@@ -151,8 +151,9 @@ jobs:
       - run: aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com
       - run: docker tag foodbudget-jobs:latest 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-jobs:latest
       - run: docker push 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-jobs:latest
-  aws-api-deploy:
+  api-deploy:
     docker:
+      # TODO: Don't need node
       - image: circleci/node:14.11.0
         user: root
     steps:
@@ -172,15 +173,16 @@ jobs:
       - run: aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com
       - run: docker tag foodbudget-api:latest 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-api:latest
       - run: docker push 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-api:latest
-      # - aws-ecs/update-service:
-      #     family: "${ECS_SERVICE_NAME}"
-      #     cluster-name: "${ECS_CLUSTER_NAME}"
-      #     container-image-name-updates: "container=${ECS_SERVICE_NAME},image-and-tag=${FULL_IMAGE_NAME}"
-      #     container-env-var-updates: "container=${ECS_SERVICE_NAME},name=VERSION_INFO,value=${CIRCLE_SHA1}_${CIRCLE_BUILD_NUM},container=${ECS_SERVICE_NAME},name=BUILD_DATE,value=\"$(date)\""
-      #     verify-revision-is-deployed: true
+  rerun-ec2:
+    docker:
+      - image: hashicorp/terraform:light
+    steps:
+      - checkout
+      - run: (cd packages/@foodbudget/deploy && terraform taint aws_instance.backend_ec2)
+      - run: (cd packages/@foodbudget/deploy && terraform apply -auto-approve)
 commands:
   create_concatenated_yarn_lock:
-    description: 'Concatenate all yarn.lock files recognized by lerna.js into single file. File is used as checksum source for part of caching key.'
+    description: "Concatenate all yarn.lock files recognized by lerna.js into single file. File is used as checksum source for part of caching key."
     parameters:
       filename:
         type: string
@@ -216,7 +218,7 @@ workflows:
             - frontEndUnitTest
             - backEndUnitTest
             - backEndIntegrationTest
-      - aws-api-deploy:
+      - api-deploy:
           filters:
             branches:
               only: master
@@ -225,7 +227,7 @@ workflows:
             - frontEndUnitTest
             - backEndUnitTest
             - backEndIntegrationTest
-      - aws-job-deploy:
+      - jobs-deploy:
           filters:
             branches:
               only: master
@@ -234,3 +236,10 @@ workflows:
             - frontEndUnitTest
             - backEndUnitTest
             - backEndIntegrationTest
+      - rerun-ec2:
+          filters:
+            branches:
+              only: master
+          requires:
+            - api-deploy
+            - jobs-deploy

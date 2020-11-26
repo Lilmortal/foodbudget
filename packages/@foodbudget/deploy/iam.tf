@@ -40,7 +40,10 @@ resource "aws_iam_role_policy" "backend_ec2_policy" {
         "ecr:BatchGetImage"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:ecr:ap-southeast-2:197204282783:repository/foodbudget-repository"
+      "Resource": [
+        "arn:aws:ecr:ap-southeast-2:197204282783:repository/foodbudget-api",
+        "arn:aws:ecr:ap-southeast-2:197204282783:repository/foodbudget-jobs"
+      ]
     }
   ]
 }

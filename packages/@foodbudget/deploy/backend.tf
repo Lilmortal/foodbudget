@@ -17,8 +17,6 @@ resource "aws_instance" "backend_ec2" {
   }
 }
 
-// Attach an EIP to the API instance, this allows the internet to access
-// its public IPv4 address
 resource "aws_eip" "api_eip" {
   instance = aws_instance.backend_ec2.id
   vpc      = true
