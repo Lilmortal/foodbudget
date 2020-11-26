@@ -1,4 +1,4 @@
-# resource "aws_db_instance" "api" {
+# resource "aws_db_instance" "backend_db_instance" {
 #   allocated_storage    = 20
 #   storage_type         = "gp2"
 #   engine               = "postgres"

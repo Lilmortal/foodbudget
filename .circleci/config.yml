@@ -6,7 +6,7 @@ orbs:
   swissknife: roopakv/swissknife@0.54.0
 
 jobs:
-  build:
+  build_node_modules:
     docker:
       - image: circleci/node:14.11.0
     steps:
@@ -17,7 +17,7 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
             - v1-dependencies
-      - run: yarn
+      - run: yarn --frozen-lockfile
       - save_cache:
           paths:
             - node_modules
@@ -26,6 +26,52 @@ jobs:
             - packages/@foodbudget/backend/jobs/node_modules
             - packages/@foodbudget/frontend/node_modules
           key: v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+      - swissknife/trigger-workflows-for-all-modified:
+          base-branch: master
+          run-mode-for-base-branch: run_for_last_commit
+          code-param-name-map: '
+            [
+            {"regex": "^(packages/@foodbudget/backend/api).*", "param_name": "api_workflow"},
+            {"regex": "^(packages/@foodbudget/backend/jobs).*", "param_name": "jobs_workflow"},
+            {"regex": "^(packages/@foodbudget/frontend).*", "param_name": "frontend_workflow"}
+            ]'
+          additional-param-map: '{"build_workflow": false}'
+  setup_backend:
+    docker:
+      - image: circleci/node:14.11.0
+    steps:
+      - checkout
+      - create_concatenated_yarn_lock:
+          filename: combined-yarn-lock.txt
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v1-dependencies
+      - run: yarn setup:server
+      - save_cache:
+          paths:
+            - node_modules/.prisma
+            - packages/@foodbudget/backend/api/dist
+            - packages/@foodbudget/backend/email/dist
+            - packages/@foodbudget/backend/jobs/dist
+            - packages/@foodbudget/backend/logger/dist
+          key: backend-setup-cache
+  setup_frontend:
+    docker:
+      - image: circleci/node:14.11.0
+    steps:
+      - checkout
+      - create_concatenated_yarn_lock:
+          filename: combined-yarn-lock.txt
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v1-dependencies
+      - run: yarn setup:ui
+      - save_cache:
+          paths:
+            - packages/@foodbudget/frontend/src/__generated__
+          key: frontend-setup-cache
   lint:
     docker:
       - image: circleci/node:14.11.0
@@ -39,10 +85,9 @@ jobs:
             - v1-dependencies
       - add_ssh_keys:
           fingerprints:
-            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      - run: yarn setup
+            - '27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b'
       - run: yarn lint
-  frontEndUnitTest:
+  frontend_unit_test:
     docker:
       - image: circleci/node:14.11.0-browsers
     steps:
@@ -53,12 +98,14 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
             - v1-dependencies
+      - restore_cache:
+          keys:
+            - frontend-setup-cache
       - add_ssh_keys:
           fingerprints:
-            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      - run: yarn setup:ui
+            - '27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b'
       - run: yarn ci:ui-test
-  backEndUnitTest:
+  backend_unit_test:
     docker:
       - image: circleci/node:14.11.0
     steps:
@@ -69,12 +116,14 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
             - v1-dependencies
+      - restore_cache:
+          keys:
+            - backend-setup-cache
       - add_ssh_keys:
           fingerprints:
-            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      - run: yarn setup:server
+            - '27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b'
       - run: yarn ci:server-test
-  backEndIntegrationTest:
+  backend_integration_test:
     docker:
       - image: circleci/node:14.11.0-browsers
       - image: circleci/postgres:10.6-alpine
@@ -93,10 +142,12 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
             - v1-dependencies
+      - restore_cache:
+          keys:
+            - backend-setup-cache
       - add_ssh_keys:
           fingerprints:
-            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
-      - run: yarn setup:server
+            - '27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b'
       - run:
           name: Waiting for Postgres to be ready
           command: |
@@ -121,16 +172,15 @@ jobs:
             - v1-dependencies
       - add_ssh_keys:
           fingerprints:
-            - "27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b"
+            - '27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b'
       - run: git config --global user.email "thefoodbudget@gmail.com"
       - run: git config --global user.name "Food Budget"
       - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
       - run: npm get registry
       - run: npm whoami
-      - run: yarn setup
       - run: yarn release
       - run: git push --follow-tags origin master
-  jobs-deploy:
+  jobs_deploy:
     docker:
       - image: circleci/node:14.11.0
         user: root
@@ -151,7 +201,7 @@ jobs:
       - run: aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com
       - run: docker tag foodbudget-jobs:latest 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-jobs:latest
       - run: docker push 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-jobs:latest
-  api-deploy:
+  api_deploy:
     docker:
       # TODO: Don't need node
       - image: circleci/node:14.11.0
@@ -173,7 +223,7 @@ jobs:
       - run: aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com
       - run: docker tag foodbudget-api:latest 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-api:latest
       - run: docker push 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-api:latest
-  rerun-ec2:
+  rerun_ec2:
     docker:
       - image: hashicorp/terraform:light
     steps:
@@ -181,9 +231,10 @@ jobs:
       - run: (cd packages/@foodbudget/deploy && terraform init)
       - run: (cd packages/@foodbudget/deploy && terraform taint aws_instance.backend_ec2)
       - run: (cd packages/@foodbudget/deploy && terraform apply -auto-approve)
+
 commands:
   create_concatenated_yarn_lock:
-    description: "Concatenate all yarn.lock files recognized by lerna.js into single file. File is used as checksum source for part of caching key."
+    description: 'Concatenate all yarn.lock files recognized by lerna.js into single file. File is used as checksum source for part of caching key.'
     parameters:
       filename:
         type: string
@@ -193,50 +244,42 @@ commands:
           # TODO: Fix this
           # command: npx lerna la -a | awk -F packages '{printf "\"packages%s/yarn.lock\" ", $2}' | xargs ls -d 2> /dev/null | xargs cat > << parameters.filename >>
           command: echo packages/@foodbudget/backend/api/yarn.lock | xargs cat > << parameters.filename >>
+
 workflows:
   version: 2
-  verify:
+  build_workflow:
+    when: << pipeline.parameters.build_workflow >>
     jobs:
-      - build
+      - build_node_modules
+  api_workflow:
+    when: << pipeline.parameters.api_workflow >>
+    jobs:
+      - setup_backend
       - lint:
           requires:
-            - build
-      - frontEndUnitTest:
+            - setup_backend
+      - backend_unit_test:
           requires:
-            - build
-      - backEndUnitTest:
+            - setup_backend
+      - backend_integration_test:
           requires:
-            - build
-      - backEndIntegrationTest:
-          requires:
-            - build
+            - setup_backend
       - release:
           filters:
             branches:
               only: master
           requires:
             - lint
-            - frontEndUnitTest
-            - backEndUnitTest
-            - backEndIntegrationTest
-      - api-deploy:
+            - backend_unit_test
+            - backend_integration_test
+      - api_deploy:
           filters:
             branches:
               only: master
           requires:
             - lint
-            - frontEndUnitTest
-            - backEndUnitTest
-            - backEndIntegrationTest
-      - jobs-deploy:
-          filters:
-            branches:
-              only: master
-          requires:
-            - lint
-            - frontEndUnitTest
-            - backEndUnitTest
-            - backEndIntegrationTest
+            - backend_unit_test
+            - backend_integration_test
       - rerun-ec2:
           filters:
             branches:
@@ -244,3 +287,71 @@ workflows:
           requires:
             - api-deploy
             - jobs-deploy
+  jobs_workflow:
+    when: << pipeline.parameters.jobs_workflow >>
+    jobs:
+      - setup_backend
+      - lint:
+          requires:
+            - setup_backend
+      - backend_unit_test:
+          requires:
+            - setup_backend
+      - backend_integration_test:
+          requires:
+            - setup_backend
+      - release:
+          filters:
+            branches:
+              only: master
+          requires:
+            - lint
+            - backend_unit_test
+            - backend_integration_test
+      - jobs_deploy:
+          filters:
+            branches:
+              only: master
+          requires:
+            - lint
+            - backend_unit_test
+            - backend_integration_test
+      - rerun-ec2:
+          filters:
+            branches:
+              only: master
+          requires:
+            - api-deploy
+            - jobs-deploy
+  frontend_workflow:
+    when: << pipeline.parameters.frontend_workflow >>
+    jobs:
+      - setup_frontend
+      - lint:
+          requires:
+            - setup_frontend
+      - frontend_unit_test:
+          requires:
+            - setup_frontend
+      - release:
+          filters:
+            branches:
+              only: master
+          requires:
+            - lint
+            - frontend_unit_test
+
+#TODO: workflow for discord bots, and shared folders
+parameters:
+  build_workflow:
+    default: true
+    type: boolean
+  api_workflow:
+    default: false
+    type: boolean
+  jobs_workflow:
+    default: false
+    type: boolean
+  frontend_workflow:
+    default: false
+    type: boolean

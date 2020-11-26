@@ -68,7 +68,7 @@
     "setup": "run-p 'setup:*'",
     "clean:modules": "lerna run clean --stream --parallel",
     "clean:root": "rimraf node_modules",
-    "clean": "run-p 'clean:*", 
+    "clean": "run-p 'clean:*'", 
     "release": "lerna publish --no-commit-hooks --yes"
   },
   "commitlint": {
