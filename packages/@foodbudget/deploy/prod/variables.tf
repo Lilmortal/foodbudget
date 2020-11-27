@@ -23,6 +23,16 @@ variable "public_subnet_cidr_block" {
   default = "10.10.0.0/24"
 }
 
+variable "private_subnet_A_cidr_block" {
+  type = string
+  default = "10.10.0.0/18"
+}
+
+variable "private_subnet_B_cidr_block" {
+  type = string
+  default = "10.10.0.0/16"
+}
+
 variable "cidr_block_allow_all_ipv4" {
   type = string
   default = "0.0.0.0/0"

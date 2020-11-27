@@ -16,3 +16,4 @@ __generated__
 *.tfstate.backup
 .idea
 .idea/**
+dbCreds.yml
