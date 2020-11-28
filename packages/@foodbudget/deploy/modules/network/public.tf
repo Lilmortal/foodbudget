@@ -1,25 +1,25 @@
 resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.foodbudget_vpc.id
+  vpc_id = aws_vpc.vpc.id
 
   route {
     cidr_block = var.cidr_block_allow_all_ipv4
-    gateway_id = aws_internet_gateway.foodbudget_igw.id
+    gateway_id = aws_internet_gateway.igw.id
   }
 
   route {
     ipv6_cidr_block = var.cidr_block_allow_all_ipv6
-    gateway_id      = aws_internet_gateway.foodbudget_igw.id
+    gateway_id      = aws_internet_gateway.igw.id
   }
 
   tags = {
-    Name = format("%s-public-rt", var.project)
+    Name = format("%s-public-rt", var.project_name)
   }
 }
 
 resource "aws_subnet" "public" {
-  vpc_id            = aws_vpc.foodbudget_vpc.id
+  vpc_id            = aws_vpc.vpc.id
   cidr_block        = var.public_subnet_cidr_block
-  availability_zone = var.availability_zone_a
+  availability_zone = var.subnet_a_availability_zone
 
   tags = {
     Name = "PublicSubnetA"
@@ -32,11 +32,12 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_security_group" "public" {
-  name   = format("%s-ec2-sg", var.project)
-  vpc_id = aws_vpc.foodbudget_vpc.id
+  name   = format("%s-ec2-sg", var.project_name)
+  vpc_id = aws_vpc.vpc.id
 
   ingress {
-    description = "Default foodbudget API port 8080"
+    # TODO: Put this as an input variable
+    description = "Default API port 8080"
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
@@ -66,6 +67,6 @@ resource "aws_security_group" "public" {
   }
 
   tags = {
-    Name = format("%s-ec2-sg", var.project)
+    Name = format("%s-ec2-sg", var.project_name)
   }
 }
