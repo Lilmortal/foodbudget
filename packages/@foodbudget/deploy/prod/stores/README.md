@@ -1,0 +1,1 @@
+alias tf='AWS_SDK_LOAD_CONFIG=true terraform'
