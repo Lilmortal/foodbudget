@@ -221,8 +221,8 @@ jobs:
       - run: ./packages/@foodbudget/deploy/scripts/create_env_file.sh
       - run: docker-compose build foodbudget-api
       - run: aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com
-      - run: docker tag foodbudget-api:latest 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-api:latest
-      - run: docker push 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-api:latest
+      - run: docker tag foodbudget-api:latest 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-prod-api:latest
+      - run: docker push 197204282783.dkr.ecr.ap-southeast-2.amazonaws.com/foodbudget-prod-api:latest
   rerun_ec2:
     docker:
       - image: hashicorp/terraform:light
