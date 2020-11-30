@@ -33,3 +33,11 @@ services:
     build:
       context: .
       dockerfile: ./packages/@foodbudget/backend/jobs/Dockerfile
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: pwdpwd
+    ports:
+      - "5050:80"

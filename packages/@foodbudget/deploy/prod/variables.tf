@@ -1,6 +1,6 @@
 variable "project_name" {
   type = string
-  default = "foodbudget"
+  default = "foodbudget-prod"
 }
 
 variable "aws_region" {

@@ -12,8 +12,7 @@ tsconfig.tsbuildinfo
 .next
 coverage
 __generated__
-*.tfstate
-*.tfstate.backup
 .idea
 .idea/**
 dbCreds.yml
+crash.log

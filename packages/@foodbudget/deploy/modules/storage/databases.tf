@@ -1,21 +1,24 @@
-# resource "aws_db_instance" "backend_db_instance" {
-#   allocated_storage      = 20
-#   storage_type           = "gp2"
-#   engine                 = "postgres"
-#   engine_version         = "10.6"
-#   instance_class         = "db.t2.micro"
-#   name                   = "foodbudget"
-#   username               = "user"
-#   password               = "passpass"
-#   vpc_security_group_ids = [aws_security_group.private.id]
-#   db_subnet_group_name   = aws_db_subnet_group.backend_db_subnet_group.name
-# }
+resource "aws_db_instance" "db_instance" {
+  allocated_storage      = 20
+  storage_type           = "gp2"
+  engine                 = "postgres"
+  engine_version         = "10.6"
+  instance_class         = "db.t2.micro"
+  name                   = "foodbudget"
+  # TODO: Put this inside KMS
+  username               = "useruser"
+  password               = "passpass"
+  # TODO: Change to false once we figured out how to connect to this...
+  skip_final_snapshot = true
+  vpc_security_group_ids = var.vpc_security_group_ids
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
+}
 
-# resource "aws_db_subnet_group" "backend_db_subnet_group" {
-#   name       = "backend_db_subnet_group"
-#   subnet_ids = [aws_subnet.private_a.id, aws_subnet.private_b.id]
+resource "aws_db_subnet_group" "db_subnet_group" {
+  name       = "db_subnet_group"
+  subnet_ids = var.subnet_ids
 
-#   tags = {
-#     Name = "DB subnet group"
-#   }
-# }
+  tags = {
+    Name = format("%s-db-subnet-group", var.project_name)
+  }
+}
