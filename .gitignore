@@ -6,8 +6,6 @@ dist
 yarn-error.log
 .vscode
 tsconfig.tsbuildinfo
-# TODO: For now
-*.tfvars
 .terraform
 .next
 coverage
@@ -16,3 +14,4 @@ __generated__
 .idea/**
 dbCreds.yml
 crash.log
+out

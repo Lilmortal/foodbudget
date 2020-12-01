@@ -17,3 +17,9 @@ module "network" {
   source = "../modules/network"
   project_name = var.project_name
 }
+
+module "website" {
+  source = "../modules/website"
+  project_name = var.project_name
+  bucket_name = "foodbudget.co.nz"
+}
