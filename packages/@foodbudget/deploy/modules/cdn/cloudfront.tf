@@ -3,8 +3,8 @@ resource "aws_cloudfront_origin_access_identity" "website_origin_access_identity
 
 resource "aws_cloudfront_distribution" "website_distribution" {
   origin {
-    domain_name = aws_s3_bucket.website.bucket_regional_domain_name
-    origin_id   = local.s3_origin_id
+    domain_name = var.domain_name
+    origin_id   = var.s3_origin_id
 
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.website_origin_access_identity.cloudfront_access_identity_path
@@ -17,7 +17,7 @@ resource "aws_cloudfront_distribution" "website_distribution" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = local.s3_origin_id
+    target_origin_id = var.s3_origin_id
     compress = true
 
     forwarded_values {

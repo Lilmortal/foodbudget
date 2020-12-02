@@ -10,7 +10,7 @@ resource "aws_instance" "ec2" {
   subnet_id              = var.subnet_id
   vpc_security_group_ids = var.vpc_security_group_ids
   key_name               = format("%s-key", var.project_name)
-  user_data              = data.local_file.user_data.content
+  user_data              = var.user_data
   iam_instance_profile   = aws_iam_instance_profile.ec2_instance_profile.name
   tags = {
     Name = format("%s-backend-ec2", var.project_name)

@@ -2,10 +2,16 @@ variable "project_name" {
   type = string
 }
 
-variable "vpc_security_group_ids" {
-  type = list(string)
+variable "bucket_name" {
+  type = string
 }
 
-variable "subnet_ids" {
+variable "cloudfront_origin_access_identity_iam_arn" {
   type = list(string)
+  default = []
+}
+
+variable "is_website" {
+  type = bool
+  default = false
 }
