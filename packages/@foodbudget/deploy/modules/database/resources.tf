@@ -5,9 +5,8 @@ resource "aws_db_instance" "db_instance" {
   engine_version         = "10.6"
   instance_class         = "db.t2.micro"
   name                   = "foodbudget"
-  # TODO: Put this inside KMS
-  username               = "useruser"
-  password               = "passpass"
+  username               = var.username
+  password               = var.password
   # TODO: Change to false once we figured out how to connect to this...
   skip_final_snapshot = true
   vpc_security_group_ids = var.vpc_security_group_ids

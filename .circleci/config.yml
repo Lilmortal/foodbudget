@@ -228,9 +228,9 @@ jobs:
       - image: hashicorp/terraform:light
     steps:
       - checkout
-      - run: (cd packages/@foodbudget/deploy && terraform init)
-      - run: (cd packages/@foodbudget/deploy && terraform taint "module.instance.aws_instance.ec2")
-      - run: (cd packages/@foodbudget/deploy && terraform apply -auto-approve)
+      - run: (cd packages/@foodbudget/deploy/prod && terraform init)
+      - run: (cd packages/@foodbudget/deploy/prod && terraform taint "module.instance.aws_instance.ec2")
+      - run: (cd packages/@foodbudget/deploy/prod && terraform apply -auto-approve -var-file=secrets.tfvars)
 
 commands:
   create_concatenated_yarn_lock:

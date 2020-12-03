@@ -9,3 +9,11 @@ variable "vpc_security_group_ids" {
 variable "subnet_ids" {
   type = list(string)
 }
+
+variable "username" {
+  type = string
+}
+
+variable "password" {
+  type = string
+}
