@@ -13,12 +13,13 @@ resource "aws_cloudfront_distribution" "website_distribution" {
 
   enabled             = true
   is_ipv6_enabled     = true
+  default_root_object = var.index_document
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = var.s3_origin_id
-    compress = true
+    compress         = true
 
     forwarded_values {
       query_string = false

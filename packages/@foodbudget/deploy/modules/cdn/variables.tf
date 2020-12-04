@@ -9,3 +9,7 @@ variable "s3_origin_id" {
 variable "domain_name" {
   type = string
 }
+
+variable "index_document" {
+  type = string
+}

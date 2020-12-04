@@ -33,10 +33,11 @@ module "network" {
 }
 
 module "cdn" {
-  source       = "../modules/cdn"
-  project_name = var.project_name
-  s3_origin_id = var.project_name
-  domain_name  = module.website.bucket.bucket_regional_domain_name
+  source         = "../modules/cdn"
+  project_name   = var.project_name
+  s3_origin_id   = var.project_name
+  domain_name    = module.website.bucket.bucket_regional_domain_name
+  index_document = var.index_document
 }
 
 module "website" {
@@ -45,6 +46,8 @@ module "website" {
   bucket_name                               = "foodbudget.co.nz"
   is_website                                = true
   cloudfront_origin_access_identity_iam_arn = [module.cdn.website_origin_access_identity.iam_arn]
+  index_document                            = var.index_document
+  error_document                            = var.error_document
 }
 
 # TODO: Maybe put this in module? Get this working for now...

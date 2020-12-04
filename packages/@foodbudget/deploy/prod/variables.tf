@@ -20,3 +20,13 @@ variable "username" {
 variable "password" {
   type = string
 }
+
+variable "index_document" {
+  type    = string
+  default = "index.html"
+}
+
+variable "error_document" {
+  type    = string
+  default = "404.html"
+}

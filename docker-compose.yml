@@ -15,8 +15,8 @@ services:
       - 5432:5432
 
   foodbudget-api:
-    image: foodbudget-api:latest
-    container_name: foodbudget-api
+    image: foodbudget-prod-api:latest
+    container_name: foodbudget-prod-api
     env_file:
       - .env
     ports:

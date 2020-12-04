@@ -24,9 +24,9 @@ resource "aws_security_group" "db" {
 
   ingress {
     # TODO: Put this as an input variable
-    description = "Default API port 8080"
-    from_port   = 8080
-    to_port     = 8080
+    description = "Default API port 5432"
+    from_port   = 5432
+    to_port     = 5432
     protocol    = "tcp"
     cidr_blocks = [
       var.cidr_block_allow_all_ipv4

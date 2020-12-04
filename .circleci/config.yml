@@ -229,7 +229,7 @@ jobs:
     steps:
       - checkout
       - run: (cd packages/@foodbudget/deploy/prod && terraform init)
-      - run: (cd packages/@foodbudget/deploy/prod && terraform taint "module.instance.aws_instance.ec2")
+      - run: (cd packages/@foodbudget/deploy/prod && terraform taint "module.api.aws_instance.ec2")
       - run: (cd packages/@foodbudget/deploy/prod && terraform apply -auto-approve -var-file=secrets.tfvars)
 
 commands:
