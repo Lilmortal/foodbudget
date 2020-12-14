@@ -22,6 +22,7 @@
   "dependencies": {
     "@apollo/client": "^3.2.5",
     "autoprefixer": "^10.0.1",
+    "classnames": "^2.2.6",
     "find-config": "^1.0.0",
     "graphql": "^15.4.0",
     "next": "^10.0.0"
@@ -38,6 +39,7 @@
     "@testing-library/jest-dom": "^5.11.5",
     "@testing-library/react": "^11.1.0",
     "@testing-library/react-hooks": "^3.4.2",
+    "@types/classnames": "^2.2.11",
     "@types/testing-library__react": "^10.2.0",
     "@types/testing-library__react-hooks": "^3.4.1",
     "babel-jest": "^26.6.1",
@@ -46,7 +48,7 @@
     "css-loader": "^5.0.0",
     "postcss-loader": "^4.0.4",
     "rimraf": "^3.0.2",
-    "sass": "^1.28.0",
+    "sass": "^1.30.0",
     "sass-loader": "^10.0.4",
     "style-loader": "^2.0.0",
     "stylelint": "^13.7.2",
