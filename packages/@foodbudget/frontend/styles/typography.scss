@@ -1,0 +1,82 @@
+@use './mixins/breakpoints';
+
+$xxs-font: 14px;
+$xs-font: 18px;
+$sm-font: 20px;
+$md-font: 34px;
+$lg-font: 50px;
+$xl-font: 65px;
+
+$mob-xxs-font: 14px;
+$mob-xs-font: 16px;
+$mob-sm-font: 20px;
+$mob-md-font: 30px;
+$mob-lg-font: 34px;
+$mob-xl-font: 45px;
+
+$xl-weight: 600;
+$lg-weight: 550;
+$md-weight: 500;
+$sm-weight: 450;
+$xs-weight: 400;
+$xxs-weight: 300;
+
+h1 {
+  font-size: $xl-font;
+  font-weight: $lg-weight;
+
+  @include breakpoints.sm {
+    font-size: $mob-xl-font;
+  }
+}
+
+h2 {
+  font-size: $lg-font;
+  font-weight: $md-weight;
+
+  @include breakpoints.sm {
+    font-size: $mob-lg-font;
+  }
+}
+
+h3 {
+  font-size: $md-font;
+  font-weight: $sm-weight;
+
+  @include breakpoints.sm {
+    font-size: $mob-md-font;
+  }
+}
+
+h4 {
+  font-size: $sm-font;
+  font-weight: $sm-weight;
+
+  @include breakpoints.sm {
+    font-size: $mob-sm-font;
+  }
+}
+
+h5 {
+  font-size: $sm-font;
+  font-weight: $xl-weight;
+
+  @include breakpoints.sm {
+    font-size: $mob-sm-font;
+  }
+}
+
+body {
+  font-family: 'Amiko', sans-serif;
+  font-size: $xs-font;
+  font-weight: $xs-weight;
+
+  @include breakpoints.sm {
+    font-weight: $mob-xs-font;
+  }
+
+  @include breakpoints.print {
+    font-size: $xxs-font;
+    font-weight: $xxs-weight;
+  }
+}

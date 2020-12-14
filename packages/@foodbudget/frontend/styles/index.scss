@@ -1,3 +1,4 @@
-.test {
-    color: red;
-}
+@forward 'typography';
+@forward 'spacing';
+@forward 'theme';
+@forward 'mixins/breakpoints';

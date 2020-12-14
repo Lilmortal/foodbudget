@@ -1,0 +1,7 @@
+@use 'color-palette' as colors;
+
+:root {
+  --theme-primary-color: colors.limed-spruce;
+  --theme-secondary-color: colors.ulip-tree;
+  --theme-tertiary-color: colors.blue-chill;
+}

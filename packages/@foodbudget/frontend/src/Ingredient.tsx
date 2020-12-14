@@ -28,26 +28,28 @@ const ingredientQuery = gql`
 `;
 
 const App: React.FC<{}> = () => {
-  const { data, loading, error, fetchMore } = useQuery<Query>(ingredientQuery);
-  const [cursor, setCursor] = useState(data?.ingredients?.pageInfo?.endCursor);
+  // const { data, loading, error, fetchMore } = useQuery<Query>(ingredientQuery);
+  // const [cursor, setCursor] = useState(data?.ingredients?.pageInfo?.endCursor);
+  const [hmm] = useState('test');
 
-  const handleIngredientFetch = async () => {
-    const { data: updatedData } = await fetchMore({ variables: { last: 1, after: cursor } });
-    setCursor(updatedData?.ingredients?.pageInfo?.endCursor);
-  };
+  // const handleIngredientFetch = async () => {
+  //   const { data: updatedData } = await fetchMore({ variables: { last: 1, after: cursor } });
+  //   setCursor(updatedData?.ingredients?.pageInfo?.endCursor);
+  // };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>{error.message}</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
+  // if (error) {
+  //   return <div>{error.message}</div>;
+  // }
 
   return (
-    <>
-      <button onClick={handleIngredientFetch}>Fetch</button>
-      {data?.ingredients?.edges?.map((edge: Maybe<IngredientEdge>) => <div key={edge?.cursor}>{edge?.node?.name}</div>)}
-   </>
+  //   <>
+  //     <button onClick={handleIngredientFetch}>Fetch</button>
+  //     {data?.ingredients?.edges?.map((edge: Maybe<IngredientEdge>) => <div key={edge?.cursor}>{edge?.node?.name}</div>)}
+  //  </>
+  <>{hmm}<br /> testssss</>
   );
 };
 
@@ -62,7 +64,7 @@ export const getStaticProps: GetStaticProps = async (): Promise<{
 }> => {
   const apolloClient = initializeApollo();
 
-  await apolloClient.query({ query: ingredientQuery, variables: { last: 0 } });
+  // await apolloClient.query({ query: ingredientQuery, variables: { last: 0 } });
   return {
     props: {
       initialApolloState: apolloClient.cache.extract(),
