@@ -50,7 +50,9 @@ const App: React.FC<{}> = () => {
   //     <button onClick={handleIngredientFetch}>Fetch</button>
   //     {data?.ingredients?.edges?.map((edge: Maybe<IngredientEdge>) => <div key={edge?.cursor}>{edge?.node?.name}</div>)}
   //  </>
-  <><Button variant="primary">Button button</Button></>
+  <>
+  <Button>Button button</Button>
+  </>
   );
 };
 

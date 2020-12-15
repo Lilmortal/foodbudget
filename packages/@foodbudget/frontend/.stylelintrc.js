@@ -1,13 +1,8 @@
 module.exports = {
-  plugins: ['stylelint-scss'],
+  processors: ['stylelint-processor-styled-components'],
   extends: [
-    'stylelint-config-standard',
-    'stylelint-config-sass-guidelines',
     'stylelint-config-recommended',
+    'stylelint-config-styled-components',
   ],
-  rules: {
-    'at-rule-no-unknown': null,
-    'scss/at-rule-no-unknown': true,
-  },
-  ignoreFiles: ['**/*.ts', '**/*.tsx'],
+  syntax: 'scss',
 };

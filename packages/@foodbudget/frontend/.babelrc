@@ -1,4 +1,4 @@
 {
-  "plugins": ["babel-plugin-react-require", "inline-react-svg"],
+  "plugins": ["babel-plugin-react-require", "inline-react-svg", "babel-plugin-styled-components"],
   "presets": ["next/babel"]
 }

@@ -1,1 +1,1 @@
-export { default, getStaticProps } from '../src/Ingredient';
+export { default, getStaticProps } from '../src/SearchPage';
