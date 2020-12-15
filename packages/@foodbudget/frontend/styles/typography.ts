@@ -13,13 +13,13 @@ export interface Typography {
     mobLgFont: string;
     mobXlFont: string;
 
-    xxlWeight: string;
-    xlWeight: string;
-    lgWeight: string;
-    mdWeight: string;
-    smWeight: string;
-    xsWeight: string;
-    xxsWeight: string;
+    xxlWeight: number;
+    xlWeight: number;
+    lgWeight: number;
+    mdWeight: number;
+    smWeight: number;
+    xsWeight: number;
+    xxsWeight: number;
 }
 
 const typography: Typography = {
@@ -37,13 +37,13 @@ const typography: Typography = {
   mobLgFont: '3.4rem',
   mobXlFont: '4.5rem',
 
-  xxlWeight: '700',
-  xlWeight: '600',
-  lgWeight: '550',
-  mdWeight: '500',
-  smWeight: '450',
-  xsWeight: '400',
-  xxsWeight: '300',
+  xxlWeight: 700,
+  xlWeight: 600,
+  lgWeight: 550,
+  mdWeight: 500,
+  smWeight: 450,
+  xsWeight: 400,
+  xxsWeight: 300,
 };
 
 export default typography;

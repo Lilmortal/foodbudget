@@ -1,7 +1,7 @@
 import 'styled-components';
-import { FoodBudgetTheme } from '../themes/defaultTheme';
+import { Theme } from '../themes/defaultTheme';
 
 declare module 'styled-components' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface DefaultTheme extends FoodBudgetTheme {}
+  export interface DefaultTheme extends Theme {}
 }

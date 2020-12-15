@@ -2,6 +2,7 @@ import { useQuery, gql, NormalizedCacheObject } from '@apollo/client';
 import { GetStaticProps } from 'next';
 import { useState } from 'react';
 import Button from '../components/Button';
+import PageTemplate from '../templates/page';
 import { initializeApollo } from './lib/client';
 import { IngredientEdge, Maybe, Query } from './__generated__/schema';
 
@@ -50,9 +51,9 @@ const App: React.FC<{}> = () => {
   //     <button onClick={handleIngredientFetch}>Fetch</button>
   //     {data?.ingredients?.edges?.map((edge: Maybe<IngredientEdge>) => <div key={edge?.cursor}>{edge?.node?.name}</div>)}
   //  </>
-  <>
-  <Button>Button button</Button>
-  </>
+  <PageTemplate>
+    <Button>Button button</Button>
+  </PageTemplate>
   );
 };
 
