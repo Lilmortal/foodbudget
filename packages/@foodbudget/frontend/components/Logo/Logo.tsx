@@ -1,9 +1,13 @@
 import styled from 'styled-components';
 
-const Logo = styled.div({
-  backgroundImage: "url('/Logo.png')",
-  backgroundRepeat: 'no-repeat',
-  backgroundSize: 'cover',
+export interface LogoProps {
+    src: string;
+}
+const StyledLogo = styled.img({
+  maxWidth: '460px',
+  maxHeight: '60px',
 });
+
+const Logo: React.FC<LogoProps> = ({ src }) => <StyledLogo src={src} />;
 
 export default Logo;
