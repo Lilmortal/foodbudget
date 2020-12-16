@@ -47,24 +47,24 @@ const App: React.FC<{}> = () => {
   // }
 
   return (
-  //   <>
-  //     <button onClick={handleIngredientFetch}>Fetch</button>
-  //     {data?.ingredients?.edges?.map((edge: Maybe<IngredientEdge>) => <div key={edge?.cursor}>{edge?.node?.name}</div>)}
-  //  </>
-  <PageTemplate>
-    <Button>Button button</Button>
-  </PageTemplate>
+    //   <>
+    //     <button onClick={handleIngredientFetch}>Fetch</button>
+    //     {data?.ingredients?.edges?.map((edge: Maybe<IngredientEdge>) => <div key={edge?.cursor}>{edge?.node?.name}</div>)}
+    //  </>
+    <PageTemplate>
+      <Button>Button button</Button>
+    </PageTemplate>
   );
 };
 
 export default App;
 
 interface IngredientOwnProps {
-  initialApolloState: NormalizedCacheObject
+  initialApolloState: NormalizedCacheObject;
 }
 
 export const getStaticProps: GetStaticProps = async (): Promise<{
-  props: IngredientOwnProps
+  props: IngredientOwnProps;
 }> => {
   const apolloClient = initializeApollo();
 

@@ -10,10 +10,12 @@ const PageBody = styled.div({
 });
 
 const PageTemplate: React.FC<{}> = ({ children }) => (
-    <PageBody>
-        <Header><Logo src="Logo.png" /></Header>
-        {children}
-    </PageBody>
+  <PageBody>
+    <Header>
+      <Logo src="Logo.png" />
+    </Header>
+    {children}
+  </PageBody>
 );
 
 export default PageTemplate;

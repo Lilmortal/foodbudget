@@ -11,6 +11,7 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:import/warnings',
     'plugin:import/errors',
+    'plugin:prettier/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
