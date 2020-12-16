@@ -1,25 +1,25 @@
 export interface Typography {
-    xxsFont: string;
-    xsFont: string;
-    smFont: string;
-    mdFont: string;
-    lgFont: string;
-    xlFont: string;
+  xxsFont: string;
+  xsFont: string;
+  smFont: string;
+  mdFont: string;
+  lgFont: string;
+  xlFont: string;
 
-    mobXxsFont: string;
-    mobXsFont: string;
-    mobSmFont: string;
-    mobMdFont: string;
-    mobLgFont: string;
-    mobXlFont: string;
+  mobXxsFont: string;
+  mobXsFont: string;
+  mobSmFont: string;
+  mobMdFont: string;
+  mobLgFont: string;
+  mobXlFont: string;
 
-    xxlWeight: number;
-    xlWeight: number;
-    lgWeight: number;
-    mdWeight: number;
-    smWeight: number;
-    xsWeight: number;
-    xxsWeight: number;
+  xxlWeight: number;
+  xlWeight: number;
+  lgWeight: number;
+  mdWeight: number;
+  smWeight: number;
+  xsWeight: number;
+  xxsWeight: number;
 }
 
 const typography: Typography = {

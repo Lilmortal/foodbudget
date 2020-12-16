@@ -1,9 +1,9 @@
 export interface Spacing {
-    xs: string;
-    sm: string;
-    md: string;
-    lg: string;
-    xl: string;
+  xs: string;
+  sm: string;
+  md: string;
+  lg: string;
+  xl: string;
 }
 
 const spacing: Spacing = {

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export interface LogoProps {
-    src: string;
+  src: string;
 }
 const StyledLogo = styled.img({
   maxWidth: '460px',

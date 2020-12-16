@@ -9,12 +9,12 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const client = useApolloClient(pageProps.initialApolloState);
 
   return (
-  <ApolloProvider client={client}>
-    <ThemeProvider theme={defaultTheme}>
-      <GlobalTheme />
-    <Component {...pageProps} />
-    </ThemeProvider>
-  </ApolloProvider>
+    <ApolloProvider client={client}>
+      <ThemeProvider theme={defaultTheme}>
+        <GlobalTheme />
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </ApolloProvider>
   );
 };
 

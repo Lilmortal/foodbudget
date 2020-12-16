@@ -28,16 +28,15 @@ const Button = styled.button<ButtonProps>((props) => ({
     borderColor: props.theme.colors.primaryButtonDisabledBorder,
   },
 
-  ...(props.variant === 'secondary'
-  && {
+  ...(props.variant === 'secondary' && {
     backgroundColor: props.theme.colors.secondaryButtonFill,
     color: props.theme.colors.secondaryButtonText,
     borderColor: props.theme.colors.secondaryButtonBorder,
 
     ':hover': {
       backgroundColor: props.theme.colors.secondaryButtonHoverFill,
-      color: props.theme.colors.secondaryButtonText,
-      borderColor: props.theme.colors.secondaryButtonBorder,
+      color: props.theme.colors.secondaryButtonHoverText,
+      borderColor: props.theme.colors.secondaryButtonHoverBorder,
     },
 
     ':disabled': {

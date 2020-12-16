@@ -1,4 +1,4 @@
-import Document, { Head, Main, NextScript } from 'next/document';
+import Document, { Head, Main, NextScript, Html } from 'next/document';
 
 // TODO: Add og:title and twitter in the future
 const PreloadedFonts: React.FC<{}> = () => (
@@ -61,14 +61,8 @@ const Favicons: React.FC<{}> = () => (
       href="/favicons/safari-pinned-tab.svg"
       color="#5bbad5"
     />
-    <link
-      rel="manifest"
-      href="/favicons/site.webmanifest"
-    />
-    <meta
-      name="msapplication-config"
-      content="/favicons/browserconfig.xml"
-    />
+    <link rel="manifest" href="/favicons/site.webmanifest" />
+    <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
   </>
 );
 
@@ -77,7 +71,7 @@ export default class MyDocument extends Document {
   render(): React.ReactElement {
     return (
       // TODO: lang en for now, figure out how to use IntlProvider here
-      <html lang="en">
+      <Html lang="en">
         <Head>
           <Favicons />
         </Head>
@@ -85,7 +79,7 @@ export default class MyDocument extends Document {
           <Main />
           <NextScript />
         </body>
-      </html>
+      </Html>
     );
   }
 }

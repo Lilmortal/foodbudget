@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Button from '../components/Button';
 import Logo from '../components/Logo';
 
 const Header = styled.header({
@@ -13,6 +14,7 @@ const PageTemplate: React.FC<{}> = ({ children }) => (
   <PageBody>
     <Header>
       <Logo src="Logo.png" />
+      <Button variant="secondary">LOGIN/SIGNUP</Button>
     </Header>
     {children}
   </PageBody>

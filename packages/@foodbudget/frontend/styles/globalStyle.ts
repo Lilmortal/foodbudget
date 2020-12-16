@@ -3,86 +3,86 @@ import { lg, sm, print } from './breakpoints';
 import typography from './typography';
 
 const spacing = css`
-html {
+  html {
     font-size: 62.5%;
   }
-  
+
   body {
     font-size: 1.6rem;
     line-height: 2.6rem;
-  
-    ${lg`
-    font-size: 1.8rem;
-  `}
+
+    ${lg({
+      fontSize: '1.8rem',
+    })}
   }
 `;
 
 const theme = css`
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
-h1 {
-  font-size: ${typography.xlFont};
-  font-weight: ${typography.lgWeight};
+  h1 {
+    font-size: ${typography.xlFont};
+    font-weight: ${typography.lgWeight};
 
-  ${sm(`
-    font-size: ${typography.mobXlFont};
-  `)}
-}
+    ${sm({
+      fontSize: typography.mobXlFont,
+    })}
+  }
 
-h2 {
-  font-size: ${typography.lgFont};
-  font-weight: ${typography.mdWeight};
+  h2 {
+    font-size: ${typography.lgFont};
+    font-weight: ${typography.mdWeight};
 
-  ${sm(`
-    font-size: ${typography.mobLgFont};
-  `)}
-}
+    ${sm({
+      fontSize: typography.mobLgFont,
+    })}
+  }
 
-h3 {
-  font-size: ${typography.mdFont};
-  font-weight: ${typography.smWeight};
+  h3 {
+    font-size: ${typography.mdFont};
+    font-weight: ${typography.smWeight};
 
-  ${sm(`
-    font-size: ${typography.mobMdFont};
-  `)}
-}
+    ${sm({
+      fontSize: typography.mobMdFont,
+    })}
+  }
 
-h4 {
-  font-size: ${typography.smFont};
-  font-weight: ${typography.smWeight};
+  h4 {
+    font-size: ${typography.smFont};
+    font-weight: ${typography.smWeight};
 
-  ${sm(`
-    font-size: ${typography.mobSmFont};
-  `)}
-}
+    ${sm({
+      fontSize: typography.mobSmFont,
+    })}
+  }
 
-h5 {
-  font-size: ${typography.smFont};
-  font-weight: ${typography.xlWeight};
+  h5 {
+    font-size: ${typography.smFont};
+    font-weight: ${typography.xlWeight};
 
-  ${sm(`
-    font-size: ${typography.mobSmFont};
-  `)}
-}
+    ${sm({
+      fontSize: typography.mobSmFont,
+    })}
+  }
 
-body {
-  font-family: 'Amiko', sans-serif;
-  font-size: ${typography.xsFont};
-  font-weight: ${typography.xsWeight};
+  body {
+    font-family: 'Amiko', sans-serif;
+    font-size: ${typography.xsFont};
+    font-weight: ${typography.xsWeight};
 
-  ${sm(`
-    font-weight: ${typography.mobXsFont};
-  `)}
+    ${sm({
+      fontWeight: typography.xsWeight,
+    })}
 
-  ${print(`
-    font-size: ${typography.xxsFont};
-    font-weight: ${typography.xxsWeight};
-  `)}
-}
+    ${print({
+      fontSize: typography.xxsFont,
+      fontWeight: typography.xxsWeight,
+    })}
+  }
 `;
 
 const GlobalTheme = createGlobalStyle`
