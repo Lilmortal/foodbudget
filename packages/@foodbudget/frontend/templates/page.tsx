@@ -24,7 +24,9 @@ const PageTemplate: React.FC<{}> = ({ children }) => (
   <PageBody>
     <Header>
       <Logo src="Logo.png" />
-      <Button variant="secondary">LOGIN / SIGNUP</Button>
+      <Button variant="secondary" inverse>
+        LOGIN / SIGNUP
+      </Button>
     </Header>
     <Wrapper>{children}</Wrapper>
   </PageBody>
