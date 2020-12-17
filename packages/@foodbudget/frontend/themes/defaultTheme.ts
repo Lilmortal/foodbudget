@@ -6,6 +6,7 @@ import breakpoints, { Breakpoints } from '../styles/breakpoints';
 export interface ColorTheme {
   primaryFill: string;
   primaryBorder: string;
+  secondaryText: string;
   primaryButtonFill: string;
   primaryButtonText: string;
   primaryButtonBorder: string;
@@ -36,6 +37,7 @@ export interface Theme {
 const colors: ColorTheme = {
   primaryFill: colorPalette.blueChill,
   primaryBorder: colorPalette.blueChill,
+  secondaryText: colorPalette.hitGray,
   primaryButtonFill: colorPalette.blueChill,
   primaryButtonText: colorPalette.white,
   primaryButtonBorder: colorPalette.blueChill,
@@ -46,7 +48,7 @@ const colors: ColorTheme = {
   primaryButtonHoverText: colorPalette.blueChill,
   primaryButtonHoverBorder: colorPalette.blueChill,
   secondaryButtonFill: colorPalette.white,
-  secondaryButtonText: colorPalette.tulipTree,
+  secondaryButtonText: colorPalette.black,
   secondaryButtonBorder: colorPalette.tulipTree,
   secondaryButtonDisabledFill: colorPalette.white,
   secondaryButtonDisabledText: colorPalette.hitGray,

@@ -6,3 +6,4 @@ export const tulipTree = '#e6af2e';
 export const quillGray = '#e0e2db';
 export const hitGray = '#adb4b8';
 export const white = '#fff';
+export const black = '#000';

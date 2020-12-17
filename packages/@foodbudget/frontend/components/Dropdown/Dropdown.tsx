@@ -1,8 +1,15 @@
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { v4 } from 'uuid';
 
 export interface DropdownProps {
   placeholder?: string;
+  /**
+   * overwrite placeholder as the selected value.
+   */
+  defaultValue?: string;
   values: string[];
+  onSelect(element: React.SyntheticEvent<HTMLSelectElement, Event>): void;
 }
 
 const Option = styled.option((props) => ({
@@ -18,17 +25,37 @@ const Select = styled.select((props) => ({
   width: '100%',
 }));
 
-const Dropdown: React.FC<DropdownProps> = ({ values, placeholder }) => (
-  <Select required>
-    {placeholder && (
-      <Option value="" disabled aria-disabled selected hidden>
-        Ingredients...
-      </Option>
-    )}
-    {values.map((value) => (
-      <Option>{value}</Option>
-    ))}
-  </Select>
-);
+const Dropdown: React.FC<DropdownProps> = ({
+  values,
+  placeholder,
+  onSelect,
+}) => {
+  const [selectedValue, setSelectedValue] = useState<string>();
+
+  const onChange = (
+    element: React.SyntheticEvent<HTMLSelectElement, Event>,
+  ) => {
+    setSelectedValue(element.currentTarget.value);
+    onSelect(element);
+  };
+
+  return (
+    <Select
+      required
+      onChange={onChange}
+      defaultValue={placeholder || values[0]}
+      value={selectedValue}
+    >
+      {placeholder && (
+        <Option disabled aria-disabled hidden>
+          {placeholder}
+        </Option>
+      )}
+      {values.map((value) => (
+        <Option key={`option-${v4()}`}>{value}</Option>
+      ))}
+    </Select>
+  );
+};
 
 export default Dropdown;

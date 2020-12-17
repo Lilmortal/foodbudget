@@ -5,15 +5,15 @@ import { config, Config } from './config';
 import { serviceManager, ServiceManager } from './serviceManager';
 
 interface ContextParams {
-    req: Request;
-    res: Response;
+  req: Request;
+  res: Response;
 }
 
 export interface Context extends ContextParams {
-    serviceManager: ServiceManager;
-    userId: string | undefined;
-    scope: string[] | undefined;
-    config: Config
+  serviceManager: ServiceManager;
+  userId: string | undefined;
+  scope: string[] | undefined;
+  config: Config;
 }
 
 export const context = ({ req, res }: ContextParams): Context => {
@@ -32,6 +32,11 @@ export const context = ({ req, res }: ContextParams): Context => {
   }
 
   return {
-    serviceManager, req, res, userId, scope, config,
+    serviceManager,
+    req,
+    res,
+    userId,
+    scope,
+    config,
   };
 };

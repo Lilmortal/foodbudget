@@ -1,10 +1,10 @@
 import { useQuery, gql, NormalizedCacheObject } from '@apollo/client';
 import { GetStaticProps } from 'next';
 import { useState } from 'react';
-import Button from '../components/Button';
-import PageTemplate from '../templates/page';
-import { initializeApollo } from './lib/client';
-import { IngredientEdge, Maybe, Query } from './__generated__/schema';
+import Button from '../../components/Button';
+import PageTemplate from '../../templates/page';
+import { initializeApollo } from '../lib/client';
+import { IngredientEdge, Maybe, Query } from '../__generated__/schema';
 
 const ingredientQuery = gql`
   query IngredientQuery($first: Int, $last: Int, $before: ID, $after: ID) {
