@@ -1,8 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
-import breakpoints from './breakpoints';
-import typography from './typography';
 
-const GlobalTheme = createGlobalStyle({
+const GlobalTheme = createGlobalStyle(({ theme }) => ({
   '*': {
     boxSizing: 'border-box',
     margin: 0,
@@ -27,70 +25,70 @@ const GlobalTheme = createGlobalStyle({
   },
 
   h1: {
-    fontSize: typography.xlFont,
-    fontWeight: typography.lgWeight,
+    fontSize: theme.typography.xlFont,
+    fontWeight: theme.typography.lgWeight,
 
-    [breakpoints.sm]: {
-      fontSize: typography.mobXlFont,
+    [theme.breakpoints.sm]: {
+      fontSize: theme.typography.mobXlFont,
     },
   },
 
   h2: {
-    fontSize: typography.lgFont,
-    fontWeight: typography.mdWeight,
+    fontSize: theme.typography.lgFont,
+    fontWeight: theme.typography.mdWeight,
 
-    [breakpoints.sm]: {
-      fontSize: typography.mobLgFont,
+    [theme.breakpoints.sm]: {
+      fontSize: theme.typography.mobLgFont,
     },
   },
 
   h3: {
-    fontSize: typography.mdFont,
-    fontWeight: typography.smWeight,
+    fontSize: theme.typography.mdFont,
+    fontWeight: theme.typography.smWeight,
 
-    [breakpoints.sm]: {
-      fontSize: typography.mobMdFont,
+    [theme.breakpoints.sm]: {
+      fontSize: theme.typography.mobMdFont,
     },
   },
 
   h4: {
-    fontSize: typography.smFont,
-    fontWeight: typography.smWeight,
+    fontSize: theme.typography.smFont,
+    fontWeight: theme.typography.smWeight,
 
-    [breakpoints.sm]: {
-      fontSize: typography.mobSmFont,
+    [theme.breakpoints.sm]: {
+      fontSize: theme.typography.mobSmFont,
     },
   },
 
   h5: {
-    fontSize: typography.smFont,
-    fontWeight: typography.xlWeight,
+    fontSize: theme.typography.smFont,
+    fontWeight: theme.typography.xlWeight,
 
-    [breakpoints.sm]: {
-      fontSize: typography.mobSmFont,
+    [theme.breakpoints.sm]: {
+      fontSize: theme.typography.mobSmFont,
     },
   },
 
   body: {
-    fontDamily: `'Amiko', sans-serif`,
-    fontSize: typography.xsFont,
-    fontWeight: typography.xsWeight,
+    fontFamily: `'Amiko', sans-serif`,
+    fontSize: theme.typography.xsFont,
+    fontWeight: theme.typography.xsWeight,
     minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column',
     lineHeight: '2.6rem',
 
-    [breakpoints.lg]: {
-      fontSize: typography.smFont,
+    [theme.breakpoints.lg]: {
+      fontSize: theme.typography.smFont,
     },
 
-    [breakpoints.sm]: {
-      fontWeight: typography.xsWeight,
+    [theme.breakpoints.sm]: {
+      fontWeight: theme.typography.xsWeight,
     },
 
-    [breakpoints.print]: {
-      fontSize: typography.xxsFont,
-      fontWeight: typography.xxsWeight,
+    [theme.breakpoints.print]: {
+      fontSize: theme.typography.xxsFont,
+      fontWeight: theme.typography.xxsWeight,
     },
   },
 
@@ -99,6 +97,6 @@ const GlobalTheme = createGlobalStyle({
     flexDirection: 'column',
     flexGrow: 1,
   },
-});
+}));
 
 export default GlobalTheme;
