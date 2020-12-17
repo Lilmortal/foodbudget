@@ -1,59 +1,36 @@
-import {
-  css,
-  FlattenSimpleInterpolation,
-  SimpleInterpolation,
-} from 'styled-components';
-
 const breakpointXs = '32rem';
 const breakpointSm = '36rem';
 const breakpointMd = '76.8rem';
 const breakpointLg = '102.4rem';
 const breakpointXl = '144rem';
 
-export const print = (
-  content: SimpleInterpolation,
-): FlattenSimpleInterpolation => css`
-  @media only print {
-    ${content}
-  }
-`;
+const print = `@media only print`;
 
-export const xs = (
-  content: SimpleInterpolation,
-): FlattenSimpleInterpolation => css`
-  @media only screen and (min-width: ${breakpointXs}) {
-    ${content}
-  }
-`;
+const xs = `@media only screen and (min-width: ${breakpointXs})`;
 
-export const sm = (
-  content: SimpleInterpolation,
-): FlattenSimpleInterpolation => css`
-  @media only screen and (min-width: ${breakpointSm}) {
-    ${content}
-  }
-`;
+const sm = `@media only screen and (min-width: ${breakpointSm})`;
 
-export const md = (
-  content: SimpleInterpolation,
-): FlattenSimpleInterpolation => css`
-  @media only screen and (min-width: ${breakpointMd}) {
-    ${content}
-  }
-`;
+const md = `@media only screen and (min-width: ${breakpointMd})`;
 
-export const lg = (
-  content: SimpleInterpolation,
-): FlattenSimpleInterpolation => css`
-  @media only screen and (min-width: ${breakpointLg}) {
-    ${content}
-  }
-`;
+const lg = `@media only screen and (min-width: ${breakpointLg})`;
 
-export const xl = (
-  content: SimpleInterpolation,
-): FlattenSimpleInterpolation => css`
-  @media only screen and (min-width: ${breakpointXl}) {
-    ${content}
-  }
-`;
+const xl = `@media only screen and (min-width: ${breakpointXl})`;
+export interface Breakpoints {
+  print: string;
+  xs: string;
+  sm: string;
+  md: string;
+  lg: string;
+  xl: string;
+}
+
+const breakpoints: Breakpoints = {
+  print,
+  xs,
+  sm,
+  md,
+  lg,
+  xl,
+};
+
+export default breakpoints;

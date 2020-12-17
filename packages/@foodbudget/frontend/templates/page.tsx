@@ -4,19 +4,29 @@ import Logo from '../components/Logo';
 
 const Header = styled.header({
   display: 'flex',
+  justifyContent: 'space-between',
+  padding: '2rem 3rem',
 });
 
 const PageBody = styled.div({
   display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+});
+
+const Wrapper = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
 });
 
 const PageTemplate: React.FC<{}> = ({ children }) => (
   <PageBody>
     <Header>
       <Logo src="Logo.png" />
-      <Button variant="secondary">LOGIN/SIGNUP</Button>
+      <Button variant="secondary">LOGIN / SIGNUP</Button>
     </Header>
-    {children}
+    <Wrapper>{children}</Wrapper>
   </PageBody>
 );
 

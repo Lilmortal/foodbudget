@@ -1,59 +1,102 @@
-import { useQuery, gql, NormalizedCacheObject } from '@apollo/client';
+import { NormalizedCacheObject } from '@apollo/client';
 import { GetStaticProps } from 'next';
-import { useState } from 'react';
+import styled from 'styled-components';
 import Button from '../components/Button';
+import Dropdown from '../components/Dropdown';
+import Textfield from '../components/Textfield';
 import PageTemplate from '../templates/page';
 import { initializeApollo } from './lib/client';
-import { IngredientEdge, Maybe, Query } from './__generated__/schema';
 
-const ingredientQuery = gql`
-  query IngredientQuery($first: Int, $last: Int, $before: ID, $after: ID) {
-    ingredients(first: $first, last: $last, before: $before, after: $after) {
-      edges {
-        cursor
-        node {
-          name
-          price {
-            amount
-            currency
-          }
-        }
-      }
-      pageInfo {
-        startCursor
-        hasPreviousPage
-        hasNextPage
-        endCursor
-      }
-    }
-  }
-`;
+const SearchGrid = styled.div((props) => ({
+  display: 'grid',
+  gridTemplateColumns: '10% 1fr 10%',
+  gridTemplateRows: '10% 1fr 30%',
+  flexGrow: 1,
 
-const App: React.FC<{}> = () => {
-  // const { data, loading, error, fetchMore } = useQuery<Query>(ingredientQuery);
-  // const [cursor, setCursor] = useState(data?.ingredients?.pageInfo?.endCursor);
-  const [hmm] = useState('test');
+  ':before': {
+    backgroundImage: 'none',
 
-  // const handleIngredientFetch = async () => {
-  //   const { data: updatedData } = await fetchMore({ variables: { last: 1, after: cursor } });
-  //   setCursor(updatedData?.ingredients?.pageInfo?.endCursor);
-  // };
+    [props.theme.breakpoints.md]: {
+      content: `''`,
+      width: '50%',
+      height: '100%',
+      backgroundSize: 'cover',
+      backgroundImage: "url('/pizza.webp')",
+      backgroundRepeat: 'no-repeat',
+      position: 'absolute',
+    },
+  },
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-  // if (error) {
-  //   return <div>{error.message}</div>;
-  // }
+  [props.theme.breakpoints.md]: {
+    gridTemplateColumns: '50% 2fr 1fr',
+  },
+}));
 
-  return (
-    //   <>
-    //     <button onClick={handleIngredientFetch}>Fetch</button>
-    //     {data?.ingredients?.edges?.map((edge: Maybe<IngredientEdge>) => <div key={edge?.cursor}>{edge?.node?.name}</div>)}
-    //  </>
-    <PageTemplate>Test</PageTemplate>
-  );
-};
+const SearchWrapper = styled.div({
+  display: 'grid',
+  gridColumn: 2,
+  gridRow: 2,
+  padding: '1rem',
+  alignItems: 'center',
+});
+
+const Label = styled.label({
+  display: 'flex',
+  justifyContent: 'center',
+  padding: '1rem',
+});
+
+const LabelTextfield = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+const TextfieldWrapper = styled.div({
+  display: 'flex',
+  justifyContent: 'center',
+});
+
+const SubmitWrapper = styled.div({
+  display: 'flex',
+  justifyContent: 'center',
+});
+
+const TipWrapper = styled.div({
+  display: 'flex',
+  justifyContent: 'center',
+});
+
+const Tip = styled.h6({});
+
+const App: React.FC<{}> = () => (
+  <PageTemplate>
+    <SearchGrid>
+      <SearchWrapper>
+        <LabelTextfield>
+          <Label>My weekly budget</Label>
+          <TextfieldWrapper>
+            <Textfield type="text" />
+          </TextfieldWrapper>
+        </LabelTextfield>
+
+        <LabelTextfield>
+          <Label>I already have</Label>
+          <TextfieldWrapper>
+            <Dropdown values={['test', 'hmmm']} placeholder="ingredients" />
+          </TextfieldWrapper>
+        </LabelTextfield>
+
+        <SubmitWrapper>
+          <Button type="submit">Create weekly plan</Button>
+        </SubmitWrapper>
+
+        <TipWrapper>
+          <Tip>Tip...</Tip>
+        </TipWrapper>
+      </SearchWrapper>
+    </SearchGrid>
+  </PageTemplate>
+);
 
 export default App;
 
@@ -66,7 +109,6 @@ export const getStaticProps: GetStaticProps = async (): Promise<{
 }> => {
   const apolloClient = initializeApollo();
 
-  // await apolloClient.query({ query: ingredientQuery, variables: { last: 0 } });
   return {
     props: {
       initialApolloState: apolloClient.cache.extract(),

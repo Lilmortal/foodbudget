@@ -1,8 +1,11 @@
 import typography, { Typography } from '../styles/typography';
 import * as colorPalette from '../styles/colorPalette';
 import spacing, { Spacing } from '../styles/spacing';
+import breakpoints, { Breakpoints } from '../styles/breakpoints';
 
 export interface ColorTheme {
+  primaryFill: string;
+  primaryBorder: string;
   primaryButtonFill: string;
   primaryButtonText: string;
   primaryButtonBorder: string;
@@ -27,9 +30,12 @@ export interface Theme {
   colors: ColorTheme;
   typography: Typography;
   spacing: Spacing;
+  breakpoints: Breakpoints;
 }
 
 const colors: ColorTheme = {
+  primaryFill: colorPalette.blueChill,
+  primaryBorder: colorPalette.blueChill,
   primaryButtonFill: colorPalette.blueChill,
   primaryButtonText: colorPalette.white,
   primaryButtonBorder: colorPalette.blueChill,
@@ -54,6 +60,7 @@ const defaultTheme: Theme = {
   colors,
   typography,
   spacing,
+  breakpoints,
 };
 
 export default defaultTheme;
