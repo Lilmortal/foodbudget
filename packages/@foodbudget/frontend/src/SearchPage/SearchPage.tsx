@@ -89,6 +89,17 @@ const IngredientListHeader = styled.p(({ theme }) => ({
   color: theme.colors.secondaryText,
 }));
 
+const BudgetTextfieldWrapper = styled(TextfieldWrapper)({
+  position: 'relative',
+
+  ':before': {
+    content: `'$'`,
+    position: 'absolute',
+    left: '43px',
+    bottom: '4px',
+  },
+});
+
 const removeItem = (list: string[], value: string) =>
   list.filter((item) => item !== value);
 
@@ -123,9 +134,9 @@ const App: React.FC<{}> = () => {
         <SearchWrapper>
           <LabelTextfield>
             <Label>My weekly budget</Label>
-            <TextfieldWrapper>
-              <Textfield type="text" />
-            </TextfieldWrapper>
+            <BudgetTextfieldWrapper>
+              <Textfield type="text" style={{ padding: '1rem 3.1rem' }} />
+            </BudgetTextfieldWrapper>
           </LabelTextfield>
 
           <LabelTextfield>

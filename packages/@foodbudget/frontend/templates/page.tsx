@@ -27,7 +27,7 @@ const ButtonWrapper = styled.div({
 const PageTemplate: React.FC<{}> = ({ children }) => (
   <PageBody>
     <Header>
-      <Logo src="Logo.svg" />
+      <Logo src="logo.svg" />
       <ButtonWrapper>
         <Button
           variant="secondary"
