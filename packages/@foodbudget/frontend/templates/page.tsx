@@ -20,13 +20,19 @@ const Wrapper = styled.div({
   flexGrow: 1,
 });
 
+const ButtonWrapper = styled.div({
+  display: 'flex',
+});
+
 const PageTemplate: React.FC<{}> = ({ children }) => (
   <PageBody>
     <Header>
-      <Logo src="Logo.png" />
-      <Button variant="secondary" inverse>
-        LOGIN / SIGNUP
-      </Button>
+      <Logo src="Logo.svg" />
+      <ButtonWrapper>
+        <Button variant="secondary" inverse>
+          LOGIN / SIGNUP
+        </Button>
+      </ButtonWrapper>
     </Header>
     <Wrapper>{children}</Wrapper>
   </PageBody>

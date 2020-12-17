@@ -9,7 +9,6 @@ export interface ButtonProps
 }
 
 const StyledButton = styled.button<ButtonProps>((props) => ({
-  position: 'relative',
   borderRadius: '19px',
   cursor: 'pointer',
   font: 'inherit',
@@ -75,6 +74,7 @@ const StyledButton = styled.button<ButtonProps>((props) => ({
   }),
 
   ...(props.showCloseIcon && {
+    position: 'relative',
     pointerEvents: 'none',
     padding: '1rem 2.5rem 1rem 1rem',
 

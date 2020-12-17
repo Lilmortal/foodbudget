@@ -1,19 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalTheme = createGlobalStyle(({ theme }) => ({
-  '*': {
-    boxSizing: 'border-box',
-    margin: 0,
-    padding: 0,
-    border: 0,
-  },
-  '*:before': {
-    boxSizing: 'border-box',
-    margin: 0,
-    padding: 0,
-    border: 0,
-  },
-  '*:after': {
+  '*, *:before, *:after': {
     boxSizing: 'border-box',
     margin: 0,
     padding: 0,
@@ -70,7 +58,7 @@ const GlobalTheme = createGlobalStyle(({ theme }) => ({
   },
 
   body: {
-    fontFamily: `'Amiko', sans-serif`,
+    fontFamily: `'Amiko', 'Arial', sans-serif`,
     fontSize: theme.typography.xsFont,
     fontWeight: theme.typography.xsWeight,
     minHeight: '100vh',

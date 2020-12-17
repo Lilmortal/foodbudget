@@ -6,7 +6,14 @@ const PreloadedFonts: React.FC<{}> = () => (
     <link
       ref="preload"
       as="font"
-      href="/fonts/Inter/Inter-Bold.woff2"
+      href="/fonts/Amiko/Amiko-Regular.woff2"
+      type="font/woff2"
+      crossOrigin="anonymous"
+    />
+    <link
+      ref="preload"
+      as="font"
+      href="/fonts/ABeeZee/ABeeZee-Regular.woff2"
       type="font/woff2"
       crossOrigin="anonymous"
     />
@@ -73,6 +80,7 @@ export default class MyDocument extends Document {
       // TODO: lang en for now, figure out how to use IntlProvider here
       <Html lang="en">
         <Head>
+          <PreloadedFonts />
           <Favicons />
         </Head>
         <body>
