@@ -10,6 +10,7 @@ export interface ButtonProps
 
 const StyledButton = styled.button<ButtonProps>((props) => ({
   borderRadius: '19px',
+  height: 'fit-content',
   cursor: 'pointer',
   font: 'inherit',
   fontWeight: props.theme.typography.xxlWeight,

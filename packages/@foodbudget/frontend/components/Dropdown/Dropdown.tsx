@@ -24,6 +24,12 @@ const Select = styled.select((props) => ({
   boxShadow: '0 1px 0 1px rgba(0,0,0,.04)',
   maxWidth: '400px',
   width: '100%',
+  position: 'relative',
+  appearance: 'none',
+  background: "url('down-arrow.svg')",
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: '16px 17px',
+  backgroundPosition: '96% 9px',
 }));
 
 const Dropdown: React.FC<DropdownProps> = ({

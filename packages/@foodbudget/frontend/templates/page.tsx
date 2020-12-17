@@ -29,7 +29,11 @@ const PageTemplate: React.FC<{}> = ({ children }) => (
     <Header>
       <Logo src="Logo.svg" />
       <ButtonWrapper>
-        <Button variant="secondary" inverse>
+        <Button
+          variant="secondary"
+          inverse
+          style={{ fontFamily: "'ABeeZee', sans-serif" }}
+        >
           LOGIN / SIGNUP
         </Button>
       </ButtonWrapper>

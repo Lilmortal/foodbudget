@@ -1,5 +1,21 @@
 import { createGlobalStyle } from 'styled-components';
 
+export const FontFaces = createGlobalStyle`
+  @font-face {
+    font-family: 'Amiko';
+    font-display: swap;
+    src: url('/fonts/Amiko/Amiko-Regular.woff2') format('woff2');
+    font-weight: normal;
+  }
+
+  @font-face {
+    font-family: 'ABeeZee';
+    font-display: swap;
+    src: url('/fonts/ABeeZee/ABeeZee-Regular.woff2') format('woff2');
+    font-weight: normal;
+  }
+`;
+
 const GlobalTheme = createGlobalStyle(({ theme }) => ({
   '*, *:before, *:after': {
     boxSizing: 'border-box',
