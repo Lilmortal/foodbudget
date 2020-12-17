@@ -80,7 +80,7 @@ const IngredientList = styled.div({
   flexWrap: 'wrap',
 });
 
-const Ingredient = styled(Button)(({ theme }) => ({
+const IngredientButton = styled(Button)(({ theme }) => ({
   margin: `0 ${theme.spacing.sm} ${theme.spacing.sm} 0`,
 }));
 
@@ -89,13 +89,32 @@ const IngredientListHeader = styled.p(({ theme }) => ({
   color: theme.colors.secondaryText,
 }));
 
+const removeItem = (list: string[], value: string) =>
+  list.filter((item) => item !== value);
+
 const App: React.FC<{}> = () => {
   const [ingredientList, setIngredientList] = useState<string[]>([]);
+
+  const onIngredientClose = (
+    element: React.SyntheticEvent<HTMLButtonElement, Event>,
+  ) => {
+    const value = element.currentTarget.innerText;
+    if (ingredientList.includes(value)) {
+      setIngredientList(removeItem(ingredientList, value));
+    } else {
+      throw new Error(
+        `Attempt to throw an ingredient ${value} that is not found on the ingredient list.`,
+      );
+    }
+  };
 
   const onSelectIngredient = (
     element: React.SyntheticEvent<HTMLSelectElement, Event>,
   ) => {
-    setIngredientList([...ingredientList, element.currentTarget.value]);
+    const ingredient = element.currentTarget.value;
+    if (!ingredientList.includes(ingredient)) {
+      setIngredientList([...ingredientList, ingredient]);
+    }
   };
 
   return (
@@ -114,6 +133,7 @@ const App: React.FC<{}> = () => {
             <TextfieldWrapper>
               <Dropdown
                 values={['test', 'hmmm']}
+                clearValueOnSelect
                 placeholder="ingredients"
                 onSelect={onSelectIngredient}
               />
@@ -125,9 +145,14 @@ const App: React.FC<{}> = () => {
               <IngredientListHeader>Your ingredients</IngredientListHeader>
               <IngredientList>
                 {ingredientList.map((ingredient: string) => (
-                  <Ingredient key={`ingredient-${v4()}`} variant="secondary">
+                  <IngredientButton
+                    key={`ingredient-${v4()}`}
+                    variant="secondary"
+                    showCloseIcon
+                    onClick={onIngredientClose}
+                  >
                     {ingredient}
-                  </Ingredient>
+                  </IngredientButton>
                 ))}
               </IngredientList>
             </IngredientListWrapper>

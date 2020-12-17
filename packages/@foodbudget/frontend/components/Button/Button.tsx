@@ -1,12 +1,15 @@
 import styled from 'styled-components';
 
-export interface ButtonProps {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary';
   active?: boolean;
   inverse?: boolean;
+  showCloseIcon?: boolean;
 }
 
-const Button = styled.button<ButtonProps>((props) => ({
+const StyledButton = styled.button<ButtonProps>((props) => ({
+  position: 'relative',
   borderRadius: '19px',
   cursor: 'pointer',
   font: 'inherit',
@@ -70,11 +73,26 @@ const Button = styled.button<ButtonProps>((props) => ({
       borderColor: props.theme.colors.secondaryButtonDisabledBorder,
     },
   }),
+
+  ...(props.showCloseIcon && {
+    pointerEvents: 'none',
+    padding: '1rem 2.5rem 1rem 1rem',
+
+    ':after': {
+      content: `'X'`,
+      fontSize: props.theme.typography.xxsFont,
+      position: 'absolute',
+      pointerEvents: 'all',
+      right: '10px',
+      bottom: '12px',
+    },
+  }),
 }));
 
-Button.defaultProps = {
-  variant: 'primary',
-  active: true,
-};
+const Button: React.FC<ButtonProps> = ({
+  variant = 'primary',
+  active = true,
+  ...props
+}) => <StyledButton variant={variant} active={active} {...props} />;
 
 export default Button;

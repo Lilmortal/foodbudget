@@ -8,6 +8,7 @@ export interface DropdownProps {
    * overwrite placeholder as the selected value.
    */
   defaultValue?: string;
+  clearValueOnSelect?: boolean;
   values: string[];
   onSelect(element: React.SyntheticEvent<HTMLSelectElement, Event>): void;
 }
@@ -28,6 +29,8 @@ const Select = styled.select((props) => ({
 const Dropdown: React.FC<DropdownProps> = ({
   values,
   placeholder,
+  clearValueOnSelect,
+  defaultValue,
   onSelect,
 }) => {
   const [selectedValue, setSelectedValue] = useState<string>();
@@ -35,7 +38,11 @@ const Dropdown: React.FC<DropdownProps> = ({
   const onChange = (
     element: React.SyntheticEvent<HTMLSelectElement, Event>,
   ) => {
-    setSelectedValue(element.currentTarget.value);
+    if (clearValueOnSelect) {
+      setSelectedValue(placeholder);
+    } else {
+      setSelectedValue(element.currentTarget.value);
+    }
     onSelect(element);
   };
 
@@ -43,7 +50,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     <Select
       required
       onChange={onChange}
-      defaultValue={placeholder || values[0]}
+      defaultValue={placeholder || defaultValue || values[0]}
       value={selectedValue}
     >
       {placeholder && (
