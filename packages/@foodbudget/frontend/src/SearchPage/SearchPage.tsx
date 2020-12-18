@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { NormalizedCacheObject } from '@apollo/client';
 import { GetStaticProps } from 'next';
 import styled from 'styled-components';
-import { v4 } from 'uuid';
+
 import Button from '../../components/Button';
 import Dropdown from '../../components/Dropdown';
 import Textfield from '../../components/Textfield';
 import PageTemplate from '../../templates/page';
 import { initializeApollo } from '../lib/client';
+import IngredientList from './IngredientList';
 
 const SearchGrid = styled.div((props) => ({
   display: 'grid',
-  gridTemplateColumns: '10% 1fr 10%',
-  gridTemplateRows: '10% 1fr 30%',
+  gridTemplateColumns: '1fr 400px 1fr',
+  gridTemplateRows: '20% 1fr 20%',
   flexGrow: 1,
 
   ':before': {
@@ -30,7 +31,7 @@ const SearchGrid = styled.div((props) => ({
   },
 
   [props.theme.breakpoints.md]: {
-    gridTemplateColumns: '50% 2fr 1fr',
+    gridTemplateColumns: '60% 400px 1fr',
   },
 }));
 
@@ -61,6 +62,7 @@ const TextfieldWrapper = styled.div({
 const SubmitWrapper = styled.div({
   display: 'flex',
   justifyContent: 'center',
+  padding: '2rem 0 0 0',
 });
 
 const TipWrapper = styled.div({
@@ -70,40 +72,10 @@ const TipWrapper = styled.div({
 
 const Tip = styled.h6({});
 
-const IngredientListWrapper = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-});
-
-const IngredientList = styled.div({
-  display: 'flex',
-  flexWrap: 'wrap',
-});
-
-const IngredientButton = styled(Button)(({ theme }) => ({
-  margin: `0 ${theme.spacing.sm} ${theme.spacing.sm} 0`,
-}));
-
-const IngredientListHeader = styled.p(({ theme }) => ({
-  padding: '1rem 0',
-  color: theme.colors.secondaryText,
-}));
-
-const BudgetTextfieldWrapper = styled(TextfieldWrapper)({
-  position: 'relative',
-
-  ':before': {
-    content: `'$'`,
-    position: 'absolute',
-    left: '43px',
-    bottom: '4px',
-  },
-});
-
 const removeItem = (list: string[], value: string) =>
   list.filter((item) => item !== value);
 
-const App: React.FC<{}> = () => {
+const SearchPage: React.FC<{}> = () => {
   const [ingredientList, setIngredientList] = useState<string[]>([]);
 
   const onIngredientClose = (
@@ -134,9 +106,9 @@ const App: React.FC<{}> = () => {
         <SearchWrapper>
           <LabelTextfield>
             <Label>My weekly budget</Label>
-            <BudgetTextfieldWrapper>
-              <Textfield type="text" style={{ padding: '1rem 3.1rem' }} />
-            </BudgetTextfieldWrapper>
+            <TextfieldWrapper>
+              <Textfield type="text" placeholder="Place your budget in NZD" />
+            </TextfieldWrapper>
           </LabelTextfield>
 
           <LabelTextfield>
@@ -152,21 +124,11 @@ const App: React.FC<{}> = () => {
           </LabelTextfield>
 
           {ingredientList.length > 0 && (
-            <IngredientListWrapper>
-              <IngredientListHeader>Your ingredients</IngredientListHeader>
-              <IngredientList>
-                {ingredientList.map((ingredient: string) => (
-                  <IngredientButton
-                    key={`ingredient-${v4()}`}
-                    variant="secondary"
-                    showCloseIcon
-                    onClick={onIngredientClose}
-                  >
-                    {ingredient}
-                  </IngredientButton>
-                ))}
-              </IngredientList>
-            </IngredientListWrapper>
+            <IngredientList
+              header="Your ingredients"
+              ingredients={ingredientList}
+              onClose={onIngredientClose}
+            />
           )}
 
           <SubmitWrapper>
@@ -184,7 +146,7 @@ const App: React.FC<{}> = () => {
   );
 };
 
-export default App;
+export default SearchPage;
 
 interface IngredientOwnProps {
   initialApolloState: NormalizedCacheObject;

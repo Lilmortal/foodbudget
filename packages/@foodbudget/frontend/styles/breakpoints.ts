@@ -1,8 +1,8 @@
-const breakpointXs = '32rem';
-const breakpointSm = '36rem';
-const breakpointMd = '76.8rem';
-const breakpointLg = '102.4rem';
-const breakpointXl = '144rem';
+const breakpointXs = '32em';
+const breakpointSm = '36em';
+const breakpointMd = '76.8em';
+const breakpointLg = '102.4em';
+const breakpointXl = '144em';
 
 const print = `@media only print`;
 

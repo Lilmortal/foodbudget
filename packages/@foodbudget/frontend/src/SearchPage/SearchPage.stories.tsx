@@ -1,6 +1,5 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import SearchPage from './SearchPage';
 
-storiesOf('test', module).add('default', () => (
-  <div className="test">hmmm</div>
-));
+storiesOf('search page', module).add('default', () => <SearchPage />);
