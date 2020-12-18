@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { NormalizedCacheObject } from '@apollo/client';
 import { GetStaticProps } from 'next';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
+import { Formik, Form, ErrorMessage } from 'formik';
+import * as yup from 'yup';
 
 import Button from '../../components/Button';
 import Dropdown from '../../components/Dropdown';
@@ -57,6 +60,7 @@ const LabelTextfield = styled.div({
 const TextfieldWrapper = styled.div({
   display: 'flex',
   justifyContent: 'center',
+  flexDirection: 'column',
 });
 
 const SubmitWrapper = styled.div({
@@ -70,13 +74,39 @@ const TipWrapper = styled.div({
   justifyContent: 'center',
 });
 
+const ErrorMessageWrapper = styled.div({
+  color: 'red',
+  display: 'flex',
+});
+
+interface FormErrorMessageProps {
+  name: string;
+}
+
+const FormErrorMessage: React.FC<FormErrorMessageProps> = ({ name }) => (
+  <ErrorMessageWrapper>
+    <ErrorMessage name={name} />
+  </ErrorMessageWrapper>
+);
+
 const Tip = styled.h6({});
 
 const removeItem = (list: string[], value: string) =>
   list.filter((item) => item !== value);
 
+const schema = yup.object().shape({
+  budget: yup
+    .number()
+    .required('Please enter your budget.')
+    .positive('Please enter a valid positive number.')
+    .typeError('Please enter a valid number'),
+  ingredients: yup.array(),
+});
+
 const SearchPage: React.FC<{}> = () => {
   const [ingredientList, setIngredientList] = useState<string[]>([]);
+
+  const router = useRouter();
 
   const onIngredientClose = (
     element: React.SyntheticEvent<HTMLButtonElement, Event>,
@@ -104,42 +134,84 @@ const SearchPage: React.FC<{}> = () => {
     <PageTemplate>
       <SearchGrid>
         <SearchWrapper>
-          <LabelTextfield>
-            <Label>My weekly budget</Label>
-            <TextfieldWrapper>
-              <Textfield type="text" placeholder="Place your budget in NZD" />
-            </TextfieldWrapper>
-          </LabelTextfield>
+          <Formik
+            initialValues={{ budget: '', ingredients: [] }}
+            validationSchema={schema}
+            onSubmit={(values) => {
+              router.push({
+                pathname: '/meal-plan',
+                query: {
+                  budget: values.budget,
+                  ingredients: values.ingredients,
+                },
+              });
+            }}
+          >
+            {({ isSubmitting, handleChange, setFieldValue }) => {
+              const handleSelectIngredientChange = (
+                ingredient: React.SyntheticEvent<HTMLSelectElement, Event>,
+              ) => {
+                onSelectIngredient(ingredient);
 
-          <LabelTextfield>
-            <Label>I already have</Label>
-            <TextfieldWrapper>
-              <Dropdown
-                values={['test', 'hmmm']}
-                clearValueOnSelect
-                placeholder="ingredients"
-                onSelect={onSelectIngredient}
-              />
-            </TextfieldWrapper>
-          </LabelTextfield>
+                if (!ingredientList.includes(ingredient.currentTarget.value)) {
+                  setFieldValue('ingredients', [
+                    ...ingredientList,
+                    ingredient.currentTarget.value,
+                  ]);
+                }
+              };
 
-          {ingredientList.length > 0 && (
-            <IngredientList
-              header="Your ingredients"
-              ingredients={ingredientList}
-              onClose={onIngredientClose}
-            />
-          )}
+              return (
+                <Form>
+                  <LabelTextfield>
+                    <Label>My weekly budget</Label>
+                    <TextfieldWrapper>
+                      <Textfield
+                        type="text"
+                        name="budget"
+                        onChange={handleChange}
+                        placeholder="Place your budget in NZD"
+                      />
+                      <FormErrorMessage name="budget" />
+                    </TextfieldWrapper>
+                  </LabelTextfield>
 
-          <SubmitWrapper>
-            <Button type="submit">Create weekly plan</Button>
-          </SubmitWrapper>
+                  <LabelTextfield>
+                    <Label>I already have</Label>
+                    <TextfieldWrapper>
+                      <Dropdown
+                        name="ingredients"
+                        values={['test', 'hmmm']}
+                        clearValueOnSelect
+                        placeholder="ingredients"
+                        onChange={handleSelectIngredientChange}
+                      />
+                    </TextfieldWrapper>
+                  </LabelTextfield>
 
-          {ingredientList.length === 0 && (
-            <TipWrapper>
-              <Tip>Tip...</Tip>
-            </TipWrapper>
-          )}
+                  {ingredientList.length > 0 && (
+                    <IngredientList
+                      header="Your ingredients"
+                      ingredients={ingredientList}
+                      onClose={onIngredientClose}
+                    />
+                  )}
+
+                  <SubmitWrapper>
+                    <Button type="submit" disabled={isSubmitting}>
+                      Create weekly plan
+                    </Button>
+                  </SubmitWrapper>
+
+                  {ingredientList.length === 0 && (
+                    <TipWrapper>
+                      <Tip>Tip...</Tip>
+                    </TipWrapper>
+                  )}
+                </Form>
+              );
+            }}
+          </Formik>
         </SearchWrapper>
       </SearchGrid>
     </PageTemplate>

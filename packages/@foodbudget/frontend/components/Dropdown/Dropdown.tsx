@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { v4 } from 'uuid';
 
-export interface DropdownProps {
+export interface DropdownProps
+  extends React.SelectHTMLAttributes<HTMLSelectElement> {
   placeholder?: string;
   /**
    * overwrite placeholder as the selected value.
@@ -10,7 +11,7 @@ export interface DropdownProps {
   defaultValue?: string;
   clearValueOnSelect?: boolean;
   values: string[];
-  onSelect(element: React.SyntheticEvent<HTMLSelectElement, Event>): void;
+  onChange(element: React.SyntheticEvent<HTMLSelectElement, Event>): void;
 }
 
 const Option = styled.option((props) => ({
@@ -37,11 +38,12 @@ const Dropdown: React.FC<DropdownProps> = ({
   placeholder,
   clearValueOnSelect,
   defaultValue,
-  onSelect,
+  onChange,
+  ...props
 }) => {
   const [selectedValue, setSelectedValue] = useState<string>();
 
-  const onChange = (
+  const handleOnChange = (
     element: React.SyntheticEvent<HTMLSelectElement, Event>,
   ) => {
     if (clearValueOnSelect) {
@@ -49,15 +51,16 @@ const Dropdown: React.FC<DropdownProps> = ({
     } else {
       setSelectedValue(element.currentTarget.value);
     }
-    onSelect(element);
+    onChange(element);
   };
 
   return (
     <Select
       required
-      onChange={onChange}
+      onChange={handleOnChange}
       defaultValue={placeholder || defaultValue || values[0]}
       value={selectedValue}
+      {...props}
     >
       {placeholder && (
         <Option disabled aria-disabled hidden>

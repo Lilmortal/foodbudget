@@ -25,9 +25,11 @@
     "autoprefixer": "^10.0.1",
     "classnames": "^2.2.6",
     "find-config": "^1.0.0",
+    "formik": "^2.2.6",
     "graphql": "^15.4.0",
     "next": "^10.0.0",
-    "styled-components": "^5.2.1"
+    "styled-components": "^5.2.1",
+    "yup": "^0.32.8"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.19.1",
