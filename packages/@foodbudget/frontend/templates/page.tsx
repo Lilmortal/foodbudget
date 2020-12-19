@@ -8,10 +8,7 @@ const Header = styled.header({
   padding: '2rem 3rem',
 });
 
-const PageBody = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
+const PageBody = styled.body({
   backgroundImage: "url('background.jpg')",
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',

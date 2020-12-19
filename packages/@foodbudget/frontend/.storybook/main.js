@@ -6,5 +6,5 @@ module.exports = {
     '@storybook/addon-a11y/register',
     '@storybook/addon-viewport/register',
   ],
-  stories: ['../src/**/*.stories.tsx'],
+  stories: ['../src/**/*.stories.tsx', '../components/**/*.stories.tsx'],
 };

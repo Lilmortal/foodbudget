@@ -24,12 +24,11 @@ const SearchGrid = styled.div((props) => ({
 
     [props.theme.breakpoints.md]: {
       content: `''`,
-      width: '50%',
-      height: '100%',
-      backgroundSize: 'cover',
       backgroundImage: "url('/pizza.webp')",
       backgroundRepeat: 'no-repeat',
-      position: 'absolute',
+      display: 'grid',
+      gridRow: '1/-1',
+      gridColumn: 1,
     },
   },
 
