@@ -3,7 +3,6 @@ import { NormalizedCacheObject } from '@apollo/client';
 import { GetStaticProps } from 'next';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
-import { Formik, Form, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 
 import Button from '../../components/Button';
@@ -12,6 +11,7 @@ import Textfield from '../../components/Textfield';
 import PageTemplate from '../../templates/page';
 import { initializeApollo } from '../lib/client';
 import IngredientList from './IngredientList';
+import { ErrorMessage, Form, Formik } from '../../components/form';
 
 const SearchGrid = styled.div((props) => ({
   display: 'grid',
@@ -43,7 +43,6 @@ const SearchWrapper = styled.div({
   gridColumn: 2,
   gridRow: 2,
   padding: '1rem',
-  alignItems: 'center',
 });
 
 const Label = styled.label({
@@ -90,6 +89,13 @@ const FormErrorMessage: React.FC<FormErrorMessageProps> = ({ name }) => (
 );
 
 const Tip = styled.h6({});
+
+const PageForm = styled(Form)({
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+  justifyContent: 'space-evenly',
+});
 
 const removeItem = (list: string[], value: string) =>
   list.filter((item) => item !== value);
@@ -162,7 +168,7 @@ const SearchPage: React.FC<{}> = () => {
               };
 
               return (
-                <Form>
+                <PageForm>
                   <LabelTextfield>
                     <Label>My weekly budget</Label>
                     <TextfieldWrapper>
@@ -172,7 +178,7 @@ const SearchPage: React.FC<{}> = () => {
                         onChange={handleChange}
                         placeholder="Place your budget in NZD"
                       />
-                      <FormErrorMessage name="budget" />
+                      <ErrorMessage name="budget" />
                     </TextfieldWrapper>
                   </LabelTextfield>
 
@@ -181,7 +187,14 @@ const SearchPage: React.FC<{}> = () => {
                     <TextfieldWrapper>
                       <Dropdown
                         name="ingredients"
-                        values={['test', 'hmmm']}
+                        values={[
+                          'fish',
+                          'chicken',
+                          'pork',
+                          'beef',
+                          'dog',
+                          'cat',
+                        ]}
                         clearValueOnSelect
                         placeholder="ingredients"
                         onChange={handleSelectIngredientChange}
@@ -208,7 +221,7 @@ const SearchPage: React.FC<{}> = () => {
                       <Tip>Tip...</Tip>
                     </TipWrapper>
                   )}
-                </Form>
+                </PageForm>
               );
             }}
           </Formik>

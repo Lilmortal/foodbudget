@@ -44,6 +44,11 @@ const StyledButton = styled.button<ButtonProps>((props) => ({
     borderColor: props.theme.colors.primaryButtonDisabledBorder,
   },
 
+  ':active': {
+    boxShadow:
+      'inset 4px 4px 5px rgba(114, 58, 179, 0.1), inset -4px -4px 5px rgba(114, 58, 179, 0.1)',
+  },
+
   ...(props.variant === 'secondary' && {
     backgroundColor: props.inverse
       ? props.theme.colors.secondaryButtonFill

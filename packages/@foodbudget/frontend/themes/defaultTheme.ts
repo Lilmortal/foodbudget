@@ -25,6 +25,8 @@ export interface ColorTheme {
   secondaryButtonHoverFill: string;
   secondaryButtonHoverText: string;
   secondaryButtonHoverBorder: string;
+  white: string;
+  black: string;
 }
 
 export interface Theme {
@@ -37,7 +39,7 @@ export interface Theme {
 const colors: ColorTheme = {
   primaryFill: colorPalette.blueChill,
   primaryBorder: colorPalette.blueChill,
-  secondaryText: colorPalette.hitGray,
+  secondaryText: colorPalette.limedSpruce,
   primaryButtonFill: colorPalette.blueChill,
   primaryButtonText: colorPalette.white,
   primaryButtonBorder: colorPalette.blueChill,
@@ -56,6 +58,8 @@ const colors: ColorTheme = {
   secondaryButtonHoverFill: colorPalette.tulipTree,
   secondaryButtonHoverText: colorPalette.white,
   secondaryButtonHoverBorder: colorPalette.tulipTree,
+  white: colorPalette.white,
+  black: colorPalette.black,
 };
 
 const defaultTheme: Theme = {

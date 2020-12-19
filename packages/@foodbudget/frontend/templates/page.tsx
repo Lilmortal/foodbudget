@@ -12,6 +12,9 @@ const PageBody = styled.div({
   display: 'flex',
   flexDirection: 'column',
   flexGrow: 1,
+  backgroundImage: "url('background.jpg')",
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
 });
 
 const Wrapper = styled.div({
