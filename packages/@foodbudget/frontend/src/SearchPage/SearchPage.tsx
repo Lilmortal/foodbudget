@@ -73,22 +73,7 @@ const TipWrapper = styled.div({
   justifyContent: 'center',
 });
 
-const ErrorMessageWrapper = styled.div({
-  color: 'red',
-  display: 'flex',
-});
-
-interface FormErrorMessageProps {
-  name: string;
-}
-
-const FormErrorMessage: React.FC<FormErrorMessageProps> = ({ name }) => (
-  <ErrorMessageWrapper>
-    <ErrorMessage name={name} />
-  </ErrorMessageWrapper>
-);
-
-const Tip = styled.h6({});
+const Tip = styled.p({});
 
 const PageForm = styled(Form)({
   display: 'flex',

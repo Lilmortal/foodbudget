@@ -7,6 +7,7 @@ export interface ColorTheme {
   primaryFill: string;
   primaryBorder: string;
   secondaryText: string;
+  errorText: string;
   primaryButtonFill: string;
   primaryButtonText: string;
   primaryButtonBorder: string;
@@ -40,6 +41,7 @@ const colors: ColorTheme = {
   primaryFill: colorPalette.blueChill,
   primaryBorder: colorPalette.blueChill,
   secondaryText: colorPalette.limedSpruce,
+  errorText: colorPalette.alizarinCrimson,
   primaryButtonFill: colorPalette.blueChill,
   primaryButtonText: colorPalette.white,
   primaryButtonBorder: colorPalette.blueChill,
