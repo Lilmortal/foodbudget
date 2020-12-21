@@ -1,5 +1,11 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import Autocomplete from './Autocomplete';
+import { action } from '@storybook/addon-actions';
+import AutoComplete from './AutoComplete';
 
-storiesOf('auto complete', module).add('default', () => <Autocomplete />);
+storiesOf('auto complete', module).add('default', () => (
+  <AutoComplete
+    onSuggestionSelect={action('onSuggestionSelect')}
+    suggestions={['ingredient1', 'ingredient2', 'ingredient3']}
+  />
+));

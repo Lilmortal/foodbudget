@@ -37,6 +37,7 @@ const IngredientList: React.FC<IngredientListProps> = ({
     <StyledIngredientList>
       {ingredients.map((ingredient: string) => (
         <IngredientButton
+          type="button"
           key={`ingredient-${v4()}`}
           variant="secondary"
           showCloseIcon

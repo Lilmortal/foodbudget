@@ -2,7 +2,7 @@ import { useQuery, gql, NormalizedCacheObject } from '@apollo/client';
 import { GetStaticProps } from 'next';
 import { useState } from 'react';
 import Button from '../../components/Button';
-import PageTemplate from '../../templates/page';
+import PageTemplate from '../templates/Page';
 import { initializeApollo } from '../lib/client';
 import { IngredientEdge, Maybe, Query } from '../__generated__/schema';
 

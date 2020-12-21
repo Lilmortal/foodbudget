@@ -1,5 +1,9 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import SearchPage from './SearchPage';
+import SearchPageContainer from './SearchPage';
 
-storiesOf('search page', module).add('default', () => <SearchPage />);
+const suggestions = ['ingredient1', 'ingredient2', 'ingredient3', 'fish'];
+
+storiesOf('search page', module).add('default', () => (
+  <SearchPageContainer suggestions={suggestions} />
+));

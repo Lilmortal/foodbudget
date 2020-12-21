@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import Button from '../components/Button';
-import Logo from '../components/Logo';
+import styled, { createGlobalStyle } from 'styled-components';
+import Button from '../../components/Button';
+import Logo from '../../components/Logo';
 
 const Header = styled.header({
   display: 'flex',
@@ -8,10 +8,12 @@ const Header = styled.header({
   padding: '2rem 3rem',
 });
 
-const PageBody = styled.body({
-  backgroundImage: "url('background.jpg')",
-  backgroundRepeat: 'no-repeat',
-  backgroundSize: 'cover',
+const Body = createGlobalStyle({
+  body: {
+    backgroundImage: "url('background.jpg')",
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+  },
 });
 
 const Wrapper = styled.div({
@@ -25,7 +27,7 @@ const ButtonWrapper = styled.div({
 });
 
 const PageTemplate: React.FC<{}> = ({ children }) => (
-  <PageBody>
+  <>
     <Header>
       <Logo src="logo.svg" />
       <ButtonWrapper>
@@ -38,8 +40,9 @@ const PageTemplate: React.FC<{}> = ({ children }) => (
         </Button>
       </ButtonWrapper>
     </Header>
+    <Body />
     <Wrapper>{children}</Wrapper>
-  </PageBody>
+  </>
 );
 
 export default PageTemplate;

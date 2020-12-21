@@ -8,17 +8,23 @@
     ],
     "jsx": "preserve",
     "noEmit": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "test-utils": ["./utils/test-utils"]
+    }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "./src/**/*",
-    "./pages/**/*"
+    "./pages/**/*", 
+    "./themes/**/*",
+    "./styles/**/*",
+    "./utils/**/*"  
   ],
   "exclude": [
-    "**/*.test.*",
     "**/*.ispec.*",
     "node_modules",
     "**/*.cy.ts"

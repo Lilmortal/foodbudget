@@ -43,6 +43,7 @@
     "@testing-library/jest-dom": "^5.11.5",
     "@testing-library/react": "^11.1.0",
     "@testing-library/react-hooks": "^3.4.2",
+    "@testing-library/user-event": "^12.6.0",
     "@types/classnames": "^2.2.11",
     "@types/styled-components": "^5.1.5",
     "@types/testing-library__react": "^10.2.0",

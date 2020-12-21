@@ -12,17 +12,26 @@ import { serviceManager } from './serviceManager';
 import { authRoutes, socialTokenStrategyHandler } from './auth';
 
 const pageNotFoundHandler = () => {
-  throw new AppError({ message: 'Page not found', isOperational: true, httpStatus: 404 });
+  throw new AppError({
+    message: 'Page not found',
+    isOperational: true,
+    httpStatus: 404,
+  });
 };
 
 const errorHandler = async (
   // eslint-disable-next-line consistent-return
-  err: unknown, _req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+  err: unknown,
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<Response | undefined> => {
   if (err instanceof AppError && ErrorHandler.isOperational(err)) {
     return res.status(err.httpStatus || 500).json({ error: err.message });
   }
 
   next(err);
+  return undefined;
 };
 
 const obs = new PerformanceObserver((list) => {
@@ -37,11 +46,13 @@ const app = express();
 app.use(cookieParser());
 app.disable('x-powered-by');
 
-app.use(cors({
-  origin: 'http://localhost:3000',
-  optionsSuccessStatus: 200,
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200,
+    credentials: true,
+  }),
+);
 
 server.applyMiddleware({ app, path: config.api.prefix, cors: false });
 
@@ -49,12 +60,25 @@ app.get('/healthcheck', (_req, res) => {
   res.status(200).send('Application is working perfectly!');
 });
 
-app.use(socialTokenStrategyHandler({ googleConfig: config.google, facebookConfig: config.facebook }));
+app.use(
+  socialTokenStrategyHandler({
+    googleConfig: config.google,
+    facebookConfig: config.facebook,
+  }),
+);
 app.use(passport.initialize());
-app.use('/v1/auth', authRoutes({
-  tokenServices: serviceManager.tokenServices, authServices: serviceManager.authServices, env: config.env }));
+app.use(
+  '/v1/auth',
+  authRoutes({
+    tokenServices: serviceManager.tokenServices,
+    authServices: serviceManager.authServices,
+    env: config.env,
+  }),
+);
 
 app.use(pageNotFoundHandler);
 app.use(errorHandler);
 
-app.listen(config.api.port, () => logger.info(colors.cyan(`App is now running at port ${config.api.port}`)));
+app.listen(config.api.port, () =>
+  logger.info(colors.cyan(`App is now running at port ${config.api.port}`)),
+);

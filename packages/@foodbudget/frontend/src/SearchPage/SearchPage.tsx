@@ -6,12 +6,12 @@ import { useRouter } from 'next/router';
 import * as yup from 'yup';
 
 import Button from '../../components/Button';
-import Dropdown from '../../components/Dropdown';
 import Textfield from '../../components/Textfield';
-import PageTemplate from '../../templates/page';
+import PageTemplate from '../templates/Page';
 import { initializeApollo } from '../lib/client';
 import IngredientList from './IngredientList';
 import { ErrorMessage, Form, Formik } from '../../components/form';
+import AutoComplete from '../../components/AutoComplete';
 
 const SearchGrid = styled.div((props) => ({
   display: 'grid',
@@ -70,6 +70,7 @@ const SubmitWrapper = styled.div({
 const TipWrapper = styled.div({
   display: 'flex',
   justifyContent: 'center',
+  paddingTop: '2rem',
 });
 
 const Tip = styled.p({});
@@ -87,36 +88,35 @@ const removeItem = (list: string[], value: string) =>
 const schema = yup.object().shape({
   budget: yup
     .number()
-    .required('Please enter your budget.')
-    .positive('Please enter a valid positive number.')
+    .required('Please enter your budget')
+    .positive('Please enter a valid positive number')
     .typeError('Please enter a valid number'),
   ingredients: yup.array(),
 });
 
-const SearchPage: React.FC<{}> = () => {
-  const [ingredientList, setIngredientList] = useState<string[]>([]);
+export interface SearchPageProps {
+  onSubmit(values: { budget: string; ingredients: string[] }): void;
+  suggestions: string[];
+}
 
-  const router = useRouter();
+export const SearchPage: React.FC<SearchPageProps> = ({
+  onSubmit,
+  suggestions,
+}) => {
+  const [ingredientList, setIngredientList] = useState<string[]>([]);
 
   const onIngredientClose = (
     element: React.SyntheticEvent<HTMLButtonElement, Event>,
   ) => {
-    const value = element.currentTarget.innerText;
+    const value =
+      element.currentTarget.textContent || element.currentTarget.innerText;
+
     if (ingredientList.includes(value)) {
       setIngredientList(removeItem(ingredientList, value));
     } else {
       throw new Error(
-        `Attempt to throw an ingredient ${value} that is not found on the ingredient list.`,
+        `Attempt to close ingredient ${value} that is not found on the ingredient list.`,
       );
-    }
-  };
-
-  const onSelectIngredient = (
-    element: React.SyntheticEvent<HTMLSelectElement, Event>,
-  ) => {
-    const ingredient = element.currentTarget.value;
-    if (!ingredientList.includes(ingredient)) {
-      setIngredientList([...ingredientList, ingredient]);
     }
   };
 
@@ -128,37 +128,25 @@ const SearchPage: React.FC<{}> = () => {
             initialValues={{ budget: '', ingredients: [] }}
             validationSchema={schema}
             onSubmit={(values) => {
-              router.push({
-                pathname: '/meal-plan',
-                query: {
-                  budget: values.budget,
-                  ingredients: values.ingredients,
-                },
-              });
+              onSubmit(values);
             }}
           >
             {({ isSubmitting, handleChange, setFieldValue }) => {
-              const handleSelectIngredientChange = (
-                ingredient: React.SyntheticEvent<HTMLSelectElement, Event>,
-              ) => {
-                onSelectIngredient(ingredient);
-
-                if (!ingredientList.includes(ingredient.currentTarget.value)) {
-                  setFieldValue('ingredients', [
-                    ...ingredientList,
-                    ingredient.currentTarget.value,
-                  ]);
+              const handleSelectedIngredient = (ingredient: string) => {
+                if (!ingredientList.includes(ingredient)) {
+                  setIngredientList([...ingredientList, ingredient]);
+                  setFieldValue('ingredients', [...ingredientList, ingredient]);
                 }
               };
 
               return (
                 <PageForm>
                   <LabelTextfield>
-                    <Label>My weekly budget</Label>
+                    <Label htmlFor="budget">My weekly budget</Label>
                     <TextfieldWrapper>
                       <Textfield
                         type="text"
-                        name="budget"
+                        id="budget"
                         onChange={handleChange}
                         placeholder="Place your budget in NZD"
                       />
@@ -167,21 +155,12 @@ const SearchPage: React.FC<{}> = () => {
                   </LabelTextfield>
 
                   <LabelTextfield>
-                    <Label>I already have</Label>
+                    <Label htmlFor="ingredients">I already have</Label>
                     <TextfieldWrapper>
-                      <Dropdown
-                        name="ingredients"
-                        values={[
-                          'fish',
-                          'chicken',
-                          'pork',
-                          'beef',
-                          'dog',
-                          'cat',
-                        ]}
-                        clearValueOnSelect
-                        placeholder="ingredients"
-                        onChange={handleSelectIngredientChange}
+                      <AutoComplete
+                        id="ingredients"
+                        suggestions={suggestions}
+                        onSuggestionSelect={handleSelectedIngredient}
                       />
                     </TextfieldWrapper>
                   </LabelTextfield>
@@ -195,7 +174,7 @@ const SearchPage: React.FC<{}> = () => {
                   )}
 
                   <SubmitWrapper>
-                    <Button type="submit" disabled={isSubmitting}>
+                    <Button disabled={isSubmitting} type="submit">
                       Create weekly plan
                     </Button>
                   </SubmitWrapper>
@@ -215,10 +194,32 @@ const SearchPage: React.FC<{}> = () => {
   );
 };
 
-export default SearchPage;
+export interface SearchPageContainerProps {
+  suggestions: string[];
+}
+
+const SearchPageContainer: React.FC<SearchPageContainerProps> = ({
+  suggestions,
+}) => {
+  const router = useRouter();
+  const onSubmit = (values: { budget: string; ingredients: string[] }) => {
+    router.push({
+      pathname: '/meal-plan',
+      query: {
+        budget: values.budget,
+        ingredients: values.ingredients.join(','),
+      },
+    });
+  };
+
+  return <SearchPage onSubmit={onSubmit} suggestions={suggestions} />;
+};
+
+export default SearchPageContainer;
 
 interface IngredientOwnProps {
   initialApolloState: NormalizedCacheObject;
+  suggestions: string[];
 }
 
 export const getStaticProps: GetStaticProps = async (): Promise<{
@@ -226,9 +227,12 @@ export const getStaticProps: GetStaticProps = async (): Promise<{
 }> => {
   const apolloClient = initializeApollo();
 
+  const suggestions = ['test', 'lala', 'degr', 'efgdg', 'freg', 'fregssss'];
+
   return {
     props: {
       initialApolloState: apolloClient.cache.extract(),
+      suggestions,
     },
   };
 };
