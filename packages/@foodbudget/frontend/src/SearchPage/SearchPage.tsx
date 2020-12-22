@@ -147,6 +147,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
                       <Textfield
                         type="text"
                         id="budget"
+                        data-cy="budgetInput"
                         onChange={handleChange}
                         placeholder="Place your budget in NZD"
                       />
@@ -159,6 +160,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({
                     <TextfieldWrapper>
                       <AutoComplete
                         id="ingredients"
+                        data-cy="ingredientsInput"
                         suggestions={suggestions}
                         onSuggestionSelect={handleSelectedIngredient}
                       />
