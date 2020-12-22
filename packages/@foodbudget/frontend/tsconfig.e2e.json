@@ -1,8 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "baseUrl": "../../node_modules",
     "types": ["cypress", "cypress-plugin-snapshots"]
   },
-  "include": ["**/*.cy.ts"],
-  "exclude": []
+  "include": ["./node_modules/cypress", "**/*.e2e.ts"]
 }

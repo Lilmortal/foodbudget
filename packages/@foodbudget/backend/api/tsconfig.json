@@ -5,6 +5,12 @@
     "composite": true,
   },
   "include": ["./src/**/*"],
+  "exclude": [
+    "**/*.test.*",
+    "**/*.ispec.*",
+    "node_modules",
+    "**/*.cy.ts"
+  ],
   "references": [
     { "path": "../email" },
     { "path": "../errors" },
