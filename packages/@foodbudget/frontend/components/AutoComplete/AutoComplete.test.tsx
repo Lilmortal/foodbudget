@@ -1,6 +1,6 @@
 import { fireEvent, render, RenderResult, screen } from 'test-utils';
 import userEvent from '@testing-library/user-event';
-import Autocomplete, { AutoCompleteProps } from './AutoComplete';
+import AutoComplete, { AutoCompleteProps } from './AutoComplete';
 
 const defaultProps: AutoCompleteProps = {
   onSuggestionSelect: jest.fn(),
@@ -9,7 +9,7 @@ const defaultProps: AutoCompleteProps = {
 };
 
 const renderAutocomplete = (props?: Partial<AutoCompleteProps>): RenderResult =>
-  render(<Autocomplete {...defaultProps} {...props} />);
+  render(<AutoComplete {...defaultProps} {...props} />);
 
 describe('auto complete', () => {
   afterEach(() => {
