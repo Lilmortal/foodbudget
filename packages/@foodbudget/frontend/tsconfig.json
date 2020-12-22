@@ -25,8 +25,7 @@
     "./utils/**/*"  
   ],
   "exclude": [
-    "**/*.ispec.*",
-    "node_modules",
-    "**/*.cy.ts"
+    "**/*.e2e.*",
+    "node_modules"
   ]
 }
