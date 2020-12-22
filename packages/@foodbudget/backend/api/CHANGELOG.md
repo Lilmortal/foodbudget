@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.4.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@5.3.3...@foodbudget/api@5.4.0) (2020-12-22)
+
+
+### Features
+
+* added AutoComplete component ([04ddb1f](https://github.com/Lilmortal/foodbudget/commit/04ddb1fd3ffc4087ec7c1adf70da0cf0aebe3b6a))
+* append ingredient to ingredient list when selected ([d706e23](https://github.com/Lilmortal/foodbudget/commit/d706e2308f48e4000ad810b9e15cc6f5fdb2e2d2))
+
+
+
+
+
 ## [5.3.3](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/api@5.3.2...@foodbudget/api@5.3.3) (2020-11-25)
 
 **Note:** Version bump only for package @foodbudget/api
