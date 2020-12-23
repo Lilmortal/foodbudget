@@ -8,7 +8,7 @@
   "scripts": {
     "start": "next dev",
     "build:schema": "graphql-codegen --config codegen.yml",
-    "build:next": "next build",
+    "build:next": "next build && next export",
     "build": "run-p -c 'build:*'",
     "test": "jest --watch",
     "test:unit": "jest",

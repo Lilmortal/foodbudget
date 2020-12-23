@@ -4,7 +4,11 @@ WORKDIR /src/app
 
 COPY package.json /src/app/package.json
 COPY lerna.json /src/app/lerna.json
-COPY ./packages/@foodbudget/ /src/app/packages/@foodbudget/
+COPY ./packages/@foodbudget/backend/api/ /src/app/packages/@foodbudget/backend/api/
+COPY ./packages/@foodbudget/backend/errors/ /src/app/packages/@foodbudget/backend/errors/
+COPY ./packages/@foodbudget/backend/logger/ /src/app/packages/@foodbudget/backend/logger/
+COPY ./packages/@foodbudget/backend/email/ /src/app/packages/@foodbudget/backend/email/
+COPY ./packages/@foodbudget/frontend/tsconfig.json /src/app/packages/@foodbudget/frontend/
 
 RUN yarn
 

@@ -1,3 +1,7 @@
+provider "aws" {
+  region = var.aws_region
+}
+
 terraform {
   required_version = "~> 0.12"
   # Set terraform state, do not change it if you do not know what it is.
