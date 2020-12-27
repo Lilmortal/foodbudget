@@ -3,7 +3,6 @@ import styled from 'styled-components';
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary';
-  active?: boolean;
   inverse?: boolean;
   showCloseIcon?: boolean;
 }
@@ -95,10 +94,8 @@ const StyledButton = styled.button<ButtonProps>((props) => ({
   }),
 }));
 
-const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  active = true,
-  ...props
-}) => <StyledButton variant={variant} active={active} {...props} />;
+const Button: React.FC<ButtonProps> = ({ variant = 'primary', ...props }) => (
+  <StyledButton variant={variant} {...props} />
+);
 
 export default Button;

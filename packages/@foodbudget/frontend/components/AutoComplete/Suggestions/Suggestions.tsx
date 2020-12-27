@@ -33,6 +33,7 @@ const SuggestionList = styled.ul<SuggestionListProps>((props) => ({
   borderRadius: '5px',
   backgroundColor: props.theme.colors.white,
   boxShadow: '4px -4px 5px rgba(2, 0, 185, 0.1)',
+  maxWidth: '400px',
 }));
 
 const Suggestions: React.FC<SuggestionsProps> = ({
