@@ -19,6 +19,13 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['@typescript-eslint'],
+  settings: {
+    'import/resolver': {
+      typescript: {
+        project: ['packages/@foodbudget/*/tsconfig.json'],
+      },
+    },
+  },
   rules: {
     'import/extensions': [
       'error',

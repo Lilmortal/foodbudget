@@ -82,7 +82,7 @@ const StyledButton = styled.button<ButtonProps>((props) => ({
   ...(props.showCloseIcon && {
     position: 'relative',
     pointerEvents: 'none',
-    padding: '1rem 2.5rem 1rem 1rem',
+    padding: '1rem 3.5rem 1rem 1rem',
 
     ':after': {
       content: `'X'`,
@@ -90,7 +90,7 @@ const StyledButton = styled.button<ButtonProps>((props) => ({
       position: 'absolute',
       pointerEvents: 'all',
       right: '10px',
-      bottom: '12px',
+      bottom: '13px',
     },
   }),
 }));

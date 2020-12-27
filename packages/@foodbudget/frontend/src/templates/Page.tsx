@@ -1,6 +1,6 @@
 import styled, { createGlobalStyle } from 'styled-components';
-import Button from '../../components/Button';
-import Logo from '../../components/Logo';
+import Button from 'components/Button';
+import Logo from 'components/Logo';
 
 const Header = styled.header({
   display: 'flex',
@@ -10,7 +10,7 @@ const Header = styled.header({
 
 const Body = createGlobalStyle({
   body: {
-    backgroundImage: "url('background.jpg')",
+    backgroundImage: "url('background.webp')",
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
   },

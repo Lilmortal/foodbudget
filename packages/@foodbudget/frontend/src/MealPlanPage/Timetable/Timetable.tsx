@@ -10,9 +10,10 @@ const Grid = styled.div({
   padding: '1rem',
 });
 
-const Table = styled.div((props) => ({
-  border: `1px solid ${props.theme.colors.black}`,
+const Table = styled.div(({ theme }) => ({
+  border: `1px solid ${theme.colors.black}`,
   padding: '30rem',
+  backgroundColor: theme.colors.white,
 }));
 
 const Timetable: React.FC<TimetableProps> = ({
