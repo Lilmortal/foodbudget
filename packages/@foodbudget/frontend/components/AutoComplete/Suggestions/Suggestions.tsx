@@ -35,7 +35,7 @@ const SuggestionList = styled.ul<SuggestionListProps>((props) => ({
   boxShadow: '4px -4px 5px rgba(2, 0, 185, 0.1)',
 }));
 
-const Suggestios: React.FC<SuggestionsProps> = ({
+const Suggestions: React.FC<SuggestionsProps> = ({
   suggestions,
   onSuggestionSelect,
 }) => {
@@ -47,13 +47,29 @@ const Suggestios: React.FC<SuggestionsProps> = ({
     );
   };
 
-  const handleOnEnterPress = (
-    element:
+  const handleKeyPress = (
+    event:
       | React.KeyboardEvent<HTMLLIElement>
       | React.KeyboardEvent<HTMLInputElement>,
   ) => {
-    if (element.key === 'Enter') {
-      onSuggestionSelect(element.currentTarget.innerText);
+    if (event.key === 'ArrowUp') {
+      if (event.currentTarget.previousElementSibling) {
+        (event.currentTarget.previousElementSibling as HTMLLIElement)?.focus();
+      } else {
+        (event.currentTarget.parentNode?.lastChild as HTMLLIElement)?.focus();
+      }
+    }
+
+    if (event.key === 'ArrowDown') {
+      if (event.currentTarget.nextSibling) {
+        (event.currentTarget.nextSibling as HTMLLIElement).focus();
+      } else {
+        (event.currentTarget.parentNode?.firstChild as HTMLLIElement)?.focus();
+      }
+    }
+
+    if (event.key === 'Enter') {
+      onSuggestionSelect(event.currentTarget.innerText);
     }
   };
 
@@ -64,7 +80,7 @@ const Suggestios: React.FC<SuggestionsProps> = ({
           tabIndex={0}
           key={`suggestion-${v4()}`}
           onClick={handleOnClick}
-          onKeyUp={handleOnEnterPress}
+          onKeyUp={handleKeyPress}
         >
           {suggestion}
         </SuggestionOption>
@@ -73,4 +89,4 @@ const Suggestios: React.FC<SuggestionsProps> = ({
   );
 };
 
-export default Suggestios;
+export default Suggestions;

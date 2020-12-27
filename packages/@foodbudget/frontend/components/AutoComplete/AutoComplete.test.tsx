@@ -1,4 +1,4 @@
-import { fireEvent, render, RenderResult, screen } from 'test-utils';
+import { render, RenderResult, screen } from 'test-utils';
 import userEvent from '@testing-library/user-event';
 import AutoComplete, { AutoCompleteProps } from './AutoComplete';
 
@@ -52,11 +52,9 @@ describe('auto complete', () => {
 
       const input = screen.getByRole('textbox');
 
-      userEvent.type(input, 'po');
+      userEvent.type(input, 'po{enter}');
 
-      fireEvent.keyDown(input, { key: 'Enter', keyCode: 13 });
-
-      expect(defaultProps.onSuggestionSelect).toBeCalledTimes(1);
+      expect(defaultProps.onSuggestionSelect).toBeCalledWith('pork');
     });
 
     it(
@@ -67,9 +65,7 @@ describe('auto complete', () => {
 
         const input = screen.getByRole('textbox');
 
-        userEvent.type(input, 'fi');
-
-        fireEvent.keyDown(input, { key: 'Enter', keyCode: 13 });
+        userEvent.type(input, 'fi{enter}');
 
         expect(defaultProps.onSuggestionSelect).not.toBeCalled();
       },
@@ -80,11 +76,9 @@ describe('auto complete', () => {
 
       const input = screen.getByRole('textbox');
 
-      userEvent.type(input, 'fish');
+      userEvent.type(input, 'fish{enter}');
 
-      fireEvent.keyDown(input, { key: 'Enter', keyCode: 13 });
-
-      expect(defaultProps.onSuggestionSelect).toBeCalledTimes(1);
+      expect(defaultProps.onSuggestionSelect).toBeCalledWith('fish');
     });
   });
 });

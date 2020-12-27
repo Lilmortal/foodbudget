@@ -236,6 +236,9 @@ export const getStaticProps: GetStaticProps = async (): Promise<{
     'efgdg',
     'freg',
     'fregssss',
+    'frgdxgt',
+    'frrhrtht',
+    'frdryhyhh',
     'Tex-Mex',
   ];
 
