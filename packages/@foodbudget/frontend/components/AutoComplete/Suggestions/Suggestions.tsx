@@ -71,6 +71,8 @@ const Suggestions: React.FC<SuggestionsProps> = ({
     if (event.key === 'Enter') {
       onSuggestionSelect(event.currentTarget.innerText);
     }
+
+    event.preventDefault();
   };
 
   return (
