@@ -1,19 +1,23 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-const useEscapePress = (onEnterPress: () => void): void => {
-  const handleEscapePress = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      onEnterPress();
-    }
-  };
+export interface EscapePressProps {
+  onEscapePress(): void;
+}
 
+const useEscapePress: React.FC<EscapePressProps> = ({ onEscapePress }) => {
   useEffect(() => {
-    document.addEventListener('keydown', handleEscapePress);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapePress);
+    const escapePress = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape') {
+        onEscapePress();
+      }
     };
-  }, []);
+
+    window.addEventListener('keyup', escapePress);
+
+    return (): void => window.removeEventListener('keyup', escapePress);
+  }, [onEscapePress]);
+
+  return null;
 };
 
 export default useEscapePress;
