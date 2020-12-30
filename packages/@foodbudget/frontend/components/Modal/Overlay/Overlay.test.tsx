@@ -1,6 +1,7 @@
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import { render, RenderResult } from '@testing-library/react';
+import { screen, render, RenderResult } from 'test-utils';
 import Overlay, { OverlayProps } from './Overlay';
 
 const onOutsideAction = jest.fn();
@@ -16,9 +17,9 @@ describe('escape press', () => {
   });
 
   it('should trigger onOutsideAction on click', () => {
-    const { queryByTestId } = renderOverlay({ dataTestId: 'overlay' });
+    renderOverlay({ dataTestId: 'overlay' });
 
-    queryByTestId('overlay')?.click();
+    userEvent.click(screen.getByTestId('overlay'));
     expect(onOutsideAction).toBeCalled();
   });
 });

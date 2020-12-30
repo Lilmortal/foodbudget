@@ -3,7 +3,7 @@ import noScroll from 'no-scroll';
 import { createPortal } from 'react-dom';
 
 import styled from 'styled-components';
-import useEscapePress from 'components/useEscapePress';
+import useEscapePress from '../useEscapePress';
 import Overlay from './Overlay';
 import CloseButton from './CloseButton';
 import FocusTrap from './FocusTrap';
@@ -67,7 +67,7 @@ const Modal: React.FC<ModalProps> = ({
   }
 
   if (onEscapePress) {
-    useEscapePress({ onEscapePress });
+    useEscapePress(onEscapePress);
   }
 
   return mounted && portalRef.current

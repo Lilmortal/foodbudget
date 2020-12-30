@@ -36,7 +36,7 @@ const FocusTrap: React.FC<FocusTrapProps> = ({ children }) => {
 
   useEffect(() => {
     const focusTrapModal = (e: KeyboardEvent): void => {
-      if ((e.key === 'Tab' || e.keyCode === 9) && focusableElements.current) {
+      if (e.key === 'Tab' && focusableElements.current) {
         const firstFocusableElement = focusableElements.current[0];
         const lastFocusableElement =
           focusableElements.current[focusableElements.current.length - 1];

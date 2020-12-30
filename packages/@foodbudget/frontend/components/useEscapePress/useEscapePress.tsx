@@ -1,10 +1,6 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
-export interface EscapePressProps {
-  onEscapePress(): void;
-}
-
-const useEscapePress: React.FC<EscapePressProps> = ({ onEscapePress }) => {
+const useEscapePress = (onEscapePress: () => void): null => {
   useEffect(() => {
     const escapePress = (e: KeyboardEvent): void => {
       if (e.key === 'Escape') {

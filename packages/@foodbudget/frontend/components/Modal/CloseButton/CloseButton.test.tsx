@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { render, RenderResult } from '@testing-library/react';
+import { screen, render, RenderResult } from 'test-utils';
 import userEvent from '@testing-library/user-event';
 import CloseButton, { CloseButtonProps } from './CloseButton';
 
@@ -17,23 +17,23 @@ describe('close button', () => {
   });
 
   it('should render close button', () => {
-    const { queryByText } = renderCloseButton();
+    renderCloseButton();
 
-    expect(queryByText('X')).toBeInTheDocument();
+    expect(screen.getByText('X')).toBeInTheDocument();
   });
 
   it('should trigger onClose on click', () => {
-    const { queryByText } = renderCloseButton();
+    renderCloseButton();
 
-    queryByText('X')?.click();
+    userEvent.click(screen.getByText('X'));
 
     expect(onClose).toBeCalled();
   });
 
   it('should trigger onClose on enter press', () => {
-    const { getByText } = renderCloseButton();
+    renderCloseButton();
 
-    userEvent.type(getByText('X'), '{enter}');
+    userEvent.type(screen.getByText('X'), '{enter}');
 
     expect(onClose).toBeCalled();
   });
