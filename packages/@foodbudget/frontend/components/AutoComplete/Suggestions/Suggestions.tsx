@@ -48,29 +48,53 @@ const Suggestions: React.FC<SuggestionsProps> = ({
     );
   };
 
+  const handleUpArrowKeyPress = (
+    event:
+      | React.KeyboardEvent<HTMLLIElement>
+      | React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (event.currentTarget.previousElementSibling) {
+      (event.currentTarget.previousElementSibling as HTMLLIElement)?.focus();
+    } else {
+      (event.currentTarget.parentNode?.lastChild as HTMLLIElement)?.focus();
+    }
+  };
+
+  const handleDownArrowKeyPress = (
+    event:
+      | React.KeyboardEvent<HTMLLIElement>
+      | React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (event.currentTarget.nextSibling) {
+      (event.currentTarget.nextSibling as HTMLLIElement).focus();
+    } else {
+      (event.currentTarget.parentNode?.firstChild as HTMLLIElement)?.focus();
+    }
+  };
+
+  const handleEnterKeyPress = (
+    event:
+      | React.KeyboardEvent<HTMLLIElement>
+      | React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    onSuggestionSelect(event.currentTarget.innerText);
+  };
+
   const handleKeyPress = (
     event:
       | React.KeyboardEvent<HTMLLIElement>
       | React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (event.key === 'ArrowUp') {
-      if (event.currentTarget.previousElementSibling) {
-        (event.currentTarget.previousElementSibling as HTMLLIElement)?.focus();
-      } else {
-        (event.currentTarget.parentNode?.lastChild as HTMLLIElement)?.focus();
-      }
+      handleUpArrowKeyPress(event);
     }
 
     if (event.key === 'ArrowDown') {
-      if (event.currentTarget.nextSibling) {
-        (event.currentTarget.nextSibling as HTMLLIElement).focus();
-      } else {
-        (event.currentTarget.parentNode?.firstChild as HTMLLIElement)?.focus();
-      }
+      handleDownArrowKeyPress(event);
     }
 
     if (event.key === 'Enter') {
-      onSuggestionSelect(event.currentTarget.innerText);
+      handleEnterKeyPress(event);
     }
 
     event.preventDefault();
