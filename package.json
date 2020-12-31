@@ -21,6 +21,7 @@
     "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^7.0.0",
+    "eslint-import-resolver-typescript": "^2.3.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.3.0",
     "husky": "^4.3.6",
@@ -72,7 +73,7 @@
     "setup": "run-p 'setup:*'",
     "clean:modules": "lerna run clean --stream --parallel",
     "clean:root": "rimraf node_modules",
-    "clean": "run-p 'clean:*'", 
+    "clean": "run-p 'clean:*'",
     "release": "lerna publish --no-commit-hooks --yes"
   },
   "commitlint": {
