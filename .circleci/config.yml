@@ -83,16 +83,25 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
             - v1-dependencies
-      - restore_cache:
-          keys:
-            - backend-setup-cache
-      - restore_cache:
-          keys:
-            - frontend-setup-cache
       - add_ssh_keys:
           fingerprints:
             - '27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b'
       - run: yarn lint
+  frontend_lint:
+    docker:
+      - image: circleci/node:14.11.0
+    steps:
+      - checkout
+      - create_concatenated_yarn_lock:
+          filename: combined-yarn-lock.txt
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "combined-yarn-lock.txt" }}
+            - v1-dependencies
+      - add_ssh_keys:
+          fingerprints:
+            - '27:cc:f8:7a:36:04:b8:63:b5:8f:4d:7f:ad:8a:97:4b'
+      - run: yarn lint:ui
   frontend_unit_test:
     docker:
       - image: circleci/node:14.11.0-browsers
@@ -330,7 +339,7 @@ workflows:
     when: << pipeline.parameters.frontend_workflow >>
     jobs:
       - setup_frontend
-      - lint:
+      - frontend_lint:
           requires:
             - setup_frontend
       - frontend_unit_test:
@@ -341,7 +350,7 @@ workflows:
             branches:
               only: master
           requires:
-            - lint
+            - frontend_lint
             - frontend_unit_test
 
 #TODO: workflow for discord bots, and shared folders

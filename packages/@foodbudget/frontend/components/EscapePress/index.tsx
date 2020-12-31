@@ -1,1 +1,1 @@
-export { default } from "./EscapePress";
+export { default } from './EscapePress';
