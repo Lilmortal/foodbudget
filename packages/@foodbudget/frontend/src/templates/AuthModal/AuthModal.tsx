@@ -11,7 +11,6 @@ const ModalWrapper = styled.div({
   width: '100%',
   height: '100%',
   alignItems: 'center',
-  justifyContent: 'space-evenly',
 });
 
 const StyledModal = styled(Modal)({
@@ -26,6 +25,8 @@ const ModalLogo = styled(Logo)({
 const ButtonGroup = styled.div({
   display: 'flex',
   flexDirection: 'column',
+  flexGrow: 1,
+  justifyContent: 'center',
 });
 
 const AuthModal: React.FC<AuthModalProps> = (props) => (
