@@ -4348,6 +4348,10 @@
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.0.tgz#69a23a3ad29caf0097f06eda59b361ee2f0639f6"
 
+"@types/no-scroll@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@types/no-scroll/-/no-scroll-2.1.0.tgz#d50280440fe1bc85c7481f40e35dc51be7b54bb8"
+
 "@types/node-cron@^2.0.3":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@types/node-cron/-/node-cron-2.0.3.tgz#b5bb940523d265f6a36548856ec0c278ea5a35d6"
@@ -4476,6 +4480,12 @@
   dependencies:
     "@types/react" "*"
     "@types/reactcss" "*"
+
+"@types/react-dom@^17.0.0":
+  version "17.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.0.tgz#b3b691eb956c4b3401777ee67b900cb28415d95a"
+  dependencies:
+    "@types/react" "*"
 
 "@types/react-native@*":
   version "0.63.40"
@@ -12638,6 +12648,10 @@ no-case@^3.0.3:
   dependencies:
     lower-case "^2.0.1"
     tslib "^1.10.0"
+
+no-scroll@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/no-scroll/-/no-scroll-2.1.1.tgz#f37e08cb159b75a5bdbfc0a87cd9223e120e6e27"
 
 node-abi@^2.7.0:
   version "2.19.1"
