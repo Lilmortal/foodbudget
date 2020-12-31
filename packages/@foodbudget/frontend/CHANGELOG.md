@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/ui@1.3.0...@foodbudget/ui@1.4.0) (2020-12-31)
+
+
+### Bug Fixes
+
+* close button incorrect position and buttongroup placement ([ab44073](https://github.com/Lilmortal/foodbudget/commit/ab44073c588b2a56c3a62373540f7224e75397a2))
+
+
+### Features
+
+* added AuthModal ([39a5722](https://github.com/Lilmortal/foodbudget/commit/39a572242d1a746ad2cb9db3da7e256ff38062d2))
+* added modal component ([731f4b7](https://github.com/Lilmortal/foodbudget/commit/731f4b756d9a7e0b5ab73e594b7dbfb6df78e9cf))
+
+
+
+
+
 # [1.3.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/ui@1.2.0...@foodbudget/ui@1.3.0) (2020-12-22)
 
 
