@@ -24,6 +24,7 @@ const StyledButton = styled.button<ButtonProps>((props) => ({
   border: `1px solid ${
     props.inverse ? props.theme.colors.primaryButtonBorder : 'transparent'
   }`,
+  marginBottom: '1rem',
 
   ':hover': {
     backgroundColor: props.inverse

@@ -1,7 +1,7 @@
+import EscapePress from 'components/EscapePress';
 import { useState } from 'react';
 import styled from 'styled-components';
 import Textfield, { TextfieldProps } from '../Textfield';
-import useEscapePress from '../useEscapePress';
 import Suggestions from './Suggestions';
 
 export interface AutoCompleteProps extends TextfieldProps {
@@ -24,8 +24,6 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
   const handleEscapePress = () => {
     setOptions([]);
   };
-
-  useEscapePress(handleEscapePress);
 
   const handleOnChange = (
     element: React.SyntheticEvent<HTMLInputElement, Event>,
@@ -83,6 +81,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
         suggestions={options}
         onSuggestionSelect={handleOnSuggestionSelect}
       />
+      {handleEscapePress && <EscapePress onEscapePress={handleEscapePress} />}
     </AutoCompleteWrapper>
   );
 };
