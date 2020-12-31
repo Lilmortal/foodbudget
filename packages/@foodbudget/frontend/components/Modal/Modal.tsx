@@ -3,7 +3,7 @@ import noScroll from 'no-scroll';
 import { createPortal } from 'react-dom';
 
 import styled from 'styled-components';
-import useEscapePress from '../useEscapePress';
+import EscapePress from 'components/EscapePress';
 import Overlay from './Overlay';
 import CloseButton from './CloseButton';
 import FocusTrap from './FocusTrap';
@@ -16,6 +16,7 @@ export interface ModalProps {
   onClose?(): void;
   children?: React.ReactNode;
   overlayDataTestId?: string;
+  className?: string;
 }
 
 const StyledModal = styled.div(({ theme }) => ({
@@ -24,8 +25,7 @@ const StyledModal = styled.div(({ theme }) => ({
   bottom: '1rem',
   left: '10%',
   right: '10%',
-  backgroundColor: 'red',
-  color: 'white',
+  backgroundColor: theme.colors.white,
   zIndex: 1000,
   overflowY: 'scroll',
 
@@ -42,6 +42,7 @@ const Modal: React.FC<ModalProps> = ({
   onOutsideAction,
   onEscapePress,
   overlayDataTestId,
+  className,
   children,
 }) => {
   const portalRef = useRef<Element | null>(null);
@@ -66,10 +67,6 @@ const Modal: React.FC<ModalProps> = ({
     return null;
   }
 
-  if (onEscapePress) {
-    useEscapePress(onEscapePress);
-  }
-
   return mounted && portalRef.current
     ? createPortal(
         <FocusTrap>
@@ -77,7 +74,8 @@ const Modal: React.FC<ModalProps> = ({
             onOutsideAction={onOutsideAction}
             dataTestId={overlayDataTestId}
           />
-          <StyledModal>
+          <StyledModal className={className}>
+            {onEscapePress && <EscapePress onEscapePress={onEscapePress} />}
             {onClose && <CloseButton onClose={onClose} />}
             {children}
           </StyledModal>

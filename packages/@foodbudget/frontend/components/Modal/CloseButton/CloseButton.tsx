@@ -7,9 +7,9 @@ export interface CloseButtonProps {
 
 const StyledCloseButton = styled.div(({ theme }) => ({
   position: 'fixed',
-  top: '3rem',
+  marginTop: '3rem',
   display: 'flex',
-  right: '16%',
+  right: '14%',
   fontSize: '2rem',
   cursor: 'pointer',
   mixBlendMode: 'difference',
@@ -17,7 +17,7 @@ const StyledCloseButton = styled.div(({ theme }) => ({
   zIndex: 1000,
 
   [theme.breakpoints.lg]: {
-    right: '10%',
+    right: '7%',
   },
 }));
 

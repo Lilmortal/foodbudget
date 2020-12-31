@@ -1,6 +1,10 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-const useEscapePress = (onEscapePress: () => void): null => {
+export interface EscapePressProps {
+  onEscapePress(): void;
+}
+
+const EscapePress: React.FC<EscapePressProps> = ({ onEscapePress }) => {
   useEffect(() => {
     const escapePress = (e: KeyboardEvent): void => {
       if (e.key === 'Escape') {
@@ -16,4 +20,4 @@ const useEscapePress = (onEscapePress: () => void): null => {
   return null;
 };
 
-export default useEscapePress;
+export default EscapePress;

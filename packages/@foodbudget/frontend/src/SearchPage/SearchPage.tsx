@@ -5,13 +5,13 @@ import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import * as yup from 'yup';
 
-import Button from '../../components/Button';
-import Textfield from '../../components/Textfield';
+import Button from 'components/Button';
+import Textfield from 'components/Textfield';
+import { ErrorMessage, Form, Formik } from 'components/form';
+import AutoComplete from 'components/AutoComplete';
 import PageTemplate from '../templates/Page';
 import { initializeApollo } from '../lib/client';
 import IngredientList from './IngredientList';
-import { ErrorMessage, Form, Formik } from '../../components/form';
-import AutoComplete from '../../components/AutoComplete';
 
 const SearchGrid = styled.div((props) => ({
   display: 'grid',

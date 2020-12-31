@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import Button from '../../components/Button';
 import Logo from '../../components/Logo';
+import AuthModal from './AuthModal';
 
 const Header = styled.header({
   display: 'flex',
@@ -26,23 +28,36 @@ const ButtonWrapper = styled.div({
   display: 'flex',
 });
 
-const PageTemplate: React.FC<{}> = ({ children }) => (
-  <>
-    <Header>
-      <Logo src="logo.svg" />
-      <ButtonWrapper>
-        <Button
-          variant="secondary"
-          inverse
-          style={{ fontFamily: "'ABeeZee', sans-serif" }}
-        >
-          LOGIN / SIGNUP
-        </Button>
-      </ButtonWrapper>
-    </Header>
-    <Body />
-    <Wrapper>{children}</Wrapper>
-  </>
-);
+const PageTemplate: React.FC<{}> = ({ children }) => {
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  const handleOnClose = () => setAuthModalOpen(false);
+
+  return (
+    <>
+      <Header>
+        <Logo src="logo.svg" />
+        <ButtonWrapper>
+          <Button
+            variant="secondary"
+            inverse
+            style={{ fontFamily: "'ABeeZee', sans-serif" }}
+            onClick={() => setAuthModalOpen(true)}
+          >
+            LOGIN / SIGNUP
+          </Button>
+        </ButtonWrapper>
+      </Header>
+      <Body />
+      <AuthModal
+        open={authModalOpen}
+        onClose={handleOnClose}
+        onEscapePress={handleOnClose}
+        onOutsideAction={handleOnClose}
+      />
+      <Wrapper>{children}</Wrapper>
+    </>
+  );
+};
 
 export default PageTemplate;

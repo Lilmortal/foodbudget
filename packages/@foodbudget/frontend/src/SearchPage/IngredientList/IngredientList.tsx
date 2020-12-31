@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { v4 } from 'uuid';
-import Button from '../../../components/Button';
+import Button from 'components/Button';
 
 const IngredientListWrapper = styled.div({
   display: 'flex',
