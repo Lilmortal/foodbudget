@@ -7,7 +7,6 @@ export interface ImagePanelProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const StyledImagePanel = styled.div<ImagePanelProps>((props) => ({
   display: 'flex',
-  width: '200px',
   height: '200px',
   backgroundImage: `url("${props.src}")`,
   backgroundSize: 'contain',

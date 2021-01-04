@@ -1,6 +1,6 @@
 import { render, RenderResult, screen } from 'test-utils';
 import userEvent from '@testing-library/user-event';
-import Scroller, { ScrollerProps } from './Scroller';
+import Scroller, { ScrollerProps } from './Carousel';
 
 const defaultProps: ScrollerProps = {};
 
