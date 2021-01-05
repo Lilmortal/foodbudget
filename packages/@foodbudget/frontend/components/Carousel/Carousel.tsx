@@ -1,28 +1,8 @@
 import { useRef, useState, useEffect } from 'react';
-import Button from 'components/Button';
 import styled from 'styled-components';
-
-const Arrow = styled(Button)({
-  position: 'absolute',
-  zIndex: 2,
-});
-
-const LeftArrow = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
-  <Arrow {...props}>{'<'}</Arrow>
-);
-
-const RightArrow = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
-  <Arrow {...props} style={{ right: 0 }}>
-    {'>'}
-  </Arrow>
-);
-
-const ArrowWrapper = styled.div({
-  position: 'absolute',
-  display: 'flex',
-  alignItems: 'center',
-  height: '100%',
-});
+import { ArrowWrapper, LeftArrow, RightArrow } from './Arrow';
+import Slide from './Slide';
+import Slider from './Slider';
 
 const LeftArrowWrapper = styled(ArrowWrapper)({
   left: 0,
@@ -32,54 +12,6 @@ const RightArrowWrapper = styled(ArrowWrapper)({
   right: 0,
 });
 
-interface SliderWrapperProps {
-  leftArrowWidth: number;
-  rightArrowWidth: number;
-}
-
-const SliderWrapper = styled.div<SliderWrapperProps>((props) => ({
-  display: 'flex',
-  width: '100%',
-  marginLeft: `${props.leftArrowWidth / 2}px`,
-  marginRight: `${props.rightArrowWidth / 2}px`,
-
-  overflow: 'hidden',
-}));
-
-interface SliderProps {
-  pos: number;
-  itemWidth: number;
-}
-
-const Slider = styled.div<SliderProps>((props) => ({
-  display: 'flex',
-  transform: `translateX(${-1 * props.pos * props.itemWidth}px)`,
-  transition: 'transform 0.5s',
-}));
-
-interface ItemProps {
-  width: number;
-  numberOfVisibleItems: number;
-}
-
-const Item = styled.div<ItemProps>((props) => ({
-  paddingRight: '1rem',
-  minWidth: `${props.width}px`,
-}));
-
-export interface CarouselProps {
-  horizontal?: boolean;
-  loadMore?(): void;
-  draggable?: boolean;
-  items: React.ReactNode[];
-  removeArrowOnDeviceType?: string[]; // Make it generic
-  numOfItemsToSlide?: number;
-  hasMore?: boolean;
-  renderLeftArrow?: React.ReactElement;
-  renderRightArrow?: React.ReactElement;
-  onDrag?(): void;
-}
-
 const CarouselWrapper = styled.div<Pick<CarouselProps, 'horizontal'>>(
   (props) => ({
     display: 'flex',
@@ -88,24 +20,18 @@ const CarouselWrapper = styled.div<Pick<CarouselProps, 'horizontal'>>(
   }),
 );
 
-const responsive = {
-  xl: {
-    breakpoint: { max: 4000, min: 3000 },
-    items: 5,
-  },
-  lg: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-  },
-  md: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-  },
-  sm: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-  },
-};
+export interface CarouselProps {
+  horizontal?: boolean;
+  loadMore?(): void;
+  draggable?: boolean;
+  children: React.ReactNode[];
+  removeArrowOnDeviceType?: string[]; // Make it generic
+  numberOfSlidesPerSwipe?: number;
+  hasMore?: boolean;
+  renderLeftArrow?: React.ReactElement;
+  renderRightArrow?: React.ReactElement;
+  onDrag?(): void;
+}
 
 // TODO:
 // Disable onClick when moving
@@ -113,17 +39,18 @@ const responsive = {
 const Carousel: React.FC<CarouselProps> = ({
   horizontal = true,
   loadMore,
-  items,
+  children,
+  numberOfSlidesPerSwipe = 1,
   hasMore,
   renderLeftArrow = <LeftArrow />,
   renderRightArrow = <RightArrow />,
 }) => {
-  const [itemsWidth, setItemsWidth] = useState(0);
-  const [itemWidth, setItemWidth] = useState(0);
+  const [sliderWidth, setSliderWidth] = useState(0);
+  const [slideWidth, setSlideWidth] = useState(0);
   const [leftArrowWidth, setLeftArrowWidth] = useState(0);
   const [rightArrowWidth, setRightArrowWidth] = useState(0);
-  const [currentPos, setCurrentPos] = useState(0);
-  const itemsRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState(4);
+  const sliderRef = useRef<HTMLDivElement>(null);
   const leftArrowRef = useRef<HTMLDivElement>(null);
   const rightArrowRef = useRef<HTMLDivElement>(null);
 
@@ -146,25 +73,36 @@ const Carousel: React.FC<CarouselProps> = ({
   }, [rightArrowRef]);
 
   useEffect(() => {
-    const itemsRefWidth = itemsRef.current?.offsetWidth;
+    const sliderRefWidth = sliderRef.current?.offsetWidth;
 
-    if (itemsRefWidth) {
-      setItemsWidth(itemsRefWidth);
+    if (sliderRefWidth) {
+      setSliderWidth(sliderRefWidth);
     }
-  }, [itemsRef]);
+  }, [sliderRef]);
 
   useEffect(() => {
-    setItemWidth(itemsWidth / 4);
-  }, [itemsWidth]);
+    setSlideWidth(sliderWidth / 4);
+  }, [sliderWidth]);
 
   // move this to useReducer
   const handleArrowClick = (direction: 'left' | 'right') => {
-    if (direction === 'left' && currentPos > 0) {
-      setCurrentPos(currentPos - 1);
+    if (direction === 'left' && position > 0) {
+      setPosition(position - numberOfSlidesPerSwipe);
     }
 
-    if (direction === 'right' && hasMore) {
-      setCurrentPos(currentPos + 1);
+    if (direction === 'right') {
+      if (position + numberOfSlidesPerSwipe >= children.length) {
+        if (hasMore && loadMore) {
+          loadMore();
+          setPosition(position + numberOfSlidesPerSwipe);
+        }
+
+        if (!hasMore) {
+          setPosition(children.length);
+        }
+      } else {
+        setPosition(position + numberOfSlidesPerSwipe);
+      }
     }
   };
 
@@ -176,19 +114,19 @@ const Carousel: React.FC<CarouselProps> = ({
       >
         {renderLeftArrow}
       </LeftArrowWrapper>
-      <SliderWrapper
+      <Slider
         leftArrowWidth={leftArrowWidth}
         rightArrowWidth={rightArrowWidth}
-        ref={itemsRef}
+        ref={sliderRef}
+        numberOfSlidesPerSwipe={numberOfSlidesPerSwipe}
+        slideWidth={slideWidth}
       >
-        <Slider pos={currentPos} itemWidth={itemWidth}>
-          {items.map((item) => (
-            <Item width={itemWidth} numberOfVisibleItems={4}>
-              {item}
-            </Item>
-          ))}
-        </Slider>
-      </SliderWrapper>
+        {children.map((child) => (
+          <Slide width={slideWidth} numberOfVisibleItems={4}>
+            {child}
+          </Slide>
+        ))}
+      </Slider>
       <RightArrowWrapper
         ref={rightArrowRef}
         onClick={() => handleArrowClick('right')}
@@ -200,3 +138,22 @@ const Carousel: React.FC<CarouselProps> = ({
 };
 
 export default Carousel;
+
+// const responsive = {
+//   xl: {
+//     breakpoint: { max: 4000, min: 3000 },
+//     items: 5,
+//   },
+//   lg: {
+//     breakpoint: { max: 3000, min: 1024 },
+//     items: 3,
+//   },
+//   md: {
+//     breakpoint: { max: 1024, min: 464 },
+//     items: 2,
+//   },
+//   sm: {
+//     breakpoint: { max: 464, min: 0 },
+//     items: 1,
+//   },
+// };

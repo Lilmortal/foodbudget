@@ -1,5 +1,7 @@
 import styled from 'styled-components';
+import { useState } from 'react';
 import Button from 'components/Button';
+import Carousel from 'components/Carousel';
 import PageTemplate from '../templates/Page';
 import Timetable from './Timetable';
 
@@ -82,35 +84,64 @@ const BudgetBalance: React.FC<BudgetBalanceProps> = ({ header, children }) => (
   </BalanceWrapper>
 );
 
-const MealPlanPage: React.FC<{}> = () => (
-  <PageTemplate>
-    <MealPlanHeader>Weekly Meal Plan</MealPlanHeader>
+const MealPlanPage: React.FC<{}> = () => {
+  const [items, setItems] = useState([
+    <div>1</div>,
+    <div>2</div>,
+    <div>3</div>,
+    <div>4</div>,
+    <div>5</div>,
+    <div>6</div>,
+  ]);
 
-    <MealPlanPageWrapper>
-      <RecipeTimetable />
+  const [hasMore, setHasMore] = useState(true);
 
-      <BudgetBalanceWrapper>
-        <BudgetBalancePanel>
-          <BudgetBalance header="Meal Plan Cost">$xxx.xx</BudgetBalance>
-          <BudgetBalance header="Budget Remaining">$xxx.xx</BudgetBalance>
-        </BudgetBalancePanel>
-      </BudgetBalanceWrapper>
+  const loadMore = () => {
+    setItems([
+      ...items,
+      <div>7</div>,
+      <div>8</div>,
+      <div>9</div>,
+      <div>10</div>,
+      <div>11</div>,
+      <div>12</div>,
+      <div>13</div>,
+      <div>14</div>,
+    ]);
+    setHasMore(false);
+  };
 
-      <Scroller>
-        <Recipe />
-        <Recipe />
-        <Recipe />
-        <Recipe />
-      </Scroller>
+  return (
+    <PageTemplate>
+      <MealPlanHeader>Weekly Meal Plan</MealPlanHeader>
 
-      <IngredientPanel>
-        <EditHeader>Edit</EditHeader>
-        <IngredientList>
-          <Button showCloseIcon>Eggs</Button>
-        </IngredientList>
-      </IngredientPanel>
-    </MealPlanPageWrapper>
-  </PageTemplate>
-);
+      <MealPlanPageWrapper>
+        <RecipeTimetable />
+
+        <BudgetBalanceWrapper>
+          <BudgetBalancePanel>
+            <BudgetBalance header="Meal Plan Cost">$xxx.xx</BudgetBalance>
+            <BudgetBalance header="Budget Remaining">$xxx.xx</BudgetBalance>
+          </BudgetBalancePanel>
+        </BudgetBalanceWrapper>
+
+        <Carousel
+          hasMore={hasMore}
+          loadMore={loadMore}
+          numberOfSlidesPerSwipe={3}
+        >
+          {items}
+        </Carousel>
+
+        <IngredientPanel>
+          <EditHeader>Edit</EditHeader>
+          <IngredientList>
+            <Button showCloseIcon>Eggs</Button>
+          </IngredientList>
+        </IngredientPanel>
+      </MealPlanPageWrapper>
+    </PageTemplate>
+  );
+};
 
 export default MealPlanPage;
