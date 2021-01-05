@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { v4 } from 'uuid';
 import { ArrowWrapper, LeftArrow, RightArrow } from './Arrow';
 import Slide from './Slide';
 import Slider from './Slider';
@@ -25,7 +26,7 @@ export interface CarouselProps {
   loadMore?(): void;
   draggable?: boolean;
   children: React.ReactNode[];
-  removeArrowOnDeviceType?: string[]; // Make it generic
+  removeArrowOnDeviceType?: string[];
   numberOfSlidesPerSwipe?: number;
   hasMore?: boolean;
   renderLeftArrow?: React.ReactElement;
@@ -49,7 +50,7 @@ const Carousel: React.FC<CarouselProps> = ({
   const [slideWidth, setSlideWidth] = useState(0);
   const [leftArrowWidth, setLeftArrowWidth] = useState(0);
   const [rightArrowWidth, setRightArrowWidth] = useState(0);
-  const [position, setPosition] = useState(4);
+  const [position, setPosition] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
   const leftArrowRef = useRef<HTMLDivElement>(null);
   const rightArrowRef = useRef<HTMLDivElement>(null);
@@ -84,21 +85,28 @@ const Carousel: React.FC<CarouselProps> = ({
     setSlideWidth(sliderWidth / 4);
   }, [sliderWidth]);
 
-  // move this to useReducer
+  const willSwipeOverflow =
+    4 + position + numberOfSlidesPerSwipe >= children.length;
+
+  // move this to useReducer if we want to include the ability to 'jump'
   const handleArrowClick = (direction: 'left' | 'right') => {
     if (direction === 'left' && position > 0) {
-      setPosition(position - numberOfSlidesPerSwipe);
+      setPosition(Math.max(0, position - numberOfSlidesPerSwipe));
     }
 
     if (direction === 'right') {
-      if (position + numberOfSlidesPerSwipe >= children.length) {
+      if (willSwipeOverflow) {
         if (hasMore && loadMore) {
           loadMore();
           setPosition(position + numberOfSlidesPerSwipe);
         }
 
+        // Since we know hasMore is false, there is nothing further ahead, hence we want the slider to not have any gaps
+        // at the end.
         if (!hasMore) {
-          setPosition(children.length);
+          // Negate 1 because position starts at 0, and negate numberOfSlidesPerSwipe because we want to move the last slide
+          // to be at the end, and not at the start.
+          setPosition(children.length - 1 - numberOfSlidesPerSwipe);
         }
       } else {
         setPosition(position + numberOfSlidesPerSwipe);
@@ -118,11 +126,11 @@ const Carousel: React.FC<CarouselProps> = ({
         leftArrowWidth={leftArrowWidth}
         rightArrowWidth={rightArrowWidth}
         ref={sliderRef}
-        numberOfSlidesPerSwipe={numberOfSlidesPerSwipe}
+        position={position}
         slideWidth={slideWidth}
       >
         {children.map((child) => (
-          <Slide width={slideWidth} numberOfVisibleItems={4}>
+          <Slide width={slideWidth} numberOfVisibleItems={4} key={v4()}>
             {child}
           </Slide>
         ))}

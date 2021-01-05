@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export interface SliderProps {
   leftArrowWidth: number;
   rightArrowWidth: number;
-  numberOfSlidesPerSwipe: number;
+  position: number;
   slideWidth: number;
   children: React.ReactNode[];
 }
@@ -20,24 +20,16 @@ const SliderWrapper = styled.div<
   overflow: 'hidden',
 }));
 
-const StyledSlider = styled.div<
-  Pick<SliderProps, 'numberOfSlidesPerSwipe' | 'slideWidth'>
->((props) => ({
-  display: 'flex',
-  transform: `translateX(${
-    -1 * props.numberOfSlidesPerSwipe * props.slideWidth
-  }px)`,
-  transition: 'transform 0.5s',
-}));
+const StyledSlider = styled.div<Pick<SliderProps, 'position' | 'slideWidth'>>(
+  (props) => ({
+    display: 'flex',
+    transform: `translateX(${-1 * props.position * props.slideWidth}px)`,
+    transition: 'transform 0.5s',
+  }),
+);
 
 const Slider: React.ForwardRefRenderFunction<HTMLDivElement, SliderProps> = (
-  {
-    leftArrowWidth,
-    rightArrowWidth,
-    numberOfSlidesPerSwipe,
-    slideWidth,
-    children,
-  },
+  { leftArrowWidth, rightArrowWidth, slideWidth, position, children },
   ref,
 ) => (
   <SliderWrapper
@@ -45,10 +37,7 @@ const Slider: React.ForwardRefRenderFunction<HTMLDivElement, SliderProps> = (
     rightArrowWidth={rightArrowWidth}
     ref={ref}
   >
-    <StyledSlider
-      numberOfSlidesPerSwipe={numberOfSlidesPerSwipe}
-      slideWidth={slideWidth}
-    >
+    <StyledSlider position={position} slideWidth={slideWidth}>
       {children}
     </StyledSlider>
   </SliderWrapper>
