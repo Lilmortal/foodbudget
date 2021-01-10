@@ -4,8 +4,8 @@ import styled from 'styled-components';
 export interface SliderProps {
   leftArrowWidth: number;
   rightArrowWidth: number;
+  numberOfVisibleSlides: number;
   position: number;
-  slideWidth: number;
   children: React.ReactNode[];
 }
 
@@ -20,16 +20,30 @@ const SliderWrapper = styled.div<
   overflow: 'hidden',
 }));
 
-const StyledSlider = styled.div<Pick<SliderProps, 'position' | 'slideWidth'>>(
-  (props) => ({
-    display: 'flex',
-    transform: `translateX(${-1 * props.position * props.slideWidth}px)`,
-    transition: 'transform 0.5s',
+const getSlideWidthPercentage = (numberOfVisibleSlides: number) =>
+  Math.round(100 / numberOfVisibleSlides);
+
+const StyledSlider = styled.div<
+  Pick<SliderProps, 'numberOfVisibleSlides' | 'position'>
+>((props) => ({
+  display: 'flex',
+  ...(props.position && {
+    transform: `translateX(${
+      -1 * getSlideWidthPercentage(props.numberOfVisibleSlides) * props.position
+    }%)`,
   }),
-);
+  transition: 'transform 0.5s',
+  width: '100%',
+}));
 
 const Slider: React.ForwardRefRenderFunction<HTMLDivElement, SliderProps> = (
-  { leftArrowWidth, rightArrowWidth, slideWidth, position, children },
+  {
+    leftArrowWidth,
+    rightArrowWidth,
+    position,
+    numberOfVisibleSlides,
+    children,
+  },
   ref,
 ) => (
   <SliderWrapper
@@ -37,7 +51,10 @@ const Slider: React.ForwardRefRenderFunction<HTMLDivElement, SliderProps> = (
     rightArrowWidth={rightArrowWidth}
     ref={ref}
   >
-    <StyledSlider position={position} slideWidth={slideWidth}>
+    <StyledSlider
+      numberOfVisibleSlides={numberOfVisibleSlides}
+      position={position}
+    >
       {children}
     </StyledSlider>
   </SliderWrapper>

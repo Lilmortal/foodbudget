@@ -86,12 +86,12 @@ const BudgetBalance: React.FC<BudgetBalanceProps> = ({ header, children }) => (
 
 const MealPlanPage: React.FC<{}> = () => {
   const [items, setItems] = useState([
-    <div>1</div>,
-    <div>2</div>,
-    <div>3</div>,
-    <div>4</div>,
-    <div>5</div>,
-    <div>6</div>,
+    <div tabIndex={1}>1</div>,
+    <div tabIndex={1}>2</div>,
+    <div tabIndex={1}>3</div>,
+    <div tabIndex={1}>4</div>,
+    <div tabIndex={1}>5</div>,
+    <div tabIndex={1}>6</div>,
   ]);
 
   const [hasMore, setHasMore] = useState(true);
@@ -99,14 +99,14 @@ const MealPlanPage: React.FC<{}> = () => {
   const loadMore = () => {
     setItems([
       ...items,
-      <div>7</div>,
-      <div>8</div>,
-      <div>9</div>,
-      <div>10</div>,
-      <div>11</div>,
-      <div>12</div>,
-      <div>13</div>,
-      <div>14</div>,
+      <div tabIndex={1}>7</div>,
+      <div tabIndex={1}>8</div>,
+      <div tabIndex={1}>9</div>,
+      <div tabIndex={1}>10</div>,
+      <div tabIndex={1}>11</div>,
+      <div tabIndex={1}>12</div>,
+      <div tabIndex={1}>13</div>,
+      <div tabIndex={1}>14</div>,
     ]);
     setHasMore(false);
   };
@@ -129,6 +129,11 @@ const MealPlanPage: React.FC<{}> = () => {
           hasMore={hasMore}
           loadMore={loadMore}
           numberOfSlidesPerSwipe={3}
+          breakpoints={{
+            xl: { minWidthInPixels: 1200, numberOfVisibleSlides: 4 },
+            lg: { minWidthInPixels: 600, numberOfVisibleSlides: 3 },
+            md: { minWidthInPixels: 0, numberOfVisibleSlides: 2 },
+          }}
         >
           {items}
         </Carousel>

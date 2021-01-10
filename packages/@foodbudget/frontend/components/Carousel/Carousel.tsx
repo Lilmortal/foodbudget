@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import { ArrowWrapper, LeftArrow, RightArrow } from './Arrow';
 import Slide from './Slide';
 import Slider from './Slider';
+import useVisibleSlides, { Responsives } from './useVisibleSlides';
 
 const LeftArrowWrapper = styled(ArrowWrapper)({
   left: 0,
@@ -21,7 +22,13 @@ const CarouselWrapper = styled.div<Pick<CarouselProps, 'horizontal'>>(
   }),
 );
 
+const SlideWrapper = styled.div({
+  display: 'flex',
+  minWidth: '100%',
+});
+
 export interface CarouselProps {
+  breakpoints: Responsives;
   horizontal?: boolean;
   loadMore?(): void;
   draggable?: boolean;
@@ -38,6 +45,7 @@ export interface CarouselProps {
 // Disable onClick when moving
 // Disable tab when not in view
 const Carousel: React.FC<CarouselProps> = ({
+  breakpoints,
   horizontal = true,
   loadMore,
   children,
@@ -46,14 +54,14 @@ const Carousel: React.FC<CarouselProps> = ({
   renderLeftArrow = <LeftArrow />,
   renderRightArrow = <RightArrow />,
 }) => {
-  const [sliderWidth, setSliderWidth] = useState(0);
-  const [slideWidth, setSlideWidth] = useState(0);
   const [leftArrowWidth, setLeftArrowWidth] = useState(0);
   const [rightArrowWidth, setRightArrowWidth] = useState(0);
   const [position, setPosition] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
   const leftArrowRef = useRef<HTMLDivElement>(null);
   const rightArrowRef = useRef<HTMLDivElement>(null);
+
+  const numberOfVisibleSlides = useVisibleSlides(breakpoints);
 
   useEffect(() => {
     const leftArrowRefWidth = leftArrowRef.current?.firstElementChild?.getBoundingClientRect()
@@ -73,22 +81,10 @@ const Carousel: React.FC<CarouselProps> = ({
     }
   }, [rightArrowRef]);
 
-  useEffect(() => {
-    const sliderRefWidth = sliderRef.current?.offsetWidth;
-
-    if (sliderRefWidth) {
-      setSliderWidth(sliderRefWidth);
-    }
-  }, [sliderRef]);
-
-  useEffect(() => {
-    setSlideWidth(sliderWidth / 4);
-  }, [sliderWidth]);
-
   const willSwipeOverflow =
-    4 + position + numberOfSlidesPerSwipe >= children.length;
+    numberOfVisibleSlides + position + numberOfSlidesPerSwipe >=
+    children.length;
 
-  // move this to useReducer if we want to include the ability to 'jump'
   const handleArrowClick = (direction: 'left' | 'right') => {
     if (direction === 'left' && position > 0) {
       setPosition(Math.max(0, position - numberOfSlidesPerSwipe));
@@ -104,9 +100,7 @@ const Carousel: React.FC<CarouselProps> = ({
         // Since we know hasMore is false, there is nothing further ahead, hence we want the slider to not have any gaps
         // at the end.
         if (!hasMore) {
-          // Negate 1 because position starts at 0, and negate numberOfSlidesPerSwipe because we want to move the last slide
-          // to be at the end, and not at the start.
-          setPosition(children.length - 1 - numberOfSlidesPerSwipe);
+          setPosition(children.length - numberOfVisibleSlides);
         }
       } else {
         setPosition(position + numberOfSlidesPerSwipe);
@@ -127,13 +121,45 @@ const Carousel: React.FC<CarouselProps> = ({
         rightArrowWidth={rightArrowWidth}
         ref={sliderRef}
         position={position}
-        slideWidth={slideWidth}
+        numberOfVisibleSlides={numberOfVisibleSlides}
       >
-        {children.map((child) => (
-          <Slide width={slideWidth} numberOfVisibleItems={4} key={v4()}>
-            {child}
-          </Slide>
-        ))}
+        {children
+          .reduce<React.ReactNode[][]>((acc, current, index) => {
+            // Put all visible slides under the slide wrapper, this is so we can use flexGrow: 1 to
+            // even out the spacing accordingly
+            const nearestVisibleSlideWrapper = Math.floor(
+              index / numberOfVisibleSlides,
+            );
+
+            if (index === 0 || index % numberOfVisibleSlides === 0) {
+              acc.push([current]);
+            } else if (
+              numberOfVisibleSlides !== 0 &&
+              index % numberOfVisibleSlides !== 0
+            ) {
+              acc[nearestVisibleSlideWrapper] = acc[
+                nearestVisibleSlideWrapper
+              ].concat([current]);
+            }
+
+            // Populate the end of the slider with empty Slide to even out spacing
+            if (index + 1 === children.length) {
+              for (let i = 1; i < numberOfVisibleSlides; i += 1) {
+                if (acc[nearestVisibleSlideWrapper][i] === undefined) {
+                  acc[nearestVisibleSlideWrapper][i] = <Slide />;
+                }
+              }
+            }
+
+            return acc;
+          }, [])
+          .map((slides) => (
+            <SlideWrapper>
+              {slides.map((slide) => (
+                <Slide key={v4()}>{slide}</Slide>
+              ))}
+            </SlideWrapper>
+          ))}
       </Slider>
       <RightArrowWrapper
         ref={rightArrowRef}
@@ -146,22 +172,3 @@ const Carousel: React.FC<CarouselProps> = ({
 };
 
 export default Carousel;
-
-// const responsive = {
-//   xl: {
-//     breakpoint: { max: 4000, min: 3000 },
-//     items: 5,
-//   },
-//   lg: {
-//     breakpoint: { max: 3000, min: 1024 },
-//     items: 3,
-//   },
-//   md: {
-//     breakpoint: { max: 1024, min: 464 },
-//     items: 2,
-//   },
-//   sm: {
-//     breakpoint: { max: 464, min: 0 },
-//     items: 1,
-//   },
-// };

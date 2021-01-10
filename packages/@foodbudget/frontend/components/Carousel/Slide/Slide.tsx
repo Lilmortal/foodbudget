@@ -1,13 +1,9 @@
 import styled from 'styled-components';
 
-interface SlideProps {
-  width: number;
-  numberOfVisibleItems: number;
-}
-
-const Slide = styled.div<SlideProps>((props) => ({
+const Slide = styled.div({
   paddingRight: '1rem',
-  minWidth: `${props.width}px`,
-}));
+  flexGrow: 1,
+  flexBasis: 0,
+});
 
 export default Slide;
