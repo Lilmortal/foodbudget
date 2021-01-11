@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { v4 } from 'uuid';
+import { useSwipeable } from 'react-swipeable';
 import { ArrowWrapper, LeftArrow, RightArrow } from './Arrow';
 import Slide from './Slide';
 import Slider from './Slider';
@@ -108,6 +109,13 @@ const Carousel: React.FC<CarouselProps> = ({
     }
   };
 
+  const handlers = useSwipeable({
+    onSwipedLeft: () => handleArrowClick('right'),
+    onSwipedRight: () => handleArrowClick('left'),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+  });
+
   // Put all visible slides under the slide wrapper, this is so we can use flexGrow: 1 to
   // even out the spacing accordingly
   const mergeVisibleSlidesIntoSlideWrapper = (
@@ -143,7 +151,7 @@ const Carousel: React.FC<CarouselProps> = ({
   };
 
   return (
-    <CarouselWrapper horizontal={horizontal}>
+    <CarouselWrapper horizontal={horizontal} {...handlers}>
       <LeftArrowWrapper
         ref={leftArrowRef}
         onClick={() => handleArrowClick('left')}
