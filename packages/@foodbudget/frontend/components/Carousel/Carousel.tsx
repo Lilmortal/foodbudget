@@ -108,6 +108,40 @@ const Carousel: React.FC<CarouselProps> = ({
     }
   };
 
+  // Put all visible slides under the slide wrapper, this is so we can use flexGrow: 1 to
+  // even out the spacing accordingly
+  const mergeVisibleSlidesIntoSlideWrapper = (
+    accumulator: React.ReactNode[][],
+    currentNode: React.ReactNode,
+    index: number,
+  ) => {
+    const nearestVisibleSlideWrapper = Math.floor(
+      index / numberOfVisibleSlides,
+    );
+
+    if (index === 0 || index % numberOfVisibleSlides === 0) {
+      accumulator.push([currentNode]);
+    } else if (
+      numberOfVisibleSlides !== 0 &&
+      index % numberOfVisibleSlides !== 0
+    ) {
+      accumulator[nearestVisibleSlideWrapper] = accumulator[
+        nearestVisibleSlideWrapper
+      ].concat([currentNode]);
+    }
+
+    // Populate the end of the slider with empty Slide to even out spacing
+    if (index + 1 === children.length) {
+      for (let i = 1; i < numberOfVisibleSlides; i += 1) {
+        if (accumulator[nearestVisibleSlideWrapper][i] === undefined) {
+          accumulator[nearestVisibleSlideWrapper][i] = <Slide />;
+        }
+      }
+    }
+
+    return accumulator;
+  };
+
   return (
     <CarouselWrapper horizontal={horizontal}>
       <LeftArrowWrapper
@@ -124,37 +158,9 @@ const Carousel: React.FC<CarouselProps> = ({
         numberOfVisibleSlides={numberOfVisibleSlides}
       >
         {children
-          .reduce<React.ReactNode[][]>((acc, current, index) => {
-            // Put all visible slides under the slide wrapper, this is so we can use flexGrow: 1 to
-            // even out the spacing accordingly
-            const nearestVisibleSlideWrapper = Math.floor(
-              index / numberOfVisibleSlides,
-            );
-
-            if (index === 0 || index % numberOfVisibleSlides === 0) {
-              acc.push([current]);
-            } else if (
-              numberOfVisibleSlides !== 0 &&
-              index % numberOfVisibleSlides !== 0
-            ) {
-              acc[nearestVisibleSlideWrapper] = acc[
-                nearestVisibleSlideWrapper
-              ].concat([current]);
-            }
-
-            // Populate the end of the slider with empty Slide to even out spacing
-            if (index + 1 === children.length) {
-              for (let i = 1; i < numberOfVisibleSlides; i += 1) {
-                if (acc[nearestVisibleSlideWrapper][i] === undefined) {
-                  acc[nearestVisibleSlideWrapper][i] = <Slide />;
-                }
-              }
-            }
-
-            return acc;
-          }, [])
+          .reduce<React.ReactNode[][]>(mergeVisibleSlidesIntoSlideWrapper, [])
           .map((slides) => (
-            <SlideWrapper>
+            <SlideWrapper key={v4()}>
               {slides.map((slide) => (
                 <Slide key={v4()}>{slide}</Slide>
               ))}
