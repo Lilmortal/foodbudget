@@ -1,7 +1,7 @@
 import { Arrow } from './Arrow';
 
-const RightArrow: React.FC<{}> = (
-  props: React.ButtonHTMLAttributes<HTMLButtonElement>,
+const RightArrow: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = (
+  props,
 ) => (
   <Arrow {...props} style={{ right: 0 }}>
     {'>'}

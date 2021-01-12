@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, cloneElement } from 'react';
 import { v4 } from 'uuid';
 import { useSwipeable } from 'react-swipeable';
 import { LeftArrow, RightArrow } from './Arrow';
@@ -18,7 +18,7 @@ export interface CarouselProps {
   horizontal?: boolean;
   loadMore?(): void;
   swipeable?: boolean;
-  children: React.ReactNode[];
+  children: React.ReactElement[];
   removeArrowsOnDeviceType?: string[];
   numberOfSlidesPerSwipe?: number;
   hasMore?: boolean;
@@ -40,9 +40,12 @@ const Carousel: React.FC<CarouselProps> = ({
 }) => {
   const [leftArrowWidth, setLeftArrowWidth] = useState(0);
   const [rightArrowWidth, setRightArrowWidth] = useState(0);
+
   const sliderRef = useRef<HTMLDivElement>(null);
   const leftArrowRef = useRef<HTMLDivElement>(null);
   const rightArrowRef = useRef<HTMLDivElement>(null);
+  const lastVisibleSlideRef = useRef<HTMLDivElement>(null);
+
   const { breakpointName, numberOfVisibleSlides } = useCarouselBreakpoints(
     breakpoints,
   );
@@ -55,6 +58,14 @@ const Carousel: React.FC<CarouselProps> = ({
   const prevEndOfVisibleSlidePosition = usePrevious(endOfVisibleSlidePosition);
 
   const shouldRemoveArrows = removeArrowsOnDeviceType?.includes(breakpointName);
+
+  const renderLeftArrowWithDisabledSupport = cloneElement(renderLeftArrow, {
+    disabled: endOfVisibleSlidePosition === numberOfVisibleSlides,
+  });
+
+  const renderRightArrowWithDisabledSupport = cloneElement(renderRightArrow, {
+    disabled: !hasMore && endOfVisibleSlidePosition === children.length,
+  });
 
   // If the numberOfVisibleSlides change via window resize, adjust the number of slides to be shown
   // accordingly.
@@ -119,6 +130,11 @@ const Carousel: React.FC<CarouselProps> = ({
           endOfVisibleSlidePosition + numberOfSlidesPerSwipe,
         );
       }
+
+      console.log(lastVisibleSlideRef, lastVisibleSlideRef.current);
+      if (lastVisibleSlideRef) {
+        lastVisibleSlideRef.current?.focus();
+      }
     }
   };
 
@@ -158,8 +174,8 @@ const Carousel: React.FC<CarouselProps> = ({
    *
    */
   const groupSlidesByNumberOfVisibleSlides = (
-    slideWrappers: React.ReactNode[][],
-    slide: React.ReactNode,
+    slideWrappers: React.ReactElement[][],
+    slide: React.ReactElement,
     index: number,
   ) => {
     const nearestVisibleSlideWrapper = Math.floor(
@@ -203,7 +219,7 @@ const Carousel: React.FC<CarouselProps> = ({
     <CarouselWrapper horizontal={horizontal} {...handleSwipeable}>
       {!shouldRemoveArrows && (
         <LeftArrowWrapper ref={leftArrowRef} onClick={handleLeftArrowClick}>
-          {renderLeftArrow}
+          {renderLeftArrowWithDisabledSupport}
         </LeftArrowWrapper>
       )}
       <Slider
@@ -214,20 +230,38 @@ const Carousel: React.FC<CarouselProps> = ({
         numberOfVisibleSlides={numberOfVisibleSlides}
       >
         {children
-          .reduce<React.ReactNode[][]>(groupSlidesByNumberOfVisibleSlides, [])
+          .reduce<React.ReactElement[][]>(
+            groupSlidesByNumberOfVisibleSlides,
+            [],
+          )
           .map((slides, slidesIndex) => (
             <SlideWrapper key={v4()}>
-              {slides.map((slide, slideIndex) => (
-                <Slide key={v4()}>
-                  {isSlideVisible(slidesIndex, slideIndex) ? slide : null}
-                </Slide>
-              ))}
+              {slides.map((slide, slideIndex) => {
+                let renderSlide = slide;
+
+                if (
+                  getSlidePosition(slidesIndex, slideIndex) ===
+                  endOfVisibleSlidePosition - numberOfVisibleSlides
+                ) {
+                  renderSlide = cloneElement(slide, {
+                    ref: lastVisibleSlideRef,
+                  });
+                }
+
+                return (
+                  <Slide key={v4()}>
+                    {isSlideVisible(slidesIndex, slideIndex)
+                      ? renderSlide
+                      : null}
+                  </Slide>
+                );
+              })}
             </SlideWrapper>
           ))}
       </Slider>
       {!shouldRemoveArrows && (
         <RightArrowWrapper ref={rightArrowRef} onClick={handleRightArrowClick}>
-          {renderRightArrow}
+          {renderRightArrowWithDisabledSupport}
         </RightArrowWrapper>
       )}
     </CarouselWrapper>

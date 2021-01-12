@@ -42,9 +42,10 @@ const StyledButton = styled.button<ButtonProps>((props) => ({
     backgroundColor: props.theme.colors.primaryButtonDisabledFill,
     color: props.theme.colors.primaryButtonDisabledText,
     borderColor: props.theme.colors.primaryButtonDisabledBorder,
+    cursor: 'default',
   },
 
-  ':active': {
+  ':enabled:active': {
     boxShadow:
       'inset 4px 4px 5px rgba(114, 58, 179, 0.1), inset -4px -4px 5px rgba(114, 58, 179, 0.1)',
   },
