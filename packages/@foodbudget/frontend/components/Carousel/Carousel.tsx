@@ -4,7 +4,7 @@ import { useSwipeable } from 'react-swipeable';
 import { LeftArrow, RightArrow } from './Arrow';
 import Slide from './Slide';
 import Slider from './Slider';
-import useVisibleSlides, { Responsives } from './useVisibleSlides';
+import useCarouselBreakpoints, { Breakpoints } from './useCarouselBreakpoints';
 import usePrevious from '../usePrevious';
 import {
   CarouselWrapper,
@@ -14,12 +14,12 @@ import {
 } from './Carousel.Styled';
 
 export interface CarouselProps {
-  breakpoints: Responsives;
+  breakpoints: Breakpoints;
   horizontal?: boolean;
   loadMore?(): void;
   swipeable?: boolean;
   children: React.ReactNode[];
-  removeArrowOnDeviceType?: string[];
+  removeArrowsOnDeviceType?: string[];
   numberOfSlidesPerSwipe?: number;
   hasMore?: boolean;
   renderLeftArrow?: React.ReactElement;
@@ -32,6 +32,7 @@ const Carousel: React.FC<CarouselProps> = ({
   swipeable = true,
   loadMore,
   children,
+  removeArrowsOnDeviceType,
   numberOfSlidesPerSwipe = 1,
   hasMore,
   renderLeftArrow = <LeftArrow />,
@@ -42,21 +43,29 @@ const Carousel: React.FC<CarouselProps> = ({
   const sliderRef = useRef<HTMLDivElement>(null);
   const leftArrowRef = useRef<HTMLDivElement>(null);
   const rightArrowRef = useRef<HTMLDivElement>(null);
-  const numberOfVisibleSlides = useVisibleSlides(breakpoints);
+  const { breakpointName, numberOfVisibleSlides } = useCarouselBreakpoints(
+    breakpoints,
+  );
   const prevNumberOfVisibleSlides = usePrevious(numberOfVisibleSlides);
 
-  const [position, setPosition] = useState(numberOfVisibleSlides);
-  const prevPosition = usePrevious(position);
+  const [endOfVisibleSlidePosition, setEndOfVisibleSlidePosition] = useState(
+    numberOfVisibleSlides,
+  );
+
+  const prevEndOfVisibleSlidePosition = usePrevious(endOfVisibleSlidePosition);
+
+  const shouldRemoveArrows = removeArrowsOnDeviceType?.includes(breakpointName);
 
   // If the numberOfVisibleSlides change via window resize, adjust the number of slides to be shown
   // accordingly.
   useEffect(() => {
-    if (prevNumberOfVisibleSlides && prevPosition) {
-      setPosition(
-        prevPosition - (prevNumberOfVisibleSlides - numberOfVisibleSlides),
+    if (prevNumberOfVisibleSlides && prevEndOfVisibleSlidePosition) {
+      setEndOfVisibleSlidePosition(
+        prevEndOfVisibleSlidePosition -
+          (prevNumberOfVisibleSlides - numberOfVisibleSlides),
       );
     } else {
-      setPosition(numberOfVisibleSlides);
+      setEndOfVisibleSlidePosition(numberOfVisibleSlides);
     }
   }, [numberOfVisibleSlides]);
 
@@ -79,12 +88,15 @@ const Carousel: React.FC<CarouselProps> = ({
   }, [rightArrowRef]);
 
   const willSwipeOverflow =
-    position + numberOfSlidesPerSwipe >= children.length;
+    endOfVisibleSlidePosition + numberOfSlidesPerSwipe >= children.length;
 
   const handleArrowClick = (direction: 'left' | 'right') => {
-    if (direction === 'left' && position > 0) {
-      setPosition(
-        Math.max(numberOfVisibleSlides, position - numberOfSlidesPerSwipe),
+    if (direction === 'left' && endOfVisibleSlidePosition > 0) {
+      setEndOfVisibleSlidePosition(
+        Math.max(
+          numberOfVisibleSlides,
+          endOfVisibleSlidePosition - numberOfSlidesPerSwipe,
+        ),
       );
     }
 
@@ -92,16 +104,20 @@ const Carousel: React.FC<CarouselProps> = ({
       if (willSwipeOverflow) {
         if (hasMore && loadMore) {
           loadMore();
-          setPosition(position + numberOfSlidesPerSwipe);
+          setEndOfVisibleSlidePosition(
+            endOfVisibleSlidePosition + numberOfSlidesPerSwipe,
+          );
         }
 
         // Since we know hasMore is false, there is nothing further ahead, hence we want the slider to not have any gaps
         // at the end.
         if (!hasMore) {
-          setPosition(children.length);
+          setEndOfVisibleSlidePosition(children.length);
         }
       } else {
-        setPosition(position + numberOfSlidesPerSwipe);
+        setEndOfVisibleSlidePosition(
+          endOfVisibleSlidePosition + numberOfSlidesPerSwipe,
+        );
       }
     }
   };
@@ -180,19 +196,21 @@ const Carousel: React.FC<CarouselProps> = ({
 
   const isSlideVisible = (slidesIndex: number, slideIndex: number) =>
     getSlidePosition(slidesIndex, slideIndex) >=
-      position - numberOfVisibleSlides &&
-    getSlidePosition(slidesIndex, slideIndex) <= position - 1;
+      endOfVisibleSlidePosition - numberOfVisibleSlides &&
+    getSlidePosition(slidesIndex, slideIndex) <= endOfVisibleSlidePosition - 1;
 
   return (
     <CarouselWrapper horizontal={horizontal} {...handleSwipeable}>
-      <LeftArrowWrapper ref={leftArrowRef} onClick={handleLeftArrowClick}>
-        {renderLeftArrow}
-      </LeftArrowWrapper>
+      {!shouldRemoveArrows && (
+        <LeftArrowWrapper ref={leftArrowRef} onClick={handleLeftArrowClick}>
+          {renderLeftArrow}
+        </LeftArrowWrapper>
+      )}
       <Slider
         leftArrowWidth={leftArrowWidth}
         rightArrowWidth={rightArrowWidth}
         ref={sliderRef}
-        position={position}
+        endOfVisibleSlidePosition={endOfVisibleSlidePosition}
         numberOfVisibleSlides={numberOfVisibleSlides}
       >
         {children
@@ -207,9 +225,11 @@ const Carousel: React.FC<CarouselProps> = ({
             </SlideWrapper>
           ))}
       </Slider>
-      <RightArrowWrapper ref={rightArrowRef} onClick={handleRightArrowClick}>
-        {renderRightArrow}
-      </RightArrowWrapper>
+      {!shouldRemoveArrows && (
+        <RightArrowWrapper ref={rightArrowRef} onClick={handleRightArrowClick}>
+          {renderRightArrow}
+        </RightArrowWrapper>
+      )}
     </CarouselWrapper>
   );
 };

@@ -134,6 +134,7 @@ const MealPlanPage: React.FC<{}> = () => {
             lg: { minWidthInPixels: 600, numberOfVisibleSlides: 3 },
             md: { minWidthInPixels: 0, numberOfVisibleSlides: 2 },
           }}
+          removeArrowsOnDeviceType={['md']}
         >
           {items}
         </Carousel>

@@ -6,7 +6,7 @@ export interface SliderProps {
   leftArrowWidth: number;
   rightArrowWidth: number;
   numberOfVisibleSlides: number;
-  position: number;
+  endOfVisibleSlidePosition: number;
   children: React.ReactNode[];
 }
 
@@ -25,7 +25,7 @@ const getSlideWidthInPercentages = (numberOfVisibleSlides: number) =>
   Math.round(100 / numberOfVisibleSlides);
 
 const StyledSlider = styled.div<
-  Pick<SliderProps, 'numberOfVisibleSlides' | 'position'>
+  Pick<SliderProps, 'numberOfVisibleSlides' | 'endOfVisibleSlidePosition'>
 >((props) => {
   // This logic is to remove transition animation on browser resize
   const prevNumberOfVisibleSlides = usePrevious(props.numberOfVisibleSlides);
@@ -49,7 +49,7 @@ const StyledSlider = styled.div<
     transform: `translateX(${
       -1 *
       getSlideWidthInPercentages(props.numberOfVisibleSlides) *
-      (props.position - props.numberOfVisibleSlides)
+      (props.endOfVisibleSlidePosition - props.numberOfVisibleSlides)
     }%)`,
     ...(!hasNumberOfVisibleSlidesChanged && { transition: 'transform 0.5s' }),
     width: '100%',
@@ -60,7 +60,7 @@ const Slider: React.ForwardRefRenderFunction<HTMLDivElement, SliderProps> = (
   {
     leftArrowWidth,
     rightArrowWidth,
-    position,
+    endOfVisibleSlidePosition,
     numberOfVisibleSlides,
     children,
   },
@@ -73,7 +73,7 @@ const Slider: React.ForwardRefRenderFunction<HTMLDivElement, SliderProps> = (
   >
     <StyledSlider
       numberOfVisibleSlides={numberOfVisibleSlides}
-      position={position}
+      endOfVisibleSlidePosition={endOfVisibleSlidePosition}
     >
       {children}
     </StyledSlider>
