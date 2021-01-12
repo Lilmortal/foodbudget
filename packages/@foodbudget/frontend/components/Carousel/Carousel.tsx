@@ -1,53 +1,35 @@
 import { useRef, useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { v4 } from 'uuid';
 import { useSwipeable } from 'react-swipeable';
-import { ArrowWrapper, LeftArrow, RightArrow } from './Arrow';
+import { LeftArrow, RightArrow } from './Arrow';
 import Slide from './Slide';
 import Slider from './Slider';
 import useVisibleSlides, { Responsives } from './useVisibleSlides';
-
-const LeftArrowWrapper = styled(ArrowWrapper)({
-  left: 0,
-});
-
-const RightArrowWrapper = styled(ArrowWrapper)({
-  right: 0,
-});
-
-const CarouselWrapper = styled.div<Pick<CarouselProps, 'horizontal'>>(
-  (props) => ({
-    display: 'flex',
-    flexDirection: props.horizontal ? 'row' : 'column',
-    position: 'relative',
-  }),
-);
-
-const SlideWrapper = styled.div({
-  display: 'flex',
-  minWidth: '100%',
-});
+import usePrevious from '../usePrevious';
+import {
+  CarouselWrapper,
+  SlideWrapper,
+  LeftArrowWrapper,
+  RightArrowWrapper,
+} from './Carousel.Styled';
 
 export interface CarouselProps {
   breakpoints: Responsives;
   horizontal?: boolean;
   loadMore?(): void;
-  draggable?: boolean;
+  swipeable?: boolean;
   children: React.ReactNode[];
   removeArrowOnDeviceType?: string[];
   numberOfSlidesPerSwipe?: number;
   hasMore?: boolean;
   renderLeftArrow?: React.ReactElement;
   renderRightArrow?: React.ReactElement;
-  onDrag?(): void;
 }
 
-// TODO:
-// Disable onClick when moving
-// Disable tab when not in view
 const Carousel: React.FC<CarouselProps> = ({
   breakpoints,
   horizontal = true,
+  swipeable = true,
   loadMore,
   children,
   numberOfSlidesPerSwipe = 1,
@@ -57,12 +39,26 @@ const Carousel: React.FC<CarouselProps> = ({
 }) => {
   const [leftArrowWidth, setLeftArrowWidth] = useState(0);
   const [rightArrowWidth, setRightArrowWidth] = useState(0);
-  const [position, setPosition] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
   const leftArrowRef = useRef<HTMLDivElement>(null);
   const rightArrowRef = useRef<HTMLDivElement>(null);
-
   const numberOfVisibleSlides = useVisibleSlides(breakpoints);
+  const prevNumberOfVisibleSlides = usePrevious(numberOfVisibleSlides);
+
+  const [position, setPosition] = useState(numberOfVisibleSlides);
+  const prevPosition = usePrevious(position);
+
+  // If the numberOfVisibleSlides change via window resize, adjust the number of slides to be shown
+  // accordingly.
+  useEffect(() => {
+    if (prevNumberOfVisibleSlides && prevPosition) {
+      setPosition(
+        prevPosition - (prevNumberOfVisibleSlides - numberOfVisibleSlides),
+      );
+    } else {
+      setPosition(numberOfVisibleSlides);
+    }
+  }, [numberOfVisibleSlides]);
 
   useEffect(() => {
     const leftArrowRefWidth = leftArrowRef.current?.firstElementChild?.getBoundingClientRect()
@@ -83,12 +79,13 @@ const Carousel: React.FC<CarouselProps> = ({
   }, [rightArrowRef]);
 
   const willSwipeOverflow =
-    numberOfVisibleSlides + position + numberOfSlidesPerSwipe >=
-    children.length;
+    position + numberOfSlidesPerSwipe >= children.length;
 
   const handleArrowClick = (direction: 'left' | 'right') => {
     if (direction === 'left' && position > 0) {
-      setPosition(Math.max(0, position - numberOfSlidesPerSwipe));
+      setPosition(
+        Math.max(numberOfVisibleSlides, position - numberOfSlidesPerSwipe),
+      );
     }
 
     if (direction === 'right') {
@@ -101,7 +98,7 @@ const Carousel: React.FC<CarouselProps> = ({
         // Since we know hasMore is false, there is nothing further ahead, hence we want the slider to not have any gaps
         // at the end.
         if (!hasMore) {
-          setPosition(children.length - numberOfVisibleSlides);
+          setPosition(children.length);
         }
       } else {
         setPosition(position + numberOfSlidesPerSwipe);
@@ -109,18 +106,44 @@ const Carousel: React.FC<CarouselProps> = ({
     }
   };
 
-  const handlers = useSwipeable({
-    onSwipedLeft: () => handleArrowClick('right'),
-    onSwipedRight: () => handleArrowClick('left'),
-    preventDefaultTouchmoveEvent: true,
-    trackMouse: true,
-  });
+  const handleLeftArrowClick = () => handleArrowClick('left');
 
-  // Put all visible slides under the slide wrapper, this is so we can use flexGrow: 1 to
-  // even out the spacing accordingly
-  const mergeVisibleSlidesIntoSlideWrapper = (
-    accumulator: React.ReactNode[][],
-    currentNode: React.ReactNode,
+  const handleRightArrowClick = () => handleArrowClick('right');
+
+  let handleSwipeable;
+  if (swipeable) {
+    handleSwipeable = useSwipeable({
+      onSwipedLeft: () => handleArrowClick('right'),
+      onSwipedRight: () => handleArrowClick('left'),
+      preventDefaultTouchmoveEvent: true,
+      trackMouse: true,
+    });
+  }
+
+  /**
+   * Given a list of slides, group the number of visible slides under the slide wrapper depending on
+   * numberOfVisibleSlides props, this is so we can use flexGrow: 1 to even out the spacing accordingly.
+   *
+   * example:
+   *
+   * numberOfVisibleSlides = 3;
+   *
+   * <SlideWrapper>
+   *  <Slide style={{ flexGrow: 1 }} />
+   *  <Slide style={{ flexGrow: 1 }} />
+   *  <Slide style={{ flexGrow: 1 }} />
+   * </SlideWrapper>
+   *
+   * <SlideWrapper>
+   *  <Slide style={{ flexGrow: 1 }} hidden />
+   *  <Slide style={{ flexGrow: 1 }} hidden />
+   *  <Slide style={{ flexGrow: 1 }} hidden />
+   * </SlideWrapper>
+   *
+   */
+  const groupSlidesByNumberOfVisibleSlides = (
+    slideWrappers: React.ReactNode[][],
+    slide: React.ReactNode,
     index: number,
   ) => {
     const nearestVisibleSlideWrapper = Math.floor(
@@ -128,34 +151,41 @@ const Carousel: React.FC<CarouselProps> = ({
     );
 
     if (index === 0 || index % numberOfVisibleSlides === 0) {
-      accumulator.push([currentNode]);
+      slideWrappers.push([slide]);
     } else if (
       numberOfVisibleSlides !== 0 &&
       index % numberOfVisibleSlides !== 0
     ) {
-      accumulator[nearestVisibleSlideWrapper] = accumulator[
+      // eslint-disable-next-line no-param-reassign
+      slideWrappers[nearestVisibleSlideWrapper] = slideWrappers[
         nearestVisibleSlideWrapper
-      ].concat([currentNode]);
+      ].concat([slide]);
     }
 
     // Populate the end of the slider with empty Slide to even out spacing
     if (index + 1 === children.length) {
       for (let i = 1; i < numberOfVisibleSlides; i += 1) {
-        if (accumulator[nearestVisibleSlideWrapper][i] === undefined) {
-          accumulator[nearestVisibleSlideWrapper][i] = <Slide />;
+        if (slideWrappers[nearestVisibleSlideWrapper][i] === undefined) {
+          // eslint-disable-next-line no-param-reassign
+          slideWrappers[nearestVisibleSlideWrapper][i] = <Slide />;
         }
       }
     }
 
-    return accumulator;
+    return slideWrappers;
   };
 
+  const getSlidePosition = (slidesIndex: number, slideIndex: number) =>
+    slidesIndex * numberOfVisibleSlides + slideIndex;
+
+  const isSlideVisible = (slidesIndex: number, slideIndex: number) =>
+    getSlidePosition(slidesIndex, slideIndex) >=
+      position - numberOfVisibleSlides &&
+    getSlidePosition(slidesIndex, slideIndex) <= position - 1;
+
   return (
-    <CarouselWrapper horizontal={horizontal} {...handlers}>
-      <LeftArrowWrapper
-        ref={leftArrowRef}
-        onClick={() => handleArrowClick('left')}
-      >
+    <CarouselWrapper horizontal={horizontal} {...handleSwipeable}>
+      <LeftArrowWrapper ref={leftArrowRef} onClick={handleLeftArrowClick}>
         {renderLeftArrow}
       </LeftArrowWrapper>
       <Slider
@@ -166,19 +196,18 @@ const Carousel: React.FC<CarouselProps> = ({
         numberOfVisibleSlides={numberOfVisibleSlides}
       >
         {children
-          .reduce<React.ReactNode[][]>(mergeVisibleSlidesIntoSlideWrapper, [])
-          .map((slides) => (
+          .reduce<React.ReactNode[][]>(groupSlidesByNumberOfVisibleSlides, [])
+          .map((slides, slidesIndex) => (
             <SlideWrapper key={v4()}>
-              {slides.map((slide) => (
-                <Slide key={v4()}>{slide}</Slide>
+              {slides.map((slide, slideIndex) => (
+                <Slide key={v4()}>
+                  {isSlideVisible(slidesIndex, slideIndex) ? slide : null}
+                </Slide>
               ))}
             </SlideWrapper>
           ))}
       </Slider>
-      <RightArrowWrapper
-        ref={rightArrowRef}
-        onClick={() => handleArrowClick('right')}
-      >
+      <RightArrowWrapper ref={rightArrowRef} onClick={handleRightArrowClick}>
         {renderRightArrow}
       </RightArrowWrapper>
     </CarouselWrapper>

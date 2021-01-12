@@ -1,4 +1,5 @@
-import { forwardRef } from 'react';
+import usePrevious from 'components/usePrevious';
+import { forwardRef, useRef } from 'react';
 import styled from 'styled-components';
 
 export interface SliderProps {
@@ -20,21 +21,40 @@ const SliderWrapper = styled.div<
   overflow: 'hidden',
 }));
 
-const getSlideWidthPercentage = (numberOfVisibleSlides: number) =>
+const getSlideWidthInPercentages = (numberOfVisibleSlides: number) =>
   Math.round(100 / numberOfVisibleSlides);
 
 const StyledSlider = styled.div<
   Pick<SliderProps, 'numberOfVisibleSlides' | 'position'>
->((props) => ({
-  display: 'flex',
-  ...(props.position && {
+>((props) => {
+  // This logic is to remove transition animation on browser resize
+  const prevNumberOfVisibleSlides = usePrevious(props.numberOfVisibleSlides);
+
+  let hasNumberOfVisibleSlidesChanged =
+    prevNumberOfVisibleSlides !== 0 &&
+    prevNumberOfVisibleSlides !== undefined &&
+    prevNumberOfVisibleSlides !== props.numberOfVisibleSlides;
+
+  const hasNumberOfVisibleSlidesChangedRef = useRef(false);
+
+  if (hasNumberOfVisibleSlidesChangedRef.current) {
+    hasNumberOfVisibleSlidesChanged = true;
+    hasNumberOfVisibleSlidesChangedRef.current = false;
+  } else if (hasNumberOfVisibleSlidesChanged) {
+    hasNumberOfVisibleSlidesChangedRef.current = true;
+  }
+
+  return {
+    display: 'flex',
     transform: `translateX(${
-      -1 * getSlideWidthPercentage(props.numberOfVisibleSlides) * props.position
+      -1 *
+      getSlideWidthInPercentages(props.numberOfVisibleSlides) *
+      (props.position - props.numberOfVisibleSlides)
     }%)`,
-  }),
-  transition: 'transform 0.5s',
-  width: '100%',
-}));
+    ...(!hasNumberOfVisibleSlidesChanged && { transition: 'transform 0.5s' }),
+    width: '100%',
+  };
+});
 
 const Slider: React.ForwardRefRenderFunction<HTMLDivElement, SliderProps> = (
   {

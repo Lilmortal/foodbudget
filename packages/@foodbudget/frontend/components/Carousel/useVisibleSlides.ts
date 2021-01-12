@@ -14,7 +14,7 @@ const sortMaxWidthToLowest = (
   { minWidthInPixels: second }: Breakpoint,
 ) => first - second;
 
-const useVisibleSlides = (breakpoints: Responsives): number => {
+const useVisibleSlides = <R extends Responsives>(breakpoints: R): number => {
   const [numberOfVisibleSlides, setNumberOfVisibleSlides] = useState(0);
 
   useEffect(() => {
