@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, cloneElement } from 'react';
 import { v4 } from 'uuid';
-import { useSwipeable } from 'react-swipeable';
+import { SwipeableHandlers, useSwipeable } from 'react-swipeable';
 import { LeftArrow, RightArrow } from './Arrow';
 import Slide from './Slide';
 import Slider from './Slider';
@@ -38,34 +38,47 @@ const Carousel: React.FC<CarouselProps> = ({
   renderLeftArrow = <LeftArrow />,
   renderRightArrow = <RightArrow />,
 }) => {
-  const [leftArrowWidth, setLeftArrowWidth] = useState(0);
-  const [rightArrowWidth, setRightArrowWidth] = useState(0);
-
   const sliderRef = useRef<HTMLDivElement>(null);
   const leftArrowRef = useRef<HTMLDivElement>(null);
   const rightArrowRef = useRef<HTMLDivElement>(null);
-  const lastVisibleSlideRef = useRef<HTMLDivElement>(null);
+  const slidesRef = useRef<HTMLDivElement[]>([]);
 
   const { breakpointName, numberOfVisibleSlides } = useCarouselBreakpoints(
     breakpoints,
   );
-  const prevNumberOfVisibleSlides = usePrevious(numberOfVisibleSlides);
 
-  const [endOfVisibleSlidePosition, setEndOfVisibleSlidePosition] = useState(
-    numberOfVisibleSlides,
+  /**
+   * Used to center the arrows on the left/right border of the carousel.
+   */
+  const [leftArrowWidth, setLeftArrowWidth] = useState(0);
+  const [rightArrowWidth, setRightArrowWidth] = useState(0);
+  /**
+   * This is only used in the situation where user navigates with the arrow keys via keyboard.
+   * If user press Enter or Spacebar on the right arrow, focus on the first visible slide, vice versa
+   * for the left arrow.
+   */
+  const [focusSlidePosition, setFocusSlidePosition] = useState<number | null>(
+    null,
   );
+  /**
+   * e.g. 4 visible slides on the screen, this returns 3.
+   * index starts at 0.
+   */
+  const [endOfVisibleSlidePosition, setEndOfVisibleSlidePosition] = useState(
+    numberOfVisibleSlides - 1,
+  );
+
+  const prevNumberOfVisibleSlides = usePrevious(numberOfVisibleSlides);
 
   const prevEndOfVisibleSlidePosition = usePrevious(endOfVisibleSlidePosition);
 
   const shouldRemoveArrows = removeArrowsOnDeviceType?.includes(breakpointName);
 
-  const renderLeftArrowWithDisabledSupport = cloneElement(renderLeftArrow, {
-    disabled: endOfVisibleSlidePosition === numberOfVisibleSlides,
-  });
-
-  const renderRightArrowWithDisabledSupport = cloneElement(renderRightArrow, {
-    disabled: !hasMore && endOfVisibleSlidePosition === children.length,
-  });
+  useEffect(() => {
+    if (focusSlidePosition && slidesRef.current[focusSlidePosition]) {
+      slidesRef.current[focusSlidePosition].focus();
+    }
+  }, [endOfVisibleSlidePosition, focusSlidePosition]);
 
   // If the numberOfVisibleSlides change via window resize, adjust the number of slides to be shown
   // accordingly.
@@ -78,6 +91,7 @@ const Carousel: React.FC<CarouselProps> = ({
     } else {
       setEndOfVisibleSlidePosition(numberOfVisibleSlides);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [numberOfVisibleSlides]);
 
   useEffect(() => {
@@ -130,11 +144,27 @@ const Carousel: React.FC<CarouselProps> = ({
           endOfVisibleSlidePosition + numberOfSlidesPerSwipe,
         );
       }
+    }
+  };
 
-      console.log(lastVisibleSlideRef, lastVisibleSlideRef.current);
-      if (lastVisibleSlideRef) {
-        lastVisibleSlideRef.current?.focus();
-      }
+  const handleLeftArrowKeyPress = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+  ) => {
+    if (event.key === 'Enter') {
+      setFocusSlidePosition(
+        Math.max(
+          numberOfVisibleSlides - 1,
+          endOfVisibleSlidePosition - numberOfVisibleSlides,
+        ),
+      );
+    }
+  };
+
+  const handleRightArrowKeyPress = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+  ) => {
+    if (event.key === 'Enter') {
+      setFocusSlidePosition(endOfVisibleSlidePosition - 1);
     }
   };
 
@@ -142,15 +172,30 @@ const Carousel: React.FC<CarouselProps> = ({
 
   const handleRightArrowClick = () => handleArrowClick('right');
 
-  let handleSwipeable;
-  if (swipeable) {
-    handleSwipeable = useSwipeable({
-      onSwipedLeft: () => handleArrowClick('right'),
-      onSwipedRight: () => handleArrowClick('left'),
-      preventDefaultTouchmoveEvent: true,
-      trackMouse: true,
-    });
+  let handleSwipeable: SwipeableHandlers | undefined = useSwipeable({
+    onSwipedLeft: () => handleArrowClick('right'),
+    onSwipedRight: () => handleArrowClick('left'),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+  });
+
+  if (!swipeable) {
+    handleSwipeable = undefined;
   }
+
+  const leftArrow = cloneElement(renderLeftArrow, {
+    disabled: endOfVisibleSlidePosition === numberOfVisibleSlides,
+    ref: leftArrowRef,
+    onClick: handleLeftArrowClick,
+    onKeyPress: handleLeftArrowKeyPress,
+  });
+
+  const rightArrow = cloneElement(renderRightArrow, {
+    disabled: !hasMore && endOfVisibleSlidePosition === children.length,
+    ref: rightArrowRef,
+    onClick: handleRightArrowClick,
+    onKeyPress: handleRightArrowKeyPress,
+  });
 
   /**
    * Given a list of slides, group the number of visible slides under the slide wrapper depending on
@@ -217,11 +262,7 @@ const Carousel: React.FC<CarouselProps> = ({
 
   return (
     <CarouselWrapper horizontal={horizontal} {...handleSwipeable}>
-      {!shouldRemoveArrows && (
-        <LeftArrowWrapper ref={leftArrowRef} onClick={handleLeftArrowClick}>
-          {renderLeftArrowWithDisabledSupport}
-        </LeftArrowWrapper>
-      )}
+      {!shouldRemoveArrows && <LeftArrowWrapper>{leftArrow}</LeftArrowWrapper>}
       <Slider
         leftArrowWidth={leftArrowWidth}
         rightArrowWidth={rightArrowWidth}
@@ -239,14 +280,13 @@ const Carousel: React.FC<CarouselProps> = ({
               {slides.map((slide, slideIndex) => {
                 let renderSlide = slide;
 
-                if (
-                  getSlidePosition(slidesIndex, slideIndex) ===
-                  endOfVisibleSlidePosition - numberOfVisibleSlides
-                ) {
-                  renderSlide = cloneElement(slide, {
-                    ref: lastVisibleSlideRef,
-                  });
-                }
+                renderSlide = cloneElement(slide, {
+                  ref: (node: HTMLDivElement) => {
+                    slidesRef.current[
+                      getSlidePosition(slidesIndex, slideIndex)
+                    ] = node;
+                  },
+                });
 
                 return (
                   <Slide key={v4()}>
@@ -260,9 +300,7 @@ const Carousel: React.FC<CarouselProps> = ({
           ))}
       </Slider>
       {!shouldRemoveArrows && (
-        <RightArrowWrapper ref={rightArrowRef} onClick={handleRightArrowClick}>
-          {renderRightArrowWithDisabledSupport}
-        </RightArrowWrapper>
+        <RightArrowWrapper>{rightArrow}</RightArrowWrapper>
       )}
     </CarouselWrapper>
   );
