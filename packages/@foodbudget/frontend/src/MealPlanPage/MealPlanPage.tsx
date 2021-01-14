@@ -1,8 +1,7 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from 'components/Button';
 import Carousel from 'components/Carousel';
-import { v4 } from 'uuid';
 import PageTemplate from '../templates/Page';
 import Timetable from './Timetable';
 
@@ -86,54 +85,48 @@ const BudgetBalance: React.FC<BudgetBalanceProps> = ({ header, children }) => (
 );
 
 const MealPlanPage: React.FC<{}> = () => {
-  const [items, setItems] = useState([
-    <div tabIndex={0} key={v4()}>
-      1
-    </div>,
-    <div tabIndex={0} key={v4()}>
-      2
-    </div>,
-    <div tabIndex={0} key={v4()}>
-      3
-    </div>,
-    <div tabIndex={0} key={v4()}>
-      4
-    </div>,
-    <div tabIndex={0} key={v4()}>
-      5
-    </div>,
-    <div tabIndex={0} key={v4()}>
-      6
-    </div>,
-  ]);
+  const [items, setItems] = useState<React.ReactNode[]>([]);
+
+  useEffect(() => {
+    const slides = [];
+    for (let i = 0; i < 600; i += 1) {
+      slides.push(
+        <div tabIndex={0} key={i}>
+          {i}
+        </div>,
+      );
+    }
+
+    setItems(slides);
+  }, []);
 
   const [hasMore, setHasMore] = useState(true);
 
   const loadMore = () => {
     setItems([
       ...items,
-      <div tabIndex={0} key={v4()}>
+      <div tabIndex={0} key={'id-7'}>
         7
       </div>,
-      <div tabIndex={0} key={v4()}>
+      <div tabIndex={0} key={'id-8'}>
         8
       </div>,
-      <div tabIndex={0} key={v4()}>
+      <div tabIndex={0} key={'id-9'}>
         9
       </div>,
-      <div tabIndex={0} key={v4()}>
+      <div tabIndex={0} key={'id-10'}>
         10
       </div>,
-      <div tabIndex={0} key={v4()}>
+      <div tabIndex={0} key={'id-11'}>
         11
       </div>,
-      <div tabIndex={0} key={v4()}>
+      <div tabIndex={0} key={'id-12'}>
         12
       </div>,
-      <div tabIndex={0} key={v4()}>
+      <div tabIndex={0} key={'id-13'}>
         13
       </div>,
-      <div tabIndex={0} key={v4()}>
+      <div tabIndex={0} key={'id-14'}>
         14
       </div>,
     ]);

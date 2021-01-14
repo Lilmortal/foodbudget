@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { v4 } from 'uuid';
 
 const SuggestionOption = styled.li({
   listStyleType: 'none',
@@ -102,10 +101,10 @@ const Suggestions: React.FC<SuggestionsProps> = ({
 
   return (
     <SuggestionList suggestions={suggestions}>
-      {suggestions.map((suggestion) => (
+      {suggestions.map((suggestion, index) => (
         <SuggestionOption
           tabIndex={0}
-          key={`suggestion-${v4()}`}
+          key={`suggestion-${index}`}
           onClick={handleOnClick}
           onKeyUp={handleKeyPress}
         >

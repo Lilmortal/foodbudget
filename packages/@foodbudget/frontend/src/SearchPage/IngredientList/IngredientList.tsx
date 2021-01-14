@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { v4 } from 'uuid';
 import Button from 'components/Button';
 
 const IngredientListWrapper = styled.div({
@@ -35,10 +34,10 @@ const IngredientList: React.FC<IngredientListProps> = ({
   <IngredientListWrapper>
     <IngredientListHeader>{header}</IngredientListHeader>
     <StyledIngredientList>
-      {ingredients.map((ingredient: string) => (
+      {ingredients.map((ingredient: string, index) => (
         <IngredientButton
           type="button"
-          key={`ingredient-${v4()}`}
+          key={`ingredient-${index}`}
           variant="secondary"
           showCloseIcon
           onClick={onClose}

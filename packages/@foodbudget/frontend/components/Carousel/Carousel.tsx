@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect, cloneElement } from 'react';
-import { v4 } from 'uuid';
 import { SwipeableHandlers, useSwipeable } from 'react-swipeable';
 import { LeftArrow, RightArrow } from './Arrow';
 import Slide from './Slide';
@@ -18,7 +17,7 @@ export interface CarouselProps {
   horizontal?: boolean;
   loadMore?(): void;
   swipeable?: boolean;
-  children: React.ReactElement[];
+  children: React.ReactNode[];
   removeArrowsOnDeviceType?: string[];
   numberOfSlidesPerSwipe?: number;
   hasMore?: boolean;
@@ -225,8 +224,8 @@ const Carousel: React.FC<CarouselProps> = ({
    *
    */
   const groupSlidesByNumberOfVisibleSlides = (
-    slideWrappers: React.ReactElement[][],
-    slide: React.ReactElement,
+    slideWrappers: React.ReactNode[][],
+    slide: React.ReactNode,
     index: number,
   ) => {
     const nearestVisibleSlideWrapper = Math.floor(
@@ -279,15 +278,12 @@ const Carousel: React.FC<CarouselProps> = ({
         numberOfVisibleSlides={numberOfVisibleSlides}
       >
         {children
-          .reduce<React.ReactElement[][]>(
-            groupSlidesByNumberOfVisibleSlides,
-            [],
-          )
+          .reduce<React.ReactNode[][]>(groupSlidesByNumberOfVisibleSlides, [])
           .map((slides, slidesIndex) => (
-            <SlideWrapper key={v4()}>
+            <SlideWrapper key={slidesIndex}>
               {slides.map((slide, slideIndex) => (
                 <Slide
-                  key={v4()}
+                  key={getSlidePosition(slidesIndex, slideIndex)}
                   ref={(node: HTMLDivElement) => {
                     slidesRef.current[
                       getSlidePosition(slidesIndex, slideIndex)

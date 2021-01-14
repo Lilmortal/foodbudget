@@ -227,4 +227,8 @@ describe('carousel', () => {
       expect(rightArrow).not.toBeDisabled();
     });
   });
+
+  describe('focus', () => {
+    it('should remain focus on the focussed slide when window is being resized', () => {});
+  });
 });
