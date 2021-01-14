@@ -74,14 +74,22 @@ const Carousel: React.FC<CarouselProps> = ({
 
   const shouldRemoveArrows = removeArrowsOnDeviceType?.includes(breakpointName);
 
+  /**
+   * Focus on the first/last slide when user navigate via keyboard.
+   */
   useEffect(() => {
-    if (focusSlidePosition && slidesRef.current[focusSlidePosition]) {
-      slidesRef.current[focusSlidePosition].focus();
+    if (
+      focusSlidePosition &&
+      slidesRef.current[focusSlidePosition] &&
+      slidesRef.current[focusSlidePosition].firstChild
+    ) {
+      (slidesRef.current[focusSlidePosition].firstChild as HTMLElement).focus();
     }
   }, [endOfVisibleSlidePosition, focusSlidePosition]);
 
-  // If the numberOfVisibleSlides change via window resize, adjust the number of slides to be shown
-  // accordingly.
+  /**
+   * If the numberOfVisibleSlides change via window resize, adjust the number of slides to be shown accordingly.
+   */
   useEffect(() => {
     if (prevNumberOfVisibleSlides && prevEndOfVisibleSlidePosition) {
       setEndOfVisibleSlidePosition(
@@ -150,7 +158,7 @@ const Carousel: React.FC<CarouselProps> = ({
   const handleLeftArrowKeyPress = (
     event: React.KeyboardEvent<HTMLButtonElement>,
   ) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' || event.key === ' ') {
       setFocusSlidePosition(
         Math.max(
           numberOfVisibleSlides - 1,
@@ -163,7 +171,7 @@ const Carousel: React.FC<CarouselProps> = ({
   const handleRightArrowKeyPress = (
     event: React.KeyboardEvent<HTMLButtonElement>,
   ) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' || event.key === ' ') {
       setFocusSlidePosition(endOfVisibleSlidePosition - 1);
     }
   };
@@ -185,14 +193,12 @@ const Carousel: React.FC<CarouselProps> = ({
 
   const leftArrow = cloneElement(renderLeftArrow, {
     disabled: endOfVisibleSlidePosition === numberOfVisibleSlides,
-    ref: leftArrowRef,
     onClick: handleLeftArrowClick,
     onKeyPress: handleLeftArrowKeyPress,
   });
 
   const rightArrow = cloneElement(renderRightArrow, {
     disabled: !hasMore && endOfVisibleSlidePosition === children.length,
-    ref: rightArrowRef,
     onClick: handleRightArrowClick,
     onKeyPress: handleRightArrowKeyPress,
   });
@@ -262,7 +268,9 @@ const Carousel: React.FC<CarouselProps> = ({
 
   return (
     <CarouselWrapper horizontal={horizontal} {...handleSwipeable}>
-      {!shouldRemoveArrows && <LeftArrowWrapper>{leftArrow}</LeftArrowWrapper>}
+      {!shouldRemoveArrows && (
+        <LeftArrowWrapper ref={leftArrowRef}>{leftArrow}</LeftArrowWrapper>
+      )}
       <Slider
         leftArrowWidth={leftArrowWidth}
         rightArrowWidth={rightArrowWidth}
@@ -277,30 +285,23 @@ const Carousel: React.FC<CarouselProps> = ({
           )
           .map((slides, slidesIndex) => (
             <SlideWrapper key={v4()}>
-              {slides.map((slide, slideIndex) => {
-                let renderSlide = slide;
-
-                renderSlide = cloneElement(slide, {
-                  ref: (node: HTMLDivElement) => {
+              {slides.map((slide, slideIndex) => (
+                <Slide
+                  key={v4()}
+                  ref={(node: HTMLDivElement) => {
                     slidesRef.current[
                       getSlidePosition(slidesIndex, slideIndex)
                     ] = node;
-                  },
-                });
-
-                return (
-                  <Slide key={v4()}>
-                    {isSlideVisible(slidesIndex, slideIndex)
-                      ? renderSlide
-                      : null}
-                  </Slide>
-                );
-              })}
+                  }}
+                >
+                  {isSlideVisible(slidesIndex, slideIndex) ? slide : null}
+                </Slide>
+              ))}
             </SlideWrapper>
           ))}
       </Slider>
       {!shouldRemoveArrows && (
-        <RightArrowWrapper>{rightArrow}</RightArrowWrapper>
+        <RightArrowWrapper ref={rightArrowRef}>{rightArrow}</RightArrowWrapper>
       )}
     </CarouselWrapper>
   );

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import Button from 'components/Button';
 import Carousel from 'components/Carousel';
+import { v4 } from 'uuid';
 import PageTemplate from '../templates/Page';
 import Timetable from './Timetable';
 
@@ -86,12 +87,24 @@ const BudgetBalance: React.FC<BudgetBalanceProps> = ({ header, children }) => (
 
 const MealPlanPage: React.FC<{}> = () => {
   const [items, setItems] = useState([
-    <div tabIndex={0}>1</div>,
-    <div tabIndex={0}>2</div>,
-    <div tabIndex={0}>3</div>,
-    <div tabIndex={0}>4</div>,
-    <div tabIndex={0}>5</div>,
-    <div tabIndex={0}>6</div>,
+    <div tabIndex={0} key={v4()}>
+      1
+    </div>,
+    <div tabIndex={0} key={v4()}>
+      2
+    </div>,
+    <div tabIndex={0} key={v4()}>
+      3
+    </div>,
+    <div tabIndex={0} key={v4()}>
+      4
+    </div>,
+    <div tabIndex={0} key={v4()}>
+      5
+    </div>,
+    <div tabIndex={0} key={v4()}>
+      6
+    </div>,
   ]);
 
   const [hasMore, setHasMore] = useState(true);
@@ -99,14 +112,30 @@ const MealPlanPage: React.FC<{}> = () => {
   const loadMore = () => {
     setItems([
       ...items,
-      <div tabIndex={0}>7</div>,
-      <div tabIndex={0}>8</div>,
-      <div tabIndex={0}>9</div>,
-      <div tabIndex={0}>10</div>,
-      <div tabIndex={0}>11</div>,
-      <div tabIndex={0}>12</div>,
-      <div tabIndex={0}>13</div>,
-      <div tabIndex={0}>14</div>,
+      <div tabIndex={0} key={v4()}>
+        7
+      </div>,
+      <div tabIndex={0} key={v4()}>
+        8
+      </div>,
+      <div tabIndex={0} key={v4()}>
+        9
+      </div>,
+      <div tabIndex={0} key={v4()}>
+        10
+      </div>,
+      <div tabIndex={0} key={v4()}>
+        11
+      </div>,
+      <div tabIndex={0} key={v4()}>
+        12
+      </div>,
+      <div tabIndex={0} key={v4()}>
+        13
+      </div>,
+      <div tabIndex={0} key={v4()}>
+        14
+      </div>,
     ]);
     setHasMore(false);
   };
