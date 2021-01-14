@@ -1,13 +1,12 @@
-import { render, RenderResult, screen } from 'test-utils';
-import userEvent from '@testing-library/user-event';
-import Scroller, { ScrollerProps } from './Carousel';
+import { render, RenderResult, screen, userEvent } from 'test-utils';
+import Carousel, { CarouselProps } from './Carousel';
 
-const defaultProps: ScrollerProps = {};
+const defaultProps: CarouselProps = {};
 
-const renderScroller = (props?: Partial<ScrollerProps>): RenderResult =>
-  render(<Scroller {...defaultProps} {...props} />);
+const renderCarousel = (props?: Partial<CarouselProps>): RenderResult =>
+  render(<Carousel {...defaultProps} {...props} />);
 
-describe('scroller', () => {
+describe('carousel', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });

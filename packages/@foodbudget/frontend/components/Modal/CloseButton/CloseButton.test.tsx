@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { screen, render, RenderResult } from 'test-utils';
-import userEvent from '@testing-library/user-event';
+import { screen, render, RenderResult, userEvent } from 'test-utils';
 import CloseButton, { CloseButtonProps } from './CloseButton';
 
 const onClose = jest.fn();

@@ -1,5 +1,4 @@
-import { render, RenderResult, screen } from 'test-utils';
-import userEvent from '@testing-library/user-event';
+import { render, RenderResult, screen, userEvent } from 'test-utils';
 import AutoComplete, { AutoCompleteProps } from './AutoComplete';
 
 const defaultProps: AutoCompleteProps = {

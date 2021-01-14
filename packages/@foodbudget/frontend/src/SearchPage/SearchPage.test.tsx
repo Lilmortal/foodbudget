@@ -1,5 +1,5 @@
-import { render, RenderResult, screen, waitFor } from 'test-utils';
-import userEvent from '@testing-library/user-event';
+import { render, RenderResult, screen, waitFor, userEvent } from 'test-utils';
+
 import { SearchPage, SearchPageProps } from './SearchPage';
 
 const defaultProps: SearchPageProps = {
