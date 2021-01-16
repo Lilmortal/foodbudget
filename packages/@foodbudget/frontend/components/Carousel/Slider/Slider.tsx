@@ -49,7 +49,7 @@ const StyledSlider = styled.div<
     transform: `translateX(${
       -1 *
       getSlideWidthInPercentages(props.numberOfVisibleSlides) *
-      (props.endOfVisibleSlidePosition - props.numberOfVisibleSlides)
+      (props.endOfVisibleSlidePosition + 1 - props.numberOfVisibleSlides)
     }%)`,
     ...(!hasNumberOfVisibleSlidesChanged && { transition: 'transform 0.5s' }),
     width: '100%',

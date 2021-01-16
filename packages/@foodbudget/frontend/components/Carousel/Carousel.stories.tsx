@@ -12,6 +12,18 @@ const items = [
   <ImagePanel src="pizza.webp" style={{ backgroundColor: 'purple' }} />,
 ];
 
+const breakpoints = {
+  xl: { minWidthInPixels: 1200, numberOfVisibleSlides: 4 },
+  lg: { minWidthInPixels: 600, numberOfVisibleSlides: 3 },
+  md: { minWidthInPixels: 0, numberOfVisibleSlides: 2 },
+};
+
 storiesOf('Carousel', module).add('default', () => (
-  <Carousel items={items} hasMore={true} loadMore={action('loadMore')} />
+  <Carousel
+    hasMore={true}
+    loadMore={action('loadMore')}
+    breakpoints={breakpoints}
+  >
+    {items}
+  </Carousel>
 ));

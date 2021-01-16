@@ -19,7 +19,7 @@ export interface CarouselProps {
   swipeable?: boolean;
   children: React.ReactNode[];
   removeArrowsOnDeviceType?: string[];
-  numberOfSlidesPerSwipe?: number;
+
   hasMore?: boolean;
   renderLeftArrow?: React.ReactElement;
   renderRightArrow?: React.ReactElement;
@@ -36,7 +36,6 @@ const Carousel: React.FC<CarouselProps> = ({
   loadMore,
   children,
   removeArrowsOnDeviceType,
-  numberOfSlidesPerSwipe = 1,
   hasMore,
   renderLeftArrow = <LeftArrow />,
   renderRightArrow = <RightArrow />,
@@ -53,9 +52,11 @@ const Carousel: React.FC<CarouselProps> = ({
    */
   const focusSlidePosition = useRef<number | null>(null);
 
-  const { breakpointName, numberOfVisibleSlides } = useCarouselBreakpoints(
-    breakpoints,
-  );
+  const {
+    breakpointName,
+    numberOfVisibleSlides,
+    numberOfSlidesPerSwipe,
+  } = useCarouselBreakpoints(breakpoints);
 
   /**
    * Used to center the arrows on the left/right border of the carousel.
@@ -67,9 +68,7 @@ const Carousel: React.FC<CarouselProps> = ({
    * e.g. 4 visible slides on the screen, this returns 3.
    * index starts at 0.
    */
-  const [endOfVisibleSlidePosition, setEndOfVisibleSlidePosition] = useState(
-    numberOfVisibleSlides - 1,
-  );
+  const [endOfVisibleSlidePosition, setEndOfVisibleSlidePosition] = useState(0);
 
   const prevNumberOfVisibleSlides = usePrevious(numberOfVisibleSlides);
 
@@ -123,13 +122,19 @@ const Carousel: React.FC<CarouselProps> = ({
    * If the numberOfVisibleSlides change via window resize, adjust the number of slides to be shown accordingly.
    */
   useEffect(() => {
-    if (prevNumberOfVisibleSlides && prevEndOfVisibleSlidePosition) {
+    if (
+      prevNumberOfVisibleSlides &&
+      prevNumberOfVisibleSlides > 0 &&
+      prevEndOfVisibleSlidePosition &&
+      prevEndOfVisibleSlidePosition > 0
+    ) {
       setEndOfVisibleSlidePosition(
         prevEndOfVisibleSlidePosition -
           (prevNumberOfVisibleSlides - numberOfVisibleSlides),
       );
     } else {
-      setEndOfVisibleSlidePosition(numberOfVisibleSlides);
+      // set the initial visible slide position.
+      setEndOfVisibleSlidePosition(numberOfVisibleSlides - 1);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -160,7 +165,7 @@ const Carousel: React.FC<CarouselProps> = ({
     if (direction === 'left' && endOfVisibleSlidePosition > 0) {
       setEndOfVisibleSlidePosition(
         Math.max(
-          numberOfVisibleSlides,
+          numberOfVisibleSlides - 1,
           endOfVisibleSlidePosition - numberOfSlidesPerSwipe,
         ),
       );
@@ -206,7 +211,7 @@ const Carousel: React.FC<CarouselProps> = ({
     event: React.KeyboardEvent<HTMLButtonElement>,
   ) => {
     if (event.key === 'Enter' || event.key === ' ') {
-      focusSlidePosition.current = endOfVisibleSlidePosition;
+      focusSlidePosition.current = endOfVisibleSlidePosition + 1;
     }
   };
 
@@ -298,8 +303,8 @@ const Carousel: React.FC<CarouselProps> = ({
   const isSlideVisible = (slidesIndex: number, slideIndex: number) => {
     return (
       getSlidePosition(slidesIndex, slideIndex) >=
-        endOfVisibleSlidePosition - numberOfVisibleSlides &&
-      getSlidePosition(slidesIndex, slideIndex) <= endOfVisibleSlidePosition - 1
+        endOfVisibleSlidePosition + 1 - numberOfVisibleSlides &&
+      getSlidePosition(slidesIndex, slideIndex) <= endOfVisibleSlidePosition
     );
   };
 

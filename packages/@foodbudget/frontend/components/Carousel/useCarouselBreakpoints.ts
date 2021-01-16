@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 export interface Breakpoint {
   minWidthInPixels: number;
   numberOfVisibleSlides: number;
+  numberOfSlidesPerSwipe?: number;
 }
 
 export interface Breakpoints {
@@ -17,6 +18,7 @@ const sortMaxWidthToLowest = (
 export interface CarouselBreakpoints {
   breakpointName: string;
   numberOfVisibleSlides: number;
+  numberOfSlidesPerSwipe: number;
 }
 
 const useCarouselBreakpoints = <B extends Breakpoints>(
@@ -24,6 +26,7 @@ const useCarouselBreakpoints = <B extends Breakpoints>(
 ): CarouselBreakpoints => {
   const [breakpointName, setBreakpointName] = useState('');
   const [numberOfVisibleSlides, setNumberOfVisibleSlides] = useState(0);
+  const [numberOfSlidesPerSwipe, setNumberOfSlidesPerSwipe] = useState(0);
 
   useEffect(() => {
     const sortedBreakpoints = Object.entries(breakpoints).sort(
@@ -51,6 +54,7 @@ const useCarouselBreakpoints = <B extends Breakpoints>(
       if (queries.matches) {
         setNumberOfVisibleSlides(breakpoint.numberOfVisibleSlides);
         setBreakpointName(name);
+        setNumberOfSlidesPerSwipe(breakpoint.numberOfSlidesPerSwipe ?? 1);
       }
 
       queries.addEventListener('change', listener);
@@ -59,7 +63,7 @@ const useCarouselBreakpoints = <B extends Breakpoints>(
     });
   }, [breakpoints]);
 
-  return { breakpointName, numberOfVisibleSlides };
+  return { breakpointName, numberOfVisibleSlides, numberOfSlidesPerSwipe };
 };
 
 export default useCarouselBreakpoints;

@@ -150,11 +150,22 @@ const MealPlanPage: React.FC<{}> = () => {
         <Carousel
           hasMore={hasMore}
           loadMore={loadMore}
-          numberOfSlidesPerSwipe={3}
           breakpoints={{
-            xl: { minWidthInPixels: 1200, numberOfVisibleSlides: 4 },
-            lg: { minWidthInPixels: 600, numberOfVisibleSlides: 3 },
-            md: { minWidthInPixels: 0, numberOfVisibleSlides: 2 },
+            xl: {
+              minWidthInPixels: 1200,
+              numberOfVisibleSlides: 4,
+              numberOfSlidesPerSwipe: 4,
+            },
+            lg: {
+              minWidthInPixels: 600,
+              numberOfVisibleSlides: 3,
+              numberOfSlidesPerSwipe: 3,
+            },
+            md: {
+              minWidthInPixels: 0,
+              numberOfVisibleSlides: 2,
+              numberOfSlidesPerSwipe: 2,
+            },
           }}
           removeArrowsOnDeviceType={['md']}
         >
