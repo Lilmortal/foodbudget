@@ -229,6 +229,38 @@ describe('carousel', () => {
   });
 
   describe('focus', () => {
-    it('should remain focus on the focussed slide when window is being resized', () => {});
+    it('should move focus to the first visible slide when right arrow is pressed via a keyboard', () => {
+      mockLgBreakpoint();
+
+      renderCarousel();
+
+      const rightArrow = screen.getByRole('button', {
+        name: '>',
+      });
+
+      userEvent.type(rightArrow, '{enter}');
+
+      expect(screen.getByRole('button', { name: '4' })).toHaveFocus();
+    });
+
+    it('should move focus to the last visible slide when left arrow is pressed via a keyboard', () => {
+      mockLgBreakpoint();
+
+      renderCarousel();
+
+      const rightArrow = screen.getByRole('button', {
+        name: '>',
+      });
+
+      userEvent.type(rightArrow, '{enter}');
+
+      const leftArrow = screen.getByRole('button', {
+        name: '<',
+      });
+
+      userEvent.type(leftArrow, '{enter}');
+
+      expect(screen.getByRole('button', { name: '3' })).toHaveFocus();
+    });
   });
 });

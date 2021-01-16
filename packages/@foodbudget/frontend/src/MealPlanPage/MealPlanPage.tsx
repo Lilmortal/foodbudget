@@ -89,9 +89,9 @@ const MealPlanPage: React.FC<{}> = () => {
 
   useEffect(() => {
     const slides = [];
-    for (let i = 0; i < 600; i += 1) {
+    for (let i = 0; i <= 6; i += 1) {
       slides.push(
-        <div tabIndex={0} key={i}>
+        <div tabIndex={0} key={`${i}-slide`}>
           {i}
         </div>,
       );

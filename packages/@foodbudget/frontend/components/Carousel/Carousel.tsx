@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, cloneElement } from 'react';
+import { useRef, useState, useEffect, cloneElement, useCallback } from 'react';
 import { SwipeableHandlers, useSwipeable } from 'react-swipeable';
 import { LeftArrow, RightArrow } from './Arrow';
 import Slide from './Slide';
@@ -25,6 +25,10 @@ export interface CarouselProps {
   renderRightArrow?: React.ReactElement;
 }
 
+// TODO:
+// first slide lose focus on resize
+// triggering left and right arrow on keyboard overtime will cause weird bugs
+// width / 3 == 33.3333%, translateX not accurate
 const Carousel: React.FC<CarouselProps> = ({
   breakpoints,
   horizontal = true,
@@ -42,6 +46,13 @@ const Carousel: React.FC<CarouselProps> = ({
   const rightArrowRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<HTMLDivElement[]>([]);
 
+  /**
+   * This is only used in the situation where user navigates with the arrow keys via keyboard.
+   * If user press Enter or Spacebar on the right arrow, focus on the first visible slide, vice versa
+   * for the left arrow.
+   */
+  const focusSlidePosition = useRef<number | null>(null);
+
   const { breakpointName, numberOfVisibleSlides } = useCarouselBreakpoints(
     breakpoints,
   );
@@ -51,14 +62,7 @@ const Carousel: React.FC<CarouselProps> = ({
    */
   const [leftArrowWidth, setLeftArrowWidth] = useState(0);
   const [rightArrowWidth, setRightArrowWidth] = useState(0);
-  /**
-   * This is only used in the situation where user navigates with the arrow keys via keyboard.
-   * If user press Enter or Spacebar on the right arrow, focus on the first visible slide, vice versa
-   * for the left arrow.
-   */
-  const [focusSlidePosition, setFocusSlidePosition] = useState<number | null>(
-    null,
-  );
+
   /**
    * e.g. 4 visible slides on the screen, this returns 3.
    * index starts at 0.
@@ -77,14 +81,43 @@ const Carousel: React.FC<CarouselProps> = ({
    * Focus on the first/last slide when user navigate via keyboard.
    */
   useEffect(() => {
-    if (
-      focusSlidePosition &&
-      slidesRef.current[focusSlidePosition] &&
-      slidesRef.current[focusSlidePosition].firstChild
-    ) {
-      (slidesRef.current[focusSlidePosition].firstChild as HTMLElement).focus();
+    if (focusSlidePosition && focusSlidePosition.current) {
+      const isFocusSlideOnLastVisibleSlide =
+        prevNumberOfVisibleSlides &&
+        focusSlidePosition.current &&
+        focusSlidePosition.current % (prevNumberOfVisibleSlides - 1) === 0;
+
+      const isBreakpointSmallerOnBrowserResize =
+        prevNumberOfVisibleSlides &&
+        numberOfVisibleSlides < prevNumberOfVisibleSlides;
+
+      /**
+       * If the focus slide is on the last visible slide when browser resize such that the breakpoint is smaller,
+       * then shift the focus to the previous tab since the last visible slide will be out of view.
+       */
+      if (
+        isFocusSlideOnLastVisibleSlide &&
+        isBreakpointSmallerOnBrowserResize &&
+        slidesRef.current[focusSlidePosition.current - 1] &&
+        slidesRef.current[focusSlidePosition.current - 1].firstChild
+      ) {
+        (slidesRef.current[focusSlidePosition.current - 1]
+          .firstChild as HTMLElement).focus();
+      } else if (
+        slidesRef.current[focusSlidePosition.current] &&
+        slidesRef.current[focusSlidePosition.current].firstChild
+      ) {
+        (slidesRef.current[focusSlidePosition.current]
+          .firstChild as HTMLElement).focus();
+      }
+
+      focusSlidePosition.current = null;
     }
-  }, [endOfVisibleSlidePosition, focusSlidePosition]);
+  }, [
+    endOfVisibleSlidePosition,
+    numberOfVisibleSlides,
+    prevNumberOfVisibleSlides,
+  ]);
 
   /**
    * If the numberOfVisibleSlides change via window resize, adjust the number of slides to be shown accordingly.
@@ -98,6 +131,7 @@ const Carousel: React.FC<CarouselProps> = ({
     } else {
       setEndOfVisibleSlidePosition(numberOfVisibleSlides);
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [numberOfVisibleSlides]);
 
@@ -158,11 +192,12 @@ const Carousel: React.FC<CarouselProps> = ({
     event: React.KeyboardEvent<HTMLButtonElement>,
   ) => {
     if (event.key === 'Enter' || event.key === ' ') {
-      setFocusSlidePosition(
-        Math.max(
-          numberOfVisibleSlides - 1,
-          endOfVisibleSlidePosition - numberOfVisibleSlides,
-        ),
+      /**
+       * The focus slide should be on the slide that was not on the previous list of slides.
+       */
+      focusSlidePosition.current = Math.max(
+        numberOfVisibleSlides - 1,
+        endOfVisibleSlidePosition - numberOfVisibleSlides,
       );
     }
   };
@@ -171,7 +206,7 @@ const Carousel: React.FC<CarouselProps> = ({
     event: React.KeyboardEvent<HTMLButtonElement>,
   ) => {
     if (event.key === 'Enter' || event.key === ' ') {
-      setFocusSlidePosition(endOfVisibleSlidePosition - 1);
+      focusSlidePosition.current = endOfVisibleSlidePosition;
     }
   };
 
@@ -260,10 +295,31 @@ const Carousel: React.FC<CarouselProps> = ({
   const getSlidePosition = (slidesIndex: number, slideIndex: number) =>
     slidesIndex * numberOfVisibleSlides + slideIndex;
 
-  const isSlideVisible = (slidesIndex: number, slideIndex: number) =>
-    getSlidePosition(slidesIndex, slideIndex) >=
-      endOfVisibleSlidePosition - numberOfVisibleSlides &&
-    getSlidePosition(slidesIndex, slideIndex) <= endOfVisibleSlidePosition - 1;
+  const isSlideVisible = (slidesIndex: number, slideIndex: number) => {
+    return (
+      getSlidePosition(slidesIndex, slideIndex) >=
+        endOfVisibleSlidePosition - numberOfVisibleSlides &&
+      getSlidePosition(slidesIndex, slideIndex) <= endOfVisibleSlidePosition - 1
+    );
+  };
+
+  /**
+   * Set focusSlidePosition ref as the previous focussed slide.
+   */
+  const onSlideUnmount = useCallback(
+    (activeElement: React.ReactNode, node: HTMLDivElement) => {
+      if (activeElement === node.firstChild) {
+        slidesRef.current.find((slideNode, index) => {
+          if (node.firstChild === slideNode?.firstChild) {
+            focusSlidePosition.current = index;
+            return true;
+          }
+          return false;
+        });
+      }
+    },
+    [],
+  );
 
   return (
     <CarouselWrapper horizontal={horizontal} {...handleSwipeable}>
@@ -288,6 +344,14 @@ const Carousel: React.FC<CarouselProps> = ({
                     slidesRef.current[
                       getSlidePosition(slidesIndex, slideIndex)
                     ] = node;
+                  }}
+                  onUnmount={(activeElement: React.ReactNode) => {
+                    return onSlideUnmount(
+                      activeElement,
+                      slidesRef.current[
+                        getSlidePosition(slidesIndex, slideIndex)
+                      ],
+                    );
                   }}
                 >
                   {isSlideVisible(slidesIndex, slideIndex) ? slide : null}

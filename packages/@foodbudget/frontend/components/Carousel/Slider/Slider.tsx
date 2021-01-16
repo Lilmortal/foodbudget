@@ -53,6 +53,7 @@ const StyledSlider = styled.div<
     }%)`,
     ...(!hasNumberOfVisibleSlidesChanged && { transition: 'transform 0.5s' }),
     width: '100%',
+    willChange: 'transform',
   };
 });
 
