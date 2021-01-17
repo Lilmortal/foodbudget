@@ -19,7 +19,6 @@ export interface CarouselProps {
   swipeable?: boolean;
   children: React.ReactNode[];
   removeArrowsOnDeviceType?: string[];
-
   hasMore?: boolean;
   renderLeftArrow?: React.ReactElement;
   renderRightArrow?: React.ReactElement;
@@ -159,7 +158,7 @@ const Carousel: React.FC<CarouselProps> = ({
   }, [rightArrowRef]);
 
   const willSwipeOverflow =
-    endOfVisibleSlidePosition + numberOfSlidesPerSwipe >= children.length;
+    endOfVisibleSlidePosition + numberOfSlidesPerSwipe >= children.length - 1;
 
   const handleArrowClick = (direction: 'left' | 'right') => {
     if (direction === 'left' && endOfVisibleSlidePosition > 0) {
@@ -183,7 +182,7 @@ const Carousel: React.FC<CarouselProps> = ({
         // Since we know hasMore is false, there is nothing further ahead, hence we want the slider to not have any gaps
         // at the end.
         if (!hasMore) {
-          setEndOfVisibleSlidePosition(children.length);
+          setEndOfVisibleSlidePosition(children.length - 1);
         }
       } else {
         setEndOfVisibleSlidePosition(
@@ -231,13 +230,13 @@ const Carousel: React.FC<CarouselProps> = ({
   }
 
   const leftArrow = cloneElement(renderLeftArrow, {
-    disabled: endOfVisibleSlidePosition === numberOfVisibleSlides,
+    disabled: endOfVisibleSlidePosition + 1 === numberOfVisibleSlides,
     onClick: handleLeftArrowClick,
     onKeyPress: handleLeftArrowKeyPress,
   });
 
   const rightArrow = cloneElement(renderRightArrow, {
-    disabled: !hasMore && endOfVisibleSlidePosition === children.length,
+    disabled: !hasMore && endOfVisibleSlidePosition + 1 === children.length,
     onClick: handleRightArrowClick,
     onKeyPress: handleRightArrowKeyPress,
   });
