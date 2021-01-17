@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/ui@1.4.0...@foodbudget/ui@1.5.0) (2021-01-17)
+
+
+### Bug Fixes
+
+* set focus on the previous slide once resize to a smaller breakpoint ([c9529d3](https://github.com/Lilmortal/foodbudget/commit/c9529d3f616746a61597bb89bde0ef9fa83cc202))
+* **WIP:** carousel slide logic ([07c7140](https://github.com/Lilmortal/foodbudget/commit/07c714042db6cc41f5efea10cbfa3c52def387ca))
+* prevent scrolling when arrow keys clicked on autocomplete ([fb88e2b](https://github.com/Lilmortal/foodbudget/commit/fb88e2bb9b091578b3e52dfa555ff5f173260447))
+
+
+### Features
+
+* add useVisibleSlides, number of visible slides changes depending on breakpoints ([d8fb9a6](https://github.com/Lilmortal/foodbudget/commit/d8fb9a6d526afd78a689f6cd0dc30f51724eb0ce))
+* added removeArrowsOnDeviceType props ([45bd6fd](https://github.com/Lilmortal/foodbudget/commit/45bd6fd05f981c252722c6dec6a13aa402c39d17))
+* carousel left and right arrows are disabled when it reaches the beginning/end of slides ([be9528c](https://github.com/Lilmortal/foodbudget/commit/be9528cb1c676b8590a6b020d9b238b5937e5ec7))
+* carousel support breakpoints, disable transition animation on window resize ([d22f8c3](https://github.com/Lilmortal/foodbudget/commit/d22f8c3b019cb47acf41716a2136edb9b091694e))
+* enable swippeable in carousel ([1f42ca2](https://github.com/Lilmortal/foodbudget/commit/1f42ca287205e0398d3bf5778789011efe3f48d7))
+* focus on first/last visible slide when user navigate carousel via keyboard ([03b5d51](https://github.com/Lilmortal/foodbudget/commit/03b5d510e49dd699e06b9d19eda6be20223def68))
+* moved numberOfSwipes to breakpoints ([b9110a4](https://github.com/Lilmortal/foodbudget/commit/b9110a48a163a81a33e5f04387af3fe3eba7c5b6))
+* support autocomplete arrow keys navigation ([90133a9](https://github.com/Lilmortal/foodbudget/commit/90133a95bb50c5d5c507159a2206ebcaeb133fe4))
+
+
+
+
+
 # [1.4.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/ui@1.3.0...@foodbudget/ui@1.4.0) (2020-12-31)
 
 
