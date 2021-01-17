@@ -1,5 +1,5 @@
-import { fireEvent, render, RenderResult, screen, waitFor } from 'test-utils';
-import userEvent from '@testing-library/user-event';
+import { render, RenderResult, screen, waitFor, userEvent } from 'test-utils';
+
 import { SearchPage, SearchPageProps } from './SearchPage';
 
 const defaultProps: SearchPageProps = {
@@ -174,15 +174,11 @@ describe('search page', () => {
       name: /I already have/i,
     });
 
-    userEvent.type(ingredientsInput, 'ingredient1');
-
-    fireEvent.keyDown(ingredientsInput, { key: 'Enter', keyCode: 13 });
+    userEvent.type(ingredientsInput, 'ingredient1{enter}');
 
     userEvent.clear(ingredientsInput);
 
-    userEvent.type(ingredientsInput, 'ingredient1');
-
-    fireEvent.keyDown(ingredientsInput, { key: 'Enter', keyCode: 13 });
+    userEvent.type(ingredientsInput, 'ingredient1{enter}');
 
     const ingredientButton = screen.getAllByRole('button', {
       name: /ingredient1/i,

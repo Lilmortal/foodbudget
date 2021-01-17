@@ -4505,6 +4505,12 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-window@^1.8.2":
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/@types/react-window/-/react-window-1.8.2.tgz#a5a6b2762ce73ffaab7911ee1397cf645f2459fe"
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*":
   version "16.9.55"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.55.tgz#47078587f5bfe028a23b6b46c7b94ac0d436acff"
@@ -6538,7 +6544,7 @@ caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
 
-chalk@2.4.2, chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.3.1, chalk@^2.3.2, chalk@^2.4.1, chalk@^2.4.2:
+chalk@2.4.2, chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.3.0, chalk@^2.3.1, chalk@^2.3.2, chalk@^2.4.1, chalk@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.2.tgz#cd42541677a54333cf541a49108c1432b44c9424"
   dependencies:
@@ -8398,7 +8404,7 @@ engine.io@~3.4.0:
     engine.io-parser "~2.2.0"
     ws "^7.1.2"
 
-enhanced-resolve@^4.3.0:
+enhanced-resolve@^4.0.0, enhanced-resolve@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-4.3.0.tgz#3b806f3bfafc1ec7de69551ef93cca46c1704126"
   dependencies:
@@ -8656,9 +8662,9 @@ eslint-plugin-react-hooks@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.2.0.tgz#8c229c268d468956334c943bb45fc860280f5556"
 
-eslint-plugin-react@^7.21.5:
-  version "7.21.5"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.21.5.tgz#50b21a412b9574bfe05b21db176e8b7b3b15bff3"
+eslint-plugin-react@^7.22.0:
+  version "7.22.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.22.0.tgz#3d1c542d1d3169c45421c1215d9470e341707269"
   dependencies:
     array-includes "^3.1.1"
     array.prototype.flatmap "^1.2.3"
@@ -12147,6 +12153,10 @@ media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
 
+"memoize-one@>=3.1.1 <6":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.1.1.tgz#047b6e3199b508eaec03504de71229b8eb1d75c0"
+
 memoizerific@^1.11.3:
   version "1.11.3"
   resolved "https://registry.yarnpkg.com/memoizerific/-/memoizerific-1.11.3.tgz#7c87a4646444c32d75438570905f2dbd1b1a805a"
@@ -14405,6 +14415,10 @@ react-sizeme@^2.5.2, react-sizeme@^2.6.7:
     shallowequal "^1.1.0"
     throttle-debounce "^2.1.0"
 
+react-swipeable@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/react-swipeable/-/react-swipeable-6.0.1.tgz#14246e798c25a00da3279632a87811411756f652"
+
 react-syntax-highlighter@^12.2.1:
   version "12.2.1"
   resolved "https://registry.yarnpkg.com/react-syntax-highlighter/-/react-syntax-highlighter-12.2.1.tgz#14d78352da1c1c3f93c6698b70ec7c706b83493e"
@@ -14422,6 +14436,13 @@ react-textarea-autosize@^8.1.1:
     "@babel/runtime" "^7.10.2"
     use-composed-ref "^1.0.0"
     use-latest "^1.0.0"
+
+react-window@^1.8.6:
+  version "1.8.6"
+  resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.8.6.tgz#d011950ac643a994118632665aad0c6382e2a112"
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    memoize-one ">=3.1.1 <6"
 
 react@^16.8.3:
   version "16.14.0"
@@ -16473,7 +16494,15 @@ ts-pnp@^1.1.6:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/ts-pnp/-/ts-pnp-1.2.0.tgz#a500ad084b0798f1c3071af391e65912c86bca92"
 
-tsconfig-paths@^3.9.0:
+tsconfig-paths-webpack-plugin@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/tsconfig-paths-webpack-plugin/-/tsconfig-paths-webpack-plugin-3.3.0.tgz#a7461723c20623ca9148621a5ce36532682ad2ff"
+  dependencies:
+    chalk "^2.3.0"
+    enhanced-resolve "^4.0.0"
+    tsconfig-paths "^3.4.0"
+
+tsconfig-paths@^3.4.0, tsconfig-paths@^3.9.0:
   version "3.9.0"
   resolved "https://registry.yarnpkg.com/tsconfig-paths/-/tsconfig-paths-3.9.0.tgz#098547a6c4448807e8fcb8eae081064ee9a3c90b"
   dependencies:

@@ -12,6 +12,7 @@
     "baseUrl": ".",
     "paths": {
       "test-utils": ["./utils/test-utils"],
+      "matchMediaMock": ["./utils/matchMediaMock"],
       "components/*": ["./components/*"]
     }
   },

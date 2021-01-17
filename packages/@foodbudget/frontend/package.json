@@ -31,6 +31,8 @@
     "graphql": "^15.4.0",
     "next": "^10.0.0",
     "no-scroll": "^2.1.1",
+    "react-swipeable": "^6.0.1",
+    "react-window": "^1.8.6",
     "styled-components": "^5.2.1",
     "yup": "^0.32.8"
   },
@@ -50,6 +52,7 @@
     "@types/classnames": "^2.2.11",
     "@types/no-scroll": "^2.1.0",
     "@types/react-dom": "^17.0.0",
+    "@types/react-window": "^1.8.2",
     "@types/styled-components": "^5.1.5",
     "@types/testing-library__react": "^10.2.0",
     "@types/testing-library__react-hooks": "^3.4.1",
@@ -60,9 +63,10 @@
     "babel-plugin-styled-components": "^1.12.0",
     "cypress": "^6.1.0",
     "cypress-plugin-snapshots": "^1.4.4",
-    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
     "rimraf": "^3.0.2",
+    "tsconfig-paths-webpack-plugin": "^3.3.0",
     "typescript": "^4.0.5",
     "webpack": "^5.3.2"
   }

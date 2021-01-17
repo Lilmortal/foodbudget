@@ -23,14 +23,14 @@ export interface Typography {
 }
 
 const typography: Typography = {
-  xxsFont: '1.4rem',
+  xxsFont: '1.3rem',
   xsFont: '1.8rem',
   smFont: '2rem',
   mdFont: '3.4rem',
   lgFont: '5rem',
   xlFont: '6.5rem',
 
-  mobXxsFont: '1.4rem',
+  mobXxsFont: '1.3rem',
   mobXsFont: '1.6rem',
   mobSmFont: '2rem',
   mobMdFont: '3rem',

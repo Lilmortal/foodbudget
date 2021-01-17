@@ -3,7 +3,6 @@ import styled from 'styled-components';
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary';
-  active?: boolean;
   inverse?: boolean;
   showCloseIcon?: boolean;
 }
@@ -43,9 +42,10 @@ const StyledButton = styled.button<ButtonProps>((props) => ({
     backgroundColor: props.theme.colors.primaryButtonDisabledFill,
     color: props.theme.colors.primaryButtonDisabledText,
     borderColor: props.theme.colors.primaryButtonDisabledBorder,
+    cursor: 'default',
   },
 
-  ':active': {
+  ':enabled:active': {
     boxShadow:
       'inset 4px 4px 5px rgba(114, 58, 179, 0.1), inset -4px -4px 5px rgba(114, 58, 179, 0.1)',
   },
@@ -83,7 +83,7 @@ const StyledButton = styled.button<ButtonProps>((props) => ({
   ...(props.showCloseIcon && {
     position: 'relative',
     pointerEvents: 'none',
-    padding: '1rem 2.5rem 1rem 1rem',
+    padding: '1rem 3.5rem 1rem 1rem',
 
     ':after': {
       content: `'X'`,
@@ -91,15 +91,13 @@ const StyledButton = styled.button<ButtonProps>((props) => ({
       position: 'absolute',
       pointerEvents: 'all',
       right: '10px',
-      bottom: '12px',
+      bottom: '13px',
     },
   }),
 }));
 
-const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  active = true,
-  ...props
-}) => <StyledButton variant={variant} active={active} {...props} />;
+const Button: React.FC<ButtonProps> = ({ variant = 'primary', ...props }) => (
+  <StyledButton variant={variant} {...props} />
+);
 
 export default Button;

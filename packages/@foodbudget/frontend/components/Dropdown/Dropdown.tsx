@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { v4 } from 'uuid';
 
 export interface DropdownProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
@@ -67,8 +66,8 @@ const Dropdown: React.FC<DropdownProps> = ({
           {placeholder}
         </Option>
       )}
-      {values.map((value) => (
-        <Option key={`option-${v4()}`}>{value}</Option>
+      {values.map((value, index) => (
+        <Option key={`option-${index}`}>{value}</Option>
       ))}
     </Select>
   );

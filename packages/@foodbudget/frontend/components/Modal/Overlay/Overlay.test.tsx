@@ -1,7 +1,6 @@
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import { screen, render, RenderResult } from 'test-utils';
+import { screen, render, RenderResult, userEvent } from 'test-utils';
 import Overlay, { OverlayProps } from './Overlay';
 
 const onOutsideAction = jest.fn();

@@ -12,7 +12,7 @@ const Header = styled.header({
 
 const Body = createGlobalStyle({
   body: {
-    backgroundImage: "url('background.jpg')",
+    backgroundImage: "url('background.webp')",
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
   },

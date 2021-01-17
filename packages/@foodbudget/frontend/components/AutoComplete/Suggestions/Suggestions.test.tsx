@@ -1,4 +1,4 @@
-import { fireEvent, render, RenderResult, screen } from 'test-utils';
+import { render, RenderResult, screen } from 'test-utils';
 import userEvent from '@testing-library/user-event';
 import Suggestions, { SuggestionsProps } from './Suggestions';
 
@@ -11,27 +11,52 @@ const renderSuggestions = (props?: Partial<SuggestionsProps>): RenderResult =>
   render(<Suggestions {...defaultProps} {...props} />);
 
 describe('suggestions', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should trigger onSuggestionSelect when a suggestion is clicked', () => {
     renderSuggestions();
 
-    const fishButton = screen
-      .getAllByRole('listitem')
-      .filter((item) => item.textContent === 'fish')[0];
+    const suggestions = screen.getAllByRole('listitem');
 
-    userEvent.click(fishButton);
+    userEvent.click(suggestions[2]);
 
-    expect(defaultProps.onSuggestionSelect).toBeCalledTimes(1);
+    expect(defaultProps.onSuggestionSelect).toBeCalledWith('mushroom');
   });
 
   it('should trigger onSuggestionSelect when a suggestion button is tabbed into and entered', () => {
     renderSuggestions();
 
-    const fishButton = screen
-      .getAllByRole('listitem')
-      .filter((item) => item.textContent === 'fish')[0];
+    const suggestions = screen.getAllByRole('listitem');
 
-    fireEvent.keyDown(fishButton, { key: 'Enter', keyCode: 13 });
+    userEvent.tab();
+    userEvent.tab();
 
-    expect(defaultProps.onSuggestionSelect).toBeCalledTimes(1);
+    expect(suggestions[1]).toHaveFocus();
+
+    userEvent.type(suggestions[1], '{enter}');
+
+    expect(defaultProps.onSuggestionSelect).toBeCalledWith('pork');
+  });
+
+  it('should focus the second suggestion when down arrow key is pressed', () => {
+    renderSuggestions();
+
+    const suggestions = screen.getAllByRole('listitem');
+
+    userEvent.type(suggestions[0], '{arrowdown}');
+
+    expect(suggestions[1]).toHaveFocus();
+  });
+
+  it('should focus the second suggestion when up arrow key is pressed', () => {
+    renderSuggestions();
+
+    const suggestions = screen.getAllByRole('listitem');
+
+    userEvent.type(suggestions[0], '{arrowup}');
+
+    expect(suggestions[suggestions.length - 1]).toHaveFocus();
   });
 });

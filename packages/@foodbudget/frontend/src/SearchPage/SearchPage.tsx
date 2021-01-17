@@ -229,7 +229,18 @@ export const getStaticProps: GetStaticProps = async (): Promise<{
 }> => {
   const apolloClient = initializeApollo();
 
-  const suggestions = ['test', 'lala', 'degr', 'efgdg', 'freg', 'fregssss'];
+  const suggestions = [
+    'test',
+    'lala',
+    'degr',
+    'efgdg',
+    'freg',
+    'fregssss',
+    'frgdxgt',
+    'frrhrtht',
+    'frdryhyhh',
+    'Tex-Mex',
+  ];
 
   return {
     props: {
