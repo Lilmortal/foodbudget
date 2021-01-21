@@ -27,6 +27,10 @@ export interface CarouselProps {
 // TODO:
 // first slide lose focus on resize
 // triggering left and right arrow on keyboard overtime will cause weird bugs
+// vertical arrows not supported
+// Add invisible arrow tabs that can only be tabbed when removeArrowsOnDeviceType is true
+// Fix bug where pressing spacebar on Arrow triggers onClick first before onKeyPress
+// Support virtualized
 // width / 3 == 33.3333%, translateX not accurate
 const Carousel: React.FC<CarouselProps> = ({
   breakpoints,

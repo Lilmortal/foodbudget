@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import Button from 'components/Button';
 import Carousel from 'components/Carousel';
+import Calendar from 'components/Calendar';
 import PageTemplate from '../templates/Page';
-import Timetable from './Timetable';
 
 const MealPlanPageWrapper = styled.div({
   display: 'grid',
@@ -47,28 +47,13 @@ const BalanceWrapper = styled.div({
   padding: '1rem 0 4rem',
 });
 
-const Scroller = styled.div(({ theme }) => ({
-  gridArea: 'recipeScroller',
-  border: `1px solid ${theme.colors.black}`,
-  padding: '4rem 0',
-  display: 'flex',
-  flexWrap: 'wrap',
-}));
-
-const Recipe = styled.div(({ theme }) => ({
-  border: `1px solid ${theme.colors.black}`,
-  padding: '2rem',
-  maxWidth: '500px',
-  maxHeight: '300px',
-}));
-
 const IngredientPanel = styled(Panel)({ gridArea: 'ingredientPanel' });
 
 const EditHeader = styled.p({});
 
 const IngredientList = styled.div({});
 
-const RecipeTimetable = styled(Timetable)({
+const RecipeCalendar = styled(Calendar)({
   gridArea: 'timetable',
 });
 
@@ -138,7 +123,7 @@ const MealPlanPage: React.FC<{}> = () => {
       <MealPlanHeader>Weekly Meal Plan</MealPlanHeader>
 
       <MealPlanPageWrapper>
-        <RecipeTimetable />
+        <RecipeCalendar />
 
         <BudgetBalanceWrapper>
           <BudgetBalancePanel>
