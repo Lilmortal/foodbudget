@@ -1,8 +1,12 @@
 import { useCalendar } from 'react-calendar-hook';
 import { useTable } from 'react-table';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import chunk from 'lodash.chunk';
 import { addYears } from 'date-fns';
+import { v4 } from 'uuid';
+import styled from 'styled-components';
 import {
   CalendarBody,
   CalendarHead,
@@ -15,10 +19,19 @@ import {
   NextNavigationWrapper,
   PreviousNavigationWrapper,
 } from './Calendar.Styled';
+import Card, { CardProps } from './Card';
 
-export interface CalendarProps {
-  test?: string;
+export interface CalendarCardProps {
+  date: string;
+  card: React.ReactNode;
 }
+export interface CalendarProps {
+  cards?: CalendarCardProps[];
+}
+
+const CalendarDate = styled.div({
+  position: 'absolute',
+});
 
 const Calendar: React.FC<CalendarProps> = () => {
   const currentDate = new Date();
@@ -30,13 +43,35 @@ const Calendar: React.FC<CalendarProps> = () => {
         ...item.reduce(
           (acc, i) => ({
             ...acc,
-            [i.name]: i.date,
+            [i.name]: (
+              <>
+                <CalendarDate>{i.date}</CalendarDate>
+                <div style={{ backgroundColor: 'yellow' }}></div>
+              </>
+            ),
           }),
           {},
         ),
       })),
     [calendar.items],
   );
+
+  const [cards, setCards] = useState(data);
+
+  const onMoveCard = (sourceCard: CardProps, destCard: CardProps) => {
+    const tempCards = [...cards];
+
+    tempCards[sourceCard.row] = {
+      ...tempCards[sourceCard.row],
+      [sourceCard.day]: Number(destCard.date),
+    };
+    tempCards[destCard.row] = {
+      ...tempCards[destCard.row],
+      [destCard.day]: Number(sourceCard.date),
+    };
+
+    setCards(tempCards);
+  };
 
   const columns = useMemo(
     () => [
@@ -78,7 +113,7 @@ const Calendar: React.FC<CalendarProps> = () => {
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({ columns, data });
+  } = useTable({ columns, data: cards });
 
   return (
     <CalendarWrapper>
@@ -112,16 +147,25 @@ const Calendar: React.FC<CalendarProps> = () => {
           ))}
         </CalendarHead>
         <CalendarBody {...getTableBodyProps()}>
-          {rows.map((row) => {
+          {rows.map((row, rowIndex) => {
             prepareRow(row);
 
             return (
               <CalendarTr {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <CalendarTd {...cell.getCellProps()}>
-                    {cell.render('Cell')}
-                  </CalendarTd>
-                ))}
+                {row.cells.map((cell) => {
+                  return (
+                    <CalendarTd {...cell.getCellProps()}>
+                      <Card
+                        day={`${cell.column.Header}`}
+                        date={`${cell.value}`}
+                        row={rowIndex}
+                        onMoveCard={onMoveCard}
+                      >
+                        {cell.render('Cell')}
+                      </Card>
+                    </CalendarTd>
+                  );
+                })}
               </CalendarTr>
             );
           })}
@@ -131,4 +175,10 @@ const Calendar: React.FC<CalendarProps> = () => {
   );
 };
 
-export default Calendar;
+const CalendarProvider = () => (
+  <DndProvider backend={HTML5Backend}>
+    <Calendar />
+  </DndProvider>
+);
+
+export default CalendarProvider;

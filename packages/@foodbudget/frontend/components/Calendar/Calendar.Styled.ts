@@ -9,6 +9,7 @@ export const CalendarTable = styled.table((props) => ({
   display: 'table',
   border: `1px solid ${props.theme.colors.black}`,
   padding: '1rem',
+  tableLayout: 'fixed',
 }));
 
 export const CalendarHead = styled.thead({});
@@ -19,7 +20,9 @@ export const CalendarTr = styled.tr({});
 
 export const CalendarTh = styled.th({});
 
-export const CalendarTd = styled.td({});
+export const CalendarTd = styled.td({
+  width: `${100 / 7}%`,
+});
 
 export const NavigationWrapper = styled.div({
   display: 'flex',

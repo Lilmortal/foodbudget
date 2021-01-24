@@ -1,3 +1,4 @@
+import { RenderPageResult } from 'next/dist/next-server/lib/utils';
 import Document, {
   Head,
   Main,
@@ -81,21 +82,23 @@ const Favicons: React.FC<{}> = () => (
 );
 
 export default class MyDocument extends Document {
-  static getInitialProps({ renderPage }: DocumentContext): any {
+  static async getInitialProps(
+    ctx: DocumentContext,
+  ): Promise<RenderPageResult> {
     // TODO: Come back to this to verify it works
-    // Step 1: Create an instance of ServerStyleSheet
     const sheet = new ServerStyleSheet();
 
     // Step 2: Retrieve styles from components in the page
-    const page = renderPage((App) => (props) =>
+    const page = ctx.renderPage((App) => (props) =>
       sheet.collectStyles(<App {...props} />),
     );
 
     // Step 3: Extract the styles as <style> tags
     const styleTags = sheet.getStyleElement();
 
-    // Step 4: Pass styleTags as a prop
-    return { ...page, styleTags };
+    const result = { ...page, styleTags };
+
+    return result;
   }
 
   // eslint-disable-next-line class-methods-use-this
