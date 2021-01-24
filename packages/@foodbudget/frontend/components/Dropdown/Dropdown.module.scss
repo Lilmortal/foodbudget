@@ -1,0 +1,18 @@
+.option {
+  border-color: var(--primary-border);
+}
+
+.select {
+  border: 1px solid var(--primary-border);
+  border-radius: 19px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+  max-width: 400px;
+  width: 100%;
+  position: relative;
+  appearance: none;
+  background: url('/down-arrow.svg') var(--white);
+  background-repeat: no-repeat;
+  background-size: 16px 17px;
+  background-position: 96% 9px;
+}

@@ -1,0 +1,41 @@
+$breakpointXs: 32em;
+$breakpointSm: 36em;
+$breakpointMd: 76.8em;
+$breakpointLg: 102.4em;
+$breakpointXl: 144em;
+
+@mixin print {
+  @media only print {
+    @content;
+  }
+}
+
+@mixin xs {
+  @media only screen and (min-width: $breakpointXs) {
+    @content;
+  }
+}
+
+@mixin sm {
+  @media only screen and (min-width: $breakpointSm) {
+    @content;
+  }
+}
+
+@mixin md {
+  @media only screen and (min-width: $breakpointMd) {
+    @content;
+  }
+}
+
+@mixin lg {
+  @media only screen and (min-width: $breakpointLg) {
+    @content;
+  }
+}
+
+@mixin xl {
+  @media only screen and (min-width: $breakpointXl) {
+    @content;
+  }
+}

@@ -1,0 +1,11 @@
+.sliderWrapper {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+}
+
+.slider {
+  display: flex;
+  width: 100%;
+  will-change: transform;
+}

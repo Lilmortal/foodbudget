@@ -1,0 +1,28 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.table {
+  display: table;
+  border: 1px solid var(--black);
+  padding: 1rem;
+  table-layout: fixed;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-around;
+}
+
+.previousWrapper {
+  display: flex;
+}
+
+.nextWrapper {
+  display: flex;
+}
+
+.date {
+  // position: absolute;
+}

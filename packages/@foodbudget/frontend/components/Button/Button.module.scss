@@ -1,0 +1,88 @@
+.button {
+  border-radius: 19px;
+  height: fit-content;
+  cursor: pointer;
+  font: inherit;
+  font-weight: var(--xxl-weight);
+  line-height: 1;
+  padding: 1rem 2.5rem;
+  margin-bottom: 1rem;
+  background-color: var(--primary-button-fill);
+  color: var(--primary-button-text);
+  border: 1px solid transparent;
+
+  &:hover {
+    background-color: var(--primary-button-hover-fill);
+    color: var(--primary-button-hover-text);
+    border-color: var(--primary-button-hover-border);
+  }
+
+  &--inverse {
+    background-color: var(--primary-button-hover-fill);
+    color: var(--primary-button-hover-text);
+    border: 1px solid var(--primary-button-border);
+
+    &:hover {
+      background-color: var(--primary-button-fill);
+      color: var(--primary-button-text);
+      border-color: var(--primary-button-hover-border);
+    }
+  }
+
+  &:disabled {
+    background-color: var(--primary-button-disabled-fill);
+    color: var(--primary-button-disabled-text);
+    border-color: var(--primary-button-disabled-border);
+    cursor: default;
+  }
+
+  &:enabled:active {
+    box-shadow: inset 4px 4px 5px rgba(114, 58, 179, 0.1),
+      inset -4px -4px 5px rgba(114, 58, 179, 0.1);
+  }
+
+  &__secondary {
+    background-color: var(--secondary-button-hover-fill);
+    color: var(--secondary-button-hover-text);
+    border-color: var(--secondary-button-hover-border);
+
+    &:hover {
+      background-color: var(--secondary-button-fill);
+      color: var(--secondary-button-text);
+      border-color: var(--secondary-button-border);
+
+      &--inverse {
+        background-color: var(--secondary-button-fill);
+        color: var(--secondary-button-text);
+        border-color: var(--secondary-button-border);
+
+        &:hover {
+          background-color: var(--secondary-button-hover-fill);
+          color: var(--secondary-button-hover-text);
+          border-color: var(--secondary-button-hover-border);
+        }
+      }
+
+      &:disabled {
+        background-color: var(--secondary-button-disabled-fill);
+        color: var(--secondary-button-disabled-text);
+        border-color: var(--secondary-button-disabled-border);
+      }
+    }
+  }
+
+  &--showCloseIcon {
+    position: relative;
+    pointer-events: none;
+    padding: 1rem 3.5rem 1rem 1rem;
+
+    &::after {
+      content: 'X';
+      font-size: var(--xxs-font);
+      position: absolute;
+      pointer-events: all;
+      right: 10px;
+      bottom: 13px;
+    }
+  }
+}

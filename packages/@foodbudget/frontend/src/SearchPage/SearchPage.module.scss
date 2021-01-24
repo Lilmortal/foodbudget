@@ -1,0 +1,68 @@
+@use '~styles/breakpoints';
+
+.searchGrid {
+  display: grid;
+  grid-template-columns: 1fr 400px 1fr;
+  grid-template-rows: 20% 1fr 20%;
+  flex-grow: 1;
+
+  ::before {
+    background-image: none;
+
+    @include breakpoints.md {
+      content: '';
+      background-image: url('/pizza.webp');
+      background-repeat: no-repeat;
+      display: grid;
+      grid-row: 1/-1;
+      grid-column: 1;
+    }
+  }
+
+  @include breakpoints.md {
+    grid-template-columns: 60% 400px 1fr;
+  }
+}
+
+.searchWrapper {
+  display: grid;
+  grid-column: 2;
+  grid-row: 2;
+  padding: 1rem;
+}
+
+.label {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.labelTextfield {
+  display: flex;
+  flex-direction: column;
+}
+
+.textfieldWrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.submitWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0 0 0;
+}
+
+.tipWrapper {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+.pageForm {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-evenly;
+}
