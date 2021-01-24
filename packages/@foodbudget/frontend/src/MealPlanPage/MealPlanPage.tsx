@@ -1,75 +1,27 @@
-import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import Button from 'components/Button';
 import Carousel from 'components/Carousel';
 import Calendar from 'components/Calendar';
-import PageTemplate from '../templates/Page';
+import classnames from 'classnames';
+import MainPage from '../templates/MainPage';
 
-const MealPlanPageWrapper = styled.div({
-  display: 'grid',
-  padding: '0 5rem',
-  gridTemplateColumns: '80% 1fr',
-  gap: '5rem',
-  gridTemplateAreas: `"timetable budgetBalances"
-  "recipeScroller ingredientPanel"`,
-});
-
-const MealPlanHeader = styled.h1({
-  display: 'flex',
-  justifyContent: 'center',
-  padding: '1rem',
-});
-
-const Panel = styled.div(({ theme }) => ({
-  border: `1px solid ${theme.colors.primaryBorder}`,
-  backgroundColor: theme.colors.white,
-  padding: '2rem',
-  borderRadius: '20px',
-}));
-
-const BudgetBalanceWrapper = styled.div({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  gridArea: 'budgetBalances',
-});
-
-const BudgetBalancePanel = styled(Panel)({
-  display: 'flex',
-  flexDirection: 'column',
-});
-
-const BudgetBalanceTitle = styled.p({});
-
-const BalanceWrapper = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '1rem 0 4rem',
-});
-
-const IngredientPanel = styled(Panel)({ gridArea: 'ingredientPanel' });
-
-const EditHeader = styled.p({});
-
-const IngredientList = styled.div({});
-
-const RecipeCalendar = styled(Calendar)({
-  gridArea: 'timetable',
-});
+import styles from './MealPlanPage.module.scss';
 
 interface BudgetBalanceProps {
   header: string;
 }
 
 const BudgetBalance: React.FC<BudgetBalanceProps> = ({ header, children }) => (
-  <BalanceWrapper>
-    <BudgetBalanceTitle>{header}</BudgetBalanceTitle>
+  <div className={styles.balanceWrapper}>
+    <p>{header}</p>
 
     {children}
-  </BalanceWrapper>
+  </div>
 );
 
-const MealPlanPage: React.FC<{}> = () => {
+export type MealPlanPageProps = Styleable;
+
+const MealPlanPage: React.FC<MealPlanPageProps> = ({ className, style }) => {
   const [items, setItems] = useState<React.ReactNode[]>([]);
 
   useEffect(() => {
@@ -119,18 +71,18 @@ const MealPlanPage: React.FC<{}> = () => {
   };
 
   return (
-    <PageTemplate>
-      <MealPlanHeader>Weekly Meal Plan</MealPlanHeader>
+    <MainPage>
+      <h1>Weekly Meal Plan</h1>
 
-      <MealPlanPageWrapper>
-        <RecipeCalendar />
+      <div className={classnames(styles.wrapper, className)} style={style}>
+        <Calendar className={styles.calendar} />
 
-        <BudgetBalanceWrapper>
-          <BudgetBalancePanel>
+        <div className={styles.budgetBalanceWrapper}>
+          <div className={styles.budgetBalancePanel}>
             <BudgetBalance header="Meal Plan Cost">$xxx.xx</BudgetBalance>
             <BudgetBalance header="Budget Remaining">$xxx.xx</BudgetBalance>
-          </BudgetBalancePanel>
-        </BudgetBalanceWrapper>
+          </div>
+        </div>
 
         <Carousel
           hasMore={hasMore}
@@ -157,14 +109,14 @@ const MealPlanPage: React.FC<{}> = () => {
           {items}
         </Carousel>
 
-        <IngredientPanel>
-          <EditHeader>Edit</EditHeader>
-          <IngredientList>
+        <div className={classnames(styles.panel)}>
+          <p>Edit</p>
+          <div>
             <Button showCloseIcon>Eggs</Button>
-          </IngredientList>
-        </IngredientPanel>
-      </MealPlanPageWrapper>
-    </PageTemplate>
+          </div>
+        </div>
+      </div>
+    </MainPage>
   );
 };
 

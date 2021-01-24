@@ -1,5 +1,5 @@
 {
-  "plugins": ["babel-plugin-react-require", "inline-react-svg", "babel-plugin-styled-components"],
+  "plugins": ["babel-plugin-react-require", "inline-react-svg"],
   "presets": ["next/babel"],
   "env": {
     "production": {

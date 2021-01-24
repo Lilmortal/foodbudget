@@ -1,27 +1,17 @@
 import React, { useCallback } from 'react';
-import styled from 'styled-components';
+import classnames from 'classnames';
 
-export interface CloseButtonProps {
+import styles from './CloseButton.module.scss';
+
+export interface CloseButtonProps extends Styleable {
   onClose(): void;
 }
 
-const StyledCloseButton = styled.div(({ theme }) => ({
-  position: 'fixed',
-  marginTop: '3rem',
-  display: 'flex',
-  right: '14%',
-  fontSize: '2rem',
-  cursor: 'pointer',
-  mixBlendMode: 'difference',
-  color: 'white',
-  zIndex: 1000,
-
-  [theme.breakpoints.lg]: {
-    right: '7%',
-  },
-}));
-
-const CloseButton: React.FC<CloseButtonProps> = ({ onClose }) => {
+const CloseButton: React.FC<CloseButtonProps> = ({
+  onClose,
+  className,
+  style,
+}) => {
   const handleKeyPress = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) =>
       event.key === 'Enter' && onClose(),
@@ -29,14 +19,16 @@ const CloseButton: React.FC<CloseButtonProps> = ({ onClose }) => {
   );
 
   return (
-    <StyledCloseButton
+    <div
+      className={classnames(styles.closeButton, className)}
+      style={style}
       onClick={onClose}
       onKeyUp={handleKeyPress}
       tabIndex={0}
       aria-label="Close modal"
     >
       X
-    </StyledCloseButton>
+    </div>
   );
 };
 

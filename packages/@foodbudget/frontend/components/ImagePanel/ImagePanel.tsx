@@ -1,21 +1,21 @@
-import styled from 'styled-components';
+import classnames from 'classnames';
+
+import styles from './ImagePanel.module.scss';
 
 export interface ImagePanelProps extends React.HTMLAttributes<HTMLDivElement> {
   src: string;
-  onClick?(): void;
 }
 
-const StyledImagePanel = styled.div<ImagePanelProps>((props) => ({
-  display: 'flex',
-  height: '200px',
-  backgroundImage: `url("${props.src}")`,
-  backgroundSize: 'contain',
-  backgroundRepeat: 'no-repeat',
-}));
-
 const ImagePanel: React.FC<ImagePanelProps> = (props) => {
-  const { onClick, ...otherProps } = props;
-  return <StyledImagePanel {...otherProps} tabIndex={0} />;
+  const { src, className, style, ...otherProps } = props;
+  return (
+    <div
+      className={classnames(styles.panel, className)}
+      style={{ backgroundImage: `url("${src}")`, ...style }}
+      {...otherProps}
+      tabIndex={0}
+    />
+  );
 };
 
 export default ImagePanel;

@@ -5,35 +5,21 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import chunk from 'lodash.chunk';
 import { addYears } from 'date-fns';
-import { v4 } from 'uuid';
-import styled from 'styled-components';
-import {
-  CalendarBody,
-  CalendarHead,
-  CalendarTable,
-  CalendarTd,
-  CalendarTh,
-  CalendarTr,
-  CalendarWrapper,
-  NavigationWrapper,
-  NextNavigationWrapper,
-  PreviousNavigationWrapper,
-} from './Calendar.Styled';
+import classnames from 'classnames';
+
+import styles from './Calendar.module.scss';
+
 import Card, { CardProps } from './Card';
 
 export interface CalendarCardProps {
   date: string;
   card: React.ReactNode;
 }
-export interface CalendarProps {
+export interface CalendarProps extends Styleable {
   cards?: CalendarCardProps[];
 }
 
-const CalendarDate = styled.div({
-  position: 'absolute',
-});
-
-const Calendar: React.FC<CalendarProps> = () => {
+const Calendar: React.FC<CalendarProps> = ({ className, style }) => {
   const currentDate = new Date();
   const calendar = useCalendar(currentDate);
 
@@ -45,7 +31,7 @@ const Calendar: React.FC<CalendarProps> = () => {
             ...acc,
             [i.name]: (
               <>
-                <CalendarDate>{i.date}</CalendarDate>
+                <div className={styles.date}>{i.date}</div>
                 <div style={{ backgroundColor: 'yellow' }}></div>
               </>
             ),
@@ -116,45 +102,43 @@ const Calendar: React.FC<CalendarProps> = () => {
   } = useTable({ columns, data: cards });
 
   return (
-    <CalendarWrapper>
-      <NavigationWrapper>
-        <PreviousNavigationWrapper>
+    <div className={classnames(styles.wrapper, className)} style={style}>
+      <div className={styles.navigation}>
+        <div className={styles.previousWrapper}>
           <button
             onClick={() => calendar.selectDate(addYears(calendar.date, -1))}
           >
             Previous year
           </button>
           <button onClick={() => calendar.prevMonth()}>Previous month</button>
-        </PreviousNavigationWrapper>
+        </div>
         <p>
           {calendar.month.name} {calendar.year}
         </p>
-        <NextNavigationWrapper>
+        <div className={styles.nextWrapper}>
           <button onClick={() => calendar.nextMonth()}>Next month</button>
           <button onClick={() => calendar.nextMonth()}>Next year</button>
-        </NextNavigationWrapper>
-      </NavigationWrapper>
-      <CalendarTable {...getTableProps()}>
-        <CalendarHead>
+        </div>
+      </div>
+      <table {...getTableProps()}>
+        <thead>
           {headerGroups.map((headerGroup) => (
-            <CalendarTr {...headerGroup.getHeaderGroupProps()}>
+            <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <CalendarTh {...column.getHeaderProps()}>
-                  {column.render('Header')}
-                </CalendarTh>
+                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
               ))}
-            </CalendarTr>
+            </tr>
           ))}
-        </CalendarHead>
-        <CalendarBody {...getTableBodyProps()}>
+        </thead>
+        <tbody {...getTableBodyProps()}>
           {rows.map((row, rowIndex) => {
             prepareRow(row);
 
             return (
-              <CalendarTr {...row.getRowProps()}>
+              <tr {...row.getRowProps()}>
                 {row.cells.map((cell) => {
                   return (
-                    <CalendarTd {...cell.getCellProps()}>
+                    <td {...cell.getCellProps()}>
                       <Card
                         day={`${cell.column.Header}`}
                         date={`${cell.value}`}
@@ -163,21 +147,21 @@ const Calendar: React.FC<CalendarProps> = () => {
                       >
                         {cell.render('Cell')}
                       </Card>
-                    </CalendarTd>
+                    </td>
                   );
                 })}
-              </CalendarTr>
+              </tr>
             );
           })}
-        </CalendarBody>
-      </CalendarTable>
-    </CalendarWrapper>
+        </tbody>
+      </table>
+    </div>
   );
 };
 
-const CalendarProvider = () => (
+const CalendarProvider: React.FC<CalendarProps> = (props) => (
   <DndProvider backend={HTML5Backend}>
-    <Calendar />
+    <Calendar {...props} />
   </DndProvider>
 );
 

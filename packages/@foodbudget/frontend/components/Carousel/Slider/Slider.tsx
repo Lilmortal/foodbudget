@@ -1,8 +1,10 @@
-import usePrevious from 'components/usePrevious';
-import { forwardRef, useRef } from 'react';
-import styled from 'styled-components';
+import { forwardRef } from 'react';
+import classnames from 'classnames';
+import useShouldRemoveAnimationOnBrowserResize from './useShouldRemoveAnimationOnBrowserResize';
 
-export interface SliderProps {
+import styles from './Slider.module.scss';
+
+export interface SliderProps extends Styleable {
   leftArrowWidth: number;
   rightArrowWidth: number;
   numberOfVisibleSlides: number;
@@ -10,52 +12,8 @@ export interface SliderProps {
   children: React.ReactNode[];
 }
 
-const SliderWrapper = styled.div<
-  Pick<SliderProps, 'leftArrowWidth' | 'rightArrowWidth'>
->((props) => ({
-  display: 'flex',
-  width: '100%',
-  marginLeft: `${props.leftArrowWidth / 2}px`,
-  marginRight: `${props.rightArrowWidth / 2}px`,
-
-  overflow: 'hidden',
-}));
-
 const getSlideWidthInPercentages = (numberOfVisibleSlides: number) =>
   Math.round(100 / numberOfVisibleSlides);
-
-const StyledSlider = styled.div<
-  Pick<SliderProps, 'numberOfVisibleSlides' | 'endOfVisibleSlidePosition'>
->((props) => {
-  // This logic is to remove transition animation on browser resize
-  const prevNumberOfVisibleSlides = usePrevious(props.numberOfVisibleSlides);
-
-  let hasNumberOfVisibleSlidesChanged =
-    prevNumberOfVisibleSlides !== 0 &&
-    prevNumberOfVisibleSlides !== undefined &&
-    prevNumberOfVisibleSlides !== props.numberOfVisibleSlides;
-
-  const hasNumberOfVisibleSlidesChangedRef = useRef(false);
-
-  if (hasNumberOfVisibleSlidesChangedRef.current) {
-    hasNumberOfVisibleSlidesChanged = true;
-    hasNumberOfVisibleSlidesChangedRef.current = false;
-  } else if (hasNumberOfVisibleSlidesChanged) {
-    hasNumberOfVisibleSlidesChangedRef.current = true;
-  }
-
-  return {
-    display: 'flex',
-    transform: `translateX(${
-      -1 *
-      getSlideWidthInPercentages(props.numberOfVisibleSlides) *
-      (props.endOfVisibleSlidePosition + 1 - props.numberOfVisibleSlides)
-    }%)`,
-    ...(!hasNumberOfVisibleSlidesChanged && { transition: 'transform 0.5s' }),
-    width: '100%',
-    willChange: 'transform',
-  };
-});
 
 const Slider: React.ForwardRefRenderFunction<HTMLDivElement, SliderProps> = (
   {
@@ -63,22 +21,42 @@ const Slider: React.ForwardRefRenderFunction<HTMLDivElement, SliderProps> = (
     rightArrowWidth,
     endOfVisibleSlidePosition,
     numberOfVisibleSlides,
+    className,
+    style,
     children,
   },
   ref,
-) => (
-  <SliderWrapper
-    leftArrowWidth={leftArrowWidth}
-    rightArrowWidth={rightArrowWidth}
-    ref={ref}
-  >
-    <StyledSlider
-      numberOfVisibleSlides={numberOfVisibleSlides}
-      endOfVisibleSlidePosition={endOfVisibleSlidePosition}
+) => {
+  const shouldRemoveAnimation = useShouldRemoveAnimationOnBrowserResize(
+    numberOfVisibleSlides,
+  );
+
+  const animationStyle = {
+    transform: `translateX(${
+      -1 *
+      getSlideWidthInPercentages(numberOfVisibleSlides) *
+      (endOfVisibleSlidePosition + 1 - numberOfVisibleSlides)
+    }%)`,
+    ...(!shouldRemoveAnimation && { transition: 'transform 0.5s' }),
+  };
+
+  console.log('slider', endOfVisibleSlidePosition);
+  return (
+    <div
+      ref={ref}
+      className={classnames(styles.sliderWrapper, className)}
+      style={{
+        marginLeft: `${leftArrowWidth / 2}px`,
+        marginRight: `${rightArrowWidth / 2}px`,
+
+        ...style,
+      }}
     >
-      {children}
-    </StyledSlider>
-  </SliderWrapper>
-);
+      <div className={classnames(styles.slider)} style={animationStyle}>
+        {children}
+      </div>
+    </div>
+  );
+};
 
 export default forwardRef(Slider);

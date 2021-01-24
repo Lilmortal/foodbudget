@@ -1,18 +1,15 @@
 import { useRef, useState, useEffect, cloneElement, useCallback } from 'react';
 import { SwipeableHandlers, useSwipeable } from 'react-swipeable';
+import classnames from 'classnames';
 import { LeftArrow, RightArrow } from './Arrow';
 import Slide from './Slide';
 import Slider from './Slider';
 import useCarouselBreakpoints, { Breakpoints } from './useCarouselBreakpoints';
 import usePrevious from '../usePrevious';
-import {
-  CarouselWrapper,
-  SlideWrapper,
-  LeftArrowWrapper,
-  RightArrowWrapper,
-} from './Carousel.Styled';
 
-export interface CarouselProps {
+import styles from './Carousel.module.scss';
+
+export interface CarouselProps extends Styleable {
   breakpoints: Breakpoints;
   horizontal?: boolean;
   loadMore?(): void;
@@ -40,6 +37,8 @@ const Carousel: React.FC<CarouselProps> = ({
   children,
   removeArrowsOnDeviceType,
   hasMore,
+  className,
+  style,
   renderLeftArrow = <LeftArrow />,
   renderRightArrow = <RightArrow />,
 }) => {
@@ -165,6 +164,7 @@ const Carousel: React.FC<CarouselProps> = ({
     endOfVisibleSlidePosition + numberOfSlidesPerSwipe >= children.length - 1;
 
   const handleArrowClick = (direction: 'left' | 'right') => {
+    console.log('direction', direction);
     if (direction === 'left' && endOfVisibleSlidePosition > 0) {
       setEndOfVisibleSlidePosition(
         Math.max(
@@ -220,7 +220,10 @@ const Carousel: React.FC<CarouselProps> = ({
 
   const handleLeftArrowClick = () => handleArrowClick('left');
 
-  const handleRightArrowClick = () => handleArrowClick('right');
+  const handleRightArrowClick = () => {
+    console.log('caled');
+    handleArrowClick('right');
+  };
 
   let handleSwipeable: SwipeableHandlers | undefined = useSwipeable({
     onSwipedLeft: () => handleArrowClick('right'),
@@ -329,10 +332,21 @@ const Carousel: React.FC<CarouselProps> = ({
     [],
   );
 
+  console.log('carousel', endOfVisibleSlidePosition);
   return (
-    <CarouselWrapper horizontal={horizontal} {...handleSwipeable}>
+    <div
+      className={classnames(
+        styles.carouselWrapper,
+        { [styles['wrapper--horizontal']]: horizontal },
+        className,
+      )}
+      style={style}
+      {...handleSwipeable}
+    >
       {!shouldRemoveArrows && (
-        <LeftArrowWrapper ref={leftArrowRef}>{leftArrow}</LeftArrowWrapper>
+        <div className={styles.leftArrowWrapper} ref={leftArrowRef}>
+          {leftArrow}
+        </div>
       )}
       <Slider
         leftArrowWidth={leftArrowWidth}
@@ -344,7 +358,7 @@ const Carousel: React.FC<CarouselProps> = ({
         {children
           .reduce<React.ReactNode[][]>(groupSlidesByNumberOfVisibleSlides, [])
           .map((slides, slidesIndex) => (
-            <SlideWrapper key={slidesIndex}>
+            <div className={classnames(styles.slideWrapper)} key={slidesIndex}>
               {slides.map((slide, slideIndex) => (
                 <Slide
                   key={getSlidePosition(slidesIndex, slideIndex)}
@@ -365,13 +379,15 @@ const Carousel: React.FC<CarouselProps> = ({
                   {isSlideVisible(slidesIndex, slideIndex) ? slide : null}
                 </Slide>
               ))}
-            </SlideWrapper>
+            </div>
           ))}
       </Slider>
       {!shouldRemoveArrows && (
-        <RightArrowWrapper ref={rightArrowRef}>{rightArrow}</RightArrowWrapper>
+        <div className={styles.rightArrowWrapper} ref={rightArrowRef}>
+          {rightArrow}
+        </div>
       )}
-    </CarouselWrapper>
+    </div>
   );
 };
 

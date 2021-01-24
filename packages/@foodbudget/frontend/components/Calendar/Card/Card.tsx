@@ -1,5 +1,8 @@
 import { useRef } from 'react';
+import classnames from 'classnames';
 import { useDrag, useDrop, DragObjectWithType } from 'react-dnd';
+
+import styles from './Card.module.scss';
 
 export interface CardProps {
   row: number;
@@ -7,7 +10,7 @@ export interface CardProps {
   date: React.ReactNode;
 }
 
-export interface CardFullProps extends CardProps {
+export interface CardFullProps extends CardProps, Styleable {
   onMoveCard(sourceCard: CardProps, destCard: CardProps): void;
 }
 
@@ -16,6 +19,8 @@ const Card: React.FC<CardFullProps> = ({
   day,
   date,
   onMoveCard,
+  className,
+  style,
   children,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -50,7 +55,7 @@ const Card: React.FC<CardFullProps> = ({
   dropRef(ref);
 
   return (
-    <div ref={ref} style={isOver ? { backgroundColor: 'blue' } : undefined}>
+    <div ref={ref} className={classnames(className)} style={style}>
       {!isDragging && children}
     </div>
   );

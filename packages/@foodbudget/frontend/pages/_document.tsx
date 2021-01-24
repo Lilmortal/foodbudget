@@ -1,12 +1,4 @@
-import { RenderPageResult } from 'next/dist/next-server/lib/utils';
-import Document, {
-  Head,
-  Main,
-  NextScript,
-  Html,
-  DocumentContext,
-} from 'next/document';
-import { ServerStyleSheet } from 'styled-components';
+import Document, { Head, Main, NextScript, Html } from 'next/document';
 
 // TODO: Add og:title and twitter in the future
 const PreloadedFonts: React.FC<{}> = () => (
@@ -82,25 +74,6 @@ const Favicons: React.FC<{}> = () => (
 );
 
 export default class MyDocument extends Document {
-  static async getInitialProps(
-    ctx: DocumentContext,
-  ): Promise<RenderPageResult> {
-    // TODO: Come back to this to verify it works
-    const sheet = new ServerStyleSheet();
-
-    // Step 2: Retrieve styles from components in the page
-    const page = ctx.renderPage((App) => (props) =>
-      sheet.collectStyles(<App {...props} />),
-    );
-
-    // Step 3: Extract the styles as <style> tags
-    const styleTags = sheet.getStyleElement();
-
-    const result = { ...page, styleTags };
-
-    return result;
-  }
-
   // eslint-disable-next-line class-methods-use-this
   render(): React.ReactElement {
     return (
