@@ -34,6 +34,14 @@ const Card: React.FC<CardFullProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const [{ isDragging }, dragRef] = useDrag({
     item: { fullDate, children, period, type: 'Image' },
+    canDrag: () => {
+      const element = children as React.ReactElement;
+      // Only allow drag if there is a recipe
+      if (element.props.recipe) {
+        return true;
+      }
+      return false;
+    },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
