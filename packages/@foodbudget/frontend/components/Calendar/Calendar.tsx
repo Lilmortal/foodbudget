@@ -7,6 +7,7 @@ import {
   addMonths,
   addWeeks,
   addYears,
+  getDate,
   getDay,
   getMonth,
   getYear,
@@ -97,7 +98,7 @@ const Calendar: React.FC<CalendarProps> = ({
   const recipeWeek = useMemo(() => {
     const sunday = getSunday(selectedDate);
 
-    const updatedRecipeWeek: { [d in Day]: React.ReactNode }[] = [];
+    const updatedRecipeWeek: { [d in Day]: RecipeWeek }[] = [];
 
     for (let dayNum = 0; dayNum < 7; dayNum += 1) {
       const currentFullDate = addDays(sunday, dayNum);
@@ -219,9 +220,21 @@ const Calendar: React.FC<CalendarProps> = ({
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-              ))}
+              {headerGroup.headers.map((column) => {
+                let date: number | null = null;
+                if (column.Header?.toString()) {
+                  date = getDate(
+                    recipeWeek[0][column.Header.toString() as Day].fullDate,
+                  );
+                }
+
+                return (
+                  <th {...column.getHeaderProps()}>
+                    {column.render('Header')}
+                    {date}
+                  </th>
+                );
+              })}
             </tr>
           ))}
         </thead>

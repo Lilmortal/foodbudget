@@ -2,7 +2,6 @@ import { useRef } from 'react';
 import classnames from 'classnames';
 import { useDrag, useDrop, DragObjectWithType } from 'react-dnd';
 
-import { getDate } from 'date-fns';
 import styles from './Card.module.scss';
 import { Period } from '../Calendar';
 
@@ -78,11 +77,8 @@ const Card: React.FC<CardFullProps> = ({
   dragRef(ref);
   dropRef(ref);
 
-  const dateNum = getDate(new Date(fullDate));
-
   return (
     <div ref={ref} className={classnames(styles.card, className)} style={style}>
-      {(!isDragging || canDrop) && <div className={styles.date}>{dateNum}</div>}
       {isOver && canDrop && <div className={styles.hoveredCard}></div>}
       {!isDragging && children}
     </div>
