@@ -62,7 +62,7 @@ const Card: React.FC<CardFullProps> = ({
     accept: 'Image',
     canDrop: (item) => {
       // if hovering over the selected card
-      if (fullDate === item.fullDate) {
+      if (fullDate === item.fullDate && period === item.period) {
         return false;
       }
 
