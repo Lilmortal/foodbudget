@@ -40,7 +40,6 @@ const Slider: React.ForwardRefRenderFunction<HTMLDivElement, SliderProps> = (
     ...(!shouldRemoveAnimation && { transition: 'transform 0.5s' }),
   };
 
-  console.log('slider', endOfVisibleSlidePosition);
   return (
     <div
       ref={ref}

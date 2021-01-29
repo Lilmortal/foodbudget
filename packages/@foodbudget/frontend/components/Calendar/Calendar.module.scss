@@ -5,9 +5,15 @@
 
 .table {
   display: table;
-  border: 1px solid var(--black);
   padding: 1rem;
   table-layout: fixed;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.td {
+  position: relative;
+  border: 1px solid black;
 }
 
 .navigation {
@@ -21,8 +27,4 @@
 
 .nextWrapper {
   display: flex;
-}
-
-.date {
-  // position: absolute;
 }

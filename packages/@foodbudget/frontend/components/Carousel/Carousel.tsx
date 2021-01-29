@@ -164,7 +164,6 @@ const Carousel: React.FC<CarouselProps> = ({
     endOfVisibleSlidePosition + numberOfSlidesPerSwipe >= children.length - 1;
 
   const handleArrowClick = (direction: 'left' | 'right') => {
-    console.log('direction', direction);
     if (direction === 'left' && endOfVisibleSlidePosition > 0) {
       setEndOfVisibleSlidePosition(
         Math.max(
@@ -221,7 +220,6 @@ const Carousel: React.FC<CarouselProps> = ({
   const handleLeftArrowClick = () => handleArrowClick('left');
 
   const handleRightArrowClick = () => {
-    console.log('caled');
     handleArrowClick('right');
   };
 
@@ -332,7 +330,6 @@ const Carousel: React.FC<CarouselProps> = ({
     [],
   );
 
-  console.log('carousel', endOfVisibleSlidePosition);
   return (
     <div
       className={classnames(

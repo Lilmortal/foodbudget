@@ -75,7 +75,10 @@ const MealPlanPage: React.FC<MealPlanPageProps> = ({ className, style }) => {
       <h1>Weekly Meal Plan</h1>
 
       <div className={classnames(styles.wrapper, className)} style={style}>
-        <Calendar className={styles.calendar} />
+        <Calendar
+          recipes={{ [new Date().toString()]: { breakfast: <div>Test</div> } }}
+          className={styles.calendar}
+        />
 
         <div className={styles.budgetBalanceWrapper}>
           <div className={styles.budgetBalancePanel}>

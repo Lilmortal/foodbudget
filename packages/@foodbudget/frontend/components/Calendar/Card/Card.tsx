@@ -2,12 +2,21 @@ import { useRef } from 'react';
 import classnames from 'classnames';
 import { useDrag, useDrop, DragObjectWithType } from 'react-dnd';
 
+import { getDate } from 'date-fns';
 import styles from './Card.module.scss';
+import { Period } from '../Calendar';
+
+interface CollectedType {
+  isOver: boolean;
+  canDrop: boolean;
+}
+
+interface CardDropType extends CardProps, DragObjectWithType {}
 
 export interface CardProps {
-  row: number;
-  day: string;
-  date: React.ReactNode;
+  fullDate: Date;
+  period: Period;
+  children: React.ReactNode;
 }
 
 export interface CardFullProps extends CardProps, Styleable {
@@ -15,9 +24,8 @@ export interface CardFullProps extends CardProps, Styleable {
 }
 
 const Card: React.FC<CardFullProps> = ({
-  row,
-  day,
-  date,
+  fullDate,
+  period,
   onMoveCard,
   className,
   style,
@@ -25,37 +33,49 @@ const Card: React.FC<CardFullProps> = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [{ isDragging }, dragRef] = useDrag({
-    item: { id: `${row}-${day}-${date}`, type: 'Image' },
+    item: { fullDate, children, period, type: 'Image' },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
   });
 
-  const moveImage = (i: DragObjectWithType) => {
-    const [sourceRow, sourceDay, sourceDate] = i.id.split('-');
-    const sourceCard: CardProps = {
-      row: sourceRow,
-      day: sourceDay,
-      date: sourceDate,
-    };
-    const destCard: CardProps = { row, day, date };
+  const moveImage = (droppedCard: CardDropType) => {
+    const sourceCard = droppedCard;
+    const destCard: CardProps = { fullDate, children, period };
 
     onMoveCard(sourceCard, destCard);
   };
 
-  const [{ isOver }, dropRef] = useDrop({
+  const [{ isOver, canDrop }, dropRef] = useDrop<
+    CardDropType,
+    void,
+    CollectedType
+  >({
     accept: 'Image',
+    canDrop: (item) => {
+      // if hovering over the selected card
+      if (fullDate === item.fullDate) {
+        return false;
+      }
+
+      return true;
+    },
     drop: (item) => moveImage(item),
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
+      canDrop: !!monitor.canDrop(),
     }),
   });
 
   dragRef(ref);
   dropRef(ref);
 
+  const dateNum = getDate(new Date(fullDate));
+
   return (
-    <div ref={ref} className={classnames(className)} style={style}>
+    <div ref={ref} className={classnames(styles.card, className)} style={style}>
+      {(!isDragging || canDrop) && <div className={styles.date}>{dateNum}</div>}
+      {isOver && canDrop && <div className={styles.hoveredCard}></div>}
       {!isDragging && children}
     </div>
   );
