@@ -2,30 +2,31 @@ import { useRef } from 'react';
 import classnames from 'classnames';
 import { useDrag, useDrop, DragObjectWithType } from 'react-dnd';
 
-import styles from './Card.module.scss';
-import { Period } from '../Calendar';
+import styles from './Cell.module.scss';
 
 interface CollectedType {
   isOver: boolean;
   canDrop: boolean;
 }
 
-interface CardDropType extends CardProps, DragObjectWithType {}
+interface CellDropType extends CellProps, DragObjectWithType {}
 
-export interface CardProps {
+export type Period = 'breakfast' | 'lunch' | 'dinner';
+
+export interface CellProps {
   fullDate: Date;
   period: Period;
   children: React.ReactNode;
 }
 
-export interface CardFullProps extends CardProps, Styleable {
-  onMoveCard(sourceCard: CardProps, destCard: CardProps): void;
+export interface CellFullProps extends CellProps, Styleable {
+  onMoveCell(sourceCell: CellProps, destCell: CellProps): void;
 }
 
-const Card: React.FC<CardFullProps> = ({
+const Cell: React.FC<CellFullProps> = ({
   fullDate,
   period,
-  onMoveCard,
+  onMoveCell,
   className,
   style,
   children,
@@ -46,15 +47,15 @@ const Card: React.FC<CardFullProps> = ({
     }),
   });
 
-  const moveImage = (droppedCard: CardDropType) => {
-    const sourceCard = droppedCard;
-    const destCard: CardProps = { fullDate, children, period };
+  const handleMoveCell = (droppedCell: CellDropType) => {
+    const sourceCell = droppedCell;
+    const destCell: CellProps = { fullDate, children, period };
 
-    onMoveCard(sourceCard, destCard);
+    onMoveCell(sourceCell, destCell);
   };
 
   const [{ isOver, canDrop }, dropRef] = useDrop<
-    CardDropType,
+    CellDropType,
     void,
     CollectedType
   >({
@@ -67,7 +68,7 @@ const Card: React.FC<CardFullProps> = ({
 
       return true;
     },
-    drop: (item) => moveImage(item),
+    drop: (item) => handleMoveCell(item),
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
       canDrop: !!monitor.canDrop(),
@@ -78,11 +79,11 @@ const Card: React.FC<CardFullProps> = ({
   dropRef(ref);
 
   return (
-    <div ref={ref} className={classnames(styles.card, className)} style={style}>
-      {isOver && canDrop && <div className={styles.hoveredCard}></div>}
+    <div ref={ref} className={classnames(styles.cell, className)} style={style}>
+      {isOver && canDrop && <div className={styles.hoveredCell}></div>}
       {!isDragging && children}
     </div>
   );
 };
 
-export default Card;
+export default Cell;

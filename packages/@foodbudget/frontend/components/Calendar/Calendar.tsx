@@ -19,10 +19,8 @@ import classnames from 'classnames';
 
 import styles from './Calendar.module.scss';
 
-import Card, { CardProps } from './Card';
+import Cell, { CellProps, Period } from './Cell';
 import { mappedDayToText, getSunday, Day } from './Calendar.utils';
-
-export type Period = 'breakfast' | 'lunch' | 'dinner';
 
 export type CalendarRecipesPeriods = {
   [period in Period]?: React.ReactNode;
@@ -43,6 +41,12 @@ interface RecipeWeek {
   period: Period;
   recipe: React.ReactNode;
 }
+
+const mappedPeriod: { [index: number]: Period } = {
+  0: 'breakfast',
+  1: 'lunch',
+  2: 'dinner',
+};
 
 const renderCell: React.FC<Pick<RecipeWeek, 'recipe'>> = ({ recipe }) => {
   return <>{recipe}</>;
@@ -153,7 +157,7 @@ const Calendar: React.FC<CalendarProps> = ({
     return updatedRecipeWeek;
   }, [selectedDate, calendarRecipes]);
 
-  const onMoveCard = (sourceCard: CardProps, destCard: CardProps) => {
+  const onMoveCell = (sourceCard: CellProps, destCard: CellProps) => {
     const updatedCalendarRecipes = { ...calendarRecipes };
 
     if (
@@ -220,7 +224,7 @@ const Calendar: React.FC<CalendarProps> = ({
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => {
+              {headerGroup.headers.map((column, index) => {
                 let date: number | null = null;
                 if (column.Header?.toString()) {
                   date = getDate(
@@ -229,33 +233,37 @@ const Calendar: React.FC<CalendarProps> = ({
                 }
 
                 return (
-                  <th {...column.getHeaderProps()}>
-                    {column.render('Header')}
-                    {date}
-                  </th>
+                  <>
+                    {index === 0 && <th></th>}
+                    <th {...column.getHeaderProps()}>
+                      {column.render('Header')}
+                      {date}
+                    </th>
+                  </>
                 );
               })}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
+          {rows.map((row, rowIndex) => {
             prepareRow(row);
 
             return (
               <tr {...row.getRowProps()}>
+                <td>{mappedPeriod[rowIndex]}</td>
                 {row.cells.map((cell) => {
                   return (
                     <td {...cell.getCellProps()} className={styles.td}>
-                      <Card
+                      <Cell
                         fullDate={cell.value.fullDate}
                         period={cell.value.period}
-                        onMoveCard={onMoveCard}
+                        onMoveCell={onMoveCell}
                       >
                         {cell.render('Cell', {
                           recipe: cell.value.recipe,
                         })}
-                      </Card>
+                      </Cell>
                     </td>
                   );
                 })}
