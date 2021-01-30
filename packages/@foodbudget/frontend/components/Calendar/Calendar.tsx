@@ -1,5 +1,5 @@
 import { Column, useTable } from 'react-table';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, Fragment } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import {
@@ -99,9 +99,9 @@ const Calendar: React.FC<CalendarProps> = ({
   const [calendarRecipes, setCalendarRecipes] = useState(recipes);
   const [selectedDate, setSelectedDate] = useState(fullDate);
 
-  const recipeWeek = useMemo(() => {
-    const sunday = getSunday(selectedDate);
+  const sunday = useMemo(() => getSunday(selectedDate), [selectedDate]);
 
+  const recipeWeek = useMemo(() => {
     const updatedRecipeWeek: { [d in Day]: RecipeWeek }[] = [];
 
     for (let dayNum = 0; dayNum < 7; dayNum += 1) {
@@ -155,7 +155,7 @@ const Calendar: React.FC<CalendarProps> = ({
     }
 
     return updatedRecipeWeek;
-  }, [selectedDate, calendarRecipes]);
+  }, [sunday, calendarRecipes]);
 
   const onMoveCell = (sourceCard: CellProps, destCard: CellProps) => {
     const updatedCalendarRecipes = { ...calendarRecipes };
@@ -190,6 +190,24 @@ const Calendar: React.FC<CalendarProps> = ({
     prepareRow,
   } = useTable({ columns, data: recipeWeek });
 
+  const renderWeek = () => {
+    const startOfWeek = `${getDate(sunday)}/${getMonth(sunday) + 1}/${getYear(
+      sunday,
+    )}`;
+
+    const endOfWeekDate = addDays(sunday, 6);
+
+    const endOfWeek = `${getDate(endOfWeekDate)}/${
+      getMonth(endOfWeekDate) + 1
+    }/${getYear(endOfWeekDate)}`;
+
+    return (
+      <>
+        {startOfWeek} - {endOfWeek}
+      </>
+    );
+  };
+
   return (
     <div className={classnames(styles.wrapper, className)} style={style}>
       <div className={styles.navigation}>
@@ -204,10 +222,7 @@ const Calendar: React.FC<CalendarProps> = ({
             Previous week
           </button>
         </div>
-        <p>
-          {getDay(selectedDate)} {getMonth(selectedDate)}{' '}
-          {getYear(selectedDate)}
-        </p>
+        <p data-testid="currentDate">{renderWeek()}</p>
         <div className={styles.nextWrapper}>
           <button onClick={() => setSelectedDate(addWeeks(selectedDate, 1))}>
             Next week
@@ -233,13 +248,13 @@ const Calendar: React.FC<CalendarProps> = ({
                 }
 
                 return (
-                  <>
+                  <Fragment key={index}>
                     {index === 0 && <th></th>}
                     <th {...column.getHeaderProps()}>
                       {column.render('Header')}
                       {date}
                     </th>
-                  </>
+                  </Fragment>
                 );
               })}
             </tr>
