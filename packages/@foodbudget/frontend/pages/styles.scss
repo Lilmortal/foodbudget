@@ -30,9 +30,10 @@ html {
 h1 {
   font-size: var(--xl-font);
   font-weight: var(--lg-weight);
+  margin-bottom: var(--lg-spacing);
 
   @include breakpoints.sm {
-    font-size: var(--mobxl-font);
+    font-size: var(--mob-xl-font);
   }
 }
 
@@ -41,7 +42,7 @@ h2 {
   font-weight: var(--md-weight);
 
   @include breakpoints.sm {
-    font-size: var(--moblg-font);
+    font-size: var(--mob-lg-font);
   }
 }
 
@@ -50,7 +51,7 @@ h3 {
   font-weight: var(--sm-weight);
 
   @include breakpoints.sm {
-    font-size: var(--mobmd-font);
+    font-size: var(--mob-md-font);
   }
 }
 
@@ -59,7 +60,7 @@ h4 {
   font-weight: var(--sm-weight);
 
   @include breakpoints.sm {
-    font-size: var(--mobsm-font);
+    font-size: var(--mob-sm-font);
   }
 }
 
@@ -68,7 +69,7 @@ h5 {
   font-weight: var(--xl-weight);
 
   @include breakpoints.sm {
-    font-size: var(--mobsm-font);
+    font-size: var(--mob-sm-font);
   }
 }
 

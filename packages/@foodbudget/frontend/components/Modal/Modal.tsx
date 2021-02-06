@@ -11,7 +11,7 @@ import styles from './Modal.module.scss';
 
 export interface ModalProps extends Styleable {
   open?: boolean;
-  selector: string;
+  selector?: string;
   onOutsideAction?(): void;
   onEscapePress?(): void;
   onClose?(): void;
@@ -21,7 +21,7 @@ export interface ModalProps extends Styleable {
 
 const Modal: React.FC<ModalProps> = ({
   open,
-  selector,
+  selector = '#modal',
   onClose,
   onOutsideAction,
   onEscapePress,

@@ -1,16 +1,15 @@
-import { Column, useTable } from 'react-table';
-import { useMemo, useState, Fragment } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import {
-  addDays,
+  useTable,
+  Row,
+  Cell,
+  ColumnWithStrictAccessor,
+  HeaderGroup,
+} from 'react-table';
+import { Fragment, Dispatch, SetStateAction } from 'react';
+import {
   addMonths,
   addWeeks,
   addYears,
-  getDate,
-  getDay,
-  getMonth,
-  getYear,
   subMonths,
   subWeeks,
   subYears,
@@ -19,218 +18,70 @@ import classnames from 'classnames';
 
 import styles from './Calendar.module.scss';
 
-import Cell, { CellProps, Period } from './Cell';
-import { mappedDayToText, getSunday, Day } from './Calendar.utils';
-
-export type CalendarRecipesPeriods = {
-  [period in Period]?: React.ReactNode;
-};
-
-export interface CalendarRecipes {
-  [date: string]: CalendarRecipesPeriods;
+export interface CalendarProps<T extends object> extends Styleable {
+  columns: ColumnWithStrictAccessor<T>[];
+  data: T[];
+  onSetSelectedDate: Dispatch<SetStateAction<Date>>;
+  renderWeek(): React.ReactNode;
+  renderColumnHeader(column: HeaderGroup<T>): React.ReactNode;
+  renderRowHeader?(row: Row<T>): React.ReactNode;
+  renderCell(cell: Cell<T>): React.ReactNode;
 }
 
-export interface CalendarProps extends Styleable {
-  // TODO: ISO string?
-  fullDate?: Date;
-  recipes: CalendarRecipes;
-}
-
-interface RecipeWeek {
-  fullDate: Date;
-  period: Period;
-  recipe: React.ReactNode;
-}
-
-const mappedPeriod: { [index: number]: Period } = {
-  0: 'breakfast',
-  1: 'lunch',
-  2: 'dinner',
-};
-
-const renderCell: React.FC<Pick<RecipeWeek, 'recipe'>> = ({ recipe }) => {
-  return <>{recipe}</>;
-};
-
-const columns: Column<{ [key in Day]: React.ReactNode }>[] = [
-  {
-    Header: 'Sunday',
-    accessor: 'Sunday',
-    Cell: renderCell,
-  },
-  {
-    Header: 'Monday',
-    accessor: 'Monday',
-    Cell: renderCell,
-  },
-  {
-    Header: 'Tuesday',
-    accessor: 'Tuesday',
-    Cell: renderCell,
-  },
-  {
-    Header: 'Wednesday',
-    accessor: 'Wednesday',
-    Cell: renderCell,
-  },
-  {
-    Header: 'Thursday',
-    accessor: 'Thursday',
-    Cell: renderCell,
-  },
-  {
-    Header: 'Friday',
-    accessor: 'Friday',
-    Cell: renderCell,
-  },
-  {
-    Header: 'Saturday',
-    accessor: 'Saturday',
-    Cell: renderCell,
-  },
-];
-
-const Calendar: React.FC<CalendarProps> = ({
-  recipes,
-  fullDate = new Date(),
+function Calendar<T extends object>({
+  columns,
+  data,
+  onSetSelectedDate,
+  renderWeek,
+  renderColumnHeader,
+  renderCell,
+  renderRowHeader,
   className,
   style,
-}) => {
-  const [calendarRecipes, setCalendarRecipes] = useState(recipes);
-  const [selectedDate, setSelectedDate] = useState(fullDate);
-
-  const sunday = useMemo(() => getSunday(selectedDate), [selectedDate]);
-
-  const recipeWeek = useMemo(() => {
-    const updatedRecipeWeek: { [d in Day]: RecipeWeek }[] = [];
-
-    for (let dayNum = 0; dayNum < 7; dayNum += 1) {
-      const currentFullDate = addDays(sunday, dayNum);
-      const day = mappedDayToText[getDay(currentFullDate)];
-
-      let fullDayRecipes: { [period in Period]: RecipeWeek } = {
-        breakfast: {
-          fullDate: currentFullDate,
-          period: 'breakfast',
-          recipe: null,
-        },
-        lunch: { fullDate: currentFullDate, period: 'lunch', recipe: null },
-        dinner: {
-          fullDate: currentFullDate,
-          period: 'dinner',
-          recipe: null,
-        },
-      };
-
-      if (calendarRecipes && calendarRecipes[currentFullDate.toString()]) {
-        const previousRecipes = calendarRecipes[currentFullDate.toString()];
-
-        fullDayRecipes = {
-          breakfast: {
-            fullDate: currentFullDate,
-            period: 'breakfast',
-            recipe: previousRecipes.breakfast,
-          },
-          lunch: {
-            fullDate: currentFullDate,
-            period: 'lunch',
-            recipe: previousRecipes.lunch,
-          },
-          dinner: {
-            fullDate: currentFullDate,
-            period: 'dinner',
-            recipe: previousRecipes.dinner,
-          },
-        };
-      }
-
-      Object.entries(fullDayRecipes).forEach(
-        ([, currentRecipeWeek], period) => {
-          updatedRecipeWeek[period] = {
-            ...updatedRecipeWeek[period],
-            [day]: currentRecipeWeek,
-          };
-        },
-      );
-    }
-
-    return updatedRecipeWeek;
-  }, [sunday, calendarRecipes]);
-
-  const onMoveCell = (sourceCard: CellProps, destCard: CellProps) => {
-    const updatedCalendarRecipes = { ...calendarRecipes };
-
-    if (
-      calendarRecipes[destCard.fullDate.toString()] &&
-      calendarRecipes[destCard.fullDate.toString()][destCard.period]
-    ) {
-      updatedCalendarRecipes[sourceCard.fullDate.toString()] = {
-        ...calendarRecipes[sourceCard.fullDate.toString()],
-        [sourceCard.period]:
-          calendarRecipes[destCard.fullDate.toString()][destCard.period],
-      };
-    } else {
-      delete updatedCalendarRecipes[sourceCard.fullDate.toString()];
-    }
-
-    updatedCalendarRecipes[destCard.fullDate.toString()] = {
-      ...calendarRecipes[destCard.fullDate.toString()],
-      [destCard.period]:
-        calendarRecipes[sourceCard.fullDate.toString()][sourceCard.period],
-    };
-
-    setCalendarRecipes(updatedCalendarRecipes);
-  };
-
+}: React.PropsWithChildren<CalendarProps<T>>): React.ReactElement {
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({ columns, data: recipeWeek });
-
-  const renderWeek = () => {
-    const startOfWeek = `${getDate(sunday)}/${getMonth(sunday) + 1}/${getYear(
-      sunday,
-    )}`;
-
-    const endOfWeekDate = addDays(sunday, 6);
-
-    const endOfWeek = `${getDate(endOfWeekDate)}/${
-      getMonth(endOfWeekDate) + 1
-    }/${getYear(endOfWeekDate)}`;
-
-    return (
-      <>
-        {startOfWeek} - {endOfWeek}
-      </>
-    );
-  };
+  } = useTable({ columns, data });
 
   return (
     <div className={classnames(styles.wrapper, className)} style={style}>
       <div className={styles.navigation}>
         <div className={styles.previousWrapper}>
-          <button onClick={() => setSelectedDate(subYears(selectedDate, 1))}>
+          <button
+            onClick={() => onSetSelectedDate((date) => subYears(date, 1))}
+          >
             Previous year
           </button>
-          <button onClick={() => setSelectedDate(subMonths(selectedDate, 1))}>
+          <button
+            onClick={() => onSetSelectedDate((date) => subMonths(date, 1))}
+          >
             Previous month
           </button>
-          <button onClick={() => setSelectedDate(subWeeks(selectedDate, 1))}>
+          <button
+            onClick={() => onSetSelectedDate((date) => subWeeks(date, 1))}
+          >
             Previous week
           </button>
         </div>
-        <p data-testid="currentDate">{renderWeek()}</p>
+        <p data-testid="selectedWeek">{renderWeek()}</p>
         <div className={styles.nextWrapper}>
-          <button onClick={() => setSelectedDate(addWeeks(selectedDate, 1))}>
+          <button
+            onClick={() => onSetSelectedDate((date) => addWeeks(date, 1))}
+          >
             Next week
           </button>
-          <button onClick={() => setSelectedDate(addMonths(selectedDate, 1))}>
+          <button
+            onClick={() => onSetSelectedDate((date) => addMonths(date, 1))}
+          >
             Next month
           </button>
-          <button onClick={() => setSelectedDate(addYears(selectedDate, 1))}>
+          <button
+            onClick={() => onSetSelectedDate((date) => addYears(date, 1))}
+          >
             Next year
           </button>
         </div>
@@ -239,46 +90,32 @@ const Calendar: React.FC<CalendarProps> = ({
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column, index) => {
-                let date: number | null = null;
-                if (column.Header?.toString()) {
-                  date = getDate(
-                    recipeWeek[0][column.Header.toString() as Day].fullDate,
+              <>
+                {headerGroup.headers.map((column, index) => {
+                  return (
+                    <Fragment key={index}>
+                      {renderRowHeader && index === 0 && <th></th>}
+                      <th {...column.getHeaderProps()}>
+                        {renderColumnHeader({ ...column })}
+                      </th>
+                    </Fragment>
                   );
-                }
-
-                return (
-                  <Fragment key={index}>
-                    {index === 0 && <th></th>}
-                    <th {...column.getHeaderProps()}>
-                      {column.render('Header')}
-                      {date}
-                    </th>
-                  </Fragment>
-                );
-              })}
+                })}
+              </>
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row, rowIndex) => {
+          {rows.map((row) => {
             prepareRow(row);
 
             return (
               <tr {...row.getRowProps()}>
-                <td>{mappedPeriod[rowIndex]}</td>
+                {renderRowHeader && <td>{renderRowHeader(row)}</td>}
                 {row.cells.map((cell) => {
                   return (
                     <td {...cell.getCellProps()} className={styles.td}>
-                      <Cell
-                        fullDate={cell.value.fullDate}
-                        period={cell.value.period}
-                        onMoveCell={onMoveCell}
-                      >
-                        {cell.render('Cell', {
-                          recipe: cell.value.recipe,
-                        })}
-                      </Cell>
+                      {renderCell(cell)}
                     </td>
                   );
                 })}
@@ -289,12 +126,6 @@ const Calendar: React.FC<CalendarProps> = ({
       </table>
     </div>
   );
-};
+}
 
-const CalendarProvider: React.FC<CalendarProps> = (props) => (
-  <DndProvider backend={HTML5Backend}>
-    <Calendar {...props} />
-  </DndProvider>
-);
-
-export default CalendarProvider;
+export default Calendar;

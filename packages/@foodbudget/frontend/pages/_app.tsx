@@ -1,4 +1,6 @@
 import { AppProps } from 'next/app';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ApolloProvider } from '@apollo/client';
 import { useApolloClient } from '../src/lib/client';
 
@@ -11,7 +13,9 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
 
   return (
     <ApolloProvider client={client}>
-      <Component {...pageProps} />
+      <DndProvider backend={HTML5Backend}>
+        <Component {...pageProps} />
+      </DndProvider>
     </ApolloProvider>
   );
 };

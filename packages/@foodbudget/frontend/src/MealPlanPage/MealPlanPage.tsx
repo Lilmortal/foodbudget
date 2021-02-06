@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import Button from 'components/Button';
-import Carousel from 'components/Carousel';
-import Calendar from 'components/Calendar';
 import classnames from 'classnames';
 import MainPage from '../templates/MainPage';
 
 import styles from './MealPlanPage.module.scss';
+import RecipeModal from './RecipeModal';
+import { Recipe } from './RecipeCalendar/RecipeCell/RecipeCell';
+import RecipeCalendar, { RecipeCalendarData } from './RecipeCalendar';
+import { Period } from './RecipeCalendar/RecipeCalendar.utils';
 
 interface BudgetBalanceProps {
   header: string;
@@ -22,62 +24,47 @@ const BudgetBalance: React.FC<BudgetBalanceProps> = ({ header, children }) => (
 export type MealPlanPageProps = Styleable;
 
 const MealPlanPage: React.FC<MealPlanPageProps> = ({ className, style }) => {
-  const [items, setItems] = useState<React.ReactNode[]>([]);
+  const [isRecipeModalOpen, setRecipeModalOpen] = useState(false);
+  const selectedRecipe = useRef<Recipe>();
 
-  useEffect(() => {
-    const slides = [];
-    for (let i = 0; i <= 6; i += 1) {
-      slides.push(
-        <div tabIndex={0} key={`${i}-slide`}>
-          {i}
-        </div>,
-      );
-    }
-
-    setItems(slides);
-  }, []);
-
-  const [hasMore, setHasMore] = useState(true);
-
-  const loadMore = () => {
-    setItems([
-      ...items,
-      <div tabIndex={0} key={'id-7'}>
-        7
-      </div>,
-      <div tabIndex={0} key={'id-8'}>
-        8
-      </div>,
-      <div tabIndex={0} key={'id-9'}>
-        9
-      </div>,
-      <div tabIndex={0} key={'id-10'}>
-        10
-      </div>,
-      <div tabIndex={0} key={'id-11'}>
-        11
-      </div>,
-      <div tabIndex={0} key={'id-12'}>
-        12
-      </div>,
-      <div tabIndex={0} key={'id-13'}>
-        13
-      </div>,
-      <div tabIndex={0} key={'id-14'}>
-        14
-      </div>,
-    ]);
-    setHasMore(false);
+  const handleOnCloseRecipeModal = () => {
+    setRecipeModalOpen(false);
+    selectedRecipe.current = undefined;
   };
+
+  const handleOnRecipeCellClick = (recipe: Recipe) => {
+    setRecipeModalOpen(true);
+    selectedRecipe.current = recipe;
+  };
+
+  const [recipes, setRecipes] = useState<RecipeCalendarData>({});
+
+  const handleOnRecipeCardClick = (source: string) => {
+    const updatedRecipes = { ...recipes };
+    if (selectedRecipe.current) {
+      updatedRecipes[selectedRecipe.current.fullDate.toDateString()] = {
+        ...updatedRecipes[selectedRecipe.current.fullDate.toDateString()],
+        [selectedRecipe.current.period as Period]: source,
+      };
+
+      setRecipes((prevRecipes) => ({ ...prevRecipes, ...updatedRecipes }));
+      setRecipeModalOpen(false);
+    }
+  };
+
+  const handleOnMoveRecipe = (updatedRecipes: RecipeCalendarData) =>
+    setRecipes((prevRecipes) => ({ ...prevRecipes, ...updatedRecipes }));
 
   return (
     <MainPage>
       <h1>Weekly Meal Plan</h1>
 
       <div className={classnames(styles.wrapper, className)} style={style}>
-        <Calendar
-          recipes={{ [new Date().toString()]: { breakfast: <div>Test</div> } }}
+        <RecipeCalendar
+          recipes={recipes}
           className={styles.calendar}
+          onMoveRecipe={handleOnMoveRecipe}
+          onRecipeCellClick={handleOnRecipeCellClick}
         />
 
         <div className={styles.budgetBalanceWrapper}>
@@ -87,31 +74,6 @@ const MealPlanPage: React.FC<MealPlanPageProps> = ({ className, style }) => {
           </div>
         </div>
 
-        <Carousel
-          hasMore={hasMore}
-          loadMore={loadMore}
-          breakpoints={{
-            xl: {
-              minWidthInPixels: 1200,
-              numberOfVisibleSlides: 4,
-              numberOfSlidesPerSwipe: 4,
-            },
-            lg: {
-              minWidthInPixels: 600,
-              numberOfVisibleSlides: 3,
-              numberOfSlidesPerSwipe: 3,
-            },
-            md: {
-              minWidthInPixels: 0,
-              numberOfVisibleSlides: 2,
-              numberOfSlidesPerSwipe: 2,
-            },
-          }}
-          removeArrowsOnDeviceType={['md']}
-        >
-          {items}
-        </Carousel>
-
         <div className={classnames(styles.panel)}>
           <p>Edit</p>
           <div>
@@ -119,6 +81,12 @@ const MealPlanPage: React.FC<MealPlanPageProps> = ({ className, style }) => {
           </div>
         </div>
       </div>
+
+      <RecipeModal
+        open={isRecipeModalOpen}
+        onRecipeClick={handleOnRecipeCardClick}
+        onClose={handleOnCloseRecipeModal}
+      />
     </MainPage>
   );
 };

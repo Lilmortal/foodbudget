@@ -1,6 +1,7 @@
 import Button from 'components/Button';
 import { mockBreakpoint } from 'matchMediaMock';
-import { render, RenderResult, screen, userEvent } from 'test-utils';
+import { render, RenderResult, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Carousel, { CarouselProps } from './Carousel';
 import { Breakpoints } from './useCarouselBreakpoints';
 
