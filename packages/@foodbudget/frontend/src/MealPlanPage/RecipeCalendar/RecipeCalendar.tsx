@@ -31,9 +31,17 @@ const mappedPeriod: { [index: number]: Period } = {
 };
 
 const renderCell: React.FC<
-  CellProps<RecipeCalendarWeek, Recipe> & { onClick(recipe: Recipe): void }
-> = ({ value, onClick }) => {
-  return <RecipeCell recipe={{ ...value }} onClick={onClick} />;
+  CellProps<RecipeCalendarWeek, Recipe> & { onClick(recipe: Recipe): void } & {
+    onRemoveRecipe(recipe: Recipe): void;
+  }
+> = ({ value, onClick, onRemoveRecipe }) => {
+  return (
+    <RecipeCell
+      recipe={{ ...value }}
+      onClick={onClick}
+      onRemoveRecipe={onRemoveRecipe}
+    />
+  );
 };
 
 const columns: ColumnWithStrictAccessor<RecipeCalendarWeek>[] = [
@@ -77,6 +85,7 @@ const columns: ColumnWithStrictAccessor<RecipeCalendarWeek>[] = [
 export interface RecipeCalendarProps extends Styleable {
   recipes?: RecipeCalendarData;
   onMoveRecipe(recipe: RecipeCalendarData): void;
+  onRemoveRecipe?(recipe: Recipe): void;
   onRecipeCellClick(recipe: Recipe): void;
   fullDate?: Date;
 }
@@ -84,6 +93,7 @@ export interface RecipeCalendarProps extends Styleable {
 const RecipeCalendar: React.FC<RecipeCalendarProps> = ({
   recipes,
   onMoveRecipe,
+  onRemoveRecipe,
   onRecipeCellClick,
   fullDate = new Date(),
   className,
@@ -236,7 +246,9 @@ const RecipeCalendar: React.FC<RecipeCalendarProps> = ({
   };
 
   const handleRenderCell = (cell: Cell<RecipeCalendarWeek, Recipe>) => {
-    const children = <>{cell.render('Cell', { onClick: onRecipeCellClick })}</>;
+    const children = (
+      <>{cell.render('Cell', { onClick: onRecipeCellClick, onRemoveRecipe })}</>
+    );
 
     // Only allow drag if there is a recipe
     const handleCanDrag = () => !!cell.value.source;

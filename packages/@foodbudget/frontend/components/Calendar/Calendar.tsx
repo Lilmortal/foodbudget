@@ -86,44 +86,46 @@ function Calendar<T extends object>({
           </button>
         </div>
       </div>
-      <table {...getTableProps()} className={styles.table}>
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              <>
-                {headerGroup.headers.map((column, index) => {
-                  return (
-                    <Fragment key={index}>
-                      {renderRowHeader && index === 0 && <th></th>}
-                      <th {...column.getHeaderProps()}>
-                        {renderColumnHeader({ ...column })}
-                      </th>
-                    </Fragment>
-                  );
-                })}
-              </>
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row);
-
-            return (
-              <tr {...row.getRowProps()}>
-                {renderRowHeader && <td>{renderRowHeader(row)}</td>}
-                {row.cells.map((cell) => {
-                  return (
-                    <td {...cell.getCellProps()} className={styles.td}>
-                      {renderCell(cell)}
-                    </td>
-                  );
-                })}
+      <div className={styles.tableWrapper}>
+        <table {...getTableProps()} className={styles.table}>
+          <thead>
+            {headerGroups.map((headerGroup) => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                <>
+                  {headerGroup.headers.map((column, index) => {
+                    return (
+                      <Fragment key={index}>
+                        {renderRowHeader && index === 0 && <th></th>}
+                        <th {...column.getHeaderProps()}>
+                          {renderColumnHeader({ ...column })}
+                        </th>
+                      </Fragment>
+                    );
+                  })}
+                </>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {rows.map((row) => {
+              prepareRow(row);
+
+              return (
+                <tr {...row.getRowProps()}>
+                  {renderRowHeader && <td>{renderRowHeader(row)}</td>}
+                  {row.cells.map((cell) => {
+                    return (
+                      <td {...cell.getCellProps()} className={styles.td}>
+                        {renderCell(cell)}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

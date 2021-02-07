@@ -11,17 +11,25 @@ export interface Recipe {
 
 export interface RecipeCellProps extends Styleable {
   onClick(recipe: Recipe): void;
+  onRemoveRecipe?(recipe: Recipe): void;
   recipe: Recipe;
 }
 
 const RecipeCell: React.FC<RecipeCellProps> = ({
   onClick,
+  onRemoveRecipe,
   recipe,
   className,
   style,
 }) => {
   const handleOnClick = () => {
     onClick(recipe);
+  };
+
+  const handleOnRemoveRecipe = () => {
+    if (onRemoveRecipe) {
+      onRemoveRecipe(recipe);
+    }
   };
 
   let backgroundImage;
@@ -35,6 +43,9 @@ const RecipeCell: React.FC<RecipeCellProps> = ({
       className={classnames(styles.recipeCell, className)}
       style={{ backgroundImage, ...style }}
     >
+      {onRemoveRecipe && recipe.source && (
+        <div onClick={handleOnRemoveRecipe}>X</div>
+      )}
       Test
     </div>
   );

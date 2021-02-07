@@ -39,6 +39,17 @@ const MealPlanPage: React.FC<MealPlanPageProps> = ({ className, style }) => {
 
   const [recipes, setRecipes] = useState<RecipeCalendarData>({});
 
+  const handleOnRemoveRecipe = (recipe: Recipe) => {
+    const removedRecipes = { ...recipes };
+
+    removedRecipes[recipe.fullDate.toDateString()] = {
+      ...removedRecipes[recipe.fullDate.toDateString()],
+      [recipe.period]: null,
+    };
+
+    setRecipes((prevRecipes) => ({ ...prevRecipes, ...removedRecipes }));
+  };
+
   const handleOnRecipeCardClick = (source: string) => {
     const updatedRecipes = { ...recipes };
     if (selectedRecipe.current) {
@@ -64,6 +75,7 @@ const MealPlanPage: React.FC<MealPlanPageProps> = ({ className, style }) => {
           recipes={recipes}
           className={styles.calendar}
           onMoveRecipe={handleOnMoveRecipe}
+          onRemoveRecipe={handleOnRemoveRecipe}
           onRecipeCellClick={handleOnRecipeCellClick}
         />
 
