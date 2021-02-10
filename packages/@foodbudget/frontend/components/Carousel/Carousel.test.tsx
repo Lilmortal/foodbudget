@@ -1,6 +1,7 @@
 import Button from 'components/Button';
 import { mockBreakpoint } from 'matchMediaMock';
-import { render, RenderResult, screen, userEvent } from 'test-utils';
+import { render, RenderResult, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Carousel, { CarouselProps } from './Carousel';
 import { Breakpoints } from './useCarouselBreakpoints';
 
@@ -59,7 +60,7 @@ describe('carousel', () => {
 
       renderCarousel();
 
-      expect(screen.queryByRole('button', { name: '4' })).toBeNull();
+      expect(screen.getByRole('button', { name: '4' }).tabIndex).toEqual(-1);
 
       const rightArrow = screen.getByRole('button', {
         name: '>',
@@ -67,8 +68,8 @@ describe('carousel', () => {
 
       userEvent.click(rightArrow);
 
-      expect(screen.queryByRole('button', { name: '4' })).not.toBeNull();
-      expect(screen.queryByRole('button', { name: '5' })).toBeNull();
+      expect(screen.getByRole('button', { name: '4' }).tabIndex).toEqual(0);
+      expect(screen.getByRole('button', { name: '5' }).tabIndex).toEqual(-1);
     });
 
     it('should move 3 slides to the right when the right arrow is clicked on lg breakpoint', () => {
@@ -76,7 +77,7 @@ describe('carousel', () => {
 
       renderCarousel();
 
-      expect(screen.queryByRole('button', { name: '6' })).toBeNull();
+      expect(screen.getByRole('button', { name: '6' }).tabIndex).toEqual(-1);
 
       const rightArrow = screen.getByRole('button', {
         name: '>',
@@ -84,8 +85,8 @@ describe('carousel', () => {
 
       userEvent.click(rightArrow);
 
-      expect(screen.queryByRole('button', { name: '6' })).not.toBeNull();
-      expect(screen.queryByRole('button', { name: '7' })).toBeNull();
+      expect(screen.getByRole('button', { name: '6' }).tabIndex).toEqual(0);
+      expect(screen.getByRole('button', { name: '7' }).tabIndex).toEqual(-1);
     });
 
     it(
@@ -96,7 +97,9 @@ describe('carousel', () => {
 
         renderCarousel();
 
-        expect(screen.queryByRole('button', { name: '1' })).not.toBeNull();
+        expect(
+          screen.getByRole('button', { name: '1' }).tabIndex,
+        ).not.toBeNull();
 
         const leftArrow = screen.getByRole('button', {
           name: '<',
@@ -108,11 +111,13 @@ describe('carousel', () => {
 
         userEvent.click(rightArrow);
 
-        expect(screen.queryByRole('button', { name: '1' })).toBeNull();
+        expect(screen.getByRole('button', { name: '1' }).tabIndex).toEqual(-1);
 
         userEvent.click(leftArrow);
 
-        expect(screen.queryByRole('button', { name: '1' })).not.toBeNull();
+        expect(
+          screen.getByRole('button', { name: '1' }).tabIndex,
+        ).not.toBeNull();
       },
     );
   });
@@ -148,26 +153,6 @@ describe('carousel', () => {
       userEvent.click(rightArrow);
 
       expect(defaultProps.loadMore).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('arrows visibility on breakpoints', () => {
-    it('should not remove arrows on md breakpoint', () => {
-      mockLgBreakpoint();
-
-      renderCarousel();
-
-      expect(screen.queryByRole('button', { name: '<' })).not.toBeNull();
-      expect(screen.queryByRole('button', { name: '>' })).not.toBeNull();
-    });
-
-    it('should remove arrows on md breakpoint when removeArrowsOnDeviceType is specified', () => {
-      mockLgBreakpoint();
-
-      renderCarousel({ removeArrowsOnDeviceType: ['lg'] });
-
-      expect(screen.queryByRole('button', { name: '<' })).toBeNull();
-      expect(screen.queryByRole('button', { name: '>' })).toBeNull();
     });
   });
 

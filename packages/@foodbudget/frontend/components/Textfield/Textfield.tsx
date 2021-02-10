@@ -1,14 +1,11 @@
-import styled from 'styled-components';
+import classnames from 'classnames';
+
+import styles from './Textfield.module.scss';
 
 export type TextfieldProps = React.InputHTMLAttributes<HTMLInputElement>;
 
-const Textfield = styled.input<TextfieldProps>((props) => ({
-  borderRadius: '5px',
-  border: `1px solid ${props.theme.colors.primaryBorder}`,
-  padding: '1.5rem',
-  maxWidth: '400px',
-  width: '100%',
-  fontSize: 'inherit',
-}));
+const Textfield: React.FC<TextfieldProps> = ({ className, ...props }) => (
+  <input className={classnames(styles.textfield, className)} {...props} />
+);
 
 export default Textfield;

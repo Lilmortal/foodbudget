@@ -1,0 +1,24 @@
+:root {
+  --primary-fill: var(--blue-chill);
+  --primary-border: var(--blue-chill);
+  --secondary-text: var(--limed-spruce);
+  --error-text: var(--alizarin-crimson);
+  --primary-button-fill: var(--blue-chill);
+  --primary-button-text: var(--white);
+  --primary-button-border: var(--blue-chill);
+  --primary-button-disabled-fill: var(--hit-gray);
+  --primary-button-disabled-text: var(--white);
+  --primary-button-disabled-border: var(--hit-gray);
+  --primary-button-hover-fill: var(--white);
+  --primary-button-hover-text: var(--blue-chill);
+  --primary-button-hover-border: var(--blue-chill);
+  --secondary-button-fill: var(--white);
+  --secondary-button-text: var(--black);
+  --secondary-button-border: var(--tulip-tree);
+  --secondary-button-disabled-fill: var(--white);
+  --secondary-button-disabled-text: var(--hit-gray);
+  --secondary-button-disabled-border: var(--hit-gray);
+  --secondary-button-hover-fill: var(--tulip-tree);
+  --secondary-button-hover-text: var(--white);
+  --secondary-button-hover-border: var(--tulip-tree);
+}

@@ -1,16 +1,14 @@
-import styled from 'styled-components';
+import classnames from 'classnames';
 
-export interface LogoProps {
+import styles from './Logo.module.scss';
+
+export interface LogoProps extends Styleable {
   src: string;
   className?: string;
 }
-const StyledLogo = styled.img({
-  maxWidth: '460px',
-  maxHeight: '60px',
-});
 
-const Logo: React.FC<LogoProps> = ({ src, className }) => (
-  <StyledLogo src={src} className={className} />
+const Logo: React.FC<LogoProps> = ({ src, className, style }) => (
+  <img className={classnames(styles.logo, className)} style={style} src={src} />
 );
 
 export default Logo;

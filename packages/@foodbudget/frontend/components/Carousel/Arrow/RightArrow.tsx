@@ -1,4 +1,4 @@
-import { Arrow } from './Arrow';
+import Arrow from './Arrow';
 
 const RightArrow: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = (
   props,

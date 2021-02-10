@@ -1,0 +1,17 @@
+@use '~styles/breakpoints';
+
+.modal {
+  position: fixed;
+  top: 1rem;
+  bottom: 1rem;
+  left: 10%;
+  right: 10%;
+  background-color: var(--white);
+  z-index: 1000;
+  overflow-y: scroll;
+
+  @include breakpoints.lg {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import classnames from 'classnames';
+
+import styles from './Dropdown.module.scss';
 
 export interface DropdownProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
@@ -13,30 +15,13 @@ export interface DropdownProps
   onChange(element: React.SyntheticEvent<HTMLSelectElement, Event>): void;
 }
 
-const Option = styled.option((props) => ({
-  borderColor: props.theme.colors.primaryBorder,
-}));
-
-const Select = styled.select((props) => ({
-  border: `1px solid ${props.theme.colors.primaryBorder}`,
-  borderRadius: '19px',
-  padding: '1.5rem',
-  boxShadow: '0 1px 0 1px rgba(0,0,0,.04)',
-  maxWidth: '400px',
-  width: '100%',
-  position: 'relative',
-  appearance: 'none',
-  background: `url('down-arrow.svg') ${props.theme.colors.white}`,
-  backgroundRepeat: 'no-repeat',
-  backgroundSize: '16px 17px',
-  backgroundPosition: '96% 9px',
-}));
-
 const Dropdown: React.FC<DropdownProps> = ({
   values,
   placeholder,
   clearValueOnSelect,
   defaultValue,
+  className,
+  style,
   onChange,
   ...props
 }) => {
@@ -54,7 +39,9 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   return (
-    <Select
+    <select
+      className={classnames(styles.select, className)}
+      style={style}
       required
       onChange={handleOnChange}
       defaultValue={placeholder || defaultValue || values[0]}
@@ -62,14 +49,19 @@ const Dropdown: React.FC<DropdownProps> = ({
       {...props}
     >
       {placeholder && (
-        <Option disabled aria-disabled hidden>
+        <option
+          className={classnames(styles.option)}
+          disabled
+          aria-disabled
+          hidden
+        >
           {placeholder}
-        </Option>
+        </option>
       )}
       {values.map((value, index) => (
-        <Option key={`option-${index}`}>{value}</Option>
+        <option key={`option-${index}`}>{value}</option>
       ))}
-    </Select>
+    </select>
   );
 };
 

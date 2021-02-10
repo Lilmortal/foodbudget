@@ -1,0 +1,103 @@
+@use '~styles/breakpoints';
+
+@font-face {
+  font-family: 'Amiko';
+  font-display: swap;
+  src: url('/fonts/Amiko/Amiko-Regular.woff2') format('woff2');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'ABeeZee';
+  font-display: swap;
+  src: url('/fonts/ABeeZee/ABeeZee-Regular.woff2') format('woff2');
+  font-weight: normal;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+h1 {
+  font-size: var(--xl-font);
+  font-weight: var(--lg-weight);
+  margin-bottom: var(--lg-spacing);
+
+  @include breakpoints.sm {
+    font-size: var(--mob-xl-font);
+  }
+}
+
+h2 {
+  font-size: var(--lg-font);
+  font-weight: var(--md-weight);
+
+  @include breakpoints.sm {
+    font-size: var(--mob-lg-font);
+  }
+}
+
+h3 {
+  font-size: var(--md-font);
+  font-weight: var(--sm-weight);
+
+  @include breakpoints.sm {
+    font-size: var(--mob-md-font);
+  }
+}
+
+h4 {
+  font-size: var(--sm-font);
+  font-weight: var(--sm-weight);
+
+  @include breakpoints.sm {
+    font-size: var(--mob-sm-font);
+  }
+}
+
+h5 {
+  font-size: var(--sm-font);
+  font-weight: var(--xl-weight);
+
+  @include breakpoints.sm {
+    font-size: var(--mob-sm-font);
+  }
+}
+
+body {
+  font-family: Amiko, Arial, sans-serif;
+  font-size: var(--xs-font);
+  font-weight: var(--xs-weight);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: 2.6rem;
+
+  @include breakpoints.lg {
+    font-size: var(--sm-font);
+  }
+
+  @include breakpoints.sm {
+    font-weight: var(--xs-weight);
+  }
+
+  @include breakpoints.print {
+    font-size: var(--xxs-font);
+    font-weight: var(--xxs-weight);
+  }
+}
+
+#__next {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}

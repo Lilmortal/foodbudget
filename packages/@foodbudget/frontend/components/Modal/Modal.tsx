@@ -1,48 +1,33 @@
 import React, { useEffect, useRef, useState } from 'react';
 import noScroll from 'no-scroll';
 import { createPortal } from 'react-dom';
-
-import styled from 'styled-components';
+import classnames from 'classnames';
 import EscapePress from 'components/EscapePress';
 import Overlay from './Overlay';
 import CloseButton from './CloseButton';
 import FocusTrap from './FocusTrap';
 
-export interface ModalProps {
+import styles from './Modal.module.scss';
+
+export interface ModalProps extends Styleable {
   open?: boolean;
-  selector: string;
+  selector?: string;
   onOutsideAction?(): void;
   onEscapePress?(): void;
   onClose?(): void;
   children?: React.ReactNode;
   overlayDataTestId?: string;
-  className?: string;
 }
-
-const StyledModal = styled.div(({ theme }) => ({
-  position: 'fixed',
-  top: '1rem',
-  bottom: '1rem',
-  left: '10%',
-  right: '10%',
-  backgroundColor: theme.colors.white,
-  zIndex: 1000,
-  overflowY: 'scroll',
-
-  [theme.breakpoints.lg]: {
-    left: '50%',
-    transform: 'translateX(-50%)',
-  },
-}));
 
 const Modal: React.FC<ModalProps> = ({
   open,
-  selector,
+  selector = '#modal',
   onClose,
   onOutsideAction,
   onEscapePress,
   overlayDataTestId,
   className,
+  style,
   children,
 }) => {
   const portalRef = useRef<Element | null>(null);
@@ -74,11 +59,11 @@ const Modal: React.FC<ModalProps> = ({
             onOutsideAction={onOutsideAction}
             dataTestId={overlayDataTestId}
           />
-          <StyledModal className={className}>
+          <div className={classnames(styles.modal, className)} style={style}>
             {onEscapePress && <EscapePress onEscapePress={onEscapePress} />}
             {onClose && <CloseButton onClose={onClose} />}
             {children}
-          </StyledModal>
+          </div>
         </FocusTrap>,
         portalRef.current,
       )

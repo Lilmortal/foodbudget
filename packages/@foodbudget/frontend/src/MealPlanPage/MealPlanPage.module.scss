@@ -1,0 +1,52 @@
+.wrapper {
+  display: grid;
+  padding: 0 5rem;
+  grid-template-columns: 80% 1fr;
+  gap: 5rem;
+  grid-template-areas:
+    'timetable budgetBalances'
+    'recipeScroller ingredientPanel';
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.panel {
+  border: 1px solid var(--primary-border);
+  background-color: var(--white);
+  padding: 2rem;
+  border-radius: 20px;
+}
+
+.budgetBalanceWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-area: budgetBalances;
+}
+
+.budgetBalancePanel {
+  @extend .panel;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.balanceWrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0 4rem;
+}
+
+.ingredientPanel {
+  @extend .panel;
+
+  grid-area: ingredientPanel;
+}
+
+.calendar {
+  grid-area: timetable;
+}

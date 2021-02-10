@@ -1,0 +1,17 @@
+@use '~styles/breakpoints';
+
+.closeButton {
+  position: fixed;
+  margin-top: 3rem;
+  display: flex;
+  font-size: 2rem;
+  right: 14%;
+  cursor: pointer;
+  mix-blend-mode: difference;
+  color: white;
+  z-index: 1000;
+
+  @include breakpoints.lg {
+    right: 7%;
+  }
+}

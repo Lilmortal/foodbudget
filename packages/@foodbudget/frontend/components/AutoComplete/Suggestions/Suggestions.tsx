@@ -1,43 +1,16 @@
-import styled from 'styled-components';
+import classnames from 'classnames';
+import styles from './Suggestions.module.scss';
 
-const SuggestionOption = styled.li({
-  listStyleType: 'none',
-  paddingLeft: '15px',
-  height: '44px',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-
-  ':hover': {
-    backgroundColor: 'rgba(2, 0, 185, 0.05)',
-  },
-});
-
-export interface SuggestionsProps {
+export interface SuggestionsProps extends Styleable {
   suggestions: string[];
   onSuggestionSelect(suggestion: string): void;
 }
 
-interface SuggestionListProps {
-  suggestions: string[];
-}
-
-const SuggestionList = styled.ul<SuggestionListProps>((props) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  border:
-    props.suggestions.length > 0
-      ? ` 1px solid ${props.theme.colors.primaryBorder}`
-      : 'none',
-  borderRadius: '5px',
-  backgroundColor: props.theme.colors.white,
-  boxShadow: '4px -4px 5px rgba(2, 0, 185, 0.1)',
-  maxWidth: '400px',
-}));
-
 const Suggestions: React.FC<SuggestionsProps> = ({
   suggestions,
   onSuggestionSelect,
+  className,
+  style,
 }) => {
   const handleOnClick = (
     element: React.SyntheticEvent<HTMLLIElement, Event>,
@@ -100,18 +73,28 @@ const Suggestions: React.FC<SuggestionsProps> = ({
   };
 
   return (
-    <SuggestionList suggestions={suggestions}>
+    <ul
+      className={classnames(
+        styles.list,
+        {
+          [styles['list--hasSuggestions']]: suggestions.length > 0,
+        },
+        className,
+      )}
+      style={style}
+    >
       {suggestions.map((suggestion, index) => (
-        <SuggestionOption
+        <li
+          className={classnames(styles.options)}
           tabIndex={0}
           key={`suggestion-${index}`}
           onClick={handleOnClick}
           onKeyUp={handleKeyPress}
         >
           {suggestion}
-        </SuggestionOption>
+        </li>
       ))}
-    </SuggestionList>
+    </ul>
   );
 };
 

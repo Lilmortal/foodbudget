@@ -1,4 +1,4 @@
-import { render, RenderResult, screen } from 'test-utils';
+import { render, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Suggestions, { SuggestionsProps } from './Suggestions';
 

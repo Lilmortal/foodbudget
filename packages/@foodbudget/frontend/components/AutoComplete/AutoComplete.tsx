@@ -1,23 +1,26 @@
 import EscapePress from 'components/EscapePress';
 import { useState } from 'react';
-import styled from 'styled-components';
+import classnames from 'classnames';
 import Textfield, { TextfieldProps } from '../Textfield';
 import Suggestions from './Suggestions';
+
+import styles from './AutoComplete.module.scss';
 
 export interface AutoCompleteProps extends TextfieldProps {
   onSuggestionSelect(suggestion: string): void;
   suggestions: string[];
 }
 
-const AutoCompleteWrapper = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-});
-
 const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
   const [inputValue, setInputValue] = useState<string>('');
 
-  const { onSuggestionSelect, suggestions, ...textfieldProps } = props;
+  const {
+    onSuggestionSelect,
+    suggestions,
+    className,
+    style,
+    ...textfieldProps
+  } = props;
 
   const [options, setOptions] = useState<string[]>([]);
 
@@ -70,7 +73,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
   };
 
   return (
-    <AutoCompleteWrapper>
+    <div className={classnames(styles.wrapper, className)} style={style}>
       <Textfield
         {...textfieldProps}
         onChange={handleOnChange}
@@ -82,7 +85,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = (props) => {
         onSuggestionSelect={handleOnSuggestionSelect}
       />
       {handleEscapePress && <EscapePress onEscapePress={handleEscapePress} />}
-    </AutoCompleteWrapper>
+    </div>
   );
 };
 

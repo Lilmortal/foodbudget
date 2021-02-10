@@ -1,86 +1,18 @@
 import React, { useState } from 'react';
 import { NormalizedCacheObject } from '@apollo/client';
 import { GetStaticProps } from 'next';
-import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import * as yup from 'yup';
-
+import classnames from 'classnames';
 import Button from 'components/Button';
 import Textfield from 'components/Textfield';
 import { ErrorMessage, Form, Formik } from 'components/form';
 import AutoComplete from 'components/AutoComplete';
-import PageTemplate from '../templates/Page';
+import MainPage from '../templates/MainPage';
 import { initializeApollo } from '../lib/client';
 import IngredientList from './IngredientList';
 
-const SearchGrid = styled.div((props) => ({
-  display: 'grid',
-  gridTemplateColumns: '1fr 400px 1fr',
-  gridTemplateRows: '20% 1fr 20%',
-  flexGrow: 1,
-
-  ':before': {
-    backgroundImage: 'none',
-
-    [props.theme.breakpoints.md]: {
-      content: `''`,
-      backgroundImage: "url('/pizza.webp')",
-      backgroundRepeat: 'no-repeat',
-      display: 'grid',
-      gridRow: '1/-1',
-      gridColumn: 1,
-    },
-  },
-
-  [props.theme.breakpoints.md]: {
-    gridTemplateColumns: '60% 400px 1fr',
-  },
-}));
-
-const SearchWrapper = styled.div({
-  display: 'grid',
-  gridColumn: 2,
-  gridRow: 2,
-  padding: '1rem',
-});
-
-const Label = styled.label({
-  display: 'flex',
-  justifyContent: 'center',
-  padding: '1rem',
-});
-
-const LabelTextfield = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-});
-
-const TextfieldWrapper = styled.div({
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-});
-
-const SubmitWrapper = styled.div({
-  display: 'flex',
-  justifyContent: 'center',
-  padding: '2rem 0 0 0',
-});
-
-const TipWrapper = styled.div({
-  display: 'flex',
-  justifyContent: 'center',
-  paddingTop: '2rem',
-});
-
-const Tip = styled.p({});
-
-const PageForm = styled(Form)({
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
-  justifyContent: 'space-evenly',
-});
+import styles from './SearchPage.module.scss';
 
 const removeItem = (list: string[], value: string) =>
   list.filter((item) => item !== value);
@@ -94,7 +26,7 @@ const schema = yup.object().shape({
   ingredients: yup.array(),
 });
 
-export interface SearchPageProps {
+export interface SearchPageProps extends Styleable {
   onSubmit(values: { budget: string; ingredients: string[] }): void;
   suggestions: string[];
 }
@@ -102,6 +34,8 @@ export interface SearchPageProps {
 export const SearchPage: React.FC<SearchPageProps> = ({
   onSubmit,
   suggestions,
+  className,
+  style,
 }) => {
   const [ingredientList, setIngredientList] = useState<string[]>([]);
 
@@ -121,9 +55,9 @@ export const SearchPage: React.FC<SearchPageProps> = ({
   };
 
   return (
-    <PageTemplate>
-      <SearchGrid>
-        <SearchWrapper>
+    <MainPage>
+      <div className={styles.searchGrid}>
+        <div className={styles.searchWrapper}>
           <Formik
             initialValues={{ budget: '', ingredients: [] }}
             validationSchema={schema}
@@ -140,10 +74,15 @@ export const SearchPage: React.FC<SearchPageProps> = ({
               };
 
               return (
-                <PageForm>
-                  <LabelTextfield>
-                    <Label htmlFor="budget">My weekly budget</Label>
-                    <TextfieldWrapper>
+                <Form
+                  className={classnames(styles.form, className)}
+                  style={style}
+                >
+                  <div className={styles.labelTextfield}>
+                    <label className={styles.label} htmlFor="budget">
+                      My weekly budget
+                    </label>
+                    <div className={styles.textfieldWrapper}>
                       <Textfield
                         type="text"
                         id="budget"
@@ -152,20 +91,22 @@ export const SearchPage: React.FC<SearchPageProps> = ({
                         placeholder="Place your budget in NZD"
                       />
                       <ErrorMessage name="budget" />
-                    </TextfieldWrapper>
-                  </LabelTextfield>
+                    </div>
+                  </div>
 
-                  <LabelTextfield>
-                    <Label htmlFor="ingredients">I already have</Label>
-                    <TextfieldWrapper>
+                  <div className={styles.labelTextfield}>
+                    <label className={styles.label} htmlFor="ingredients">
+                      I already have
+                    </label>
+                    <div className={styles.textfieldWrapper}>
                       <AutoComplete
                         id="ingredients"
                         data-cy="ingredientsInput"
                         suggestions={suggestions}
                         onSuggestionSelect={handleSelectedIngredient}
                       />
-                    </TextfieldWrapper>
-                  </LabelTextfield>
+                    </div>
+                  </div>
 
                   {ingredientList.length > 0 && (
                     <IngredientList
@@ -175,24 +116,24 @@ export const SearchPage: React.FC<SearchPageProps> = ({
                     />
                   )}
 
-                  <SubmitWrapper>
+                  <div className={styles.submitWrapper}>
                     <Button disabled={isSubmitting} type="submit">
                       Create weekly plan
                     </Button>
-                  </SubmitWrapper>
+                  </div>
 
                   {ingredientList.length === 0 && (
-                    <TipWrapper>
-                      <Tip>Tip...</Tip>
-                    </TipWrapper>
+                    <div className={styles.tipWrapper}>
+                      <p className={styles.tip}>Tip...</p>
+                    </div>
                   )}
-                </PageForm>
+                </Form>
               );
             }}
           </Formik>
-        </SearchWrapper>
-      </SearchGrid>
-    </PageTemplate>
+        </div>
+      </div>
+    </MainPage>
   );
 };
 

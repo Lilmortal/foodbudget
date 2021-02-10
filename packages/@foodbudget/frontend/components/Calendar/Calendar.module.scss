@@ -1,0 +1,40 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.tableWrapper {
+  overflow-x: scroll;
+}
+
+.table {
+  display: table;
+  padding: 1rem;
+  table-layout: fixed;
+  border-spacing: 0;
+  // TODO: A hack, this is to fix the right border missing due to overflow: scroll and border-collapse: collapse
+  width: 99%;
+  height: 100%;
+  border-collapse: collapse;
+  min-width: calc(7 * 140px);
+}
+
+.td {
+  position: relative;
+  border: 1px solid black;
+  height: 120px;
+  width: 140px;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-around;
+}
+
+.previousWrapper {
+  display: flex;
+}
+
+.nextWrapper {
+  display: flex;
+}

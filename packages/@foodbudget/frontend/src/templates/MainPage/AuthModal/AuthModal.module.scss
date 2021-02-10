@@ -1,0 +1,23 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+
+.modal {
+  top: 20rem;
+  bottom: 20rem;
+}
+
+.logo {
+  margin: 2rem;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+}

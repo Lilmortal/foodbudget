@@ -1,0 +1,30 @@
+.arrowWrapper {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.leftArrowWrapper {
+  @extend .arrowWrapper;
+
+  left: 0;
+}
+
+.rightArrowWrapper {
+  @extend .arrowWrapper;
+
+  right: 0;
+}
+
+.carouselWrapper {
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.slideWrapper {
+  display: flex;
+  min-width: 100%;
+}

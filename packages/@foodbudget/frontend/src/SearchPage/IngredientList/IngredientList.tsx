@@ -1,26 +1,9 @@
-import styled from 'styled-components';
 import Button from 'components/Button';
+import classnames from 'classnames';
 
-const IngredientListWrapper = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-});
+import styles from './IngredientList.module.scss';
 
-const StyledIngredientList = styled.div({
-  display: 'flex',
-  flexWrap: 'wrap',
-});
-
-const IngredientButton = styled(Button)(({ theme }) => ({
-  margin: `0 ${theme.spacing.sm} ${theme.spacing.sm} 0`,
-}));
-
-const IngredientListHeader = styled.p(({ theme }) => ({
-  padding: '1rem 0',
-  color: theme.colors.secondaryText,
-}));
-
-export interface IngredientListProps {
+export interface IngredientListProps extends Styleable {
   header?: string;
   ingredients: string[];
   onClose(element: React.SyntheticEvent<HTMLButtonElement, Event>): void;
@@ -30,12 +13,15 @@ const IngredientList: React.FC<IngredientListProps> = ({
   header,
   ingredients,
   onClose,
+  className,
+  style,
 }) => (
-  <IngredientListWrapper>
-    <IngredientListHeader>{header}</IngredientListHeader>
-    <StyledIngredientList>
+  <div className={classnames(styles.wrapper, className)} style={style}>
+    <p className={classnames(styles.ingredientListHeader)}>{header}</p>
+    <div className={styles.ingredientList}>
       {ingredients.map((ingredient: string, index) => (
-        <IngredientButton
+        <Button
+          className={styles.ingredientButton}
           type="button"
           key={`ingredient-${index}`}
           variant="secondary"
@@ -43,10 +29,10 @@ const IngredientList: React.FC<IngredientListProps> = ({
           onClick={onClose}
         >
           {ingredient}
-        </IngredientButton>
+        </Button>
       ))}
-    </StyledIngredientList>
-  </IngredientListWrapper>
+    </div>
+  </div>
 );
 
 export default IngredientList;

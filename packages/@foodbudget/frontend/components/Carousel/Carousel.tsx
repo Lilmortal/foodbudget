@@ -1,24 +1,19 @@
 import { useRef, useState, useEffect, cloneElement, useCallback } from 'react';
 import { SwipeableHandlers, useSwipeable } from 'react-swipeable';
+import classnames from 'classnames';
 import { LeftArrow, RightArrow } from './Arrow';
 import Slide from './Slide';
 import Slider from './Slider';
 import useCarouselBreakpoints, { Breakpoints } from './useCarouselBreakpoints';
 import usePrevious from '../usePrevious';
-import {
-  CarouselWrapper,
-  SlideWrapper,
-  LeftArrowWrapper,
-  RightArrowWrapper,
-} from './Carousel.Styled';
 
-export interface CarouselProps {
+import styles from './Carousel.module.scss';
+
+export interface CarouselProps extends Styleable {
   breakpoints: Breakpoints;
-  horizontal?: boolean;
   loadMore?(): void;
   swipeable?: boolean;
-  children: React.ReactNode[];
-  removeArrowsOnDeviceType?: string[];
+  children: React.ReactElement[];
   hasMore?: boolean;
   renderLeftArrow?: React.ReactElement;
   renderRightArrow?: React.ReactElement;
@@ -27,15 +22,16 @@ export interface CarouselProps {
 // TODO:
 // first slide lose focus on resize
 // triggering left and right arrow on keyboard overtime will cause weird bugs
+// Support virtualized
 // width / 3 == 33.3333%, translateX not accurate
 const Carousel: React.FC<CarouselProps> = ({
   breakpoints,
-  horizontal = true,
   swipeable = true,
   loadMore,
   children,
-  removeArrowsOnDeviceType,
   hasMore,
+  className,
+  style,
   renderLeftArrow = <LeftArrow />,
   renderRightArrow = <RightArrow />,
 }) => {
@@ -52,7 +48,6 @@ const Carousel: React.FC<CarouselProps> = ({
   const focusSlidePosition = useRef<number | null>(null);
 
   const {
-    breakpointName,
     numberOfVisibleSlides,
     numberOfSlidesPerSwipe,
   } = useCarouselBreakpoints(breakpoints);
@@ -73,10 +68,9 @@ const Carousel: React.FC<CarouselProps> = ({
 
   const prevEndOfVisibleSlidePosition = usePrevious(endOfVisibleSlidePosition);
 
-  const shouldRemoveArrows = removeArrowsOnDeviceType?.includes(breakpointName);
-
   /**
-   * Focus on the first/last slide when user navigate via keyboard.
+   * If the focus slide is on the last visible slide when browser resize such that the breakpoint is smaller,
+   * then shift the focus to the previous tab since the last visible slide will be out of view.
    */
   useEffect(() => {
     if (focusSlidePosition && focusSlidePosition.current) {
@@ -89,10 +83,6 @@ const Carousel: React.FC<CarouselProps> = ({
         prevNumberOfVisibleSlides &&
         numberOfVisibleSlides < prevNumberOfVisibleSlides;
 
-      /**
-       * If the focus slide is on the last visible slide when browser resize such that the breakpoint is smaller,
-       * then shift the focus to the previous tab since the last visible slide will be out of view.
-       */
       if (
         isFocusSlideOnLastVisibleSlide &&
         isBreakpointSmallerOnBrowserResize &&
@@ -216,7 +206,9 @@ const Carousel: React.FC<CarouselProps> = ({
 
   const handleLeftArrowClick = () => handleArrowClick('left');
 
-  const handleRightArrowClick = () => handleArrowClick('right');
+  const handleRightArrowClick = () => {
+    handleArrowClick('right');
+  };
 
   let handleSwipeable: SwipeableHandlers | undefined = useSwipeable({
     onSwipedLeft: () => handleArrowClick('right'),
@@ -263,8 +255,8 @@ const Carousel: React.FC<CarouselProps> = ({
    *
    */
   const groupSlidesByNumberOfVisibleSlides = (
-    slideWrappers: React.ReactNode[][],
-    slide: React.ReactNode,
+    slideWrappers: React.ReactElement[][],
+    slide: React.ReactElement,
     index: number,
   ) => {
     const nearestVisibleSlideWrapper = Math.floor(
@@ -326,10 +318,15 @@ const Carousel: React.FC<CarouselProps> = ({
   );
 
   return (
-    <CarouselWrapper horizontal={horizontal} {...handleSwipeable}>
-      {!shouldRemoveArrows && (
-        <LeftArrowWrapper ref={leftArrowRef}>{leftArrow}</LeftArrowWrapper>
-      )}
+    <div
+      className={classnames(styles.carouselWrapper, className)}
+      style={style}
+      {...handleSwipeable}
+    >
+      <div className={styles.leftArrowWrapper} ref={leftArrowRef}>
+        {leftArrow}
+      </div>
+
       <Slider
         leftArrowWidth={leftArrowWidth}
         rightArrowWidth={rightArrowWidth}
@@ -338,9 +335,12 @@ const Carousel: React.FC<CarouselProps> = ({
         numberOfVisibleSlides={numberOfVisibleSlides}
       >
         {children
-          .reduce<React.ReactNode[][]>(groupSlidesByNumberOfVisibleSlides, [])
+          .reduce<React.ReactElement[][]>(
+            groupSlidesByNumberOfVisibleSlides,
+            [],
+          )
           .map((slides, slidesIndex) => (
-            <SlideWrapper key={slidesIndex}>
+            <div className={classnames(styles.slideWrapper)} key={slidesIndex}>
               {slides.map((slide, slideIndex) => (
                 <Slide
                   key={getSlidePosition(slidesIndex, slideIndex)}
@@ -358,16 +358,21 @@ const Carousel: React.FC<CarouselProps> = ({
                     );
                   }}
                 >
-                  {isSlideVisible(slidesIndex, slideIndex) ? slide : null}
+                  {isSlideVisible(slidesIndex, slideIndex)
+                    ? slide
+                    : cloneElement(slide, {
+                        tabIndex: -1,
+                      })}
                 </Slide>
               ))}
-            </SlideWrapper>
+            </div>
           ))}
       </Slider>
-      {!shouldRemoveArrows && (
-        <RightArrowWrapper ref={rightArrowRef}>{rightArrow}</RightArrowWrapper>
-      )}
-    </CarouselWrapper>
+
+      <div className={styles.rightArrowWrapper} ref={rightArrowRef}>
+        {rightArrow}
+      </div>
+    </div>
   );
 };
 

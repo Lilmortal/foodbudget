@@ -1,20 +1,21 @@
 import { AppProps } from 'next/app';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ApolloProvider } from '@apollo/client';
-import { ThemeProvider } from 'styled-components';
 import { useApolloClient } from '../src/lib/client';
-import GlobalTheme, { FontFaces } from '../styles/globalStyle';
-import defaultTheme from '../themes/defaultTheme';
+
+import '../styles/index.scss';
+import '../themes/defaultTheme.scss';
+import './styles.scss';
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const client = useApolloClient(pageProps.initialApolloState);
 
   return (
     <ApolloProvider client={client}>
-      <ThemeProvider theme={defaultTheme}>
-        <GlobalTheme />
-        <FontFaces />
+      <DndProvider backend={HTML5Backend}>
         <Component {...pageProps} />
-      </ThemeProvider>
+      </DndProvider>
     </ApolloProvider>
   );
 };

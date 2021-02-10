@@ -1,185 +1,160 @@
-import styled from 'styled-components';
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import Button from 'components/Button';
-import Carousel from 'components/Carousel';
-import PageTemplate from '../templates/Page';
-import Timetable from './Timetable';
+import classnames from 'classnames';
+import MainPage from '../templates/MainPage';
 
-const MealPlanPageWrapper = styled.div({
-  display: 'grid',
-  padding: '0 5rem',
-  gridTemplateColumns: '80% 1fr',
-  gap: '5rem',
-  gridTemplateAreas: `"timetable budgetBalances"
-  "recipeScroller ingredientPanel"`,
-});
-
-const MealPlanHeader = styled.h1({
-  display: 'flex',
-  justifyContent: 'center',
-  padding: '1rem',
-});
-
-const Panel = styled.div(({ theme }) => ({
-  border: `1px solid ${theme.colors.primaryBorder}`,
-  backgroundColor: theme.colors.white,
-  padding: '2rem',
-  borderRadius: '20px',
-}));
-
-const BudgetBalanceWrapper = styled.div({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  gridArea: 'budgetBalances',
-});
-
-const BudgetBalancePanel = styled(Panel)({
-  display: 'flex',
-  flexDirection: 'column',
-});
-
-const BudgetBalanceTitle = styled.p({});
-
-const BalanceWrapper = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '1rem 0 4rem',
-});
-
-const Scroller = styled.div(({ theme }) => ({
-  gridArea: 'recipeScroller',
-  border: `1px solid ${theme.colors.black}`,
-  padding: '4rem 0',
-  display: 'flex',
-  flexWrap: 'wrap',
-}));
-
-const Recipe = styled.div(({ theme }) => ({
-  border: `1px solid ${theme.colors.black}`,
-  padding: '2rem',
-  maxWidth: '500px',
-  maxHeight: '300px',
-}));
-
-const IngredientPanel = styled(Panel)({ gridArea: 'ingredientPanel' });
-
-const EditHeader = styled.p({});
-
-const IngredientList = styled.div({});
-
-const RecipeTimetable = styled(Timetable)({
-  gridArea: 'timetable',
-});
+import styles from './MealPlanPage.module.scss';
+import RecipeModal from './RecipeModal';
+import { Recipe } from './RecipeCalendar/RecipeCell/RecipeCell';
+import RecipeCalendar, { RecipeCalendarData } from './RecipeCalendar';
+import { Period } from './RecipeCalendar/RecipeCalendar.utils';
+import RecipeCard from './RecipeModal/RecipeCard';
 
 interface BudgetBalanceProps {
   header: string;
 }
 
 const BudgetBalance: React.FC<BudgetBalanceProps> = ({ header, children }) => (
-  <BalanceWrapper>
-    <BudgetBalanceTitle>{header}</BudgetBalanceTitle>
+  <div className={styles.balanceWrapper}>
+    <p>{header}</p>
 
     {children}
-  </BalanceWrapper>
+  </div>
 );
 
-const MealPlanPage: React.FC<{}> = () => {
-  const [items, setItems] = useState<React.ReactNode[]>([]);
+export type MealPlanPageProps = Styleable;
 
-  useEffect(() => {
-    const slides = [];
-    for (let i = 0; i <= 6; i += 1) {
-      slides.push(
-        <div tabIndex={0} key={`${i}-slide`}>
-          {i}
-        </div>,
-      );
+const MealPlanPage: React.FC<MealPlanPageProps> = ({ className, style }) => {
+  const [isRecipeModalOpen, setRecipeModalOpen] = useState(false);
+  const selectedRecipe = useRef<Recipe>();
+
+  const handleOnCloseRecipeModal = () => {
+    setRecipeModalOpen(false);
+    selectedRecipe.current = undefined;
+  };
+
+  const handleOnRecipeCellClick = (recipe: Recipe) => {
+    setRecipeModalOpen(true);
+    selectedRecipe.current = recipe;
+  };
+
+  const [recipes, setRecipes] = useState<RecipeCalendarData>({});
+
+  const handleOnRemoveRecipe = (recipe: Recipe) => {
+    const removedRecipes = { ...recipes };
+
+    removedRecipes[recipe.fullDate.toDateString()] = {
+      ...removedRecipes[recipe.fullDate.toDateString()],
+      [recipe.period]: null,
+    };
+
+    setRecipes((prevRecipes) => ({ ...prevRecipes, ...removedRecipes }));
+  };
+
+  const handleOnRecipeCardClick = (source: string) => {
+    const updatedRecipes = { ...recipes };
+    if (selectedRecipe.current) {
+      updatedRecipes[selectedRecipe.current.fullDate.toDateString()] = {
+        ...updatedRecipes[selectedRecipe.current.fullDate.toDateString()],
+        [selectedRecipe.current.period as Period]: source,
+      };
+
+      setRecipes((prevRecipes) => ({ ...prevRecipes, ...updatedRecipes }));
+      setRecipeModalOpen(false);
     }
+  };
 
-    setItems(slides);
-  }, []);
+  const handleOnMoveRecipe = (updatedRecipes: RecipeCalendarData) =>
+    setRecipes((prevRecipes) => ({ ...prevRecipes, ...updatedRecipes }));
+
+  const [items, setItems] = useState<React.ReactElement[]>([
+    <RecipeCard
+      onClick={handleOnRecipeCardClick}
+      source="https://picsum.photos/id/230/200/300"
+    />,
+    <RecipeCard
+      onClick={handleOnRecipeCardClick}
+      source="https://picsum.photos/id/231/200/300"
+    />,
+    <RecipeCard
+      onClick={handleOnRecipeCardClick}
+      source="https://picsum.photos/id/232/200/300"
+    />,
+    <RecipeCard
+      onClick={handleOnRecipeCardClick}
+      source="https://picsum.photos/id/233/200/300"
+    />,
+    <RecipeCard
+      onClick={handleOnRecipeCardClick}
+      source="https://picsum.photos/id/234/200/300"
+    />,
+  ]);
 
   const [hasMore, setHasMore] = useState(true);
 
   const loadMore = () => {
     setItems([
       ...items,
-      <div tabIndex={0} key={'id-7'}>
-        7
-      </div>,
-      <div tabIndex={0} key={'id-8'}>
-        8
-      </div>,
-      <div tabIndex={0} key={'id-9'}>
-        9
-      </div>,
-      <div tabIndex={0} key={'id-10'}>
-        10
-      </div>,
-      <div tabIndex={0} key={'id-11'}>
-        11
-      </div>,
-      <div tabIndex={0} key={'id-12'}>
-        12
-      </div>,
-      <div tabIndex={0} key={'id-13'}>
-        13
-      </div>,
-      <div tabIndex={0} key={'id-14'}>
-        14
-      </div>,
+      <RecipeCard
+        onClick={handleOnRecipeCardClick}
+        source="https://picsum.photos/id/235/200/300"
+      />,
+      <RecipeCard
+        onClick={handleOnRecipeCardClick}
+        source="https://picsum.photos/id/236/200/300"
+      />,
+      <RecipeCard
+        onClick={handleOnRecipeCardClick}
+        source="https://picsum.photos/id/237/200/300"
+      />,
+      <RecipeCard
+        onClick={handleOnRecipeCardClick}
+        source="https://picsum.photos/id/238/200/300"
+      />,
+      <RecipeCard
+        onClick={handleOnRecipeCardClick}
+        source="https://picsum.photos/id/239/200/300"
+      />,
     ]);
     setHasMore(false);
   };
 
   return (
-    <PageTemplate>
-      <MealPlanHeader>Weekly Meal Plan</MealPlanHeader>
+    <MainPage>
+      <h1>Weekly Meal Plan</h1>
 
-      <MealPlanPageWrapper>
-        <RecipeTimetable />
+      <div className={classnames(styles.wrapper, className)} style={style}>
+        <RecipeCalendar
+          recipes={recipes}
+          className={styles.calendar}
+          onMoveRecipe={handleOnMoveRecipe}
+          onRemoveRecipe={handleOnRemoveRecipe}
+          onRecipeCellClick={handleOnRecipeCellClick}
+        />
 
-        <BudgetBalanceWrapper>
-          <BudgetBalancePanel>
+        <div className={styles.budgetBalanceWrapper}>
+          <div className={styles.budgetBalancePanel}>
             <BudgetBalance header="Meal Plan Cost">$xxx.xx</BudgetBalance>
             <BudgetBalance header="Budget Remaining">$xxx.xx</BudgetBalance>
-          </BudgetBalancePanel>
-        </BudgetBalanceWrapper>
+          </div>
+        </div>
 
-        <Carousel
-          hasMore={hasMore}
-          loadMore={loadMore}
-          breakpoints={{
-            xl: {
-              minWidthInPixels: 1200,
-              numberOfVisibleSlides: 4,
-              numberOfSlidesPerSwipe: 4,
-            },
-            lg: {
-              minWidthInPixels: 600,
-              numberOfVisibleSlides: 3,
-              numberOfSlidesPerSwipe: 3,
-            },
-            md: {
-              minWidthInPixels: 0,
-              numberOfVisibleSlides: 2,
-              numberOfSlidesPerSwipe: 2,
-            },
-          }}
-          removeArrowsOnDeviceType={['md']}
-        >
-          {items}
-        </Carousel>
-
-        <IngredientPanel>
-          <EditHeader>Edit</EditHeader>
-          <IngredientList>
+        <div className={classnames(styles.panel)}>
+          <p>Edit</p>
+          <div>
             <Button showCloseIcon>Eggs</Button>
-          </IngredientList>
-        </IngredientPanel>
-      </MealPlanPageWrapper>
-    </PageTemplate>
+          </div>
+        </div>
+      </div>
+
+      <RecipeModal
+        open={isRecipeModalOpen}
+        items={items}
+        hasMore={hasMore}
+        loadMore={loadMore}
+        onClose={handleOnCloseRecipeModal}
+      />
+    </MainPage>
   );
 };
 

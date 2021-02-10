@@ -25,7 +25,7 @@
     "./themes/**/*",
     "./styles/**/*",
     "./utils/**/*"  
-  ],
+, "components/DraggableCell"  ],
   "exclude": [
     "**/*.e2e.*",
     "node_modules"
