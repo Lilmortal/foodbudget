@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/ui@1.5.0...@foodbudget/ui@1.6.0) (2021-02-10)
+
+
+### Bug Fixes
+
+* carousel items tabbable only if visible; removed horizontal and removeArrowsOnDeviceType props ([b7175b8](https://github.com/Lilmortal/foodbudget/commit/b7175b834159e008721e101fa6f4bb7961e32027))
+* not highlighting cell that has same dates but not same periods ([48bdf70](https://github.com/Lilmortal/foodbudget/commit/48bdf7075ae93fe730e171e2a31c8d33de2be47f))
+
+
+### Features
+
+* added period text next to cells, rename Card to Cell ([0429f8c](https://github.com/Lilmortal/foodbudget/commit/0429f8c310aee2378b47c29c3a76a957945e4961))
+* calendar cells is now draggable and swapable ([97ea4ff](https://github.com/Lilmortal/foodbudget/commit/97ea4fffe82fe440bcceaf599324a7cc53fafc54))
+* change calendar logic to accomodate periods ([6f457b3](https://github.com/Lilmortal/foodbudget/commit/6f457b355db0cfe71714927dfae9615782eff6fc))
+* disable drag when there are no recipes ([b66b9e8](https://github.com/Lilmortal/foodbudget/commit/b66b9e8e071dfda6c1bcbf5cf14a2e78a6018977))
+* enable horizontal scrolling for calendar on smaller device, support onRemoveRecipe function ([29f650b](https://github.com/Lilmortal/foodbudget/commit/29f650b041db93b1be07c6175171828342964678))
+* extract calendar to its generic component and RecipeCalendar implementation ([1d7a968](https://github.com/Lilmortal/foodbudget/commit/1d7a968f664966309422fc8c3eacc5177cb13cf9))
+* migrate styled components to css modules ([813dff9](https://github.com/Lilmortal/foodbudget/commit/813dff9ab94e747b280857397d719731136c0587))
+* migrate styled components to css modules ([c0a17a3](https://github.com/Lilmortal/foodbudget/commit/c0a17a3ba5069d6283e09b0250fd05d5aa404cbd))
+* move calendar date to columns ([8ccdefe](https://github.com/Lilmortal/foodbudget/commit/8ccdefeae64f414ca4db9c70c0c7ee010f5cf07e))
+
+
+
+
+
 # [1.5.0](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/ui@1.4.0...@foodbudget/ui@1.5.0) (2021-01-17)
 
 
