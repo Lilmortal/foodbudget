@@ -8,6 +8,7 @@ import RecipeModal from './RecipeModal';
 import { Recipe } from './RecipeCalendar/RecipeCell/RecipeCell';
 import RecipeCalendar, { RecipeCalendarData } from './RecipeCalendar';
 import { Period } from './RecipeCalendar/RecipeCalendar.utils';
+import RecipeCard from './RecipeModal/RecipeCard';
 
 interface BudgetBalanceProps {
   header: string;
@@ -66,6 +67,58 @@ const MealPlanPage: React.FC<MealPlanPageProps> = ({ className, style }) => {
   const handleOnMoveRecipe = (updatedRecipes: RecipeCalendarData) =>
     setRecipes((prevRecipes) => ({ ...prevRecipes, ...updatedRecipes }));
 
+  const [items, setItems] = useState<React.ReactElement[]>([
+    <RecipeCard
+      onClick={handleOnRecipeCardClick}
+      source="https://picsum.photos/id/230/200/300"
+    />,
+    <RecipeCard
+      onClick={handleOnRecipeCardClick}
+      source="https://picsum.photos/id/231/200/300"
+    />,
+    <RecipeCard
+      onClick={handleOnRecipeCardClick}
+      source="https://picsum.photos/id/232/200/300"
+    />,
+    <RecipeCard
+      onClick={handleOnRecipeCardClick}
+      source="https://picsum.photos/id/233/200/300"
+    />,
+    <RecipeCard
+      onClick={handleOnRecipeCardClick}
+      source="https://picsum.photos/id/234/200/300"
+    />,
+  ]);
+
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadMore = () => {
+    setItems([
+      ...items,
+      <RecipeCard
+        onClick={handleOnRecipeCardClick}
+        source="https://picsum.photos/id/235/200/300"
+      />,
+      <RecipeCard
+        onClick={handleOnRecipeCardClick}
+        source="https://picsum.photos/id/236/200/300"
+      />,
+      <RecipeCard
+        onClick={handleOnRecipeCardClick}
+        source="https://picsum.photos/id/237/200/300"
+      />,
+      <RecipeCard
+        onClick={handleOnRecipeCardClick}
+        source="https://picsum.photos/id/238/200/300"
+      />,
+      <RecipeCard
+        onClick={handleOnRecipeCardClick}
+        source="https://picsum.photos/id/239/200/300"
+      />,
+    ]);
+    setHasMore(false);
+  };
+
   return (
     <MainPage>
       <h1>Weekly Meal Plan</h1>
@@ -96,7 +149,9 @@ const MealPlanPage: React.FC<MealPlanPageProps> = ({ className, style }) => {
 
       <RecipeModal
         open={isRecipeModalOpen}
-        onRecipeClick={handleOnRecipeCardClick}
+        items={items}
+        hasMore={hasMore}
+        loadMore={loadMore}
         onClose={handleOnCloseRecipeModal}
       />
     </MainPage>
