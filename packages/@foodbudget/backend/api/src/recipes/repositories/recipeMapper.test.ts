@@ -10,9 +10,11 @@ describe('recipe mapper', () => {
       prepTime: '4',
       servings: 3,
       numSaved: 1,
-      ingredients: [{
-        text: 'ingredient text',
-      }],
+      ingredients: [
+        {
+          text: 'ingredient text',
+        },
+      ],
       cuisines: ['AMERICAN'],
       diets: ['KETOGENIC'],
       adjectives: ['ROMANTIC'],
@@ -29,16 +31,18 @@ describe('recipe mapper', () => {
       prep_time: '4',
       servings: 3,
       num_saved: 1,
-      ingredients: [{
-        amount: 0,
-        ingredient: {
-          name: null,
-          price_amount: 0,
-          price_currency: null,
+      ingredients: [
+        {
+          amount: 0,
+          ingredient: {
+            name: null,
+            price_amount: 0,
+            price_currency: null,
+          },
+          measurement: null,
+          recipe_text: 'ingredient text',
         },
-        measurement: null,
-        recipe_text: 'ingredient text',
-      }],
+      ],
       cuisines: ['AMERICAN'],
       diets: ['KETOGENIC'],
       adjectives: ['ROMANTIC'],
@@ -56,16 +60,18 @@ describe('recipe mapper', () => {
       prep_time: '4',
       servings: 3,
       num_saved: 1,
-      ingredients: [{
-        ingredient: {
-          name: 'mushroom',
-          price_currency: 'NZD',
-          price_amount: 4,
+      ingredients: [
+        {
+          ingredient: {
+            name: 'mushroom',
+            price_currency: 'NZD',
+            price_amount: 4,
+          },
+          amount: 2,
+          measurement: 'kg',
+          recipe_text: 'pork recipe',
         },
-        amount: 2,
-        measurement: 'kg',
-        recipe_text: 'pork recipe',
-      }],
+      ],
       cuisines: ['AMERICAN'],
       diets: ['KETOGENIC'],
       adjectives: ['ROMANTIC'],
@@ -83,16 +89,18 @@ describe('recipe mapper', () => {
       prepTime: '4',
       servings: 3,
       numSaved: 1,
-      ingredients: [{
-        text: 'pork recipe',
-        name: 'mushroom',
-        amount: 2,
-        measurement: 'kg',
-        price: {
-          amount: 4,
-          currency: 'NZD',
+      ingredients: [
+        {
+          text: 'pork recipe',
+          name: 'mushroom',
+          amount: 2,
+          measurement: 'kg',
+          price: {
+            amount: 4,
+            currency: 'NZD',
+          },
         },
-      }],
+      ],
       cuisines: ['AMERICAN'],
       diets: ['KETOGENIC'],
       adjectives: ['ROMANTIC'],

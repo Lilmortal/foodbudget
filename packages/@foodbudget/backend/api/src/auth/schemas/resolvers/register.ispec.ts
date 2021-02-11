@@ -3,7 +3,11 @@ import { gql } from 'apollo-server-express';
 import findUp from 'find-up';
 import argon2 from 'argon2';
 import { UserRepository } from '../../../users';
-import { createTestApolloServer, createTestDatabase, tearDownTestDatabase } from '../../../utils/test';
+import {
+  createTestApolloServer,
+  createTestDatabase,
+  tearDownTestDatabase,
+} from '../../../utils/test';
 import { AuthServices } from '../../services';
 
 describe('register user', () => {
@@ -50,13 +54,13 @@ describe('register user', () => {
 
     await mutate({
       mutation: gql`
-          mutation register($email: Email!, $password: String!) {
-            register(email: $email, password: $password) {
-              email
-              nickname
-            }
+        mutation register($email: Email!, $password: String!) {
+          register(email: $email, password: $password) {
+            email
+            nickname
           }
-        `,
+        }
+      `,
       variables: { email, password: 'password123' },
     });
 
@@ -132,6 +136,8 @@ describe('register user', () => {
     });
 
     expect(createdUser?.googleId).toEqual('1');
-    expect(await argon2.verify(createdUser?.password || '', password)).toEqual(true);
+    expect(await argon2.verify(createdUser?.password || '', password)).toEqual(
+      true,
+    );
   });
 });

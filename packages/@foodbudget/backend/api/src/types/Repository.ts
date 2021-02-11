@@ -8,7 +8,7 @@ export interface Repository<D> {
   // How to handle 3 save operations and roll all of them back
   save(obj: Partial<D>, options?: SaveOptions): Promise<D>;
   save(obj: Partial<D>[], options?: SaveOptions): Promise<D[]>;
-  save(obj: Partial<D>| Partial<D>[], options?: SaveOptions): Promise<D | D[]>;
+  save(obj: Partial<D> | Partial<D>[], options?: SaveOptions): Promise<D | D[]>;
 
   // TODO: Not all can delete
   delete(obj: string): Promise<D>;

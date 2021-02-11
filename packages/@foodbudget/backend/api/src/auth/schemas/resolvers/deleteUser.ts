@@ -12,7 +12,9 @@ export const deleteUser = mutationField('deleteUser', {
   async resolve(_parent, args, ctx: Context) {
     logger.info('delete user request', args);
 
-    const deletedUser = await ctx.serviceManager.userServices.delete(args.email);
+    const deletedUser = await ctx.serviceManager.userServices.delete(
+      args.email,
+    );
 
     if (deletedUser) {
       logger.info('delete user response', deletedUser);

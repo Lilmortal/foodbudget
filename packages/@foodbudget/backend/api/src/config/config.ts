@@ -10,7 +10,8 @@ if (!process.env.CI) {
   }
 }
 
-const isEnvValid = (env: string): env is EnvConfig => env === 'production' || env === 'development' || env === 'test';
+const isEnvValid = (env: string): env is EnvConfig =>
+  env === 'production' || env === 'development' || env === 'test';
 
 const validate = (config: Config) => {
   const errors = [];
@@ -61,7 +62,10 @@ const validate = (config: Config) => {
 There are errors attempting to retrieve environment variables. 
 Please add them in the .env file if you forget to add them in.
       
-${errors.map((error) => `* ${error}`).join('\n').trim()}`,
+${errors
+  .map((error) => `* ${error}`)
+  .join('\n')
+  .trim()}`,
     );
 
     return false;

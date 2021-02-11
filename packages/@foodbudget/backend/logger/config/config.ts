@@ -11,19 +11,39 @@ if (!process.env.CI) {
 
 export type Env = 'development' | 'test' | 'production';
 
-export type LogLevel = 'error' | 'warn' | 'help' | 'data' | 'info' |
-'debug' | 'prompt' | 'http' | 'verbose' | 'input' | 'silly';
+export type LogLevel =
+  | 'error'
+  | 'warn'
+  | 'help'
+  | 'data'
+  | 'info'
+  | 'debug'
+  | 'prompt'
+  | 'http'
+  | 'verbose'
+  | 'input'
+  | 'silly';
 
 export interface Config {
   env: Env;
   logLevel: LogLevel;
 }
 
-const isEnv = (env: string): env is Env => env === 'production' || env === 'development' || env === 'test';
+const isEnv = (env: string): env is Env =>
+  env === 'production' || env === 'development' || env === 'test';
 
-const isLogLevel = (logLevel: string): logLevel is LogLevel => logLevel === 'error' || logLevel === 'warn'
- || logLevel === 'help' || logLevel === 'data' || logLevel === 'info' || logLevel === 'debug' || logLevel === 'prompt'
- || logLevel === 'http' || logLevel === 'verbose' || logLevel === 'input' || logLevel === 'silly';
+const isLogLevel = (logLevel: string): logLevel is LogLevel =>
+  logLevel === 'error' ||
+  logLevel === 'warn' ||
+  logLevel === 'help' ||
+  logLevel === 'data' ||
+  logLevel === 'info' ||
+  logLevel === 'debug' ||
+  logLevel === 'prompt' ||
+  logLevel === 'http' ||
+  logLevel === 'verbose' ||
+  logLevel === 'input' ||
+  logLevel === 'silly';
 
 const validate = (config: Config) => {
   const errors = [];
@@ -42,7 +62,10 @@ const validate = (config: Config) => {
 There are errors attempting to retrieve environment variables. 
 Please add them in the .env file if you forget to add them in.
       
-${errors.map((error) => `* ${error}`).join('\n').trim()}`,
+${errors
+  .map((error) => `* ${error}`)
+  .join('\n')
+  .trim()}`,
     );
 
     return false;

@@ -1,7 +1,11 @@
 import { AppError } from '@foodbudget/errors';
 import { sign, verify } from 'jsonwebtoken';
 import { TokenConfig } from '../../../config';
-import { AccessTokenPayload, RefreshToken, RefreshTokenPayload } from './Token.types';
+import {
+  AccessTokenPayload,
+  RefreshToken,
+  RefreshTokenPayload,
+} from './Token.types';
 import { TokenServices } from './TokenServices';
 
 const accessSecret = 'access secret';
@@ -18,9 +22,8 @@ const defaultTokenConfig: TokenConfig = {
   },
 };
 
-const getTokenServices = (tokenConfig?: Partial<TokenConfig>) => new TokenServices(
-  { tokenConfig: { ...defaultTokenConfig, ...tokenConfig } },
-);
+const getTokenServices = (tokenConfig?: Partial<TokenConfig>) =>
+  new TokenServices({ tokenConfig: { ...defaultTokenConfig, ...tokenConfig } });
 
 describe('token services', () => {
   beforeEach(() => {
@@ -38,7 +41,9 @@ describe('token services', () => {
     const expireTimeInUtc = 'Wed, 04 Nov 2020 04:05:39 GMT';
 
     const accessToken = sign({ scope, expireTimeInUtc }, accessSecret);
-    expect(() => tokenServices.decodeAccessToken(accessToken)).toThrowError(AppError);
+    expect(() => tokenServices.decodeAccessToken(accessToken)).toThrowError(
+      AppError,
+    );
   });
 
   it('should throw an error if access token does not have a scope', () => {
@@ -48,7 +53,9 @@ describe('token services', () => {
     const expireTimeInUtc = 'Wed, 04 Nov 2020 04:05:39 GMT';
 
     const accessToken = sign({ userId, expireTimeInUtc }, accessSecret);
-    expect(() => tokenServices.decodeAccessToken(accessToken)).toThrowError(AppError);
+    expect(() => tokenServices.decodeAccessToken(accessToken)).toThrowError(
+      AppError,
+    );
   });
 
   it('should throw an error if access token does not have expireTimeInUtc', () => {
@@ -58,7 +65,9 @@ describe('token services', () => {
     const scope = ['READ'];
 
     const accessToken = sign({ userId, scope }, accessSecret);
-    expect(() => tokenServices.decodeAccessToken(accessToken)).toThrowError(AppError);
+    expect(() => tokenServices.decodeAccessToken(accessToken)).toThrowError(
+      AppError,
+    );
   });
 
   it('should decode access token', () => {
@@ -79,8 +88,10 @@ describe('token services', () => {
   it('should throw an error if refresh token does not have user ID', () => {
     const tokenServices = getTokenServices();
 
-    const refreshToken = sign({ }, refreshSecret);
-    expect(() => tokenServices.decodeRefreshToken(refreshToken)).toThrowError(AppError);
+    const refreshToken = sign({}, refreshSecret);
+    expect(() => tokenServices.decodeRefreshToken(refreshToken)).toThrowError(
+      AppError,
+    );
   });
 
   it('should decode refresh token', () => {
@@ -101,9 +112,11 @@ describe('token services', () => {
 
     const accessToken = tokenServices.createAccessToken(userId);
 
-    expect(accessToken).toEqual('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0Iiwic2NvcGUiOl'
-    + 'tdLCJleHBpcmVUaW1lSW5VdGMiOiJXZWQsIDA0IE5vdiAyMDIwIDAzOjE2OjU3IEdNVCIsImlhdCI6MTYwNDQ1OTc2Nyw'
-    + 'iZXhwIjoxNjA0NDU5ODE3fQ.VSSOdX1yUg2x7pSALSUaB1mq2MuqIWXTvbVbp1kfWTM');
+    expect(accessToken).toEqual(
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0Iiwic2NvcGUiOl' +
+        'tdLCJleHBpcmVUaW1lSW5VdGMiOiJXZWQsIDA0IE5vdiAyMDIwIDAzOjE2OjU3IEdNVCIsImlhdCI6MTYwNDQ1OTc2Nyw' +
+        'iZXhwIjoxNjA0NDU5ODE3fQ.VSSOdX1yUg2x7pSALSUaB1mq2MuqIWXTvbVbp1kfWTM',
+    );
   });
 
   it('should verify access token userId is valid', () => {
@@ -136,7 +149,9 @@ describe('token services', () => {
     const accessToken = tokenServices.createAccessToken(userId);
 
     const decodedAccessToken = verify(accessToken, accessSecret);
-    expect((decodedAccessToken as AccessTokenPayload).expireTimeInUtc).toEqual('Wed, 04 Nov 2020 03:16:57 GMT');
+    expect((decodedAccessToken as AccessTokenPayload).expireTimeInUtc).toEqual(
+      'Wed, 04 Nov 2020 03:16:57 GMT',
+    );
   });
 
   it('should create refresh token', () => {
@@ -144,21 +159,23 @@ describe('token services', () => {
 
     const userId = '4';
 
-    const refreshToken = tokenServices.createRefreshToken(userId, 'development');
-
-    expect(refreshToken).toEqual(
-      {
-        name: 'refresh-token',
-        options: {
-          expires: new Date('2020-11-04T03:17:17.905Z'),
-          httpOnly: true,
-          secure: false,
-        },
-        value: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0IiwiZXhwaXJlVGltZUluVXRjIjoiV2VkLCAwNCBOb3Yg'
-        + 'MjAyMCAwMzoxNzoxNyBHTVQiLCJpYXQiOjE2MDQ0NTk3NjcsImV4cCI6MTYwNDQ1OTgzN30.yBcGa3qAfNGouaR0YuQVLuKXJhT'
-        + 'FFMIdpXWJjSnz--U',
-      },
+    const refreshToken = tokenServices.createRefreshToken(
+      userId,
+      'development',
     );
+
+    expect(refreshToken).toEqual({
+      name: 'refresh-token',
+      options: {
+        expires: new Date('2020-11-04T03:17:17.905Z'),
+        httpOnly: true,
+        secure: false,
+      },
+      value:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0IiwiZXhwaXJlVGltZUluVXRjIjoiV2VkLCAwNCBOb3Yg' +
+        'MjAyMCAwMzoxNzoxNyBHTVQiLCJpYXQiOjE2MDQ0NTk3NjcsImV4cCI6MTYwNDQ1OTgzN30.yBcGa3qAfNGouaR0YuQVLuKXJhT' +
+        'FFMIdpXWJjSnz--U',
+    });
   });
 
   it('should verify refresh token userId is valid', () => {
@@ -166,9 +183,15 @@ describe('token services', () => {
 
     const userId = '4';
 
-    const refreshToken = tokenServices.createRefreshToken(userId, 'development');
+    const refreshToken = tokenServices.createRefreshToken(
+      userId,
+      'development',
+    );
 
-    const decodedRefreshToken = verify((refreshToken as RefreshToken).value, refreshSecret);
+    const decodedRefreshToken = verify(
+      (refreshToken as RefreshToken).value,
+      refreshSecret,
+    );
 
     expect((decodedRefreshToken as RefreshTokenPayload).userId).toEqual(userId);
   });
@@ -178,11 +201,19 @@ describe('token services', () => {
 
     const userId = '4';
 
-    const refreshToken = tokenServices.createRefreshToken(userId, 'development');
+    const refreshToken = tokenServices.createRefreshToken(
+      userId,
+      'development',
+    );
 
-    const decodedRefreshToken = verify((refreshToken as RefreshToken).value, refreshSecret);
+    const decodedRefreshToken = verify(
+      (refreshToken as RefreshToken).value,
+      refreshSecret,
+    );
 
-    expect((decodedRefreshToken as RefreshTokenPayload).expireTimeInUtc).toEqual('Wed, 04 Nov 2020 03:17:17 GMT');
+    expect(
+      (decodedRefreshToken as RefreshTokenPayload).expireTimeInUtc,
+    ).toEqual('Wed, 04 Nov 2020 03:17:17 GMT');
   });
 
   it('should verify refresh token option is not secure if not on production', () => {
@@ -190,7 +221,10 @@ describe('token services', () => {
 
     const userId = '4';
 
-    const refreshToken = tokenServices.createRefreshToken(userId, 'development');
+    const refreshToken = tokenServices.createRefreshToken(
+      userId,
+      'development',
+    );
 
     expect((refreshToken as RefreshToken).options.secure).toEqual(false);
   });
@@ -210,16 +244,19 @@ describe('token services', () => {
 
     const header = 'invalid header';
 
-    expect(() => tokenServices.extractAccessToken(header)).toThrowError(AppError);
+    expect(() => tokenServices.extractAccessToken(header)).toThrowError(
+      AppError,
+    );
   });
 
   it('should extract access token', () => {
     const tokenServices = getTokenServices();
 
     // The JWT contains userId as 4
-    const header = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0Iiwic2NvcGUiOl'
-    + 'tdLCJleHBpcmVUaW1lSW5VdGMiOiJXZWQsIDA0IE5vdiAyMDIwIDAzOjE2OjU3IEdNVCIsImlhdCI6MTYwNDQ1OTc2Nyw'
-    + 'iZXhwIjoxNjA0NDU5ODE3fQ.VSSOdX1yUg2x7pSALSUaB1mq2MuqIWXTvbVbp1kfWTM';
+    const header =
+      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0Iiwic2NvcGUiOl' +
+      'tdLCJleHBpcmVUaW1lSW5VdGMiOiJXZWQsIDA0IE5vdiAyMDIwIDAzOjE2OjU3IEdNVCIsImlhdCI6MTYwNDQ1OTc2Nyw' +
+      'iZXhwIjoxNjA0NDU5ODE3fQ.VSSOdX1yUg2x7pSALSUaB1mq2MuqIWXTvbVbp1kfWTM';
 
     const decodedAccessToken = tokenServices.extractAccessToken(header);
     expect((decodedAccessToken as AccessTokenPayload).userId).toEqual('4');
@@ -228,16 +265,18 @@ describe('token services', () => {
   it('should renew tokens', () => {
     const tokenServices = getTokenServices();
 
-    const refreshToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0IiwiZXhwaXJlVGltZUluVXRjIjoiV2VkLCAwNCBOb3Yg'
-      + 'MjAyMCAwMzoxNzoxNyBHTVQiLCJpYXQiOjE2MDQ0NTk3NjcsImV4cCI6MTYwNDQ1OTgzN30.yBcGa3qAfNGouaR0YuQVLuKXJhT'
-      + 'FFMIdpXWJjSnz--U';
+    const refreshToken =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0IiwiZXhwaXJlVGltZUluVXRjIjoiV2VkLCAwNCBOb3Yg' +
+      'MjAyMCAwMzoxNzoxNyBHTVQiLCJpYXQiOjE2MDQ0NTk3NjcsImV4cCI6MTYwNDQ1OTgzN30.yBcGa3qAfNGouaR0YuQVLuKXJhT' +
+      'FFMIdpXWJjSnz--U';
 
     const results = tokenServices.renewTokens(refreshToken, 'development');
 
     expect(results).toEqual({
-      accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0Iiwic2NvcGUiOltdLCJleHBpcmVUaW1l'
-      + 'SW5VdGMiOiJXZWQsIDA0IE5vdiAyMDIwIDAzOjE2OjU3IEdNVCIsImlhdCI6MTYwNDQ1OTc2NywiZXhwIjoxNjA0NDU5ODE3fQ'
-      + '.VSSOdX1yUg2x7pSALSUaB1mq2MuqIWXTvbVbp1kfWTM',
+      accessToken:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0Iiwic2NvcGUiOltdLCJleHBpcmVUaW1l' +
+        'SW5VdGMiOiJXZWQsIDA0IE5vdiAyMDIwIDAzOjE2OjU3IEdNVCIsImlhdCI6MTYwNDQ1OTc2NywiZXhwIjoxNjA0NDU5ODE3fQ' +
+        '.VSSOdX1yUg2x7pSALSUaB1mq2MuqIWXTvbVbp1kfWTM',
       refreshToken: {
         name: 'refresh-token',
         options: {
@@ -245,9 +284,10 @@ describe('token services', () => {
           httpOnly: true,
           secure: false,
         },
-        value: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0IiwiZXhwaXJlVGltZUluVXRjIjoiV2VkLCAwNCBOb3Y'
-          + 'gMjAyMCAwMzoxNzoxNyBHTVQiLCJpYXQiOjE2MDQ0NTk3NjcsImV4cCI6MTYwNDQ1OTgzN30.yBcGa3qAfNGouaR0'
-          + 'YuQVLuKXJhTFFMIdpXWJjSnz--U',
+        value:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0IiwiZXhwaXJlVGltZUluVXRjIjoiV2VkLCAwNCBOb3Y' +
+          'gMjAyMCAwMzoxNzoxNyBHTVQiLCJpYXQiOjE2MDQ0NTk3NjcsImV4cCI6MTYwNDQ1OTgzN30.yBcGa3qAfNGouaR0' +
+          'YuQVLuKXJhTFFMIdpXWJjSnz--U',
       },
     });
   });

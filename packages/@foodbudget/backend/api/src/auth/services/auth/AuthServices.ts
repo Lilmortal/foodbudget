@@ -2,7 +2,12 @@ import { AppError } from '@foodbudget/errors';
 import argon2 from 'argon2';
 import { Repository } from '../../../types/Repository';
 import { User } from '../../../users';
-import { AccountLoginRequest, FacebookLoginRequest, GoogleLoginRequest, LoginRequest } from './Auth.types';
+import {
+  AccountLoginRequest,
+  FacebookLoginRequest,
+  GoogleLoginRequest,
+  LoginRequest,
+} from './Auth.types';
 
 interface AuthServicesInjection {
   readonly repository: Repository<User>;
@@ -15,36 +20,53 @@ export class AuthServices {
     this.repository = repository;
   }
 
-  private isGoogleLoginRequest = (request: LoginRequest)
-    : request is GoogleLoginRequest => (request as GoogleLoginRequest).googleId !== undefined;
+  private isGoogleLoginRequest = (
+    request: LoginRequest,
+  ): request is GoogleLoginRequest =>
+    (request as GoogleLoginRequest).googleId !== undefined;
 
-  private isFacebookLoginRequest = (request: LoginRequest)
-    : request is FacebookLoginRequest => (request as FacebookLoginRequest).facebookId !== undefined;
+  private isFacebookLoginRequest = (
+    request: LoginRequest,
+  ): request is FacebookLoginRequest =>
+    (request as FacebookLoginRequest).facebookId !== undefined;
 
-  private isAccountLoginRequest = (request: LoginRequest)
-    : request is AccountLoginRequest => (request as AccountLoginRequest).email !== undefined
-    && (request as AccountLoginRequest).password !== undefined;
+  private isAccountLoginRequest = (
+    request: LoginRequest,
+  ): request is AccountLoginRequest =>
+    (request as AccountLoginRequest).email !== undefined &&
+    (request as AccountLoginRequest).password !== undefined;
 
   private getUserEntity = (request: LoginRequest): Partial<User> => {
     if (this.isGoogleLoginRequest(request)) {
       return {
         googleId: request.googleId,
       };
-    } if (this.isFacebookLoginRequest(request)) {
+    }
+    if (this.isFacebookLoginRequest(request)) {
       return {
         facebookId: request.facebookId,
       };
-    } if (this.isAccountLoginRequest(request)) {
+    }
+    if (this.isAccountLoginRequest(request)) {
       return {
         email: request.email,
       };
     }
-    throw new AppError({ message: 'login request is not valid.', isOperational: true });
+    throw new AppError({
+      message: 'login request is not valid.',
+      isOperational: true,
+    });
   };
 
-  private isRequestCredentialsValid = async (request: LoginRequest, user: User): Promise<boolean> => {
+  private isRequestCredentialsValid = async (
+    request: LoginRequest,
+    user: User,
+  ): Promise<boolean> => {
     if (this.isAccountLoginRequest(request)) {
-      if (!user.password || !await argon2.verify(user.password, request.password)) {
+      if (
+        !user.password ||
+        !(await argon2.verify(user.password, request.password))
+      ) {
         return false;
       }
     }
@@ -53,10 +75,13 @@ export class AuthServices {
   };
 
   private isRegisteringAnExistingAccountWithPassword = (
-    userDto: Partial<User> | undefined, userEntity: User | undefined,
+    userDto: Partial<User> | undefined,
+    userEntity: User | undefined,
   ) => userDto?.password && userEntity?.password;
 
-  async login(request: FacebookLoginRequest | GoogleLoginRequest): Promise<User>;
+  async login(
+    request: FacebookLoginRequest | GoogleLoginRequest,
+  ): Promise<User>;
 
   async login(request: AccountLoginRequest): Promise<User | undefined>;
 
@@ -65,15 +90,21 @@ export class AuthServices {
 
     const user = await this.repository.getOne(userEntity);
 
-    if (user && await this.isRequestCredentialsValid(request, user)) {
+    if (user && (await this.isRequestCredentialsValid(request, user))) {
       return user;
     }
 
-    if (this.isGoogleLoginRequest(request) || this.isFacebookLoginRequest(request)) {
+    if (
+      this.isGoogleLoginRequest(request) ||
+      this.isFacebookLoginRequest(request)
+    ) {
       const registeredUser = await this.register(request);
 
       if (!registeredUser) {
-        throw new AppError({ message: `Attempting to register ${request.email} failed.`, isOperational: true });
+        throw new AppError({
+          message: `Attempting to register ${request.email} failed.`,
+          isOperational: true,
+        });
       }
 
       return registeredUser;
@@ -83,13 +114,15 @@ export class AuthServices {
   }
 
   /**
-    * Linking all viable means of logging.
-    * For example, if user logged in via google before, and is now logging in via
-    * facebook for the first time, link those two under the same account.
-    *
-    * @param userDto
-  */
-  async register(userDto: Partial<Omit<User, 'id'>> & Pick<User, 'email'>): Promise<User | undefined> {
+   * Linking all viable means of logging.
+   * For example, if user logged in via google before, and is now logging in via
+   * facebook for the first time, link those two under the same account.
+   *
+   * @param userDto
+   */
+  async register(
+    userDto: Partial<Omit<User, 'id'>> & Pick<User, 'email'>,
+  ): Promise<User | undefined> {
     const user = await this.repository.getOne({ email: userDto.email });
 
     if (this.isRegisteringAnExistingAccountWithPassword(userDto, user)) {
@@ -98,7 +131,9 @@ export class AuthServices {
 
     const userEntity: Omit<User, 'id'> = {
       ...userDto,
-      password: userDto.password ? await argon2.hash(userDto.password) : undefined,
+      password: userDto.password
+        ? await argon2.hash(userDto.password)
+        : undefined,
     };
 
     const createdUser = await this.repository.save(userEntity);

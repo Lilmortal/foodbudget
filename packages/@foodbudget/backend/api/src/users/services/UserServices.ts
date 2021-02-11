@@ -7,7 +7,9 @@ export class UserServices {
     this.repository = repository;
   }
 
-  async get(userEntity: Pick<Partial<User>, 'id' | 'email'>): Promise<User | undefined> {
+  async get(
+    userEntity: Pick<Partial<User>, 'id' | 'email'>,
+  ): Promise<User | undefined> {
     const user = await this.repository.getOne(userEntity);
 
     return user;
@@ -16,7 +18,9 @@ export class UserServices {
   async update(userDto: User): Promise<User> {
     const user = await this.repository.save({
       ...userDto,
-      ...userDto.password && { password: await argon2.hash(userDto.password) },
+      ...(userDto.password && {
+        password: await argon2.hash(userDto.password),
+      }),
     });
 
     return user;

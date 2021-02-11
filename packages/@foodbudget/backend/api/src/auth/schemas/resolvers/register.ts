@@ -12,7 +12,10 @@ export const register = mutationField('register', {
   },
   async resolve(_parent, args, ctx: Context) {
     logger.info('register user request', args);
-    const user = await ctx.serviceManager.authServices.register({ email: args.email, password: args.password });
+    const user = await ctx.serviceManager.authServices.register({
+      email: args.email,
+      password: args.password,
+    });
 
     if (user) {
       logger.info('email has been registered.');

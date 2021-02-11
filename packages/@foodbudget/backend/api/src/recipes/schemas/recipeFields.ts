@@ -4,7 +4,8 @@ import { pageInfo } from '../../shared/field/pageInfo';
 
 export const cuisineType = enumType({
   name: 'Cuisine',
-  members: ['AMERICAN',
+  members: [
+    'AMERICAN',
     'ITALIAN',
     'ASIAN',
     'MEXICAN',
@@ -28,24 +29,28 @@ export const cuisineType = enumType({
     'HAWAIIAN',
     'SWEDISH',
     'HUNGARIAN',
-    'PORTUGUESE'],
+    'PORTUGUESE',
+  ],
 });
 
 export const dietType = enumType({
   name: 'Diet',
-  members: ['KETOGENIC',
+  members: [
+    'KETOGENIC',
     'VEGETARIAN_NO_MEAT_AND_EGGS',
     'VEGETARIAN_NO_MEAT_AND_DAIRY',
     'PESCATARIAN',
     'VEGAN',
     'LOW_FOODMAP',
     'VEGETARIAN',
-    'PALEO'],
+    'PALEO',
+  ],
 });
 
 export const allergyType = enumType({
   name: 'Allergy',
-  members: ['GLUTEN',
+  members: [
+    'GLUTEN',
     'PEANUT',
     'SEAFOOD',
     'SESAME',
@@ -54,7 +59,8 @@ export const allergyType = enumType({
     'EGG',
     'SULPHITE',
     'TREE_NUT',
-    'WHEAT'],
+    'WHEAT',
+  ],
 });
 
 export const adjectiveType = enumType({

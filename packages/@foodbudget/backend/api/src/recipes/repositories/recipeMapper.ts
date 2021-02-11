@@ -1,7 +1,7 @@
 import { Mapper } from '../../types/Mapper';
 import { Recipe, RecipeResponse } from '../Recipe.types';
 
-export const recipeMapper: Mapper<Recipe, RecipeResponse> = ({
+export const recipeMapper: Mapper<Recipe, RecipeResponse> = {
   fromDto: (dto: Recipe): RecipeResponse => ({
     id: dto.id,
     name: dto.name,
@@ -49,4 +49,4 @@ export const recipeMapper: Mapper<Recipe, RecipeResponse> = ({
     adjectives: entity.adjectives,
     meals: entity.meals,
   }),
-});
+};

@@ -31,7 +31,11 @@ export class UserRepository implements Repository<User> {
     performanceTest.end('get users');
 
     if (results.length > 1) {
-      throw new AppError({ message: 'Multiple users found.', isOperational: true, httpStatus: 500 });
+      throw new AppError({
+        message: 'Multiple users found.',
+        isOperational: true,
+        httpStatus: 500,
+      });
     }
 
     if (results === null) {
@@ -68,9 +72,13 @@ export class UserRepository implements Repository<User> {
     return userMapper.toDto(result);
   }
 
-  private readonly upsert = async (user: PartialBy<User, 'id'>, override = false) => {
+  private readonly upsert = async (
+    user: PartialBy<User, 'id'>,
+    override = false,
+  ) => {
     const overrideOrUpdate = (
-      shouldUpdate: boolean, value: Record<string, unknown>,
+      shouldUpdate: boolean,
+      value: Record<string, unknown>,
     ) => (override ? value : shouldUpdate && value);
 
     const result = await this.prisma.users.upsert({
@@ -85,7 +93,9 @@ export class UserRepository implements Repository<User> {
         ...overrideOrUpdate(!!user.nickname, { nickname: user.nickname }),
         ...overrideOrUpdate(!!user.password, { password: user.password }),
         ...overrideOrUpdate(!!user.googleId, { google_id: user.googleId }),
-        ...overrideOrUpdate(!!user.facebookId, { facebook_id: user.facebookId }),
+        ...overrideOrUpdate(!!user.facebookId, {
+          facebook_id: user.facebookId,
+        }),
       },
       where: {
         id: user.id ? parseInt(user.id, 10) : undefined,
@@ -98,15 +108,26 @@ export class UserRepository implements Repository<User> {
     return result;
   };
 
-  async save(usersDto: PartialBy<User, 'id'>, options?: SaveOptions): Promise<User>;
+  async save(
+    usersDto: PartialBy<User, 'id'>,
+    options?: SaveOptions,
+  ): Promise<User>;
 
-  async save(usersDto: PartialBy<User, 'id'>[], options?: SaveOptions): Promise<User[]>;
+  async save(
+    usersDto: PartialBy<User, 'id'>[],
+    options?: SaveOptions,
+  ): Promise<User[]>;
 
-  async save(usersDto: PartialBy<User, 'id'> | PartialBy<User, 'id'>[], options?: SaveOptions): Promise<User | User[]> {
+  async save(
+    usersDto: PartialBy<User, 'id'> | PartialBy<User, 'id'>[],
+    options?: SaveOptions,
+  ): Promise<User | User[]> {
     if (Array.isArray(usersDto)) {
       performanceTest.start('save users');
       const results = await Promise.all(
-        usersDto.map(async (user) => userMapper.toDto(await this.upsert(user, !!options?.override))),
+        usersDto.map(async (user) =>
+          userMapper.toDto(await this.upsert(user, !!options?.override)),
+        ),
       );
 
       performanceTest.end('save users');
@@ -129,11 +150,17 @@ export class UserRepository implements Repository<User> {
 
     if (Array.isArray(emails)) {
       performanceTest.start('delete users');
-      const results = await Promise.all(emails.map(async (email) => userMapper.toDto(await this.prisma.users.delete({
-        where: {
-          email,
-        },
-      }))));
+      const results = await Promise.all(
+        emails.map(async (email) =>
+          userMapper.toDto(
+            await this.prisma.users.delete({
+              where: {
+                email,
+              },
+            }),
+          ),
+        ),
+      );
 
       performanceTest.end('delete users');
       return results;

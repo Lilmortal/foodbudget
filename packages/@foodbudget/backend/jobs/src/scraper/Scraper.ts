@@ -1,9 +1,6 @@
 import { AppError } from '@foodbudget/errors';
 import logger from '@foodbudget/logger';
-import {
-  ScraperParams,
-  ScrapedElements, OnScrape,
-} from './Scraper.types';
+import { ScraperParams, ScrapedElements, OnScrape } from './Scraper.types';
 import setupHeadlessBrowser from './utils';
 
 export default class Scraper<S, R> {
@@ -25,7 +22,9 @@ export default class Scraper<S, R> {
 
       const scrapedResults = await headlessBrowser.scrape(scrapedElements);
 
-      return Promise.all(scrapedResults.map((result) => this.onMapping(result)));
+      return Promise.all(
+        scrapedResults.map((result) => this.onMapping(result)),
+      );
     } catch (err) {
       // @TODO: Find where puppeteer.errors.TimeoutError is.
       if (err instanceof Error) {

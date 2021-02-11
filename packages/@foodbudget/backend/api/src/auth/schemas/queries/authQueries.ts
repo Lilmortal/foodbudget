@@ -14,19 +14,24 @@ export const renewToken = queryField('renewToken', {
     const refreshToken = ctx.req.cookies[tokenServices.refreshTokenKey];
 
     if (!refreshToken) {
-      throw new AppError(
-        {
-          message: 'refresh token either expired or does not exist.',
-          isOperational: true,
-          httpStatus: 401,
-        },
-      );
+      throw new AppError({
+        message: 'refresh token either expired or does not exist.',
+        isOperational: true,
+        httpStatus: 401,
+      });
     }
 
     const envConfig = ctx.config.env;
-    const { accessToken, refreshToken: renewedRefreshToken } = await tokenServices.renewTokens(refreshToken, envConfig);
+    const {
+      accessToken,
+      refreshToken: renewedRefreshToken,
+    } = await tokenServices.renewTokens(refreshToken, envConfig);
 
-    ctx.res.cookie(renewedRefreshToken.name, renewedRefreshToken.value, renewedRefreshToken.options);
+    ctx.res.cookie(
+      renewedRefreshToken.name,
+      renewedRefreshToken.value,
+      renewedRefreshToken.options,
+    );
 
     logger.info('tokens renewed.');
 

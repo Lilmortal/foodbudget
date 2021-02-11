@@ -1,6 +1,4 @@
-import {
-  mutationField, floatArg, arg, stringArg,
-} from '@nexus/schema';
+import { mutationField, floatArg, arg, stringArg } from '@nexus/schema';
 import logger from '@foodbudget/logger';
 import { Context } from '../../../context';
 import { Ingredient } from '../../Ingredient.types';

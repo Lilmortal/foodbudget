@@ -1,4 +1,8 @@
-import { makeSchema, nullabilityGuardPlugin, queryComplexityPlugin } from '@nexus/schema';
+import {
+  makeSchema,
+  nullabilityGuardPlugin,
+  queryComplexityPlugin,
+} from '@nexus/schema';
 import path from 'path';
 import logger from '@foodbudget/logger';
 import { schemas as recipesSchema } from './recipes/schemas';

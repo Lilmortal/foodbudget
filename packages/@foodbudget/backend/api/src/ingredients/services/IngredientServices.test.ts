@@ -18,20 +18,24 @@ describe('ingredient services', () => {
   describe('paginations', () => {
     describe('after ingredients', () => {
       it('should retrieve the next two ingredients', async () => {
-        mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(undefined)));
-        mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
-          [
-            {
-              name: 'ingredient2',
-            },
-            {
-              name: 'ingredient3',
-            },
-            {
-              name: 'ingredient4',
-            },
-          ],
-        )));
+        mockIngredientRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) => resolve(undefined)),
+        );
+        mockIngredientRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) =>
+            resolve([
+              {
+                name: 'ingredient2',
+              },
+              {
+                name: 'ingredient3',
+              },
+              {
+                name: 'ingredient4',
+              },
+            ]),
+          ),
+        );
 
         const result = await ingredientServices.paginateAfter({ pos: 2 });
 
@@ -61,16 +65,23 @@ describe('ingredient services', () => {
       });
 
       it('should retrieve one ingredient when at the end of the page given a large pos value', async () => {
-        mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(undefined)));
-        mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
-          [
-            {
-              name: 'ingredient4',
-            },
-          ],
-        )));
+        mockIngredientRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) => resolve(undefined)),
+        );
+        mockIngredientRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) =>
+            resolve([
+              {
+                name: 'ingredient4',
+              },
+            ]),
+          ),
+        );
 
-        const result = await ingredientServices.paginateAfter({ pos: 9999, cursor: 'aW5ncmVkaWVudDM=' });
+        const result = await ingredientServices.paginateAfter({
+          pos: 9999,
+          cursor: 'aW5ncmVkaWVudDM=',
+        });
 
         expect(result).toEqual({
           pageInfo: {
@@ -94,20 +105,24 @@ describe('ingredient services', () => {
 
     describe('previous ingredients', () => {
       it('should retrieve the previous two ingredients', async () => {
-        mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
-          [
-            {
-              name: 'ingredient2',
-            },
-            {
-              name: 'ingredient3',
-            },
-            {
-              name: 'ingredient4',
-            },
-          ],
-        )));
-        mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(undefined)));
+        mockIngredientRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) =>
+            resolve([
+              {
+                name: 'ingredient2',
+              },
+              {
+                name: 'ingredient3',
+              },
+              {
+                name: 'ingredient4',
+              },
+            ]),
+          ),
+        );
+        mockIngredientRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) => resolve(undefined)),
+        );
 
         const result = await ingredientServices.paginateBefore({ pos: 2 });
 
@@ -137,16 +152,23 @@ describe('ingredient services', () => {
       });
 
       it('should retrieve one ingredient when at the start of the page give a large pos value', async () => {
-        mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
-          [
-            {
-              name: 'ingredient4',
-            },
-          ],
-        )));
-        mockIngredientRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(undefined)));
+        mockIngredientRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) =>
+            resolve([
+              {
+                name: 'ingredient4',
+              },
+            ]),
+          ),
+        );
+        mockIngredientRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) => resolve(undefined)),
+        );
 
-        const result = await ingredientServices.paginateBefore({ pos: 9999, cursor: 'aW5ncmVkaWVudDM=' });
+        const result = await ingredientServices.paginateBefore({
+          pos: 9999,
+          cursor: 'aW5ncmVkaWVudDM=',
+        });
 
         expect(result).toEqual({
           pageInfo: {

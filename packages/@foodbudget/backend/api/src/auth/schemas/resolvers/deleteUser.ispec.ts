@@ -1,7 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import { gql } from 'apollo-server-express';
 import findUp from 'find-up';
-import { createTestApolloServer, createTestDatabase, tearDownTestDatabase } from '../../../utils/test';
+import {
+  createTestApolloServer,
+  createTestDatabase,
+  tearDownTestDatabase,
+} from '../../../utils/test';
 
 describe('delete user', () => {
   let prismaClient: PrismaClient;
