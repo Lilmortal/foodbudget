@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.5](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/logger@3.1.4...@foodbudget/logger@3.1.5) (2021-02-11)
+
+**Note:** Version bump only for package @foodbudget/logger
+
+
+
+
+
 ## [3.1.4](https://github.com/Lilmortal/foodbudget/compare/@foodbudget/logger@3.1.3...@foodbudget/logger@3.1.4) (2020-11-24)
 
 **Note:** Version bump only for package @foodbudget/logger

@@ -1,6 +1,6 @@
 {
   "name": "@foodbudget/jobs",
-  "version": "5.4.6",
+  "version": "5.4.7",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "author": "Jack Tan",
@@ -18,10 +18,10 @@
     "clean": "rimraf dist && rimraf node_modules"
   },
   "dependencies": {
-    "@foodbudget/api": "^5.4.1",
-    "@foodbudget/email": "^4.3.5",
-    "@foodbudget/errors": "^4.1.5",
-    "@foodbudget/logger": "^3.1.4",
+    "@foodbudget/api": "^5.4.2",
+    "@foodbudget/email": "^4.3.6",
+    "@foodbudget/errors": "^4.1.6",
+    "@foodbudget/logger": "^3.1.5",
     "dotenv": "^8.2.0",
     "find-config": "^1.0.0",
     "node-cron": "^2.0.3",
