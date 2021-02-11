@@ -1,8 +1,6 @@
 import nodeMailer from 'nodemailer';
 import MailTransporter from 'nodemailer/lib/mailer';
-import {
-  Mailer, MailerParams, Mail,
-} from './Emailer.types';
+import { Mailer, MailerParams, Mail } from './Emailer.types';
 import config from './config';
 
 export class Emailer implements Mailer {
@@ -25,10 +23,18 @@ export class Emailer implements Mailer {
   }
 
   static async create({
-    service, host, port, secure, auth,
+    service,
+    host,
+    port,
+    secure,
+    auth,
   }: MailerParams): Promise<Mailer> {
     const emailer = new Emailer({
-      service, host, port, secure, auth,
+      service,
+      host,
+      port,
+      secure,
+      auth,
     });
 
     const isVerified = await emailer.verify();
@@ -84,15 +90,19 @@ export class Emailer implements Mailer {
     try {
       messageUrl = nodeMailer.getTestMessageUrl(info);
     } catch (err) {
-      throw new Error(`Attempting to get message url failed: ${err.message || err}`);
+      throw new Error(
+        `Attempting to get message url failed: ${err.message || err}`,
+      );
     }
 
     return messageUrl;
   }
 }
 
-const createEmailer = (async (): Promise<Mailer> => Emailer.create(
-  { service: config.email.service, auth: { user: config.email.user, pass: config.email.password } },
-));
+const createEmailer = async (): Promise<Mailer> =>
+  Emailer.create({
+    service: config.email.service,
+    auth: { user: config.email.user, pass: config.email.password },
+  });
 
 export default createEmailer;

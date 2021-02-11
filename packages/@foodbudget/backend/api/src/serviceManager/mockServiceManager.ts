@@ -8,14 +8,19 @@ import { UserRepository, UserServices } from '../users';
 import { ServiceManager } from './serviceManager.types';
 
 // TODO: Think of a better name
-export const mockServiceManager = (prismaClient: PrismaClient): ServiceManager => {
+export const mockServiceManager = (
+  prismaClient: PrismaClient,
+): ServiceManager => {
   const userRepository = new UserRepository(prismaClient);
   const userServices = new UserServices(userRepository);
 
   const ingredientRepository = new IngredientRepository(prismaClient);
   const ingredientServices = new IngredientServices(ingredientRepository);
 
-  const recipeRepository = new RecipeRepository(prismaClient, ingredientServices);
+  const recipeRepository = new RecipeRepository(
+    prismaClient,
+    ingredientServices,
+  );
   const recipeServices = new RecipeServices(recipeRepository);
 
   const authServices = new AuthServices({ repository: userRepository });

@@ -37,12 +37,16 @@ describe('formatMessage', () => {
 
     const result = stripAnsi(formatMessage(message, 'production'));
 
-    expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
+    expect(result).toEqual(
+      `${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`,
+    );
   });
 
   it('should mask sensitive properties', () => {
     const message = {
-      message: 'message', user: 'test', password: 'password',
+      message: 'message',
+      user: 'test',
+      password: 'password',
     };
 
     const formattedMessage = {
@@ -52,12 +56,16 @@ describe('formatMessage', () => {
 
     const result = stripAnsi(formatMessage(message, 'production'));
 
-    expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
+    expect(result).toEqual(
+      `${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`,
+    );
   });
 
   it('should not mask info when env is not production', () => {
     const message = {
-      message: 'message', user: 'test', password: 'password',
+      message: 'message',
+      user: 'test',
+      password: 'password',
     };
 
     const formattedMessage = {
@@ -67,7 +75,9 @@ describe('formatMessage', () => {
 
     const result = stripAnsi(formatMessage(message));
 
-    expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
+    expect(result).toEqual(
+      `${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`,
+    );
   });
 
   it('should mask a deep nested object', () => {
@@ -95,12 +105,17 @@ describe('formatMessage', () => {
 
     const result = stripAnsi(formatMessage(message, 'production'));
 
-    expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
+    expect(result).toEqual(
+      `${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`,
+    );
   });
 
   it('should format an object with session ID', () => {
     const message = {
-      sessionId: 'sessionId', message: 'message', user: 'test', password: 'password',
+      sessionId: 'sessionId',
+      message: 'message',
+      user: 'test',
+      password: 'password',
     };
 
     const formattedMessage = {
@@ -111,12 +126,15 @@ describe('formatMessage', () => {
 
     const result = stripAnsi(formatMessage(message, 'production'));
 
-    expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
+    expect(result).toEqual(
+      `${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`,
+    );
   });
 
   it('should format a message with session ID and no queries', () => {
     const message = {
-      sessionId: 'sessionId', message: 'message',
+      sessionId: 'sessionId',
+      message: 'message',
     };
 
     const formattedMessage = {
@@ -126,6 +144,8 @@ describe('formatMessage', () => {
 
     const result = stripAnsi(formatMessage(message, 'production'));
 
-    expect(result).toEqual(`${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`);
+    expect(result).toEqual(
+      `${message.message}\n${JSON.stringify(formattedMessage, null, 2)}`,
+    );
   });
 });

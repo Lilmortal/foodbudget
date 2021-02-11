@@ -13,11 +13,17 @@ export const emailArg = scalarType({
   },
   parseValue(value) {
     if (typeof value !== 'string') {
-      throw new AppError({ message: 'Email must be of a string format.', isOperational: true });
+      throw new AppError({
+        message: 'Email must be of a string format.',
+        isOperational: true,
+      });
     }
 
     if (!EMAIL_REG.test(value)) {
-      throw new AppError({ message: 'Email is not in a valid format.', isOperational: true });
+      throw new AppError({
+        message: 'Email is not in a valid format.',
+        isOperational: true,
+      });
     }
 
     return value.toLowerCase();
@@ -27,6 +33,9 @@ export const emailArg = scalarType({
       return ast.value.toLowerCase();
     }
 
-    throw new AppError({ message: 'Email is not in a valid format.', isOperational: true });
+    throw new AppError({
+      message: 'Email is not in a valid format.',
+      isOperational: true,
+    });
   },
 });

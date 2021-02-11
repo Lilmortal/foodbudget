@@ -1,11 +1,15 @@
 import logger from '@foodbudget/logger';
-import {
-  mutationField, stringArg, intArg, arg,
-} from '@nexus/schema';
+import { mutationField, stringArg, intArg, arg } from '@nexus/schema';
 import { Context } from '../../../context';
 import { Recipe } from '../../Recipe.types';
 import {
-  adjectiveType, allergyType, cuisineType, dietType, mealType, recipeField, recipeIngredientArg,
+  adjectiveType,
+  allergyType,
+  cuisineType,
+  dietType,
+  mealType,
+  recipeField,
+  recipeIngredientArg,
 } from '../recipeFields';
 
 export const saveRecipe = mutationField('saveRecipe', {

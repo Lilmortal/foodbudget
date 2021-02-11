@@ -10,42 +10,47 @@ import { SaveOptions } from '../../types/SaveOptions';
 import { PaginationRepository } from '../../types/pagination/PaginationRepository';
 
 export class RecipeRepository implements PaginationRepository<Recipe> {
-  constructor(private readonly prisma: PrismaClient, private readonly ingredientsService: IngredientServices) {
+  constructor(
+    private readonly prisma: PrismaClient,
+    private readonly ingredientsService: IngredientServices,
+  ) {
     this.prisma = prisma;
     this.ingredientsService = ingredientsService;
   }
 
-  paginate = async (take: number, cursor?: string, skip?: number): Promise<Recipe[] | undefined> => {
+  paginate = async (
+    take: number,
+    cursor?: string,
+    skip?: number,
+  ): Promise<Recipe[] | undefined> => {
     logger.info('get recipe repository paginate request', { take, cursor });
     performanceTest.start('get paginate recipes');
 
-    const results = await this.prisma.recipes.findMany(
-      {
-        include: {
-          ingredients: {
-            select: {
-              ingredient: {
-                select: {
-                  name: true,
-                  price_currency: true,
-                  price_amount: true,
-                },
+    const results = await this.prisma.recipes.findMany({
+      include: {
+        ingredients: {
+          select: {
+            ingredient: {
+              select: {
+                name: true,
+                price_currency: true,
+                price_amount: true,
               },
-              amount: true,
-              measurement: true,
-              recipe_text: true,
             },
+            amount: true,
+            measurement: true,
+            recipe_text: true,
           },
         },
-        ...cursor && {
-          cursor: {
-            link: cursor,
-          },
-        },
-        take,
-        skip: skip ?? cursor ? 1 : 0,
       },
-    );
+      ...(cursor && {
+        cursor: {
+          link: cursor,
+        },
+      }),
+      take,
+      skip: skip ?? cursor ? 1 : 0,
+    });
 
     performanceTest.end('get paginate recipes');
 
@@ -56,62 +61,70 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
   get = async (recipe: Partial<Recipe>): Promise<Recipe[] | undefined> => {
     logger.info('get recipe repository request', recipe);
     performanceTest.start('get recipes');
-    const results = await this.prisma.recipes.findMany(
-      {
-        where: {
-          OR: [{
-            ...recipe.id && { id: recipe.id },
-          }, {
-            ...recipe.name && { name: recipe.name },
-          }, {
-            ...recipe.link && { link: recipe.link },
-          }],
-          AND: [{
-            ...recipe.prepTime && { prep_time: recipe.prepTime },
-            ...recipe.servings && { servings: recipe.servings },
-            ...recipe.numSaved && { num_saved: recipe.numSaved },
-            ...recipe.ingredients && {
+    const results = await this.prisma.recipes.findMany({
+      where: {
+        OR: [
+          {
+            ...(recipe.id && { id: recipe.id }),
+          },
+          {
+            ...(recipe.name && { name: recipe.name }),
+          },
+          {
+            ...(recipe.link && { link: recipe.link }),
+          },
+        ],
+        AND: [
+          {
+            ...(recipe.prepTime && { prep_time: recipe.prepTime }),
+            ...(recipe.servings && { servings: recipe.servings }),
+            ...(recipe.numSaved && { num_saved: recipe.numSaved }),
+            ...(recipe.ingredients && {
               ingredients: {
                 some: {
-                  ingredient_name: { in: recipe.ingredients.map((ingredient) => ingredient.name || '') },
+                  ingredient_name: {
+                    in: recipe.ingredients.map(
+                      (ingredient) => ingredient.name || '',
+                    ),
+                  },
                 },
               },
-            },
-            ...recipe.cuisines && {
+            }),
+            ...(recipe.cuisines && {
               cuisines: {
                 equals: recipe.cuisines,
               },
-            },
-            ...recipe.allergies && {
+            }),
+            ...(recipe.allergies && {
               allergies: {
                 equals: recipe.allergies,
               },
-            },
-            ...recipe.diets && {
+            }),
+            ...(recipe.diets && {
               diets: {
                 equals: recipe.diets,
               },
-            },
-          }],
-        },
-        include: {
-          ingredients: {
-            select: {
-              ingredient: {
-                select: {
-                  name: true,
-                  price_currency: true,
-                  price_amount: true,
-                },
+            }),
+          },
+        ],
+      },
+      include: {
+        ingredients: {
+          select: {
+            ingredient: {
+              select: {
+                name: true,
+                price_currency: true,
+                price_amount: true,
               },
-              amount: true,
-              measurement: true,
-              recipe_text: true,
             },
+            amount: true,
+            measurement: true,
+            recipe_text: true,
           },
         },
       },
-    );
+    });
 
     performanceTest.end('get recipes');
 
@@ -123,30 +136,28 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
     logger.info('get one ingredient repository request', recipe);
     performanceTest.start('get one recipe');
 
-    const result = await this.prisma.recipes.findOne(
-      {
-        where: {
-          id: recipe.id,
-          link: recipe.link,
-        },
-        include: {
-          ingredients: {
-            select: {
-              ingredient: {
-                select: {
-                  name: true,
-                  price_currency: true,
-                  price_amount: true,
-                },
+    const result = await this.prisma.recipes.findOne({
+      where: {
+        id: recipe.id,
+        link: recipe.link,
+      },
+      include: {
+        ingredients: {
+          select: {
+            ingredient: {
+              select: {
+                name: true,
+                price_currency: true,
+                price_amount: true,
               },
-              amount: true,
-              measurement: true,
-              recipe_text: true,
             },
+            amount: true,
+            measurement: true,
+            recipe_text: true,
           },
         },
       },
-    );
+    });
 
     performanceTest.end('get one recipe');
     if (result === null) {
@@ -157,37 +168,47 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
     return recipeMapper.toDto(result);
   };
 
-  private readonly upsert = async (recipe: PartialBy<Recipe, 'id'>, override = false): Promise<Recipe> => {
+  private readonly upsert = async (
+    recipe: PartialBy<Recipe, 'id'>,
+    override = false,
+  ): Promise<Recipe> => {
     const overrideOrUpdate = (
-      shouldUpdate: boolean, value: Record<string, unknown>,
+      shouldUpdate: boolean,
+      value: Record<string, unknown>,
     ) => (override ? value : shouldUpdate && value);
 
     logger.info('upsert ingredient repository request', recipe);
 
     if (recipe.ingredients) {
       logger.info('verifying if ingredients exist in database...');
-      await Promise.all(recipe.ingredients.map(async (ingredient) => {
-        if (!ingredient.name) {
-          logger.info('ingredient name is null, no need to do anything yet...');
-          return;
-        }
+      await Promise.all(
+        recipe.ingredients.map(async (ingredient) => {
+          if (!ingredient.name) {
+            logger.info(
+              'ingredient name is null, no need to do anything yet...',
+            );
+            return;
+          }
 
-        const doesIngredientExist = await this.ingredientsService.get({ name: ingredient.name });
-
-        if (!doesIngredientExist) {
-          logger.info('ingredient does not exist, attempting to save it...');
-
-          await this.ingredientsService.save({
+          const doesIngredientExist = await this.ingredientsService.get({
             name: ingredient.name,
-            price: {
-              currency: ingredient.price?.currency || 'NZD',
-              amount: ingredient.price?.amount || 0,
-            },
           });
 
-          logger.info('ingredient saved.');
-        }
-      }));
+          if (!doesIngredientExist) {
+            logger.info('ingredient does not exist, attempting to save it...');
+
+            await this.ingredientsService.save({
+              name: ingredient.name,
+              price: {
+                currency: ingredient.price?.currency || 'NZD',
+                amount: ingredient.price?.amount || 0,
+              },
+            });
+
+            logger.info('ingredient saved.');
+          }
+        }),
+      );
     }
 
     logger.info('saving recipes...');
@@ -200,18 +221,20 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
         link: recipe.link,
         num_saved: 0,
         ingredients: {
-          create: recipe.ingredients && recipe.ingredients.map((ingredient) => ({
-            amount: ingredient.amount,
-            measurement: ingredient.measurement,
-            recipe_text: ingredient.text,
-            ...!!ingredient.name && {
-              ingredient: {
-                connect: {
-                  name: ingredient.name,
+          create:
+            recipe.ingredients &&
+            recipe.ingredients.map((ingredient) => ({
+              amount: ingredient.amount,
+              measurement: ingredient.measurement,
+              recipe_text: ingredient.text,
+              ...(!!ingredient.name && {
+                ingredient: {
+                  connect: {
+                    name: ingredient.name,
+                  },
                 },
-              },
-            },
-          })),
+              }),
+            })),
         },
         allergies: {
           set: recipe.allergies || [],
@@ -233,45 +256,54 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
         // TODO: Put this in function
         ...overrideOrUpdate(!!recipe.name, { name: recipe.name }),
         ...overrideOrUpdate(!!recipe.prepTime, { prep_time: recipe.prepTime }),
-        ...overrideOrUpdate(recipe.servings !== undefined, { servings: recipe.servings }),
-        ...overrideOrUpdate(!!recipe.link, { link: recipe.link }),
-        ...overrideOrUpdate(recipe.numSaved !== undefined, { num_saved: recipe.numSaved }),
-        ...overrideOrUpdate(recipe.ingredients && Object.keys(recipe.ingredients).length > 0, {
-          ingredients: {
-            upsert: recipe.ingredients && recipe.ingredients.map((ingredient) => ({
-              create: {
-                amount: ingredient.amount,
-                measurement: ingredient.measurement,
-                recipe_text: ingredient.text,
-                ...ingredient.name && {
-                  ingredient: {
-                    connect: {
-                      name: ingredient.name,
-                    },
-                  },
-                },
-              },
-              update: {
-                amount: ingredient.amount,
-                measurement: ingredient.measurement,
-                recipe_text: ingredient.text,
-                ...ingredient.name && {
-                  ingredient: {
-                    connect: {
-                      name: ingredient.name,
-                    },
-                  },
-                },
-              },
-              where: {
-                recipe_link_recipe_text: {
-                  recipe_text: ingredient.text,
-                  recipe_link: recipe.link,
-                },
-              },
-            })),
-          },
+        ...overrideOrUpdate(recipe.servings !== undefined, {
+          servings: recipe.servings,
         }),
+        ...overrideOrUpdate(!!recipe.link, { link: recipe.link }),
+        ...overrideOrUpdate(recipe.numSaved !== undefined, {
+          num_saved: recipe.numSaved,
+        }),
+        ...overrideOrUpdate(
+          recipe.ingredients && Object.keys(recipe.ingredients).length > 0,
+          {
+            ingredients: {
+              upsert:
+                recipe.ingredients &&
+                recipe.ingredients.map((ingredient) => ({
+                  create: {
+                    amount: ingredient.amount,
+                    measurement: ingredient.measurement,
+                    recipe_text: ingredient.text,
+                    ...(ingredient.name && {
+                      ingredient: {
+                        connect: {
+                          name: ingredient.name,
+                        },
+                      },
+                    }),
+                  },
+                  update: {
+                    amount: ingredient.amount,
+                    measurement: ingredient.measurement,
+                    recipe_text: ingredient.text,
+                    ...(ingredient.name && {
+                      ingredient: {
+                        connect: {
+                          name: ingredient.name,
+                        },
+                      },
+                    }),
+                  },
+                  where: {
+                    recipe_link_recipe_text: {
+                      recipe_text: ingredient.text,
+                      recipe_link: recipe.link,
+                    },
+                  },
+                })),
+            },
+          },
+        ),
         ...overrideOrUpdate(recipe.allergies?.length > 0, {
           allergies: {
             set: recipe.allergies,
@@ -325,12 +357,20 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
     return recipeMapper.toDto(result);
   };
 
-  async save(recipesDto: PartialBy<Recipe, 'id'>, options?: SaveOptions): Promise<Recipe>;
+  async save(
+    recipesDto: PartialBy<Recipe, 'id'>,
+    options?: SaveOptions,
+  ): Promise<Recipe>;
 
-  async save(recipesDto: PartialBy<Recipe, 'id'>[], options?: SaveOptions): Promise<Recipe[]>;
+  async save(
+    recipesDto: PartialBy<Recipe, 'id'>[],
+    options?: SaveOptions,
+  ): Promise<Recipe[]>;
 
-  async save(recipesDto: PartialBy<Recipe, 'id'> | PartialBy<Recipe, 'id'>[], options?: SaveOptions):
-  Promise<Recipe | Recipe[]> {
+  async save(
+    recipesDto: PartialBy<Recipe, 'id'> | PartialBy<Recipe, 'id'>[],
+    options?: SaveOptions,
+  ): Promise<Recipe | Recipe[]> {
     if (Array.isArray(recipesDto)) {
       performanceTest.start('save recipes');
       // As of now, Prisma 2 does not support createMany. For now, given the low amount
@@ -339,7 +379,9 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
 
       // See https://github.com/prisma/prisma-client-js/issues/332 for progress on this.
       const results = await Promise.all(
-        recipesDto.map(async (recipe) => this.upsert(recipe, !!options?.override)),
+        recipesDto.map(async (recipe) =>
+          this.upsert(recipe, !!options?.override),
+        ),
       );
 
       performanceTest.end('save recipes');
@@ -362,42 +404,52 @@ export class RecipeRepository implements PaginationRepository<Recipe> {
 
     if (Array.isArray(ids)) {
       performanceTest.start('delete recipes');
-      const results = await Promise.all(ids.map(async (id) => {
-        if (isNaN(Number(id))) {
-          throw new AppError({ message: 'Given recipe ID is not a number.', isOperational: true, httpStatus: 500 });
-        }
+      const results = await Promise.all(
+        ids.map(async (id) => {
+          if (isNaN(Number(id))) {
+            throw new AppError({
+              message: 'Given recipe ID is not a number.',
+              isOperational: true,
+              httpStatus: 500,
+            });
+          }
 
-        const result = await this.prisma.recipes.delete({
-          where: {
-            id: Number(id),
-          },
-          include: {
-            ingredients: {
-              select: {
-                ingredient: {
-                  select: {
-                    name: true,
-                    price_currency: true,
-                    price_amount: true,
+          const result = await this.prisma.recipes.delete({
+            where: {
+              id: Number(id),
+            },
+            include: {
+              ingredients: {
+                select: {
+                  ingredient: {
+                    select: {
+                      name: true,
+                      price_currency: true,
+                      price_amount: true,
+                    },
                   },
+                  amount: true,
+                  measurement: true,
+                  recipe_text: true,
                 },
-                amount: true,
-                measurement: true,
-                recipe_text: true,
               },
             },
-          },
-        });
+          });
 
-        return recipeMapper.toDto(result);
-      }));
+          return recipeMapper.toDto(result);
+        }),
+      );
 
       performanceTest.end('delete recipes');
       return results;
     }
 
     if (isNaN(Number(ids))) {
-      throw new AppError({ message: 'Given recipe ID is not a number.', isOperational: true, httpStatus: 500 });
+      throw new AppError({
+        message: 'Given recipe ID is not a number.',
+        isOperational: true,
+        httpStatus: 500,
+      });
     }
 
     performanceTest.start('delete recipe');

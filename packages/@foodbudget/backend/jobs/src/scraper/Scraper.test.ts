@@ -9,24 +9,28 @@ jest.mock('./utils');
 
 describe('scraper', () => {
   let mockOnScrape: jest.Mock<OnScrape<ScrapedRecipe[]>>;
-  let mockMapping: jest.Mock<(scrapedResult: ScrapedRecipe) => Omit<Recipe, 'id'>>;
+  let mockMapping: jest.Mock<(
+    scrapedResult: ScrapedRecipe,
+  ) => Omit<Recipe, 'id'>>;
   let scrapedRecipe: ScrapedRecipe[];
   let recipe: Omit<Recipe, 'id'>;
 
   beforeEach(() => {
-    scrapedRecipe = [{
-      link: 'link',
-      prepTime: '4 mins',
-      servings: '4',
-      numSaved: '0',
-      name: 'Recipe name',
-      ingredients: ['pork', 'mushroom'],
-      cuisines: [],
-      diets: [],
-      allergies: [],
-      adjectives: [],
-      meals: [],
-    }];
+    scrapedRecipe = [
+      {
+        link: 'link',
+        prepTime: '4 mins',
+        servings: '4',
+        numSaved: '0',
+        name: 'Recipe name',
+        ingredients: ['pork', 'mushroom'],
+        cuisines: [],
+        diets: [],
+        allergies: [],
+        adjectives: [],
+        meals: [],
+      },
+    ];
 
     recipe = {
       link: 'link',
@@ -36,10 +40,18 @@ describe('scraper', () => {
       name: 'Recipe name',
       ingredients: [
         {
-          text: 'pork', name: '', price: { amount: 0, currency: '' }, amount: 0, measurement: '',
+          text: 'pork',
+          name: '',
+          price: { amount: 0, currency: '' },
+          amount: 0,
+          measurement: '',
         },
         {
-          text: 'mushroom', name: '', price: { amount: 0, currency: '' }, amount: 0, measurement: '',
+          text: 'mushroom',
+          name: '',
+          price: { amount: 0, currency: '' },
+          amount: 0,
+          measurement: '',
         },
       ],
       cuisines: [],
@@ -63,9 +75,14 @@ describe('scraper', () => {
       scrape: async () => [scrapedRecipe],
     }));
 
-    const scraper = new Scraper<ScrapedRecipe, Omit<Recipe, 'id'>>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
+    const scraper = new Scraper<ScrapedRecipe, Omit<Recipe, 'id'>>({
+      onScrape: mockOnScrape(),
+      onMapping: mockMapping(),
+    });
 
-    await expect(scraper.scrape(scrapedRecipeElements)).resolves.toEqual([recipe]);
+    await expect(scraper.scrape(scrapedRecipeElements)).resolves.toEqual([
+      recipe,
+    ]);
   });
 
   it('should retry scraping up to 4 times when it throws an error', async () => {
@@ -86,10 +103,15 @@ describe('scraper', () => {
       scrape: async () => [scrapedRecipe],
     }));
 
-    const scraper = new Scraper<ScrapedRecipe, Omit<Recipe, 'id'>>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
+    const scraper = new Scraper<ScrapedRecipe, Omit<Recipe, 'id'>>({
+      onScrape: mockOnScrape(),
+      onMapping: mockMapping(),
+    });
     const spiedScrape = jest.spyOn(scraper, 'scrape');
 
-    await expect(scraper.scrape(scrapedRecipeElements, retries)).resolves.toEqual([recipe]);
+    await expect(
+      scraper.scrape(scrapedRecipeElements, retries),
+    ).resolves.toEqual([recipe]);
 
     expect(spiedScrape).toBeCalledTimes(retries + 1);
   });
@@ -101,10 +123,15 @@ describe('scraper', () => {
       },
     }));
 
-    const scraper = new Scraper<ScrapedRecipe, Omit<Recipe, 'id'>>({ onScrape: mockOnScrape(), onMapping: mockMapping() });
+    const scraper = new Scraper<ScrapedRecipe, Omit<Recipe, 'id'>>({
+      onScrape: mockOnScrape(),
+      onMapping: mockMapping(),
+    });
     const spiedScrape = jest.spyOn(scraper, 'scrape');
 
-    await expect(scraper.scrape(scrapedRecipeElements, 2)).rejects.toThrowError();
+    await expect(
+      scraper.scrape(scrapedRecipeElements, 2),
+    ).rejects.toThrowError();
 
     expect(spiedScrape).toBeCalledTimes(3);
   });

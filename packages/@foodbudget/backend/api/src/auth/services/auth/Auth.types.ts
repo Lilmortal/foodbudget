@@ -1,16 +1,19 @@
 export interface GoogleLoginRequest {
   googleId: string;
-    email: string;
+  email: string;
 }
 
 export interface FacebookLoginRequest {
-    facebookId: string;
-    email: string;
-  }
+  facebookId: string;
+  email: string;
+}
 
 export interface AccountLoginRequest {
-    email: string;
-    password: string;
-  }
+  email: string;
+  password: string;
+}
 
-export type LoginRequest = GoogleLoginRequest | FacebookLoginRequest | AccountLoginRequest;
+export type LoginRequest =
+  | GoogleLoginRequest
+  | FacebookLoginRequest
+  | AccountLoginRequest;

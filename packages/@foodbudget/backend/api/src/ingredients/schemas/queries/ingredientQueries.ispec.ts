@@ -1,13 +1,24 @@
 import { PrismaClient } from '@prisma/client';
 import { gql } from 'apollo-server-express';
 import findUp from 'find-up';
-import { createTestApolloServer, createTestDatabase, tearDownTestDatabase } from '../../../utils/test';
+import {
+  createTestApolloServer,
+  createTestDatabase,
+  tearDownTestDatabase,
+} from '../../../utils/test';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const createIngredient = async (mutate: ((mutation: any) => Promise<any>), variables: object) => {
+const createIngredient = async (
+  mutate: (mutation: any) => Promise<any>,
+  variables: object,
+) => {
   await mutate({
     mutation: gql`
-      mutation ingredients($name: String!, $currency: Currency!, $amount: Float!) {
+      mutation ingredients(
+        $name: String!
+        $currency: Currency!
+        $amount: Float!
+      ) {
         ingredients(name: $name, currency: $currency, amount: $amount) {
           name
         }
@@ -22,7 +33,12 @@ const queryIngredientsPagination = async (query: any, variables: object) => {
   const response = await query({
     query: gql`
       query ingredients($first: Int, $last: Int, $before: ID, $after: ID) {
-        ingredients(first: $first, last: $last, before: $before, after: $after) {
+        ingredients(
+          first: $first
+          last: $last
+          before: $before
+          after: $after
+        ) {
           totalCount
           edges {
             cursor
@@ -65,7 +81,11 @@ describe('ingredient queries', () => {
   it('should get a list of ingredients', async () => {
     const { query, mutate } = createTestApolloServer(prismaClient);
 
-    await createIngredient(mutate, { name: 'pork', currency: 'NZD', amount: 40.2 });
+    await createIngredient(mutate, {
+      name: 'pork',
+      currency: 'NZD',
+      amount: 40.2,
+    });
 
     const response = await query({
       query: gql`
@@ -86,9 +106,21 @@ describe('ingredient queries', () => {
       it('should retrieve the next two ingredients without a cursor', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient3', currency: 'NZD', amount: 40.2 });
+        await createIngredient(mutate, {
+          name: 'ingredient1',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient2',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient3',
+          currency: 'NZD',
+          amount: 40.2,
+        });
 
         const response = await queryIngredientsPagination(query, { last: 2 });
 
@@ -120,11 +152,26 @@ describe('ingredient queries', () => {
       it('should retrieve the next ingredient with a cursor', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient3', currency: 'NZD', amount: 40.2 });
+        await createIngredient(mutate, {
+          name: 'ingredient1',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient2',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient3',
+          currency: 'NZD',
+          amount: 40.2,
+        });
 
-        const response = await queryIngredientsPagination(query, { last: 1, after: 'aW5ncmVkaWVudDE=' });
+        const response = await queryIngredientsPagination(query, {
+          last: 1,
+          after: 'aW5ncmVkaWVudDE=',
+        });
 
         expect(response.data?.ingredients).toEqual({
           edges: [
@@ -148,11 +195,26 @@ describe('ingredient queries', () => {
       it('should retrieve all the ingredients to the end of the list given a large last value', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient3', currency: 'NZD', amount: 40.2 });
+        await createIngredient(mutate, {
+          name: 'ingredient1',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient2',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient3',
+          currency: 'NZD',
+          amount: 40.2,
+        });
 
-        const response = await queryIngredientsPagination(query, { last: 9999, after: 'aW5ncmVkaWVudDI=' });
+        const response = await queryIngredientsPagination(query, {
+          last: 9999,
+          after: 'aW5ncmVkaWVudDI=',
+        });
 
         expect(response.data?.ingredients).toEqual({
           edges: [
@@ -176,10 +238,21 @@ describe('ingredient queries', () => {
       it('should not retrieve any ingredients if at the end of the list', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
+        await createIngredient(mutate, {
+          name: 'ingredient1',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient2',
+          currency: 'NZD',
+          amount: 40.2,
+        });
 
-        const response = await queryIngredientsPagination(query, { last: 9999, after: 'aW5ncmVkaWVudDI=' });
+        const response = await queryIngredientsPagination(query, {
+          last: 9999,
+          after: 'aW5ncmVkaWVudDI=',
+        });
 
         expect(response.data?.ingredients).toEqual({
           edges: [],
@@ -198,9 +271,21 @@ describe('ingredient queries', () => {
       it('should return the last ingredient in the list without a cursor', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient3', currency: 'NZD', amount: 40.2 });
+        await createIngredient(mutate, {
+          name: 'ingredient1',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient2',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient3',
+          currency: 'NZD',
+          amount: 40.2,
+        });
 
         const response = await queryIngredientsPagination(query, { first: 1 });
 
@@ -226,11 +311,26 @@ describe('ingredient queries', () => {
       it('should retrieve the previous ingredient with a cursor', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient3', currency: 'NZD', amount: 40.2 });
+        await createIngredient(mutate, {
+          name: 'ingredient1',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient2',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient3',
+          currency: 'NZD',
+          amount: 40.2,
+        });
 
-        const response = await queryIngredientsPagination(query, { first: 1, before: 'aW5ncmVkaWVudDM=' });
+        const response = await queryIngredientsPagination(query, {
+          first: 1,
+          before: 'aW5ncmVkaWVudDM=',
+        });
 
         expect(response.data?.ingredients).toEqual({
           edges: [
@@ -254,11 +354,26 @@ describe('ingredient queries', () => {
       it('should retrieve all previous ingredients to the beginning of the list', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient3', currency: 'NZD', amount: 40.2 });
+        await createIngredient(mutate, {
+          name: 'ingredient1',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient2',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient3',
+          currency: 'NZD',
+          amount: 40.2,
+        });
 
-        const response = await queryIngredientsPagination(query, { first: 9999, before: 'aW5ncmVkaWVudDM=' });
+        const response = await queryIngredientsPagination(query, {
+          first: 9999,
+          before: 'aW5ncmVkaWVudDM=',
+        });
 
         expect(response.data?.ingredients).toEqual({
           edges: [
@@ -288,10 +403,21 @@ describe('ingredient queries', () => {
       it('should not retrieve any ingredients if at the beginning of the list', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createIngredient(mutate, { name: 'ingredient1', currency: 'NZD', amount: 40.2 });
-        await createIngredient(mutate, { name: 'ingredient2', currency: 'NZD', amount: 40.2 });
+        await createIngredient(mutate, {
+          name: 'ingredient1',
+          currency: 'NZD',
+          amount: 40.2,
+        });
+        await createIngredient(mutate, {
+          name: 'ingredient2',
+          currency: 'NZD',
+          amount: 40.2,
+        });
 
-        const response = await queryIngredientsPagination(query, { first: 9999, before: 'aW5ncmVkaWVudDE=' });
+        const response = await queryIngredientsPagination(query, {
+          first: 9999,
+          before: 'aW5ncmVkaWVudDE=',
+        });
 
         expect(response.data?.ingredients).toEqual({
           edges: [],

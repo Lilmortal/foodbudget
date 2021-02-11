@@ -11,16 +11,28 @@ export const login = mutationField('login', {
   },
   async resolve(_parent, args, ctx: Context) {
     logger.info('login request', args);
-    const user = await ctx.serviceManager.authServices.login({ email: args.email, password: args.password });
+    const user = await ctx.serviceManager.authServices.login({
+      email: args.email,
+      password: args.password,
+    });
 
     if (user) {
       logger.info('user has logged in.');
 
       const envConfig = ctx.config.env;
-      const refreshToken = ctx.serviceManager.tokenServices.createRefreshToken(user.id.toString(), envConfig);
-      const accessToken = ctx.serviceManager.tokenServices.createAccessToken(user.id.toString());
+      const refreshToken = ctx.serviceManager.tokenServices.createRefreshToken(
+        user.id.toString(),
+        envConfig,
+      );
+      const accessToken = ctx.serviceManager.tokenServices.createAccessToken(
+        user.id.toString(),
+      );
 
-      ctx.res.cookie(refreshToken.name, refreshToken.value, refreshToken.options);
+      ctx.res.cookie(
+        refreshToken.name,
+        refreshToken.value,
+        refreshToken.options,
+      );
       return accessToken;
     }
 

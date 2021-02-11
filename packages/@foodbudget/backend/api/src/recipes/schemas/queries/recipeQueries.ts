@@ -5,7 +5,14 @@ import { AppError } from '@foodbudget/errors';
 import { Context } from '../../../context';
 import { Recipe } from '../../Recipe.types';
 import {
-  adjectiveType, allergyType, cuisineType, dietType, mealType, recipeConnection, recipeField, recipeIngredientArg,
+  adjectiveType,
+  allergyType,
+  cuisineType,
+  dietType,
+  mealType,
+  recipeConnection,
+  recipeField,
+  recipeIngredientArg,
 } from '../recipeFields';
 
 export const filterRecipes = queryField('filterRecipes', {
@@ -95,35 +102,52 @@ export const recipesPagination = queryField('recipes', {
     logger.info('incoming get recipes pagination request', args);
 
     if (args.first != null && args.last != null) {
-      throw new AppError({ message: 'must specify first or last, but not both', isOperational: true });
+      throw new AppError({
+        message: 'must specify first or last, but not both',
+        isOperational: true,
+      });
     }
 
     if (args.before != null && args.first == null) {
-      throw new AppError({ message: "need 'first' when 'before' is specified.", isOperational: true });
+      throw new AppError({
+        message: "need 'first' when 'before' is specified.",
+        isOperational: true,
+      });
     }
 
     if (args.after != null && args.last == null) {
-      throw new AppError({ message: "need 'last' when 'after' is specified.", isOperational: true });
+      throw new AppError({
+        message: "need 'last' when 'after' is specified.",
+        isOperational: true,
+      });
     }
 
     if (args.first != null && args.first <= 0) {
-      throw new AppError({ message: "'first' must be greater than 0.", isOperational: true });
+      throw new AppError({
+        message: "'first' must be greater than 0.",
+        isOperational: true,
+      });
     }
 
     if (args.last != null && args.last <= 0) {
-      throw new AppError({ message: "'last' must be greater than 0.", isOperational: true });
+      throw new AppError({
+        message: "'last' must be greater than 0.",
+        isOperational: true,
+      });
     }
 
     let result = null;
     if (args.first != null) {
       result = await ctx.serviceManager.recipeServices.paginateBefore({
-        pos: args.first, cursor: args.before,
+        pos: args.first,
+        cursor: args.before,
       });
     }
 
     if (args.last != null) {
       result = await ctx.serviceManager.recipeServices.paginateAfter({
-        pos: args.last, cursor: args.after,
+        pos: args.last,
+        cursor: args.after,
       });
     }
 

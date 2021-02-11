@@ -19,13 +19,20 @@ const colorLevel = (level: string) => {
 };
 
 const loggerFormat = format.combine(
-  format((info) => ({ ...info, level: info.level.toUpperCase(), message: formatMessage(info, config.env) }))(),
+  format((info) => ({
+    ...info,
+    level: info.level.toUpperCase(),
+    message: formatMessage(info, config.env),
+  }))(),
   format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   format.align(),
   format.splat(),
   format.json(),
   format.errors({ stacks: true }),
-  format.printf((info) => `${info.timestamp} ${colorLevel(`[${info.level}]`)} ${info.message}`),
+  format.printf(
+    (info) =>
+      `${info.timestamp} ${colorLevel(`[${info.level}]`)} ${info.message}`,
+  ),
 );
 
 const logger = createLogger({

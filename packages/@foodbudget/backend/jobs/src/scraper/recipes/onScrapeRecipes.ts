@@ -1,6 +1,9 @@
 import puppeteer from 'puppeteer';
 import { OnScrape, ScrapedHTMLElement } from '../Scraper.types';
-import { ScrapedRecipe, ScrapedRecipeHTMLElements } from './RecipesScraper.types';
+import {
+  ScrapedRecipe,
+  ScrapedRecipeHTMLElements,
+} from './RecipesScraper.types';
 
 const scrapeRecipe = (scrapeInfo: string) => {
   // Unfortunately we have to move this function inside this scope.
@@ -20,10 +23,12 @@ const scrapeRecipe = (scrapeInfo: string) => {
       );
     }
 
-    return Array.from(nodeList).map((node) => node.innerText.substring(
-      HTMLElement.substring?.start || 0,
-      HTMLElement.substring?.end,
-    ));
+    return Array.from(nodeList).map((node) =>
+      node.innerText.substring(
+        HTMLElement.substring?.start || 0,
+        HTMLElement.substring?.end,
+      ),
+    );
   };
 
   const parsedScrapedInfo: ScrapedRecipeHTMLElements = JSON.parse(scrapeInfo);
@@ -31,7 +36,9 @@ const scrapeRecipe = (scrapeInfo: string) => {
   const prepTime = getDocumentNodeTexts(parsedScrapedInfo.prepTimeHtmlElement);
   const servings = getDocumentNodeTexts(parsedScrapedInfo.servingsHtmlElement);
   const name = getDocumentNodeTexts(parsedScrapedInfo.recipeNameHtmlElement);
-  const ingredients = getDocumentNodeTexts(parsedScrapedInfo.ingredientsHtmlElement);
+  const ingredients = getDocumentNodeTexts(
+    parsedScrapedInfo.ingredientsHtmlElement,
+  );
 
   return {
     prepTime,
@@ -62,7 +69,9 @@ const scrapeHomePage = (scrapeInfo: string): string[] => {
     return [parsedScrapedInfo.url];
   }
 
-  const recipeNodes: NodeListOf<HTMLAnchorElement> = document.querySelectorAll(recipeItems.class);
+  const recipeNodes: NodeListOf<HTMLAnchorElement> = document.querySelectorAll(
+    recipeItems.class,
+  );
 
   return Array.from(recipeNodes).map((node) => node.href);
 };

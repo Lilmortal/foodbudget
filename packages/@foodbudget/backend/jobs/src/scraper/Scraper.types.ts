@@ -31,7 +31,9 @@ export interface ScrapedElements {
   url: string;
 }
 
-export type OnScrape<S> = (page: puppeteer.Page) => (scrapeInfo: string) => Promise<S>;
+export type OnScrape<S> = (
+  page: puppeteer.Page,
+) => (scrapeInfo: string) => Promise<S>;
 
 export interface ScraperParams<S, R> {
   /**

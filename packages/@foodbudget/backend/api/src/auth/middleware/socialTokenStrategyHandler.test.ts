@@ -5,13 +5,18 @@ import { Strategy } from '../routes';
 
 describe('social token strategy handler', () => {
   const getTokenHandleFn = (
-    strategy: Strategy, profile: Profile, done: VerifyCallback,
+    strategy: Strategy,
+    profile: Profile,
+    done: VerifyCallback,
   ) => handleTokenStrategy(strategy)('', '', profile, done);
 
   let mockDone: jest.Mock;
 
   beforeEach(() => {
-    mockDone = jest.fn((err?: string | Error, user?: object) => ({ err, ...user }));
+    mockDone = jest.fn((err?: string | Error, user?: object) => ({
+      err,
+      ...user,
+    }));
   });
 
   afterEach(() => {
@@ -28,7 +33,9 @@ describe('social token strategy handler', () => {
 
     getTokenHandleFn('google', profile, mockDone);
 
-    expect(mockDone.mock.results[0].value.err).toEqual(new Error('emails could not be retrieved.'));
+    expect(mockDone.mock.results[0].value.err).toEqual(
+      new Error('emails could not be retrieved.'),
+    );
   });
 
   it('should return an error if multiple emails found', () => {
@@ -41,7 +48,9 @@ describe('social token strategy handler', () => {
 
     getTokenHandleFn('google', profile, mockDone);
 
-    expect(mockDone.mock.results[0].value.err).toEqual(new Error('multiple emails found.'));
+    expect(mockDone.mock.results[0].value.err).toEqual(
+      new Error('multiple emails found.'),
+    );
   });
 
   it('should return an error if profile ID could not be found', () => {
@@ -54,7 +63,9 @@ describe('social token strategy handler', () => {
 
     getTokenHandleFn('google', profile, mockDone);
 
-    expect(mockDone.mock.results[0].value.err).toEqual(new Error('profile ID could not be retrieved.'));
+    expect(mockDone.mock.results[0].value.err).toEqual(
+      new Error('profile ID could not be retrieved.'),
+    );
   });
 
   it('should return the profile data', () => {

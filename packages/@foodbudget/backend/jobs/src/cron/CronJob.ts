@@ -31,7 +31,9 @@ export class CronJob {
 
       this.jobs.push(schedule);
 
-      logger.info(`"${job.definition}" has been added to the job scheduler queue...`);
+      logger.info(
+        `"${job.definition}" has been added to the job scheduler queue...`,
+      );
     };
 
     if (Array.isArray(jobs)) {

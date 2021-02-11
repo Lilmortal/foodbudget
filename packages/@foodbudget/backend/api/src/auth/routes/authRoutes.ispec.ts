@@ -37,7 +37,13 @@ describe('auth routes', () => {
     }));
 
     mockRes = jest.fn(() => ({
-      cookie: jest.fn(() => (name: string, value: string, options: CookieOptions) => ({ name, value, options })),
+      cookie: jest.fn(
+        () => (name: string, value: string, options: CookieOptions) => ({
+          name,
+          value,
+          options,
+        }),
+      ),
     }));
 
     jest.spyOn(global.Date, 'now').mockImplementation(() => 1604459767905);
@@ -51,7 +57,11 @@ describe('auth routes', () => {
     prismaClient = createTestDatabase(nodeModulesPath);
     const authRepository = new UserRepository(prismaClient);
     const mockAuthServices = new AuthServices({ repository: authRepository });
-    handleToken = handleTokenVerification(mockTokenServices, mockAuthServices, 'development');
+    handleToken = handleTokenVerification(
+      mockTokenServices,
+      mockAuthServices,
+      'development',
+    );
   });
 
   afterEach(async () => {
@@ -65,13 +75,17 @@ describe('auth routes', () => {
   it('should set the refresh tokens after logging in', async () => {
     await handleToken(mockReq(), mockRes());
 
-    expect(mockRes.mock.results[0].value.cookie.mock.calls).toEqual([['refresh-token',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZXhwaXJlVGltZUluVXRjIjoiV2VkLCAwNCBOb3YgMjAyM'
-    + 'CAwMzoxNzowNyBHTVQiLCJpYXQiOjE2MDQ0NTk3NjcsImV4cCI6MTYwNDQ1OTgyN30.Ee-Oh7vQzh1N23c3ZZ7kqn4vfZXUiHZ7pIMCB9TQ7Xs',
-      {
-        expires: new Date('2020-11-04T03:17:07.905Z'),
-        httpOnly: true,
-        secure: false,
-      }]]);
+    expect(mockRes.mock.results[0].value.cookie.mock.calls).toEqual([
+      [
+        'refresh-token',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZXhwaXJlVGltZUluVXRjIjoiV2VkLCAwNCBOb3YgMjAyM' +
+          'CAwMzoxNzowNyBHTVQiLCJpYXQiOjE2MDQ0NTk3NjcsImV4cCI6MTYwNDQ1OTgyN30.Ee-Oh7vQzh1N23c3ZZ7kqn4vfZXUiHZ7pIMCB9TQ7Xs',
+        {
+          expires: new Date('2020-11-04T03:17:07.905Z'),
+          httpOnly: true,
+          secure: false,
+        },
+      ],
+    ]);
   });
 });

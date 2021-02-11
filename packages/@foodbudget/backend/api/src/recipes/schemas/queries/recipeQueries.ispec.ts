@@ -1,14 +1,31 @@
 import { PrismaClient } from '@prisma/client';
 import { gql } from 'apollo-server-express';
 import findUp from 'find-up';
-import { createTestApolloServer, createTestDatabase, tearDownTestDatabase } from '../../../utils/test';
+import {
+  createTestApolloServer,
+  createTestDatabase,
+  tearDownTestDatabase,
+} from '../../../utils/test';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const createRecipe = async (mutate: ((mutation: any) => Promise<any>), variables: object) => {
+const createRecipe = async (
+  mutate: (mutation: any) => Promise<any>,
+  variables: object,
+) => {
   await mutate({
     mutation: gql`
-      mutation saveRecipe($name: String!, $link: String!, $prepTime: String!, $servings: Int!) {
-        saveRecipe(name: $name, link: $link, prepTime: $prepTime, servings: $servings) {
+      mutation saveRecipe(
+        $name: String!
+        $link: String!
+        $prepTime: String!
+        $servings: Int!
+      ) {
+        saveRecipe(
+          name: $name
+          link: $link
+          prepTime: $prepTime
+          servings: $servings
+        ) {
           name
         }
       }
@@ -67,9 +84,24 @@ describe('recipe queries', () => {
       it('should retrieve the next two recipes without a cursor', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe3', link: 'recipeLink3', prepTime: '2 mins', servings: 2 });
+        await createRecipe(mutate, {
+          name: 'recipe1',
+          link: 'recipeLink1',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe2',
+          link: 'recipeLink2',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe3',
+          link: 'recipeLink3',
+          prepTime: '2 mins',
+          servings: 2,
+        });
 
         const response = await queryRecipePagination(query, { last: 2 });
 
@@ -101,11 +133,29 @@ describe('recipe queries', () => {
       it('should retrieve the next ingredient with a cursor', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe3', link: 'recipeLink3', prepTime: '2 mins', servings: 2 });
+        await createRecipe(mutate, {
+          name: 'recipe1',
+          link: 'recipeLink1',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe2',
+          link: 'recipeLink2',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe3',
+          link: 'recipeLink3',
+          prepTime: '2 mins',
+          servings: 2,
+        });
 
-        const response = await queryRecipePagination(query, { last: 1, after: 'cmVjaXBlTGluazE=' });
+        const response = await queryRecipePagination(query, {
+          last: 1,
+          after: 'cmVjaXBlTGluazE=',
+        });
 
         expect(response.data?.recipes).toEqual({
           edges: [
@@ -129,11 +179,29 @@ describe('recipe queries', () => {
       it('should retrieve all the recipes to the end of the list given a large last value', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe3', link: 'recipeLink3', prepTime: '2 mins', servings: 2 });
+        await createRecipe(mutate, {
+          name: 'recipe1',
+          link: 'recipeLink1',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe2',
+          link: 'recipeLink2',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe3',
+          link: 'recipeLink3',
+          prepTime: '2 mins',
+          servings: 2,
+        });
 
-        const response = await queryRecipePagination(query, { last: 9999, after: 'cmVjaXBlTGluazI=' });
+        const response = await queryRecipePagination(query, {
+          last: 9999,
+          after: 'cmVjaXBlTGluazI=',
+        });
 
         expect(response.data?.recipes).toEqual({
           edges: [
@@ -157,10 +225,23 @@ describe('recipe queries', () => {
       it('should not retrieve any recipes if at the end of the list', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
+        await createRecipe(mutate, {
+          name: 'recipe1',
+          link: 'recipeLink1',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe2',
+          link: 'recipeLink2',
+          prepTime: '2 mins',
+          servings: 2,
+        });
 
-        const response = await queryRecipePagination(query, { last: 9999, after: 'cmVjaXBlTGluazI=' });
+        const response = await queryRecipePagination(query, {
+          last: 9999,
+          after: 'cmVjaXBlTGluazI=',
+        });
 
         expect(response.data?.recipes).toEqual({
           edges: [],
@@ -179,9 +260,24 @@ describe('recipe queries', () => {
       it('should return the last ingredient in the list without a cursor', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe3', link: 'recipeLink3', prepTime: '2 mins', servings: 2 });
+        await createRecipe(mutate, {
+          name: 'recipe1',
+          link: 'recipeLink1',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe2',
+          link: 'recipeLink2',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe3',
+          link: 'recipeLink3',
+          prepTime: '2 mins',
+          servings: 2,
+        });
 
         const response = await queryRecipePagination(query, { first: 1 });
 
@@ -207,11 +303,29 @@ describe('recipe queries', () => {
       it('should retrieve the previous ingredient with a cursor', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe3', link: 'recipeLink3', prepTime: '2 mins', servings: 2 });
+        await createRecipe(mutate, {
+          name: 'recipe1',
+          link: 'recipeLink1',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe2',
+          link: 'recipeLink2',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe3',
+          link: 'recipeLink3',
+          prepTime: '2 mins',
+          servings: 2,
+        });
 
-        const response = await queryRecipePagination(query, { first: 1, before: 'cmVjaXBlTGluazM=' });
+        const response = await queryRecipePagination(query, {
+          first: 1,
+          before: 'cmVjaXBlTGluazM=',
+        });
 
         expect(response.data?.recipes).toEqual({
           edges: [
@@ -235,11 +349,29 @@ describe('recipe queries', () => {
       it('should retrieve all previous recipes to the beginning of the list', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe3', link: 'recipeLink3', prepTime: '2 mins', servings: 2 });
+        await createRecipe(mutate, {
+          name: 'recipe1',
+          link: 'recipeLink1',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe2',
+          link: 'recipeLink2',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe3',
+          link: 'recipeLink3',
+          prepTime: '2 mins',
+          servings: 2,
+        });
 
-        const response = await queryRecipePagination(query, { first: 9999, before: 'cmVjaXBlTGluazM=' });
+        const response = await queryRecipePagination(query, {
+          first: 9999,
+          before: 'cmVjaXBlTGluazM=',
+        });
 
         expect(response.data?.recipes).toEqual({
           edges: [
@@ -269,10 +401,23 @@ describe('recipe queries', () => {
       it('should not retrieve any recipes if at the beginning of the list', async () => {
         const { query, mutate } = createTestApolloServer(prismaClient);
 
-        await createRecipe(mutate, { name: 'recipe1', link: 'recipeLink1', prepTime: '2 mins', servings: 2 });
-        await createRecipe(mutate, { name: 'recipe2', link: 'recipeLink2', prepTime: '2 mins', servings: 2 });
+        await createRecipe(mutate, {
+          name: 'recipe1',
+          link: 'recipeLink1',
+          prepTime: '2 mins',
+          servings: 2,
+        });
+        await createRecipe(mutate, {
+          name: 'recipe2',
+          link: 'recipeLink2',
+          prepTime: '2 mins',
+          servings: 2,
+        });
 
-        const response = await queryRecipePagination(query, { first: 9999, before: 'cmVjaXBlTGluazE=' });
+        const response = await queryRecipePagination(query, {
+          first: 9999,
+          before: 'cmVjaXBlTGluazE=',
+        });
 
         expect(response.data?.recipes).toEqual({
           edges: [],

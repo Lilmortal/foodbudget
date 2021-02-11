@@ -1,17 +1,17 @@
 export interface AppErrorType {
-    message: string;
-    readonly isOperational: boolean;
-    readonly httpStatus?: number;
+  message: string;
+  readonly isOperational: boolean;
+  readonly httpStatus?: number;
 }
 
 export default class AppError extends Error {
-    readonly isOperational;
+  readonly isOperational;
 
-    readonly httpStatus;
+  readonly httpStatus;
 
-    constructor({ message, isOperational, httpStatus }: AppErrorType) {
-      super(message);
-      this.isOperational = isOperational;
-      this.httpStatus = httpStatus;
-    }
+  constructor({ message, isOperational, httpStatus }: AppErrorType) {
+    super(message);
+    this.isOperational = isOperational;
+    this.httpStatus = httpStatus;
+  }
 }

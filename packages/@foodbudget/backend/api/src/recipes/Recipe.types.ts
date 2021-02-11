@@ -3,7 +3,8 @@ import { Ingredient } from '../ingredients';
 
 // Any newly added values here need to be added to schema.prisma and recipe schemaFields
 
-export type Cuisine = 'AMERICAN'
+export type Cuisine =
+  | 'AMERICAN'
   | 'ITALIAN'
   | 'ASIAN'
   | 'MEXICAN'
@@ -29,7 +30,8 @@ export type Cuisine = 'AMERICAN'
   | 'HUNGARIAN'
   | 'PORTUGUESE';
 
-export type Diet = 'KETOGENIC'
+export type Diet =
+  | 'KETOGENIC'
   | 'VEGETARIAN_NO_MEAT_AND_EGGS'
   | 'VEGETARIAN_NO_MEAT_AND_DAIRY'
   | 'PESCATARIAN'
@@ -38,7 +40,8 @@ export type Diet = 'KETOGENIC'
   | 'VEGETARIAN'
   | 'PALEO';
 
-export type Allergy = 'GLUTEN'
+export type Allergy =
+  | 'GLUTEN'
   | 'PEANUT'
   | 'SEAFOOD'
   | 'SESAME'
@@ -56,7 +59,9 @@ export interface Measurement {
   measurement?: string;
 }
 
-export interface RecipeIngredient extends Omit<Ingredient, 'name'>, Measurement {
+export interface RecipeIngredient
+  extends Omit<Ingredient, 'name'>,
+    Measurement {
   text: string;
   name?: string;
 }

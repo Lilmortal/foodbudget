@@ -19,53 +19,57 @@ describe('recipe services', () => {
   describe('paginations', () => {
     describe('after recipes', () => {
       it('should retrieve the next two recipes', async () => {
-        mockRecipeRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(undefined)));
-        mockRecipeRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
-          [
-            {
-              id: 2,
-              link: 'recipe1Link',
-              prepTime: '2 mins',
-              servings: 3,
-              numSaved: 1,
-              name: 'recipe 1',
-              ingredients: [],
-              allergies: [],
-              adjectives: [],
-              meals: [],
-              cuisines: [],
-              diets: [],
-            },
-            {
-              id: 3,
-              link: 'recipe2Link',
-              prepTime: '2 mins',
-              servings: 3,
-              numSaved: 1,
-              name: 'recipe 2',
-              ingredients: [],
-              allergies: [],
-              adjectives: [],
-              meals: [],
-              cuisines: [],
-              diets: [],
-            },
-            {
-              id: 4,
-              link: 'recipe3Link',
-              prepTime: '2 mins',
-              servings: 3,
-              numSaved: 1,
-              name: 'recipe 3',
-              ingredients: [],
-              allergies: [],
-              adjectives: [],
-              meals: [],
-              cuisines: [],
-              diets: [],
-            },
-          ],
-        )));
+        mockRecipeRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) => resolve(undefined)),
+        );
+        mockRecipeRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) =>
+            resolve([
+              {
+                id: 2,
+                link: 'recipe1Link',
+                prepTime: '2 mins',
+                servings: 3,
+                numSaved: 1,
+                name: 'recipe 1',
+                ingredients: [],
+                allergies: [],
+                adjectives: [],
+                meals: [],
+                cuisines: [],
+                diets: [],
+              },
+              {
+                id: 3,
+                link: 'recipe2Link',
+                prepTime: '2 mins',
+                servings: 3,
+                numSaved: 1,
+                name: 'recipe 2',
+                ingredients: [],
+                allergies: [],
+                adjectives: [],
+                meals: [],
+                cuisines: [],
+                diets: [],
+              },
+              {
+                id: 4,
+                link: 'recipe3Link',
+                prepTime: '2 mins',
+                servings: 3,
+                numSaved: 1,
+                name: 'recipe 3',
+                ingredients: [],
+                allergies: [],
+                adjectives: [],
+                meals: [],
+                cuisines: [],
+                diets: [],
+              },
+            ]),
+          ),
+        );
 
         const result = await recipeServices.paginateAfter({ pos: 2 });
 
@@ -117,27 +121,34 @@ describe('recipe services', () => {
       });
 
       it('should retrieve one ingredient when at the end of the page', async () => {
-        mockRecipeRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(undefined)));
-        mockRecipeRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
-          [
-            {
-              id: 2,
-              link: 'recipe1Link',
-              prepTime: '2 mins',
-              servings: 3,
-              numSaved: 1,
-              name: 'recipe 1',
-              ingredients: [],
-              allergies: [],
-              adjectives: [],
-              meals: [],
-              cuisines: [],
-              diets: [],
-            },
-          ],
-        )));
+        mockRecipeRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) => resolve(undefined)),
+        );
+        mockRecipeRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) =>
+            resolve([
+              {
+                id: 2,
+                link: 'recipe1Link',
+                prepTime: '2 mins',
+                servings: 3,
+                numSaved: 1,
+                name: 'recipe 1',
+                ingredients: [],
+                allergies: [],
+                adjectives: [],
+                meals: [],
+                cuisines: [],
+                diets: [],
+              },
+            ]),
+          ),
+        );
 
-        const result = await recipeServices.paginateAfter({ pos: 1, cursor: 'aW5ncmVkaWVudDM=' });
+        const result = await recipeServices.paginateAfter({
+          pos: 1,
+          cursor: 'aW5ncmVkaWVudDM=',
+        });
 
         expect(result).toEqual({
           pageInfo: {
@@ -172,53 +183,57 @@ describe('recipe services', () => {
 
     describe('previous recipes', () => {
       it('should retrieve the previous two recipes', async () => {
-        mockRecipeRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
-          [
-            {
-              id: 2,
-              link: 'recipe1Link',
-              prepTime: '2 mins',
-              servings: 3,
-              numSaved: 1,
-              name: 'recipe 1',
-              ingredients: [],
-              allergies: [],
-              adjectives: [],
-              meals: [],
-              cuisines: [],
-              diets: [],
-            },
-            {
-              id: 3,
-              link: 'recipe2Link',
-              prepTime: '2 mins',
-              servings: 3,
-              numSaved: 1,
-              name: 'recipe 2',
-              ingredients: [],
-              allergies: [],
-              adjectives: [],
-              meals: [],
-              cuisines: [],
-              diets: [],
-            },
-            {
-              id: 4,
-              link: 'recipe3Link',
-              prepTime: '2 mins',
-              servings: 3,
-              numSaved: 1,
-              name: 'recipe 3',
-              ingredients: [],
-              allergies: [],
-              adjectives: [],
-              meals: [],
-              cuisines: [],
-              diets: [],
-            },
-          ],
-        )));
-        mockRecipeRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(undefined)));
+        mockRecipeRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) =>
+            resolve([
+              {
+                id: 2,
+                link: 'recipe1Link',
+                prepTime: '2 mins',
+                servings: 3,
+                numSaved: 1,
+                name: 'recipe 1',
+                ingredients: [],
+                allergies: [],
+                adjectives: [],
+                meals: [],
+                cuisines: [],
+                diets: [],
+              },
+              {
+                id: 3,
+                link: 'recipe2Link',
+                prepTime: '2 mins',
+                servings: 3,
+                numSaved: 1,
+                name: 'recipe 2',
+                ingredients: [],
+                allergies: [],
+                adjectives: [],
+                meals: [],
+                cuisines: [],
+                diets: [],
+              },
+              {
+                id: 4,
+                link: 'recipe3Link',
+                prepTime: '2 mins',
+                servings: 3,
+                numSaved: 1,
+                name: 'recipe 3',
+                ingredients: [],
+                allergies: [],
+                adjectives: [],
+                meals: [],
+                cuisines: [],
+                diets: [],
+              },
+            ]),
+          ),
+        );
+        mockRecipeRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) => resolve(undefined)),
+        );
 
         const result = await recipeServices.paginateBefore({ pos: 2 });
 
@@ -261,7 +276,8 @@ describe('recipe services', () => {
                 adjectives: [],
                 meals: [],
                 cuisines: [],
-                diets: [] },
+                diets: [],
+              },
             },
           ],
           totalCount: 2,
@@ -269,25 +285,29 @@ describe('recipe services', () => {
       });
 
       it('should retrieve one ingredient when at the start of the page', async () => {
-        mockRecipeRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(
-          [
-            {
-              id: 2,
-              link: 'recipe1Link',
-              prepTime: '2 mins',
-              servings: 3,
-              numSaved: 1,
-              name: 'recipe 1',
-              ingredients: [],
-              allergies: [],
-              adjectives: [],
-              meals: [],
-              cuisines: [],
-              diets: [],
-            },
-          ],
-        )));
-        mockRecipeRepository.paginate.mockReturnValueOnce(new Promise((resolve) => resolve(undefined)));
+        mockRecipeRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) =>
+            resolve([
+              {
+                id: 2,
+                link: 'recipe1Link',
+                prepTime: '2 mins',
+                servings: 3,
+                numSaved: 1,
+                name: 'recipe 1',
+                ingredients: [],
+                allergies: [],
+                adjectives: [],
+                meals: [],
+                cuisines: [],
+                diets: [],
+              },
+            ]),
+          ),
+        );
+        mockRecipeRepository.paginate.mockReturnValueOnce(
+          new Promise((resolve) => resolve(undefined)),
+        );
 
         const result = await recipeServices.paginateBefore({ pos: 1 });
 

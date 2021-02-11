@@ -2,7 +2,8 @@ import { ScrapedRecipeHTMLElements } from '../../scraper/recipes/RecipesScraper.
 
 const scrapedRecipeElements: ScrapedRecipeHTMLElements[] = [
   {
-    url: 'https://www.recipes.co.nz/shop/EVERYDAY/x_item_sort_by/page/page/1.html',
+    url:
+      'https://www.recipes.co.nz/shop/EVERYDAY/x_item_sort_by/page/page/1.html',
     recipeItemHtmlElement: {
       class: '.image a',
     },

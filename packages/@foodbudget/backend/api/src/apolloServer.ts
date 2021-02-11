@@ -1,5 +1,7 @@
 import {
-  ApolloError, ApolloServer, ValidationError,
+  ApolloError,
+  ApolloServer,
+  ValidationError,
 } from 'apollo-server-express';
 import logger from '@foodbudget/logger';
 import { GraphQLError, printError } from 'graphql';
@@ -17,12 +19,17 @@ const prettifyStackTrace = (stackTraces: string[]) => {
   return stackTraces.join('\n');
 };
 
-const isPrismaError = (stackTraces: string[]) => stackTraces[1]?.startsWith('\x1B[31mInvalid \x1B[1m');
+const isPrismaError = (stackTraces: string[]) =>
+  stackTraces[1]?.startsWith('\x1B[31mInvalid \x1B[1m');
 
 const prettifyError = (err: Error, sessionId: string): string => {
   const errorMessages = [];
   errorMessages.push(JSON.stringify({ sessionId, error: err.message }));
-  if (err instanceof GraphQLError || err instanceof ApolloError || err instanceof ValidationError) {
+  if (
+    err instanceof GraphQLError ||
+    err instanceof ApolloError ||
+    err instanceof ValidationError
+  ) {
     errorMessages.push(printError(err));
 
     const stackTraces = err.extensions?.exception?.stacktrace as string[];
@@ -39,7 +46,10 @@ const prettifyError = (err: Error, sessionId: string): string => {
 
 const removeStackTraceOnProd = (err: Error) => {
   if (config.env === 'production') {
-    if ((err instanceof GraphQLError || err instanceof ApolloError) && err.extensions?.exception?.stacktrace) {
+    if (
+      (err instanceof GraphQLError || err instanceof ApolloError) &&
+      err.extensions?.exception?.stacktrace
+    ) {
       // eslint-disable-next-line no-param-reassign
       delete err.extensions.exception;
     }
@@ -55,9 +65,7 @@ export const server = new ApolloServer({
   debug: true,
   validationRules: [
     queryComplexity({
-      estimators: [
-        simpleEstimator({ defaultComplexity: 1 }),
-      ],
+      estimators: [simpleEstimator({ defaultComplexity: 1 })],
       maximumComplexity: 10000,
       onComplete: (complexity: number) => {
         if (complexity > 0) {

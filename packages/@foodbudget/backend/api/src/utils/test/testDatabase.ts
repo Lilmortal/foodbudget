@@ -26,7 +26,9 @@ export const createTestDatabase = (nodeModulesPath: string): PrismaClient => {
   return prismaClient;
 };
 
-export const tearDownTestDatabase = async (prismaClient: PrismaClient): Promise<void> => {
+export const tearDownTestDatabase = async (
+  prismaClient: PrismaClient,
+): Promise<void> => {
   const client = new Client({
     connectionString: databaseUrl,
   });

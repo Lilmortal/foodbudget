@@ -2,7 +2,9 @@ import { Recipe } from '@foodbudget/api';
 import { AppError } from '@foodbudget/errors';
 import { ScrapedRecipe } from './RecipesScraper.types';
 
-export const onScrapedRecipeMapping = (scrapedRecipe: ScrapedRecipe): Omit<Recipe, 'id'> => {
+export const onScrapedRecipeMapping = (
+  scrapedRecipe: ScrapedRecipe,
+): Omit<Recipe, 'id'> => {
   const validationErrors: string[] = [];
 
   const recipe: Omit<Recipe, 'id'> = {
@@ -30,7 +32,9 @@ export const onScrapedRecipeMapping = (scrapedRecipe: ScrapedRecipe): Omit<Recip
   }
 
   if (
-    scrapedRecipe.servings && !Array.isArray(scrapedRecipe.servings) && !isNaN(Number(scrapedRecipe.servings))
+    scrapedRecipe.servings &&
+    !Array.isArray(scrapedRecipe.servings) &&
+    !isNaN(Number(scrapedRecipe.servings))
   ) {
     recipe.servings = Number(scrapedRecipe.servings);
   }
@@ -42,9 +46,9 @@ export const onScrapedRecipeMapping = (scrapedRecipe: ScrapedRecipe): Omit<Recip
   }
 
   if (
-    scrapedRecipe.ingredients
-      && Array.isArray(scrapedRecipe.ingredients)
-      && scrapedRecipe.ingredients.length > 0
+    scrapedRecipe.ingredients &&
+    Array.isArray(scrapedRecipe.ingredients) &&
+    scrapedRecipe.ingredients.length > 0
   ) {
     recipe.ingredients = scrapedRecipe.ingredients.map((ingredient) => ({
       text: ingredient,
@@ -61,7 +65,10 @@ export const onScrapedRecipeMapping = (scrapedRecipe: ScrapedRecipe): Omit<Recip
   }
 
   if (validationErrors.length > 0) {
-    throw new AppError({ message: validationErrors.join('\n'), isOperational: true });
+    throw new AppError({
+      message: validationErrors.join('\n'),
+      isOperational: true,
+    });
   }
 
   return recipe;

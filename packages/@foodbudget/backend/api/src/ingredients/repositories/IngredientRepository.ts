@@ -6,8 +6,13 @@ import { SaveOptions } from '../../types/SaveOptions';
 import { Currency, Ingredient } from '../Ingredient.types';
 import { ingredientMapper } from './ingredientMapper';
 
-export interface FilterableIngredientRepository extends PaginationRepository<Ingredient> {
-  filterByPrice(currency: Currency, minAmount: number, maxAmount?: number): Promise<Ingredient[]>;
+export interface FilterableIngredientRepository
+  extends PaginationRepository<Ingredient> {
+  filterByPrice(
+    currency: Currency,
+    minAmount: number,
+    maxAmount?: number,
+  ): Promise<Ingredient[]>;
 }
 
 export class IngredientRepository implements FilterableIngredientRepository {
@@ -17,97 +22,100 @@ export class IngredientRepository implements FilterableIngredientRepository {
     this.prisma = prisma;
   }
 
-  filterByPrice = async (currency: Currency, minAmount: number, maxAmount?: number): Promise<Ingredient[]> => {
+  filterByPrice = async (
+    currency: Currency,
+    minAmount: number,
+    maxAmount?: number,
+  ): Promise<Ingredient[]> => {
     logger.info('filter ingredient by price repository request');
     performanceTest.start('filter ingredient prices');
 
-    const results = await this.prisma.ingredients.findMany(
-      {
-        where: {
-          price_currency: currency,
-          AND: [
-            {
-              ...maxAmount !== undefined && {
-                price_amount: {
-                  lte: maxAmount,
-                },
-              },
-            },
-            {
+    const results = await this.prisma.ingredients.findMany({
+      where: {
+        price_currency: currency,
+        AND: [
+          {
+            ...(maxAmount !== undefined && {
               price_amount: {
-                gte: minAmount,
+                lte: maxAmount,
               },
+            }),
+          },
+          {
+            price_amount: {
+              gte: minAmount,
             },
-          ],
-        },
+          },
+        ],
       },
-    );
+    });
 
     performanceTest.end('filter ingredient prices');
     return results.map((result) => ingredientMapper.toDto(result));
   };
 
-  get = async (ingredient: Partial<Ingredient>): Promise<Ingredient[] | undefined> => {
+  get = async (
+    ingredient: Partial<Ingredient>,
+  ): Promise<Ingredient[] | undefined> => {
     logger.info('get ingredient repository request', ingredient);
     performanceTest.start('get ingredients');
 
-    const results = await this.prisma.ingredients.findMany(
-      {
-        where: {
-          name: ingredient.name,
-          price_currency: ingredient.price?.currency,
-          price_amount: ingredient.price?.amount,
-        },
-        include: {
-          recipe_ingredients: true,
-        },
-        cursor: {
-          name: ingredient.name,
-        },
+    const results = await this.prisma.ingredients.findMany({
+      where: {
+        name: ingredient.name,
+        price_currency: ingredient.price?.currency,
+        price_amount: ingredient.price?.amount,
       },
-    );
+      include: {
+        recipe_ingredients: true,
+      },
+      cursor: {
+        name: ingredient.name,
+      },
+    });
 
     performanceTest.end('get ingredients');
     logger.info('ingredients found', results);
     return results.map((result) => ingredientMapper.toDto(result));
   };
 
-  paginate = async (take: number, cursor: string, skip?: number): Promise<Ingredient[] | undefined> => {
+  paginate = async (
+    take: number,
+    cursor: string,
+    skip?: number,
+  ): Promise<Ingredient[] | undefined> => {
     logger.info('get ingredient repository paginate request', { take, cursor });
     performanceTest.start('get paginate ingredients');
 
-    const results = await this.prisma.ingredients.findMany(
-      {
-        include: {
-          recipe_ingredients: true,
-        },
-        ...cursor && {
-          cursor: {
-            name: cursor,
-          },
-        },
-        take,
-        skip: skip ?? cursor ? 1 : 0,
+    const results = await this.prisma.ingredients.findMany({
+      include: {
+        recipe_ingredients: true,
       },
-    );
+      ...(cursor && {
+        cursor: {
+          name: cursor,
+        },
+      }),
+      take,
+      skip: skip ?? cursor ? 1 : 0,
+    });
 
     performanceTest.end('get paginate ingredients');
     logger.info('paginate ingredients found', results);
     return results.map((result) => ingredientMapper.toDto(result));
   };
 
-  getOne = async (ingredient: Partial<Ingredient>): Promise<Ingredient | undefined> => {
+  getOne = async (
+    ingredient: Partial<Ingredient>,
+  ): Promise<Ingredient | undefined> => {
     logger.info('get one ingredient repository request', ingredient);
     performanceTest.start('get ingredient');
 
-    const result = await this.prisma.ingredients.findOne(
-      {
-        where: {
-          name: ingredient.name,
-        },
-
+    const result = await this.prisma.ingredients.findOne({
+      where: {
+        name: ingredient.name,
       },
-    );
+    });
 
     if (result === null) {
       return undefined;
@@ -118,9 +126,13 @@ export class IngredientRepository implements FilterableIngredientRepository {
     return ingredientMapper.toDto(result);
   };
 
-  private readonly upsert = async (ingredient: Ingredient, override = false) => {
+  private readonly upsert = async (
+    ingredient: Ingredient,
+    override = false,
+  ) => {
     const overrideOrUpdate = (
-      shouldUpdate: boolean, value: Record<string, unknown>,
+      shouldUpdate: boolean,
+      value: Record<string, unknown>,
     ) => (override ? value : shouldUpdate && value);
 
     logger.info('upsert ingredient repository request', ingredient);
@@ -133,8 +145,12 @@ export class IngredientRepository implements FilterableIngredientRepository {
       },
       update: {
         ...overrideOrUpdate(!!ingredient.name, { name: ingredient.name }),
-        ...overrideOrUpdate(!!ingredient.price?.currency, { price_currency: ingredient.price?.currency }),
-        ...overrideOrUpdate(ingredient.price?.amount !== undefined, { price_amount: ingredient.price?.amount }),
+        ...overrideOrUpdate(!!ingredient.price?.currency, {
+          price_currency: ingredient.price?.currency,
+        }),
+        ...overrideOrUpdate(ingredient.price?.amount !== undefined, {
+          price_amount: ingredient.price?.amount,
+        }),
       },
       where: {
         name: ingredient.name,
@@ -146,12 +162,20 @@ export class IngredientRepository implements FilterableIngredientRepository {
     return result;
   };
 
-  async save(ingredientsDto: Ingredient, options?: SaveOptions): Promise<Ingredient>;
+  async save(
+    ingredientsDto: Ingredient,
+    options?: SaveOptions,
+  ): Promise<Ingredient>;
 
-  async save(ingredientsDto: Ingredient[], options?: SaveOptions): Promise<Ingredient[]>;
+  async save(
+    ingredientsDto: Ingredient[],
+    options?: SaveOptions,
+  ): Promise<Ingredient[]>;
 
-  async save(ingredientsDto: Ingredient | Ingredient[], options?: SaveOptions):
-  Promise<Ingredient | Ingredient[]> {
+  async save(
+    ingredientsDto: Ingredient | Ingredient[],
+    options?: SaveOptions,
+  ): Promise<Ingredient | Ingredient[]> {
     if (Array.isArray(ingredientsDto)) {
       // As of now, Prisma 2 does not support createMany. For now, given the low amount
       // of ingredients being created per day, the number of Promises being created is fine.
@@ -162,7 +186,10 @@ export class IngredientRepository implements FilterableIngredientRepository {
 
       const results = await Promise.all(
         ingredientsDto.map(async (ingredient) => {
-          const upsertedResult = await this.upsert(ingredient, !!options?.override);
+          const upsertedResult = await this.upsert(
+            ingredient,
+            !!options?.override,
+          );
           return ingredientMapper.toDto(upsertedResult);
         }),
       );
@@ -185,14 +212,16 @@ export class IngredientRepository implements FilterableIngredientRepository {
     logger.info('delete ingredient name repository request', name);
     if (Array.isArray(names)) {
       performanceTest.start('delete ingredients');
-      const results = await Promise.all(names.map(async (name) => {
-        const result = await this.prisma.ingredients.delete({
-          where: {
-            name,
-          },
-        });
-        return ingredientMapper.toDto(result);
-      }));
+      const results = await Promise.all(
+        names.map(async (name) => {
+          const result = await this.prisma.ingredients.delete({
+            where: {
+              name,
+            },
+          });
+          return ingredientMapper.toDto(result);
+        }),
+      );
 
       performanceTest.end('delete ingredients');
       return results;

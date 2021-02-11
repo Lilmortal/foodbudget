@@ -2,7 +2,7 @@ import { users } from '@prisma/client';
 import { Mapper } from '../../types/Mapper';
 import { User } from '../User.types';
 
-export const userMapper: Mapper<User, users> = ({
+export const userMapper: Mapper<User, users> = {
   fromDto: (dto: User): users => ({
     id: parseInt(dto.id, 10),
     google_id: dto.googleId || null,
@@ -23,4 +23,4 @@ export const userMapper: Mapper<User, users> = ({
     allergies: entity.allergies,
     diets: entity.diets,
   }),
-});
+};
