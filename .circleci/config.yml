@@ -303,8 +303,8 @@ workflows:
             branches:
               only: master
           requires:
-            - api-deploy
-            - jobs-deploy
+            - api_deploy
+            - jobs_deploy
   jobs_workflow:
     when: << pipeline.parameters.jobs_workflow >>
     jobs:
@@ -339,8 +339,8 @@ workflows:
             branches:
               only: master
           requires:
-            - api-deploy
-            - jobs-deploy
+            - api_deploy
+            - jobs_deploy
   frontend_workflow:
     when: << pipeline.parameters.frontend_workflow >>
     jobs:
